@@ -5,12 +5,11 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.logging.Logger;
 
 import com.coacheller.server.domain.Rating;
 import com.coacheller.server.domain.Set;
-import com.coacheller.server.persistence.CoachellerDataStore;
+import com.coacheller.server.persistence.CoachellerDAO;
 
 /**
  * Class to populate the datastore with crime data and averages
@@ -21,19 +20,16 @@ import com.coacheller.server.persistence.CoachellerDataStore;
 public class SetDataLoader {
   private static final int DATE_INDEX = 0;
   private static final int TIME_INDEX = 1;
-  private static final int BCC_INDEX = 2;
-  private static final int ADDRESS_INDEX = 3;
-  private static final int LATITUDE_INDEX = 4;
-  private static final int LONGITUDE_INDEX = 5;
-  private static final String DATE_FORMAT = "M/d/yyyy HH:mm";
+  private static final int ARTIST_NAME = 2;
+  private static final String DATE_FORMAT = "MM/dd/yyyy HH:mm";
 
   private static final Logger log = Logger.getLogger(RatingManager.class.getName());
 
-  private CoachellerDataStore coachellerDao;
+  private CoachellerDAO coachellerDao;
 
   // Private constructor prevents instantiation from other classes
   private SetDataLoader() {
-    coachellerDao = new CoachellerDataStore();
+    coachellerDao = new CoachellerDAO();
   }
 
   /**
@@ -59,13 +55,15 @@ public class SetDataLoader {
         try {
           Set set = new Set();
           String[] fields = line.split(",");
-          
+
           String dateString = fields[DATE_INDEX] + " " + fields[TIME_INDEX];
           Date date = dateFormat.parse(dateString);
           set.setSetDate(date);
-                    
+
+          set.setArtistName(fields[ARTIST_NAME]);
+
           coachellerDao.updateSet(set);
-          
+
           line = incidentFile.readLine();
         } catch (ParseException e) {
           e.printStackTrace();

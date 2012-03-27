@@ -4,9 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.coacheller.server.domain.Rating;
 import com.coacheller.server.domain.Set;
-import com.coacheller.server.persistence.CoachellerDataStore;
+import com.coacheller.server.persistence.CoachellerDAO;
 
 /**
  * Contains logic related to all requests made by the app client
@@ -18,11 +17,11 @@ public class RatingManager {
 
   private static final Logger log = Logger.getLogger(RatingManager.class.getName());
 
-  private CoachellerDataStore crimeDao;
+  private CoachellerDAO crimeDao;
 
   // Private constructor prevents instantiation from other classes
   private RatingManager() {
-    crimeDao = new CoachellerDataStore();
+    crimeDao = new CoachellerDAO();
   }
 
   /**
@@ -57,28 +56,9 @@ public class RatingManager {
     return incidents;
   }
 
-  public List<Set> findSetsByRadius(Date startDate) {
-    List<Set> incidents = crimeDao.findSetsByStartDate(startDate);
+  public List<Set> findSetsByDay(Date date) {
+    List<Set> incidents = crimeDao.findSetsByDay(date);
     return incidents;
-  }
-
-  public List<Set> findSetsByYearAndRadius(Integer year, Double latitude,
-      Double longitude, Integer radius) {
-    List<Set> incidents = crimeDao.findSetsByYearAndRadius(year, latitude, longitude,
-        radius);
-    return incidents;
-  }
-
-  public List<Set> findSetsByStartDate(Date startDate) {
-    List<Set> incidents = crimeDao.findSetsByStartDate(startDate);
-    return incidents;
-  }
-
-  public List<Rating> findAverageSetNumbersByYearAndRadius(Integer year,
-      Integer radius) {
-    List<Rating> averages = crimeDao.findAverageSetNumbersByYearAndRadius(year,
-        radius);
-    return averages;
   }
 
 }

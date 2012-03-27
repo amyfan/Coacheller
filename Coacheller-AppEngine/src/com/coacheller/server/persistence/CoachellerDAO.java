@@ -14,12 +14,12 @@ import com.googlecode.objectify.Query;
  * @author Amy
  * 
  */
-public class CoachellerDataStore {
-  private static final Logger log = Logger.getLogger(CoachellerDataStore.class.getName());
+public class CoachellerDAO {
+  private static final Logger log = Logger.getLogger(CoachellerDAO.class.getName());
 
   private DAO dao;
 
-  public CoachellerDataStore() {
+  public CoachellerDAO() {
     dao = new DAO();
   }
 
@@ -53,7 +53,7 @@ public class CoachellerDataStore {
     return q.list();
   }
 
-  public List<Set> findSetsByStartDate(Date startDate) {
+  public List<Set> findSetsByDay(Date startDate) {
     // TODO: this query is wrong, implement appropriate date range filter here
     Query<Set> q = dao.getObjectify().query(Set.class).filter("startDate", startDate);
     return q.list();
@@ -64,8 +64,8 @@ public class CoachellerDataStore {
     return q.list();
   }
 
-  public List<Set> findSetsByYearAndRadius(Integer year, Double latitute,
-      Double longitude, Integer radius) {
+  public List<Set> findSetsByYear(Integer year, Double latitute,
+      Double longitude) {
     // TODO: this query is wrong, implement location query data here
     Query<Set> q = dao.getObjectify().query(Set.class).filter("year", year);
     return q.list();
@@ -77,31 +77,24 @@ public class CoachellerDataStore {
     return incident;
   }
 
+  public void deleteRating(Long id) {
+    System.out.println("Deleting Rating from datastore: " + id);
+    dao.getObjectify().delete(Rating.class, id);
+  }
+
+  public void deleteAllRatings() {
+    System.out.println("Deleting all Ratings from datastore: ");
+    dao.getObjectify().delete(dao.getObjectify().query(Rating.class).fetchKeys());
+  }
+
   public void deleteSet(Long id) {
     System.out.println("Deleting Set from datastore: " + id);
     dao.getObjectify().delete(Set.class, id);
   }
 
-  /**
-   * TODO: verify that this works
-   */
   public void deleteAllSets() {
     System.out.println("Deleting all Sets from datastore: ");
     dao.getObjectify().delete(dao.getObjectify().query(Set.class).fetchKeys());
-  }
-
-  /**
-   * TODO: this query's radius filter is wrong
-   * 
-   * @param year
-   * @param radius
-   * @return
-   */
-  public List<Rating> findAverageSetNumbersByYearAndRadius(Integer year,
-      Integer radius) {
-    Query<Rating> q = dao.getObjectify().query(Rating.class)
-        .filter("year", year).filter("radius", radius);
-    return q.list();
   }
 
   public int getSetCount() {

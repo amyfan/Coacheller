@@ -19,7 +19,7 @@ import com.coacheller.server.logic.RatingManager;
 import com.coacheller.server.logic.SetDataLoader;
 
 @SuppressWarnings("serial")
-public class SDCrimeZoneServlet extends HttpServlet {
+public class CoachellerServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -45,24 +45,22 @@ public class SDCrimeZoneServlet extends HttpServlet {
     //
 
     try {
-      if (!latString.isEmpty() && !lonString.isEmpty() && !radString.isEmpty()) {
-        RatingManager dataReader = RatingManager.getInstance();
+      RatingManager dataReader = RatingManager.getInstance();
 
-        Integer radius = Integer.valueOf(radString);
-        Double latitude = Double.valueOf(latString);
-        Double longitude = Double.valueOf(lonString);
+      Integer radius = Integer.valueOf(radString);
+      Double latitude = Double.valueOf(latString);
+      Double longitude = Double.valueOf(lonString);
 
-        if (!yearString.isEmpty()) {
-          Integer year = Integer.valueOf(yearString);
-          dataReader.findSetsByYearAndRadius(year, latitude, longitude, radius);
-        }
-
-        List<Set> objects = null;
-
-        JSONArray jsonArray = JSONUtils.convertIncidentsToJSONArray(objects);
-        if (jsonArray != null)
-          resp.getWriter().println(jsonArray.toString());
+      if (!yearString.isEmpty()) {
+        Integer year = Integer.valueOf(yearString);
+        dataReader.findSetsByYear(year);
       }
+
+      List<Set> objects = null;
+
+      JSONArray jsonArray = JSONUtils.convertIncidentsToJSONArray(objects);
+      if (jsonArray != null)
+        resp.getWriter().println(jsonArray.toString());
     } catch (Exception e) {
       e.printStackTrace();
       resp.getWriter().println("ERROR processing request");
