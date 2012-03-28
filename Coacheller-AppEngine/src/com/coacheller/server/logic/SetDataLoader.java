@@ -2,14 +2,11 @@ package com.coacheller.server.logic;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.logging.Logger;
 
 import com.coacheller.server.domain.Rating;
 import com.coacheller.server.domain.Set;
-import com.coacheller.server.persistence.CoachellerDAO;
+import com.coacheller.server.persistence.SetDAO;
 
 /**
  * Class to populate the datastore with crime data and averages
@@ -18,18 +15,17 @@ import com.coacheller.server.persistence.CoachellerDAO;
  * 
  */
 public class SetDataLoader {
-  private static final int DATE_INDEX = 0;
+  private static final int DAY_INDEX = 0;
   private static final int TIME_INDEX = 1;
   private static final int ARTIST_NAME = 2;
-  private static final String DATE_FORMAT = "MM/dd/yyyy HH:mm";
 
   private static final Logger log = Logger.getLogger(RatingManager.class.getName());
 
-  private CoachellerDAO coachellerDao;
+  private SetDAO setDao;
 
   // Private constructor prevents instantiation from other classes
   private SetDataLoader() {
-    coachellerDao = new CoachellerDAO();
+    setDao = new SetDAO();
   }
 
   /**
@@ -44,30 +40,23 @@ public class SetDataLoader {
     return SingletonHolder.instance;
   }
 
-  public void insertSets(BufferedReader incidentFile) {
+  public void insertSets(BufferedReader setFile) {
     // parse input file and for every row, create a new Set and persist
     String line;
     try {
-      line = incidentFile.readLine();
-      SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-      SimpleDateFormat yearformat = new SimpleDateFormat("yyyy");
+      line = setFile.readLine();
       while (line != null) {
         try {
           Set set = new Set();
           String[] fields = line.split(",");
 
-          String dateString = fields[DATE_INDEX] + " " + fields[TIME_INDEX];
-          Date date = dateFormat.parse(dateString);
-          set.setSetDate(date);
-
+          set.setDay(fields[DAY_INDEX]);
+          set.setTime(Integer.valueOf(fields[TIME_INDEX]));
           set.setArtistName(fields[ARTIST_NAME]);
 
-          coachellerDao.updateSet(set);
+          setDao.updateSet(set);
 
-          line = incidentFile.readLine();
-        } catch (ParseException e) {
-          e.printStackTrace();
-          continue;
+          line = setFile.readLine();
         } catch (Exception e) {
           e.printStackTrace();
           continue;
@@ -79,23 +68,15 @@ public class SetDataLoader {
   }
 
   public void deleteAllSets() {
-    coachellerDao.deleteAllSets();
+    setDao.deleteAllSets();
   }
 
-  public Set updateSet(Set incident) {
-    return coachellerDao.updateSet(incident);
+  public Set updateSet(Set set) {
+    return setDao.updateSet(set);
   }
 
-  public void deleteSet(Set incident) {
-    coachellerDao.deleteSet(incident.getId());
+  public void deleteSet(Set set) {
+    setDao.deleteSet(set.getId());
   }
 
-  /**
-   * Populate the database with incident averages by radius and year for the
-   * entire city
-   */
-  public void calculateSetAverages() {
-    // TODO: logic for calculating averages goes here
-    Rating average = new Rating();
-  }
 }

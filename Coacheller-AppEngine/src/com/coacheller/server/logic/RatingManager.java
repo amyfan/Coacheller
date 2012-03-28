@@ -1,11 +1,13 @@
 package com.coacheller.server.logic;
 
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.coacheller.server.domain.DayEnum;
+import com.coacheller.server.domain.Rating;
 import com.coacheller.server.domain.Set;
-import com.coacheller.server.persistence.CoachellerDAO;
+import com.coacheller.server.persistence.RatingDAO;
+import com.coacheller.server.persistence.SetDAO;
 
 /**
  * Contains logic related to all requests made by the app client
@@ -17,11 +19,14 @@ public class RatingManager {
 
   private static final Logger log = Logger.getLogger(RatingManager.class.getName());
 
-  private CoachellerDAO crimeDao;
+  private RatingDAO ratingDao;
+  private SetDAO setDao;
+
 
   // Private constructor prevents instantiation from other classes
   private RatingManager() {
-    crimeDao = new CoachellerDAO();
+    ratingDao = new RatingDAO();
+    setDao = new SetDAO();
   }
 
   /**
@@ -36,29 +41,62 @@ public class RatingManager {
     return SingletonHolder.instance;
   }
 
-  public Set createSet() {
+  public Rating updateRating() {
     // initializes ID
-    return crimeDao.updateSet(new Set());
+    return ratingDao.updateRating(new Rating());
+  }
+
+  public Rating findRating(Long id) {
+    Rating rating = ratingDao.findRating(id);
+    return rating;
+  }
+
+  public List<Rating> findAllRatings() {
+    List<Rating> ratings = ratingDao.findAllRatings();
+    return ratings;
+  }
+
+  public List<Rating> findRatingsBySetId(Long setId) {
+    List<Rating> ratings = ratingDao.findRatingsBySetId(setId);
+    return ratings;
+  }
+
+  public List<Rating> findRatingsByWeekend(Integer weekend) {
+    List<Rating> ratings = ratingDao.findRatingsByWeekend(weekend);
+    return ratings;
+  }
+
+  public Set updateSet() {
+    // initializes ID
+    return setDao.updateSet(new Set());
   }
 
   public Set findSet(Long id) {
-    Set incident = crimeDao.findSet(id);
-    return incident;
+    Set set = setDao.findSet(id);
+    return set;
   }
 
   public List<Set> findAllSets() {
-    List<Set> incidents = crimeDao.findAllSets();
-    return incidents;
+    List<Set> set = setDao.findAllSets();
+    return set;
   }
 
   public List<Set> findSetsByYear(Integer year) {
-    List<Set> incidents = crimeDao.findSetsByYear(year);
-    return incidents;
+    List<Set> ratings = setDao.findSetsByYear(year);
+    return ratings;
   }
 
-  public List<Set> findSetsByDay(Date date) {
-    List<Set> incidents = crimeDao.findSetsByDay(date);
-    return incidents;
+  public List<Set> findSetsByYearAndDay(Integer year, DayEnum day) {
+    List<Set> set = setDao.findSetsByYearAndDay(year, day);
+    return set;
   }
 
+  /**
+   * Populate the database with set averages by radius and year for the
+   * entire city
+   */
+  public void calculateSetRatingAverages() {
+    // TODO: logic for calculating averages goes here
+    Rating average = new Rating();
+  }
 }

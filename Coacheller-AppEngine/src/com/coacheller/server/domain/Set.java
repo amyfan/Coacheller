@@ -1,7 +1,5 @@
 package com.coacheller.server.domain;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,8 +12,11 @@ public class Set {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id; // internal PK
   private String artistName;
-  private Date setTime;
-  private Double averageScore; // updated asynchronously for server limit purposes
+  private Integer year;
+  private String day;
+  private Integer time;
+  private Double wkndOneAvgScore; // updated asynchronously for server limit purposes
+  private Double wkndTwoAvgScore; // updated asynchronously for server limit purposes
 
   public Set() {
   }
@@ -36,20 +37,44 @@ public class Set {
     this.artistName = artistName;
   }
 
-  public Date getSetDate() {
-    return setTime;
+  public Integer getYear() {
+    return year;
   }
 
-  public void setSetDate(Date setTime) {
-    this.setTime = setTime;
+  public void setYear(Integer year) {
+    this.year = year;
   }
 
-  public Double getAverageScore() {
-    return averageScore;
+  public String getDay() {
+    return day;
   }
 
-  public void setAverageScore(Double averageScore) {
-    this.averageScore = averageScore;
+  public void setDay(String day) {
+    this.day = day;
+  }
+
+  public Integer getTime() {
+    return time;
+  }
+
+  public void setTime(Integer time) {
+    this.time = time;
+  }
+
+  public Double getWkndOneAvgScore() {
+    return wkndOneAvgScore;
+  }
+
+  public void setWkndOneAvgScore(Double wkndOneAvgScore) {
+    this.wkndOneAvgScore = wkndOneAvgScore;
+  }
+
+  public Double getWkndTwoAvgScore() {
+    return wkndTwoAvgScore;
+  }
+
+  public void setWkndTwoAvgScore(Double wkndTwoAvgScore) {
+    this.wkndTwoAvgScore = wkndTwoAvgScore;
   }
 
 }

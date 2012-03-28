@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
 
+import com.coacheller.server.domain.DayEnum;
 import com.coacheller.server.domain.Set;
 import com.coacheller.server.logic.JSONUtils;
 import com.coacheller.server.logic.RatingManager;
@@ -25,9 +26,7 @@ public class CoachellerServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     resp.setContentType("text/plain");
 
-    String latString = checkNull(req.getParameter("lat"));
-    String lonString = checkNull(req.getParameter("lng"));
-    String radString = checkNull(req.getParameter("rad"));
+    String day = checkNull(req.getParameter("day"));
     String yearString = checkNull(req.getParameter("year"));
     String action = checkNull(req.getParameter("action"));
 
@@ -36,31 +35,32 @@ public class CoachellerServlet extends HttpServlet {
       String serverName = req.getServerName();
       String url;
       if (serverName.compareToIgnoreCase("127.0.0.1") == 0
-          || serverName.compareToIgnoreCase("localhost") == 0)
-        url = String.format("http://%s:8888/resources/input1.txt", serverName);
-      else
-        url = "http://sdcrimezone.appspot.com/resources/complete.txt";
-      LoadFile(url);
+          || serverName.compareToIgnoreCase("localhost") == 0) {
+        url = String.format("http://%s:8888/resources/sets_2012.txt", serverName);
+      } else {
+        url = "http://sdcrimezone.appspot.com/resources/sets_2012.txt";
+      }
+      loadFile(url);
     }
     //
 
     try {
       RatingManager dataReader = RatingManager.getInstance();
 
-      Integer radius = Integer.valueOf(radString);
-      Double latitude = Double.valueOf(latString);
-      Double longitude = Double.valueOf(lonString);
+      List<Set> sets = null;
 
       if (!yearString.isEmpty()) {
         Integer year = Integer.valueOf(yearString);
-        dataReader.findSetsByYear(year);
+        if (!day.isEmpty()) {
+          sets = dataReader.findSetsByYearAndDay(year, DayEnum.valueOf(day));
+        }
+        sets = dataReader.findSetsByYear(year);
       }
 
-      List<Set> objects = null;
-
-      JSONArray jsonArray = JSONUtils.convertIncidentsToJSONArray(objects);
-      if (jsonArray != null)
+      JSONArray jsonArray = JSONUtils.convertSetsToJSONArray(sets);
+      if (jsonArray != null) {
         resp.getWriter().println(jsonArray.toString());
+      }
     } catch (Exception e) {
       e.printStackTrace();
       resp.getWriter().println("ERROR processing request");
@@ -74,17 +74,19 @@ public class CoachellerServlet extends HttpServlet {
     if (action.compareToIgnoreCase("load") == 0) {
       String serverName = req.getServerName();
       String url;
+      // TODO: move all this to res file
       if (serverName.compareToIgnoreCase("127.0.0.1") == 0
-          || serverName.compareToIgnoreCase("localhost") == 0)
-        url = String.format("http://%s:8888/resources/complete.txt", serverName);
-      else
-        url = "http://sdcrimezone.appspot.com/resources/complete.txt";
-      LoadFile(url);
+          || serverName.compareToIgnoreCase("localhost") == 0) {
+        url = String.format("http://%s:8888/resources/sets_2012.txt", serverName);
+      } else {
+        url = "http://sdcrimezone.appspot.com/resources/sets_2012.txt";
+      }
+      loadFile(url);
     }
 
   }
 
-  private void LoadFile(String url) {
+  private void loadFile(String url) {
     try {
       URL inputData = new URL(url);
       URLConnection urlConn = inputData.openConnection();

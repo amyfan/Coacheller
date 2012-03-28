@@ -13,8 +13,8 @@ public class Rating {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id; // internal PK
-  private String name;
   private Integer score;
+  private Integer weekend;
   private Key<Set> set;
   private Key<AppUser> rater;
 
@@ -29,20 +29,20 @@ public class Rating {
     this.id = id;
   }
 
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
   public Integer getScore() {
     return score;
   }
 
   public void setScore(Integer score) {
     this.score = score;
+  }
+
+  public Integer getWeekend() {
+    return weekend;
+  }
+
+  public void setWeekend(Integer weekend) {
+    this.weekend = weekend;
   }
 
   public Key<Set> getSet() {
