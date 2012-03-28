@@ -3,7 +3,7 @@ package com.coacheller.server.domain;
 import java.util.EnumSet;
 
 public enum DayEnum {
-  FRIDAY("Indie"), SATURDAY("Saturday"), SUNDAY("Sunday");
+  FRIDAY("Friday"), SATURDAY("Saturday"), SUNDAY("Sunday");
 
   private String value;
 
