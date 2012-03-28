@@ -39,7 +39,7 @@ public class CoachellerServlet extends HttpServlet {
           || serverName.compareToIgnoreCase("localhost") == 0) {
         url = String.format("http://%s:8888/resources/sets_2012.txt", serverName);
       } else {
-        url = "http://sdcrimezone.appspot.com/resources/sets_2012.txt";
+        url = "http://coacheller.appspot.com/resources/sets_2012.txt";
       }
       loadFile(url);
     }
@@ -80,7 +80,7 @@ public class CoachellerServlet extends HttpServlet {
           || serverName.compareToIgnoreCase("localhost") == 0) {
         url = String.format("http://%s:8888/resources/sets_2012.txt", serverName);
       } else {
-        url = "http://sdcrimezone.appspot.com/resources/sets_2012.txt";
+        url = "http://coacheller.appspot.com/resources/sets_2012.txt";
       }
       loadFile(url);
     }
