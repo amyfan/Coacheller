@@ -2,11 +2,10 @@ package com.coacheller.server.logic;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.logging.Logger;
+import java.util.List;
 
 import com.coacheller.server.domain.Rating;
 import com.coacheller.server.domain.Set;
-import com.coacheller.server.persistence.SetDAO;
 
 /**
  * Class to populate the datastore with crime data and averages
@@ -19,13 +18,11 @@ public class SetDataLoader {
   private static final int TIME_INDEX = 1;
   private static final int ARTIST_NAME = 2;
 
-  private static final Logger log = Logger.getLogger(RatingManager.class.getName());
-
-  private SetDAO setDao;
+  RatingManager ratingMgr;
 
   // Private constructor prevents instantiation from other classes
   private SetDataLoader() {
-    setDao = new SetDAO();
+    ratingMgr = RatingManager.getInstance();
   }
 
   /**
@@ -54,7 +51,7 @@ public class SetDataLoader {
           set.setTime(Integer.valueOf(fields[TIME_INDEX]));
           set.setArtistName(fields[ARTIST_NAME]);
 
-          setDao.updateSet(set);
+          ratingMgr.updateSet(set);
 
           line = setFile.readLine();
         } catch (Exception e) {
@@ -67,16 +64,33 @@ public class SetDataLoader {
     }
   }
 
-  public void deleteAllSets() {
-    setDao.deleteAllSets();
+  public void calculateSetRatingAverages() {
+    List<Set> sets = ratingMgr.findAllSets();
+    for (Set set : sets) {
+      List<Rating> ratings = ratingMgr.findRatingsBySetId(set.getId());
+      int wkndOneCount = 0;
+      int wkndTwoCount = 0;
+      int wkndOneTotal = 0;
+      int wkndTwoTotal = 0;
+      for (Rating rating : ratings) {
+        if (rating.getWeekend() == 1) {
+          wkndOneTotal += rating.getScore();
+          ++wkndOneCount;
+        } else {
+          wkndTwoTotal += rating.getScore();
+          ++wkndTwoCount;
+        }
+      }
+      if (wkndOneCount > 0) {
+        double average = wkndOneTotal;
+        average = average / wkndOneCount;
+        set.setWkndOneAvgScore(average);
+      }
+      if (wkndTwoCount > 0) {
+        double average = wkndTwoTotal;
+        average = average / wkndTwoCount;
+        set.setWkndTwoAvgScore(average);
+      }
+    }
   }
-
-  public Set updateSet(Set set) {
-    return setDao.updateSet(set);
-  }
-
-  public void deleteSet(Set set) {
-    setDao.deleteSet(set.getId());
-  }
-
 }

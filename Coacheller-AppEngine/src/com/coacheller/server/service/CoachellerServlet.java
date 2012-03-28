@@ -26,9 +26,10 @@ public class CoachellerServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     resp.setContentType("text/plain");
 
+    String action = checkNull(req.getParameter("action"));
+    String userEmail = checkNull(req.getParameter("email"));
     String day = checkNull(req.getParameter("day"));
     String yearString = checkNull(req.getParameter("year"));
-    String action = checkNull(req.getParameter("action"));
 
     // TODO: temp
     if (action.compareToIgnoreCase("load") == 0) {
@@ -45,16 +46,16 @@ public class CoachellerServlet extends HttpServlet {
     //
 
     try {
-      RatingManager dataReader = RatingManager.getInstance();
+      RatingManager ratingMgr = RatingManager.getInstance();
 
       List<Set> sets = null;
 
       if (!yearString.isEmpty()) {
         Integer year = Integer.valueOf(yearString);
         if (!day.isEmpty()) {
-          sets = dataReader.findSetsByYearAndDay(year, DayEnum.valueOf(day));
+          sets = ratingMgr.findSetsByYearAndDay(year, DayEnum.valueOf(day));
         }
-        sets = dataReader.findSetsByYear(year);
+        sets = ratingMgr.findSetsByYear(year);
       }
 
       JSONArray jsonArray = JSONUtils.convertSetsToJSONArray(sets);
@@ -93,7 +94,8 @@ public class CoachellerServlet extends HttpServlet {
       InputStreamReader is = new InputStreamReader(urlConn.getInputStream(), "UTF8");
       BufferedReader in = new BufferedReader(is);
       SetDataLoader dataLoader = SetDataLoader.getInstance();
-      dataLoader.deleteAllSets();
+      RatingManager ratingMgr = RatingManager.getInstance();
+      ratingMgr.deleteAllSets();
       dataLoader.insertSets(in);
     } catch (Exception e) {
     } finally {

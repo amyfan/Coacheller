@@ -41,9 +41,8 @@ public class RatingManager {
     return SingletonHolder.instance;
   }
 
-  public Rating updateRating() {
-    // initializes ID
-    return ratingDao.updateRating(new Rating());
+  public Rating updateRating(Rating rating) {
+    return ratingDao.updateRating(rating);
   }
 
   public Rating findRating(Long id) {
@@ -66,9 +65,16 @@ public class RatingManager {
     return ratings;
   }
 
-  public Set updateSet() {
-    // initializes ID
-    return setDao.updateSet(new Set());
+  public void deleteAllRatings() {
+    ratingDao.deleteAllRatings();
+  }
+
+  public void deleteRating(Rating rating) {
+    ratingDao.deleteRating(rating.getId());
+  }
+
+  public Set updateSet(Set set) {
+    return setDao.updateSet(set);
   }
 
   public Set findSet(Long id) {
@@ -91,12 +97,12 @@ public class RatingManager {
     return set;
   }
 
-  /**
-   * Populate the database with set averages by radius and year for the
-   * entire city
-   */
-  public void calculateSetRatingAverages() {
-    // TODO: logic for calculating averages goes here
-    Rating average = new Rating();
+  public void deleteAllSets() {
+    setDao.deleteAllSets();
   }
+
+  public void deleteSet(Set set) {
+    setDao.deleteSet(set.getId());
+  }
+
 }
