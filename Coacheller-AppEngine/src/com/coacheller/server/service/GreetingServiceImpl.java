@@ -1,6 +1,15 @@
 package com.coacheller.server.service;
 
+import java.util.List;
+
+import org.json.JSONArray;
+
 import com.coacheller.client.GreetingService;
+import com.coacheller.server.domain.DayEnum;
+import com.coacheller.server.domain.Rating;
+import com.coacheller.server.domain.Set;
+import com.coacheller.server.logic.JSONUtils;
+import com.coacheller.server.logic.RatingManager;
 import com.coacheller.shared.FieldVerifier;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -27,6 +36,51 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
     return "Hello, " + input + "!<br><br>I am running " + serverInfo
         + ".<br><br>It looks like you are using:<br>" + userAgent;
+  }
+
+  public String getSets(String email, String yearString, String day) {
+    RatingManager ratingMgr = RatingManager.getInstance();
+
+    String resp = null;
+    List<Set> sets = null;
+
+    if (yearString != null) {
+      Integer year = Integer.valueOf(yearString);
+      if (day != null) {
+        sets = ratingMgr.findSetsByYearAndDay(year, DayEnum.valueOf(day));
+      }
+      sets = ratingMgr.findSetsByYear(year);
+    }
+
+    JSONArray jsonArray = JSONUtils.convertSetsToJSONArray(sets);
+    if (jsonArray != null) {
+      resp = jsonArray.toString();
+    }
+    
+    if (resp == null) {
+      resp = "no data hrm";
+    }
+
+    return resp;
+  }
+
+  public String getRatingsBySet(String email, String setIdString) {
+    RatingManager ratingMgr = RatingManager.getInstance();
+
+    String resp = null;
+    List<Rating> ratings = null;
+
+    if (setIdString != null) {
+      Long setId = Long.valueOf(setIdString);
+      ratings = ratingMgr.findRatingsBySetId(setId);
+    }
+
+    JSONArray jsonArray = JSONUtils.convertRatingsToJSONArray(ratings);
+    if (jsonArray != null) {
+      resp = jsonArray.toString();
+    }
+
+    return resp;
   }
 
   /**

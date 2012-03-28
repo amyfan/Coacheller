@@ -22,21 +22,53 @@ package com.coacheller.shared;
  */
 public class FieldVerifier {
 
-	/**
-	 * Verifies that the specified name is valid for our service.
-	 * 
-	 * In this example, we only require that the name is at least four
-	 * characters. In your application, you can use more complex checks to ensure
-	 * that usernames, passwords, email addresses, URLs, and other fields have the
-	 * proper syntax.
-	 * 
-	 * @param name the name to validate
-	 * @return true if valid, false if invalid
-	 */
-	public static boolean isValidName(String name) {
-		if (name == null) {
-			return false;
-		}
-		return name.length() > 3;
-	}
+  /**
+   * Verifies that the specified name is valid for our service.
+   * 
+   * In this example, we only require that the name is at least four characters.
+   * In your application, you can use more complex checks to ensure that
+   * usernames, passwords, email addresses, URLs, and other fields have the
+   * proper syntax.
+   * 
+   * @param name
+   *          the name to validate
+   * @return true if valid, false if invalid
+   */
+  public static boolean isValidName(String name) {
+    if (name == null) {
+      return false;
+    }
+    return name.length() > 3;
+  }
+
+  public static boolean isValidEmail(String name) {
+    if (name == null) {
+      return false;
+    } else if (!name.contains("@")) {
+      return false;
+    }
+    return name.length() > 3;
+  }
+
+  public static boolean isValidYear(String year) {
+    if (year == null) {
+      return false;
+    } else if (year.length() != 4) {
+      return false;
+    } else {
+      try {
+        Integer.parseInt(year);
+      } catch (Exception e) {
+        return false;
+      }
+      return true;
+    }
+  }
+
+  public static boolean isValidDay(String day) {
+    if ("Friday".equals(day) || "Saturday".equals(day) || "Sunday".equals(day)) {
+      return true;
+    }
+    return false;
+  }
 }

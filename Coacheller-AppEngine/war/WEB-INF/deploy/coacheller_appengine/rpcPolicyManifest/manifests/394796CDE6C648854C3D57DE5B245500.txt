@@ -1,0 +1,2 @@
+serviceClass: com.coacheller.client.GreetingService
+path: 7D18B124209A653120FDA2BBA83CDE95.gwt.rpc

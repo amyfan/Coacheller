@@ -31,20 +31,6 @@ public class CoachellerServlet extends HttpServlet {
     String day = checkNull(req.getParameter("day"));
     String yearString = checkNull(req.getParameter("year"));
 
-    // TODO: temp
-    if (action.compareToIgnoreCase("load") == 0) {
-      String serverName = req.getServerName();
-      String url;
-      if (serverName.compareToIgnoreCase("127.0.0.1") == 0
-          || serverName.compareToIgnoreCase("localhost") == 0) {
-        url = String.format("http://%s:8888/resources/sets_2012.txt", serverName);
-      } else {
-        url = "http://coacheller.appspot.com/resources/sets_2012.txt";
-      }
-      loadFile(url);
-    }
-    //
-
     try {
       RatingManager ratingMgr = RatingManager.getInstance();
 
@@ -80,7 +66,7 @@ public class CoachellerServlet extends HttpServlet {
           || serverName.compareToIgnoreCase("localhost") == 0) {
         url = String.format("http://%s:8888/resources/sets_2012.txt", serverName);
       } else {
-        url = "http://coacheller.appspot.com/resources/sets_2012.txt";
+        url = "http://ratethisfest.appspot.com/resources/sets_2012.txt";
       }
       loadFile(url);
     }
