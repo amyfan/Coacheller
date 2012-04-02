@@ -39,6 +39,7 @@ public class Coacheller_AppEngine implements EntryPoint {
    */
   public void onModuleLoad() {
     final Button populateButton = new Button("Populate");
+    final Button calculateButton = new Button("Calculate Score Averages");
     final Button querySetButton = new Button("Query Sets");
     final Button addRatingButton = new Button("Add Rating");
     final Button queryRatingButton = new Button("Query Ratings");
@@ -71,6 +72,7 @@ public class Coacheller_AppEngine implements EntryPoint {
     RootPanel.get("weekendFieldContainer").add(weekendField);
     RootPanel.get("scoreFieldContainer").add(scoreField);
     RootPanel.get("populateButtonContainer").add(populateButton);
+    RootPanel.get("calculateButtonContainer").add(calculateButton);
     RootPanel.get("querySetButtonContainer").add(querySetButton);
     RootPanel.get("addRatingButtonContainer").add(addRatingButton);
     RootPanel.get("queryRatingButtonContainer").add(queryRatingButton);
@@ -109,6 +111,7 @@ public class Coacheller_AppEngine implements EntryPoint {
         querySetButton.setFocus(true);
         queryRatingButton.setEnabled(true);
         populateButton.setEnabled(true);
+        calculateButton.setEnabled(true);
         addRatingButton.setEnabled(true);
         clearRatingButton.setEnabled(true);
         clearUserButton.setEnabled(true);
@@ -123,6 +126,8 @@ public class Coacheller_AppEngine implements EntryPoint {
       public void onClick(ClickEvent event) {
         if (event.getSource() == populateButton) {
           populateDatabase();
+        } else if (event.getSource() == calculateButton) {
+          calculateScoreAverages();
         } else if (event.getSource() == addRatingButton) {
           addRating();
         }
@@ -148,6 +153,33 @@ public class Coacheller_AppEngine implements EntryPoint {
         populateButton.setEnabled(false);
         serverResponseLabel.setText("");
         greetingService.loadSetData(new AsyncCallback<String>() {
+          public void onFailure(Throwable caught) {
+            // Show the RPC error message to the user
+            dialogBox.setText("Remote Procedure Call - Failure");
+            serverResponseLabel.addStyleName("serverResponseLabelError");
+            serverResponseLabel.setHTML(SERVER_ERROR);
+            dialogBox.center();
+            closeButton.setFocus(true);
+          }
+
+          public void onSuccess(String result) {
+            dialogBox.setText("Remote Procedure Call");
+            serverResponseLabel.removeStyleName("serverResponseLabelError");
+            serverResponseLabel.setHTML(result);
+            dialogBox.center();
+            closeButton.setFocus(true);
+          }
+        });
+      }
+
+      private void calculateScoreAverages() {
+        // First, we validate the input.
+        errorLabel.setText("");
+
+        // Then, we send the input to the server.
+        calculateButton.setEnabled(false);
+        serverResponseLabel.setText("");
+        greetingService.calculateSetRatingAverages(new AsyncCallback<String>() {
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             dialogBox.setText("Remote Procedure Call - Failure");
@@ -403,6 +435,7 @@ public class Coacheller_AppEngine implements EntryPoint {
     // Add a handler to send the name to the server
     PopulateHandler populateHandler = new PopulateHandler();
     populateButton.addClickHandler(populateHandler);
+    calculateButton.addClickHandler(populateHandler);
     addRatingButton.addClickHandler(populateHandler);
     QueryHandler queryHandler = new QueryHandler();
     querySetButton.addClickHandler(queryHandler);

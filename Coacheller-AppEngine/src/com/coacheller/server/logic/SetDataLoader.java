@@ -19,11 +19,8 @@ public class SetDataLoader {
   private static final int TIME_INDEX = 2;
   private static final int ARTIST_NAME = 3;
 
-  RatingManager ratingMgr;
-
   // Private constructor prevents instantiation from other classes
   private SetDataLoader() {
-    ratingMgr = RatingManager.getInstance();
   }
 
   /**
@@ -53,7 +50,7 @@ public class SetDataLoader {
           set.setTime(Integer.valueOf(fields[TIME_INDEX]));
           set.setArtistName(fields[ARTIST_NAME]);
 
-          ratingMgr.updateSet(set);
+          RatingManager.getInstance().updateSet(set);
 
           line = setFile.readLine();
         } catch (Exception e) {
@@ -67,9 +64,9 @@ public class SetDataLoader {
   }
 
   public void calculateSetRatingAverages() {
-    List<Set> sets = ratingMgr.findAllSets();
+    List<Set> sets = RatingManager.getInstance().findAllSets();
     for (Set set : sets) {
-      List<Rating> ratings = ratingMgr.findRatingsBySetId(set.getId());
+      List<Rating> ratings = RatingManager.getInstance().findRatingsBySetId(set.getId());
       int wkndOneCount = 0;
       int wkndTwoCount = 0;
       int wkndOneTotal = 0;
@@ -87,11 +84,13 @@ public class SetDataLoader {
         double average = wkndOneTotal;
         average = average / wkndOneCount;
         set.setWkndOneAvgScore(average);
+        RatingManager.getInstance().updateSet(set);
       }
       if (wkndTwoCount > 0) {
         double average = wkndTwoTotal;
         average = average / wkndTwoCount;
         set.setWkndTwoAvgScore(average);
+        RatingManager.getInstance().updateSet(set);
       }
     }
   }

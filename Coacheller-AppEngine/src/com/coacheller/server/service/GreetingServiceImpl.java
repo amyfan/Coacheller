@@ -162,16 +162,14 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
   public String deleteAllRatings() {
     String resp = "fail";
-    RatingManager ratingMgr = RatingManager.getInstance();
-    ratingMgr.deleteAllRatings();
+    RatingManager.getInstance().deleteAllRatings();
     resp = "ratings deleted";
     return resp;
   }
 
   public String deleteAllUsers() {
     String resp = "fail";
-    UserAccountManager uam = UserAccountManager.getInstance();
-    uam.deleteAllAppUsers();
+    UserAccountManager.getInstance().deleteAllAppUsers();
     resp = "users deleted";
     return resp;
   }
@@ -185,6 +183,11 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     success = loadFile(url);
 
     return success;
+  }
+
+  public String calculateSetRatingAverages() {
+    SetDataLoader.getInstance().calculateSetRatingAverages();
+    return "success i believe";
   }
 
   public String registerUser() {

@@ -10,6 +10,8 @@ public interface GreetingServiceAsync {
 
   void loadSetData(AsyncCallback<String> callback) throws IllegalArgumentException;
 
+  void calculateSetRatingAverages(AsyncCallback<String> callback) throws IllegalArgumentException;
+
   void getSets(String email, String yearString, String day, AsyncCallback<String> callback)
       throws IllegalArgumentException;
 
