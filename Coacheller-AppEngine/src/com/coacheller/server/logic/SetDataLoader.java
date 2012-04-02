@@ -14,9 +14,10 @@ import com.coacheller.server.domain.Set;
  * 
  */
 public class SetDataLoader {
-  private static final int DAY_INDEX = 0;
-  private static final int TIME_INDEX = 1;
-  private static final int ARTIST_NAME = 2;
+  private static final int YEAR_INDEX = 0;
+  private static final int DAY_INDEX = 1;
+  private static final int TIME_INDEX = 2;
+  private static final int ARTIST_NAME = 3;
 
   RatingManager ratingMgr;
 
@@ -47,6 +48,7 @@ public class SetDataLoader {
           Set set = new Set();
           String[] fields = line.split(",");
 
+          set.setYear(Integer.valueOf(fields[YEAR_INDEX]));
           set.setDay(fields[DAY_INDEX]);
           set.setTime(Integer.valueOf(fields[TIME_INDEX]));
           set.setArtistName(fields[ARTIST_NAME]);

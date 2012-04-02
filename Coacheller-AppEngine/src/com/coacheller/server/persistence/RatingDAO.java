@@ -3,7 +3,9 @@ package com.coacheller.server.persistence;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.coacheller.server.domain.AppUser;
 import com.coacheller.server.domain.Rating;
+import com.coacheller.server.domain.Set;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Query;
 
@@ -51,8 +53,13 @@ public class RatingDAO {
     return q.list();
   }
 
-  public List<Rating> findRatingsBySetId(Long setId) {
-    Query<Rating> q = dao.getObjectify().query(Rating.class).filter("set.id", setId);
+  public List<Rating> findRatingsBySetKey(Key<Set> setKey) {
+    Query<Rating> q = dao.getObjectify().query(Rating.class).filter("set", setKey);
+    return q.list();
+  }
+
+  public List<Rating> findRatingsBySetKeyAndUserKey(Key<Set> setKey, Key<AppUser> userKey) {
+    Query<Rating> q = dao.getObjectify().query(Rating.class).filter("set", setKey).filter("rater", userKey);
     return q.list();
   }
 

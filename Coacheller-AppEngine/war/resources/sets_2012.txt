@@ -1,139 +1,139 @@
-Friday,1200,Afrojack
-Friday,1200,Alesso
-Friday,1200,Amon Tobin : ISAM Live
-Friday,1200,Arctic Monkeys
-Friday,1200,Atari Teenage Riot
-Friday,1200,Breakbot
-Friday,1200,Datsik
-Friday,1200,Dawes
-Friday,1200,Death Grips
-Friday,1200,EMA
-Friday,1200,Explosions in the Sky
-Friday,1200,Feed Me
-Friday,1200,Frank Ocean
-Friday,1200,GIRLS
-Friday,1200,GIVERS
-Friday,1200,Hello Seahorse!
-Friday,1200,honeyhoney
-Friday,1200,James
-Friday,1200,Jimmy Cliff with Tim Armstrong and the Engine Band
-Friday,1200,Kendrick Lamar
-Friday,1200,LA Riots
-Friday,1200,M. Ward
-Friday,1200,M83
-Friday,1200,Madeon
-Friday,1200,Madness
-Friday,1200,Mazzy Star
-Friday,1200,Mea
-Friday,1200,Neon Indian
-Friday,1200,Other Lives
-Friday,1200,Pulp
-Friday,1200,R3hab
-Friday,1200,Refused
-Friday,1200,SebastiAn
-Friday,1200,Swedish House Mafia
-Friday,1200,The Black Angels
-Friday,1200,The Black Keys
-Friday,1200,The Dear Hunter
-Friday,1200,The Horrors
-Friday,1200,The Midnight Beast
-Friday,1200,The Rapture
-Friday,1200,The Sheepdogs
-Friday,1200,Wallpaper
-Friday,1200,Wolf Gang
-Friday,1200,WU LYF
-Friday,1200,Ximena Sarinana
-Friday,1200,Yuck
-Saturday,1200,A$AP Rocky
-Saturday,1200,Andrew Bird
-Saturday,1200,AWOLNATION
-Saturday,1200,Azealia Banks
-Saturday,1200,Black Lips
-Saturday,1200,Bon Iver
-Saturday,1200,Borgore
-Saturday,1200,Buzzcocks
-Saturday,1200,Childish Gambino
-Saturday,1200,David Guetta
-Saturday,1200,Destroyer
-Saturday,1200,Destructo
-Saturday,1200,Dragonette
-Saturday,1200,Feist
-Saturday,1200,fIREHOSE
-Saturday,1200,Flying Lotus
-Saturday,1200,Gary Clark Jr.
-Saturday,1200,Godspeed You! Black Emperor
-Saturday,1200,Grace Potter and the Nocturnals
-Saturday,1200,Grouplove
-Saturday,1200,Jacques Lu Cont
-Saturday,1200,Jeff Mangum
-Saturday,1200,Kaiser Chiefs
-Saturday,1200,Kasabian
-Saturday,1200,Kaskade
-Saturday,1200,Keep Shelly in Athens
-Saturday,1200,Laura Marling
-Saturday,1200,Manchester Orchestra
-Saturday,1200,Martin Solveig
-Saturday,1200,Miike Snow
-Saturday,1200,Mt Eden
-Saturday,1200,Noel Gallagher's High Flying Birds
-Saturday,1200,Pure Filth Sound
-Saturday,1200,Radiohead
-Saturday,1200,SBTRKT
-Saturday,1200,Sebastian Ingrosso
-Saturday,1200,Squeeze
-Saturday,1200,St. Vincent
-Saturday,1200,Sub Focus
-Saturday,1200,Suedehead
-Saturday,1200,The Big Pink
-Saturday,1200,The Head and the Heart
-Saturday,1200,The Shins
-Saturday,1200,The Vaccines
-Saturday,1200,tUnE-yArDs
-Saturday,1200,We Are Augustines
-Saturday,1200,We Were Promised Jetpacks
-Saturday,1200,Zeds Dead
-Sunday,1200,araabMUZIK
-Sunday,1200,At The Drive-In
-Sunday,1200,AVICII
-Sunday,1200,Band of Skulls
-Sunday,1200,Beats Antique
-Sunday,1200,Beirut
-Sunday,1200,Calvin Harris
-Sunday,1200,Company Flow
-Sunday,1200,Dada Life
-Sunday,1200,DJ Shadow
-Sunday,1200,Dr. Dre & Snoop Dogg
-Sunday,1200,Fanfarlo
-Sunday,1200,First Aid Kit
-Sunday,1200,Fitz and the Tantrums
-Sunday,1200,Florence and the Machine
-Sunday,1200,Flux Pavilion @ Dr. P
-Sunday,1200,Gardens & Villa
-Sunday,1200,Girl Talk
-Sunday,1200,Gotye
-Sunday,1200,Greg Ginn and the Royal We
-Sunday,1200,Housse de Racket
-Sunday,1200,Justice
-Sunday,1200,Le Butcherettes
-Sunday,1200,Lissie
-Sunday,1200,Metronomy
-Sunday,1200,Modeselektor
-Sunday,1200,Morgan Page
-Sunday,1200,Nero
-Sunday,1200,NOISIA
-Sunday,1200,Oberhofer
-Sunday,1200,Porter Robinson
-Sunday,1200,Real Estate
-Sunday,1200,Santigold
-Sunday,1200,Seun Kuti & Egypt 80
-Sunday,1200,Sleeper Agent
-Sunday,1200,Spector
-Sunday,1200,The Airplane Boys
-Sunday,1200,The Gaslamp Killer
-Sunday,1200,The Growlers
-Sunday,1200,The Hives
-Sunday,1200,The Weeknd
-Sunday,1200,Thundercat
-Sunday,1200,Wild Beasts
-Sunday,1200,Wild Flag
-Sunday,1200,Zedd
+2012,Friday,1200,Afrojack
+2012,Friday,1200,Alesso
+2012,Friday,1200,Amon Tobin : ISAM Live
+2012,Friday,1200,Arctic Monkeys
+2012,Friday,1200,Atari Teenage Riot
+2012,Friday,1200,Breakbot
+2012,Friday,1200,Datsik
+2012,Friday,1200,Dawes
+2012,Friday,1200,Death Grips
+2012,Friday,1200,EMA
+2012,Friday,1200,Explosions in the Sky
+2012,Friday,1200,Feed Me
+2012,Friday,1200,Frank Ocean
+2012,Friday,1200,GIRLS
+2012,Friday,1200,GIVERS
+2012,Friday,1200,Hello Seahorse!
+2012,Friday,1200,honeyhoney
+2012,Friday,1200,James
+2012,Friday,1200,Jimmy Cliff with Tim Armstrong and the Engine Band
+2012,Friday,1200,Kendrick Lamar
+2012,Friday,1200,LA Riots
+2012,Friday,1200,M. Ward
+2012,Friday,1200,M83
+2012,Friday,1200,Madeon
+2012,Friday,1200,Madness
+2012,Friday,1200,Mazzy Star
+2012,Friday,1200,Mea
+2012,Friday,1200,Neon Indian
+2012,Friday,1200,Other Lives
+2012,Friday,1200,Pulp
+2012,Friday,1200,R3hab
+2012,Friday,1200,Refused
+2012,Friday,1200,SebastiAn
+2012,Friday,1200,Swedish House Mafia
+2012,Friday,1200,The Black Angels
+2012,Friday,1200,The Black Keys
+2012,Friday,1200,The Dear Hunter
+2012,Friday,1200,The Horrors
+2012,Friday,1200,The Midnight Beast
+2012,Friday,1200,The Rapture
+2012,Friday,1200,The Sheepdogs
+2012,Friday,1200,Wallpaper
+2012,Friday,1200,Wolf Gang
+2012,Friday,1200,WU LYF
+2012,Friday,1200,Ximena Sarinana
+2012,Friday,1200,Yuck
+2012,Saturday,1200,A$AP Rocky
+2012,Saturday,1200,Andrew Bird
+2012,Saturday,1200,AWOLNATION
+2012,Saturday,1200,Azealia Banks
+2012,Saturday,1200,Black Lips
+2012,Saturday,1200,Bon Iver
+2012,Saturday,1200,Borgore
+2012,Saturday,1200,Buzzcocks
+2012,Saturday,1200,Childish Gambino
+2012,Saturday,1200,David Guetta
+2012,Saturday,1200,Destroyer
+2012,Saturday,1200,Destructo
+2012,Saturday,1200,Dragonette
+2012,Saturday,1200,Feist
+2012,Saturday,1200,fIREHOSE
+2012,Saturday,1200,Flying Lotus
+2012,Saturday,1200,Gary Clark Jr.
+2012,Saturday,1200,Godspeed You! Black Emperor
+2012,Saturday,1200,Grace Potter and the Nocturnals
+2012,Saturday,1200,Grouplove
+2012,Saturday,1200,Jacques Lu Cont
+2012,Saturday,1200,Jeff Mangum
+2012,Saturday,1200,Kaiser Chiefs
+2012,Saturday,1200,Kasabian
+2012,Saturday,1200,Kaskade
+2012,Saturday,1200,Keep Shelly in Athens
+2012,Saturday,1200,Laura Marling
+2012,Saturday,1200,Manchester Orchestra
+2012,Saturday,1200,Martin Solveig
+2012,Saturday,1200,Miike Snow
+2012,Saturday,1200,Mt Eden
+2012,Saturday,1200,Noel Gallagher's High Flying Birds
+2012,Saturday,1200,Pure Filth Sound
+2012,Saturday,1200,Radiohead
+2012,Saturday,1200,SBTRKT
+2012,Saturday,1200,Sebastian Ingrosso
+2012,Saturday,1200,Squeeze
+2012,Saturday,1200,St. Vincent
+2012,Saturday,1200,Sub Focus
+2012,Saturday,1200,Suedehead
+2012,Saturday,1200,The Big Pink
+2012,Saturday,1200,The Head and the Heart
+2012,Saturday,1200,The Shins
+2012,Saturday,1200,The Vaccines
+2012,Saturday,1200,tUnE-yArDs
+2012,Saturday,1200,We Are Augustines
+2012,Saturday,1200,We Were Promised Jetpacks
+2012,Saturday,1200,Zeds Dead
+2012,Sunday,1200,araabMUZIK
+2012,Sunday,1200,At The Drive-In
+2012,Sunday,1200,AVICII
+2012,Sunday,1200,Band of Skulls
+2012,Sunday,1200,Beats Antique
+2012,Sunday,1200,Beirut
+2012,Sunday,1200,Calvin Harris
+2012,Sunday,1200,Company Flow
+2012,Sunday,1200,Dada Life
+2012,Sunday,1200,DJ Shadow
+2012,Sunday,1200,Dr. Dre & Snoop Dogg
+2012,Sunday,1200,Fanfarlo
+2012,Sunday,1200,First Aid Kit
+2012,Sunday,1200,Fitz and the Tantrums
+2012,Sunday,1200,Florence and the Machine
+2012,Sunday,1200,Flux Pavilion @ Dr. P
+2012,Sunday,1200,Gardens & Villa
+2012,Sunday,1200,Girl Talk
+2012,Sunday,1200,Gotye
+2012,Sunday,1200,Greg Ginn and the Royal We
+2012,Sunday,1200,Housse de Racket
+2012,Sunday,1200,Justice
+2012,Sunday,1200,Le Butcherettes
+2012,Sunday,1200,Lissie
+2012,Sunday,1200,Metronomy
+2012,Sunday,1200,Modeselektor
+2012,Sunday,1200,Morgan Page
+2012,Sunday,1200,Nero
+2012,Sunday,1200,NOISIA
+2012,Sunday,1200,Oberhofer
+2012,Sunday,1200,Porter Robinson
+2012,Sunday,1200,Real Estate
+2012,Sunday,1200,Santigold
+2012,Sunday,1200,Seun Kuti & Egypt 80
+2012,Sunday,1200,Sleeper Agent
+2012,Sunday,1200,Spector
+2012,Sunday,1200,The Airplane Boys
+2012,Sunday,1200,The Gaslamp Killer
+2012,Sunday,1200,The Growlers
+2012,Sunday,1200,The Hives
+2012,Sunday,1200,The Weeknd
+2012,Sunday,1200,Thundercat
+2012,Sunday,1200,Wild Beasts
+2012,Sunday,1200,Wild Flag
+2012,Sunday,1200,Zedd

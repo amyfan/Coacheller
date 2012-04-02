@@ -1,5 +1,7 @@
 package com.coacheller.server.persistence;
 
+import com.coacheller.server.domain.AppUser;
+import com.coacheller.server.domain.Rating;
 import com.coacheller.server.domain.Set;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
@@ -14,6 +16,8 @@ import com.googlecode.objectify.util.DAOBase;
 public class DAO extends DAOBase {
 
   static {
+    ObjectifyService.register(AppUser.class);
+    ObjectifyService.register(Rating.class);
     ObjectifyService.register(Set.class);
   }
 

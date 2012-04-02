@@ -37,13 +37,53 @@ public class AppUserDAO {
     return incident;
   }
 
-  public AppUser findAppUserByKey(Key<AppUser> incidentKey) {
-    if (incidentKey == null) {
+  public AppUser findAppUserByKey(Key<AppUser> key) {
+    if (key == null) {
       return null;
     }
 
-    AppUser incident = dao.getObjectify().get(incidentKey);
+    AppUser incident = dao.getObjectify().get(key);
     return incident;
+  }
+
+  public AppUser findAppUserByEmail(String email) {
+    if (email == null) {
+      return null;
+    }
+
+    Query<AppUser> q = dao.getObjectify().query(AppUser.class).filter("email", email);
+    if (q.list().size() > 0) {
+      return q.list().get(0);
+    } else {
+      return null;
+    }
+  }
+
+  public Key<AppUser> findAppUserKeyById(Long id) {
+    if (id == null) {
+      return null;
+    }
+
+    Iterable<Key<AppUser>> q = dao.getObjectify().query(AppUser.class).filter("id", id).fetchKeys();
+    if (q.iterator().hasNext()) {
+      return q.iterator().next();
+    } else {
+      return null;
+    }
+  }
+
+  public Key<AppUser> findAppUserKeyByEmail(String email) {
+    if (email == null) {
+      return null;
+    }
+
+    Iterable<Key<AppUser>> q = dao.getObjectify().query(AppUser.class).filter("email", email)
+        .fetchKeys();
+    if (q.iterator().hasNext()) {
+      return q.iterator().next();
+    } else {
+      return null;
+    }
   }
 
   public List<AppUser> findAllAppUsers() {
@@ -51,10 +91,10 @@ public class AppUserDAO {
     return q.list();
   }
 
-  public AppUser updateAppUser(AppUser incident) {
-    dao.getObjectify().put(incident); // id populated in this statement
-    System.out.println("Updated AppUser to datastore: " + incident.toString());
-    return incident;
+  public AppUser updateAppUser(AppUser user) {
+    dao.getObjectify().put(user); // id populated in this statement
+    System.out.println("Updated AppUser to datastore: " + user.toString());
+    return user;
   }
 
   public void deleteAppUser(Long id) {
@@ -62,9 +102,6 @@ public class AppUserDAO {
     dao.getObjectify().delete(AppUser.class, id);
   }
 
-  /**
-   * TODO: verify that this works
-   */
   public void deleteAllAppUsers() {
     System.out.println("Deleting all AppUsers from datastore: ");
     dao.getObjectify().delete(dao.getObjectify().query(AppUser.class).fetchKeys());

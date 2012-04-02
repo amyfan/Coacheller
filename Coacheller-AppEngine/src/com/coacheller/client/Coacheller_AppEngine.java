@@ -5,7 +5,6 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -28,6 +27,7 @@ public class Coacheller_AppEngine implements EntryPoint {
   private static final String SERVER_ERROR = "An error occurred while "
       + "attempting to contact the server. Please check your network "
       + "connection and try again.";
+  private static final String JSON_ERROR = "An error occurred while processing the JSON";
 
   /**
    * Create a remote service proxy to talk to the server-side Greeting service.
@@ -38,26 +38,44 @@ public class Coacheller_AppEngine implements EntryPoint {
    * This is the entry point method.
    */
   public void onModuleLoad() {
-    final Button greetButton = new Button("Greet");
-    final Button sendButton = new Button("Send");
+    final Button populateButton = new Button("Populate");
+    final Button querySetButton = new Button("Query Sets");
+    final Button addRatingButton = new Button("Add Rating");
+    final Button queryRatingButton = new Button("Query Ratings");
+    final Button clearRatingButton = new Button("Clear Ratings");
+    final Button clearUserButton = new Button("Clear Users");
     final TextBox emailField = new TextBox();
     emailField.setText("amyfan@gmail.com");
     final TextBox yearField = new TextBox();
     yearField.setText("2012");
     final TextBox dayField = new TextBox();
     dayField.setText("Friday");
+    final TextBox artistField = new TextBox();
+    artistField.setText("Afrojack");
+    final TextBox weekendField = new TextBox();
+    weekendField.setText("1");
+    final TextBox scoreField = new TextBox();
+    scoreField.setText("5");
     final Label errorLabel = new Label();
 
     // We can add style names to widgets
-    sendButton.addStyleName("sendButton");
+    populateButton.addStyleName("populateButton");
+    querySetButton.addStyleName("querySetButton");
 
     // Add the nameField and sendButton to the RootPanel
     // Use RootPanel.get() to get the entire body element
     RootPanel.get("emailFieldContainer").add(emailField);
     RootPanel.get("yearFieldContainer").add(yearField);
     RootPanel.get("dayFieldContainer").add(dayField);
-    RootPanel.get("greetButtonContainer").add(greetButton);
-    RootPanel.get("sendButtonContainer").add(sendButton);
+    RootPanel.get("artistFieldContainer").add(artistField);
+    RootPanel.get("weekendFieldContainer").add(weekendField);
+    RootPanel.get("scoreFieldContainer").add(scoreField);
+    RootPanel.get("populateButtonContainer").add(populateButton);
+    RootPanel.get("querySetButtonContainer").add(querySetButton);
+    RootPanel.get("addRatingButtonContainer").add(addRatingButton);
+    RootPanel.get("queryRatingButtonContainer").add(queryRatingButton);
+    RootPanel.get("clearRatingButtonContainer").add(clearRatingButton);
+    RootPanel.get("clearUserButtonContainer").add(clearUserButton);
     RootPanel.get("errorLabelContainer").add(errorLabel);
 
     // Focus the cursor on the email field when the app loads
@@ -87,46 +105,49 @@ public class Coacheller_AppEngine implements EntryPoint {
     closeButton.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         dialogBox.hide();
-        sendButton.setEnabled(true);
-        sendButton.setFocus(true);
+        querySetButton.setEnabled(true);
+        querySetButton.setFocus(true);
+        queryRatingButton.setEnabled(true);
+        populateButton.setEnabled(true);
+        addRatingButton.setEnabled(true);
+        clearRatingButton.setEnabled(true);
+        clearUserButton.setEnabled(true);
       }
     });
 
     // Create a handler for the sendButton and emailField
-    class GreetHandler implements ClickHandler, KeyUpHandler {
+    class PopulateHandler implements ClickHandler, KeyUpHandler {
       /**
        * Fired when the user clicks on the sendButton.
        */
       public void onClick(ClickEvent event) {
-        sendNameToServer();
+        if (event.getSource() == populateButton) {
+          populateDatabase();
+        } else if (event.getSource() == addRatingButton) {
+          addRating();
+        }
       }
 
       /**
        * Fired when the user types in the nameField.
        */
       public void onKeyUp(KeyUpEvent event) {
-        if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-          sendNameToServer();
-        }
+        // if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+        // populateDatabase();
+        // }
       }
 
       /**
        * Send the name from the nameField to the server and wait for a response.
        */
-      private void sendNameToServer() {
+      private void populateDatabase() {
         // First, we validate the input.
         errorLabel.setText("");
-        String textToServer = emailField.getText();
-        if (!FieldVerifier.isValidName(textToServer)) {
-          errorLabel.setText("Please enter at least four characters");
-          return;
-        }
 
         // Then, we send the input to the server.
-        sendButton.setEnabled(false);
-        textToServerLabel.setText(textToServer);
+        populateButton.setEnabled(false);
         serverResponseLabel.setText("");
-        greetingService.greetServer(textToServer, new AsyncCallback<String>() {
+        greetingService.loadSetData(new AsyncCallback<String>() {
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             dialogBox.setText("Remote Procedure Call - Failure");
@@ -145,24 +166,64 @@ public class Coacheller_AppEngine implements EntryPoint {
           }
         });
       }
+
+      /**
+       * Send the name from the nameField to the server and wait for a response.
+       */
+      private void addRating() {
+        // First, we validate the input.
+        errorLabel.setText("");
+        String email = emailField.getText();
+        String artist = artistField.getText();
+        String weekend = weekendField.getText();
+        String score = scoreField.getText();
+        if (!FieldVerifier.isValidEmail(email)) {
+          errorLabel.setText("Please enter valid email address");
+          return;
+        }
+
+        // Then, we send the input to the server.
+        addRatingButton.setEnabled(false);
+        serverResponseLabel.setText("");
+        greetingService.addRatingBySetArtist(email, artist, weekend, score,
+            new AsyncCallback<String>() {
+              public void onFailure(Throwable caught) {
+                // Show the RPC error message to the user
+                dialogBox.setText("Remote Procedure Call - Failure");
+                serverResponseLabel.addStyleName("serverResponseLabelError");
+                serverResponseLabel.setHTML(SERVER_ERROR);
+                dialogBox.center();
+                closeButton.setFocus(true);
+              }
+
+              public void onSuccess(String result) {
+                dialogBox.setText("Remote Procedure Call");
+                serverResponseLabel.removeStyleName("serverResponseLabelError");
+                serverResponseLabel.setHTML(result);
+                dialogBox.center();
+                closeButton.setFocus(true);
+              }
+            });
+      }
     }
 
     // Create a handler for the sendButton and emailField
-    class SendHandler implements ClickHandler, KeyUpHandler {
+    class QueryHandler implements ClickHandler, KeyUpHandler {
       /**
        * Fired when the user clicks on the sendButton.
        */
       public void onClick(ClickEvent event) {
-        getSetsFromServer();
+        if (event.getSource() == querySetButton) {
+          getSetsFromServer();
+        } else if (event.getSource() == queryRatingButton) {
+          getRatingsFromServer();
+        }
       }
 
       /**
        * Fired when the user types in the nameField.
        */
       public void onKeyUp(KeyUpEvent event) {
-        if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-          getSetsFromServer();
-        }
       }
 
       /**
@@ -182,13 +243,15 @@ public class Coacheller_AppEngine implements EntryPoint {
           errorLabel.setText("Please enter valid year");
           return;
         }
-        if (!FieldVerifier.isValidDay(day)) {
-          errorLabel.setText("Please enter valid day");
-          return;
+        if (day != null && !day.isEmpty()) {
+          if (!FieldVerifier.isValidDay(day)) {
+            errorLabel.setText("Please enter valid day");
+            return;
+          }
         }
 
         // Then, we send the input to the server.
-        sendButton.setEnabled(false);
+        querySetButton.setEnabled(false);
         textToServerLabel.setText(email);
         serverResponseLabel.setText("");
         greetingService.getSets(email, year, day, new AsyncCallback<String>() {
@@ -204,6 +267,8 @@ public class Coacheller_AppEngine implements EntryPoint {
           public void onSuccess(String result) {
             dialogBox.setText("Remote Procedure Call");
             serverResponseLabel.removeStyleName("serverResponseLabelError");
+            // String sets =
+            // JSONUtils.convertJSONArrayStringToSetString(result);
             serverResponseLabel.setHTML(result);
             dialogBox.center();
             closeButton.setFocus(true);
@@ -211,13 +276,140 @@ public class Coacheller_AppEngine implements EntryPoint {
         });
       }
 
+      /**
+       * Send the name from the nameField to the server and wait for a response.
+       */
+      private void getRatingsFromServer() {
+        // First, we validate the input.
+        errorLabel.setText("");
+        String email = emailField.getText();
+        String artist = artistField.getText();
+        if (!FieldVerifier.isValidEmail(email)) {
+          errorLabel.setText("Please enter valid email address");
+          return;
+        }
+
+        // Then, we send the input to the server.
+        queryRatingButton.setEnabled(false);
+        textToServerLabel.setText(email);
+        serverResponseLabel.setText("");
+        greetingService.getRatingsBySetArtist(email, artist, new AsyncCallback<String>() {
+          public void onFailure(Throwable caught) {
+            // Show the RPC error message to the user
+            dialogBox.setText("Remote Procedure Call - Failure");
+            serverResponseLabel.addStyleName("serverResponseLabelError");
+            serverResponseLabel.setHTML(SERVER_ERROR);
+            dialogBox.center();
+            closeButton.setFocus(true);
+          }
+
+          public void onSuccess(String result) {
+            dialogBox.setText("Remote Procedure Call");
+            serverResponseLabel.removeStyleName("serverResponseLabelError");
+            // String sets =
+            // JSONUtils.convertJSONArrayStringToSetString(result);
+            serverResponseLabel.setHTML(result);
+            dialogBox.center();
+            closeButton.setFocus(true);
+          }
+        });
+      }
+    }
+
+    // Create a handler for the sendButton and emailField
+    class ClearHandler implements ClickHandler, KeyUpHandler {
+      /**
+       * Fired when the user clicks on the sendButton.
+       */
+      public void onClick(ClickEvent event) {
+        if (event.getSource() == clearRatingButton) {
+          clearRatingsFromServer();
+        } else if (event.getSource() == clearUserButton) {
+          clearUsersFromServer();
+        }
+      }
+
+      /**
+       * Fired when the user types in the nameField.
+       */
+      public void onKeyUp(KeyUpEvent event) {
+      }
+
+      /**
+       * Send the name from the nameField to the server and wait for a response.
+       */
+      private void clearRatingsFromServer() {
+        // First, we validate the input.
+        errorLabel.setText("");
+
+        // Then, we send the input to the server.
+        clearRatingButton.setEnabled(false);
+        serverResponseLabel.setText("");
+        greetingService.deleteAllRatings(new AsyncCallback<String>() {
+          public void onFailure(Throwable caught) {
+            // Show the RPC error message to the user
+            dialogBox.setText("Remote Procedure Call - Failure");
+            serverResponseLabel.addStyleName("serverResponseLabelError");
+            serverResponseLabel.setHTML(SERVER_ERROR);
+            dialogBox.center();
+            closeButton.setFocus(true);
+          }
+
+          public void onSuccess(String result) {
+            dialogBox.setText("Remote Procedure Call");
+            serverResponseLabel.removeStyleName("serverResponseLabelError");
+            // String sets =
+            // JSONUtils.convertJSONArrayStringToSetString(result);
+            serverResponseLabel.setHTML(result);
+            dialogBox.center();
+            closeButton.setFocus(true);
+          }
+        });
+      }
+
+      /**
+       * Send the name from the nameField to the server and wait for a response.
+       */
+      private void clearUsersFromServer() {
+        // First, we validate the input.
+        errorLabel.setText("");
+
+        // Then, we send the input to the server.
+        clearUserButton.setEnabled(false);
+        serverResponseLabel.setText("");
+        greetingService.deleteAllUsers(new AsyncCallback<String>() {
+          public void onFailure(Throwable caught) {
+            // Show the RPC error message to the user
+            dialogBox.setText("Remote Procedure Call - Failure");
+            serverResponseLabel.addStyleName("serverResponseLabelError");
+            serverResponseLabel.setHTML(SERVER_ERROR);
+            dialogBox.center();
+            closeButton.setFocus(true);
+          }
+
+          public void onSuccess(String result) {
+            dialogBox.setText("Remote Procedure Call");
+            serverResponseLabel.removeStyleName("serverResponseLabelError");
+            // String sets =
+            // JSONUtils.convertJSONArrayStringToSetString(result);
+            serverResponseLabel.setHTML(result);
+            dialogBox.center();
+            closeButton.setFocus(true);
+          }
+        });
+      }
     }
 
     // Add a handler to send the name to the server
-    GreetHandler greetHandler = new GreetHandler();
-    greetButton.addClickHandler(greetHandler);
-    SendHandler sendHandler = new SendHandler();
-    sendButton.addClickHandler(sendHandler);
-    emailField.addKeyUpHandler(greetHandler);
+    PopulateHandler populateHandler = new PopulateHandler();
+    populateButton.addClickHandler(populateHandler);
+    addRatingButton.addClickHandler(populateHandler);
+    QueryHandler queryHandler = new QueryHandler();
+    querySetButton.addClickHandler(queryHandler);
+    queryRatingButton.addClickHandler(queryHandler);
+    ClearHandler clearHandler = new ClearHandler();
+    clearRatingButton.addClickHandler(clearHandler);
+    clearUserButton.addClickHandler(clearHandler);
+    // emailField.addKeyUpHandler(populateHandler);
   }
 }

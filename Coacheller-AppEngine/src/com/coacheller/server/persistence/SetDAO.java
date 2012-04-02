@@ -38,6 +38,19 @@ public class SetDAO {
     return set;
   }
 
+  public Key<Set> findSetKeyById(Long id) {
+    if (id == null) {
+      return null;
+    }
+
+    Iterable<Key<Set>> q = dao.getObjectify().query(Set.class).filter("id", id).fetchKeys();
+    if (q.iterator().hasNext()) {
+      return q.iterator().next();
+    } else {
+      return null;
+    }
+  }
+
   public Set findSetByKey(Key<Set> setKey) {
     if (setKey == null) {
       return null;
@@ -45,6 +58,40 @@ public class SetDAO {
 
     Set set = dao.getObjectify().get(setKey);
     return set;
+  }
+
+  public Set findSetByArtistAndYear(String artist, Integer year) {
+    Query<Set> q;
+    if (year != null) {
+      q = dao.getObjectify().query(Set.class).filter("artist", artist).filter("year", year);
+    } else {
+      q = dao.getObjectify().query(Set.class).filter("artist", artist);
+    }
+
+    if (q.iterator().hasNext()) {
+      return q.iterator().next();
+    } else {
+      return null;
+    }
+  }
+
+  public Key<Set> findSetKeyByArtistAndYear(String artist, Integer year) {
+    if (artist == null) {
+      return null;
+    }
+
+    Iterable<Key<Set>> q;
+    if (year != null) {
+      q = dao.getObjectify().query(Set.class).filter("artistName", artist).filter("year", year)
+          .fetchKeys();
+    } else {
+      q = dao.getObjectify().query(Set.class).filter("artistName", artist).fetchKeys();
+    }
+    if (q.iterator().hasNext()) {
+      return q.iterator().next();
+    } else {
+      return null;
+    }
   }
 
   public List<Set> findAllSets() {
@@ -58,7 +105,8 @@ public class SetDAO {
   }
 
   public List<Set> findSetsByYearAndDay(Integer year, DayEnum day) {
-    Query<Set> q = dao.getObjectify().query(Set.class).filter("year", year).filter("day", day.getValue());
+    Query<Set> q = dao.getObjectify().query(Set.class).filter("year", year)
+        .filter("day", day.getValue());
     return q.list();
   }
 

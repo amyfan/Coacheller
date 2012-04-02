@@ -1,13 +1,16 @@
 package com.coacheller.server.logic;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.coacheller.server.domain.AppUser;
 import com.coacheller.server.domain.DayEnum;
 import com.coacheller.server.domain.Rating;
 import com.coacheller.server.domain.Set;
 import com.coacheller.server.persistence.RatingDAO;
 import com.coacheller.server.persistence.SetDAO;
+import com.googlecode.objectify.Key;
 
 /**
  * Contains logic related to all requests made by the app client
@@ -21,7 +24,6 @@ public class RatingManager {
 
   private RatingDAO ratingDao;
   private SetDAO setDao;
-
 
   // Private constructor prevents instantiation from other classes
   private RatingManager() {
@@ -42,6 +44,13 @@ public class RatingManager {
   }
 
   public Rating updateRating(Rating rating) {
+    UserAccountManager uam = UserAccountManager.getInstance();
+    if (rating.getRater() == null && rating.getRaterId() != null) {
+      rating.setRater(uam.getAppUserKeyById(rating.getRaterId()));
+    }
+    if (rating.getSet() == null && rating.getSetId() != null) {
+      rating.setSet(setDao.findSetKeyById(rating.getSetId()));
+    }
     return ratingDao.updateRating(rating);
   }
 
@@ -56,7 +65,30 @@ public class RatingManager {
   }
 
   public List<Rating> findRatingsBySetId(Long setId) {
-    List<Rating> ratings = ratingDao.findRatingsBySetId(setId);
+    Key<Set> setKey = setDao.findSetKeyById(setId);
+    List<Rating> ratings = ratingDao.findRatingsBySetKey(setKey);
+    return ratings;
+  }
+
+  public List<Rating> findRatingsBySetArtist(String setArtist) {
+    // TODO: figure out whether to keep this method & query year properly
+    Key<Set> setKey = findSetKeyByArtistAndYear(setArtist, null);
+    List<Rating> ratings = new ArrayList<Rating>();
+    if (setKey != null) {
+      ratings = ratingDao.findRatingsBySetKey(setKey);
+    }
+    return ratings;
+  }
+
+  public List<Rating> findRatingsBySetArtistAndUser(String setArtist, String email) {
+    // TODO: figure out whether to keep this method & query year properly
+    Key<Set> setKey = findSetKeyByArtistAndYear(setArtist, null);
+    UserAccountManager uam = UserAccountManager.getInstance();
+    Key<AppUser> userKey = uam.getAppUserKeyByEmail(email);
+    List<Rating> ratings = new ArrayList<Rating>();
+    if (setKey != null) {
+      ratings = ratingDao.findRatingsBySetKeyAndUserKey(setKey, userKey);
+    }
     return ratings;
   }
 
@@ -79,6 +111,16 @@ public class RatingManager {
 
   public Set findSet(Long id) {
     Set set = setDao.findSet(id);
+    return set;
+  }
+
+  public Key<Set> findSetKeyByArtistAndYear(String artist, Integer year) {
+    Key<Set> set = setDao.findSetKeyByArtistAndYear(artist, year);
+    return set;
+  }
+
+  public Set findSetByArtistAndYear(String artist, Integer year) {
+    Set set = setDao.findSetByArtistAndYear(artist, year);
     return set;
   }
 
