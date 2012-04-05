@@ -61,6 +61,8 @@ local.properties
 .classpath
 .project
 .factorypath
+project.properties
+
 
 ############################
 # Xcode #
