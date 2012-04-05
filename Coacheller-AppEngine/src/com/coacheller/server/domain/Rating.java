@@ -1,5 +1,7 @@
 package com.coacheller.server.domain;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +18,8 @@ public class Rating {
   private Long id; // internal PK
   private Integer score;
   private Integer weekend;
+  private Date dateCreated;
+  private Date dateModified;
   private Key<Set> set;
   private Key<AppUser> rater;
   @Transient
@@ -48,6 +52,22 @@ public class Rating {
 
   public void setWeekend(Integer weekend) {
     this.weekend = weekend;
+  }
+
+  public Date getDateCreated() {
+    return dateCreated;
+  }
+
+  public void setDateCreated(Date dateCreated) {
+    this.dateCreated = dateCreated;
+  }
+
+  public Date getDateModified() {
+    return dateModified;
+  }
+
+  public void setDateModified(Date dateModified) {
+    this.dateModified = dateModified;
   }
 
   public Key<Set> getSet() {

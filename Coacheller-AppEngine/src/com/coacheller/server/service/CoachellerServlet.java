@@ -18,13 +18,16 @@ import com.coacheller.server.domain.Set;
 import com.coacheller.server.logic.JSONUtils;
 import com.coacheller.server.logic.RatingManager;
 import com.coacheller.server.logic.SetDataLoader;
+import com.coacheller.shared.FieldVerifier;
+
 
 /**
- * This is for talking to Android
- * 
- * @author Zero Hour
- * 
+ * HTTP Servlet, intended for Android/etc. device use.
+ *
+ * @author Amy
+ *
  */
+
 @SuppressWarnings("serial")
 public class CoachellerServlet extends HttpServlet {
 
@@ -33,32 +36,35 @@ public class CoachellerServlet extends HttpServlet {
     resp.setContentType("text/plain");
 
     String action = checkNull(req.getParameter("action"));
-    String userEmail = checkNull(req.getParameter("email"));
+    String email = checkNull(req.getParameter("email"));
     String day = checkNull(req.getParameter("day"));
     String yearString = checkNull(req.getParameter("year"));
     String weekendString = checkNull(req.getParameter("weekend"));
 
-    try {
-      RatingManager ratingMgr = RatingManager.getInstance();
-
+    if (!FieldVerifier.isValidEmail(email)) {
+      resp.getWriter().println(FieldVerifier.EMAIL_ERROR);
+    } else if (!FieldVerifier.isValidYear(yearString)) {
+      resp.getWriter().println(FieldVerifier.YEAR_ERROR);
+    } else if (!FieldVerifier.isValidDay(day)) {
+      resp.getWriter().println(FieldVerifier.DAY_ERROR);
+    } else {
       List<Set> sets = null;
 
       if (yearString != null && !yearString.isEmpty()) {
         Integer year = Integer.valueOf(yearString);
         if (day != null && !day.isEmpty()) {
-          sets = ratingMgr.findSetsByYearAndDay(year, DayEnum.fromValue(day));
+          sets = RatingManager.getInstance().findSetsByYearAndDay(year, DayEnum.fromValue(day));
         } else {
-          sets = ratingMgr.findSetsByYear(year);
+          sets = RatingManager.getInstance().findSetsByYear(year);
         }
       }
 
       JSONArray jsonArray = JSONUtils.convertSetsToJSONArray(sets);
       if (jsonArray != null) {
         resp.getWriter().println(jsonArray.toString());
+      } else {
+        resp.getWriter().println("no data hrm");
       }
-    } catch (Exception e) {
-      e.printStackTrace();
-      resp.getWriter().println("ERROR processing request");
     }
   }
 
@@ -67,22 +73,9 @@ public class CoachellerServlet extends HttpServlet {
     String action = checkNull(req.getParameter("action"));
 
     if (action.compareToIgnoreCase("load") == 0) {
-      String serverName = req.getServerName();
-      String url;
-      // TODO: move all this to res file
-      if (serverName.compareToIgnoreCase("127.0.0.1") == 0
-          || serverName.compareToIgnoreCase("localhost") == 0) {
-        url = String.format("http://%s:8888/resources/sets_2012.txt", serverName);
-      } else {
-        url = "http://ratethisfest.appspot.com/resources/sets_2012.txt";
-      }
-      loadFile(url);
-    }
-
-  }
 
   /**
-   * 
+   *
    * @param url
    */
   private void loadFile(String url) {
@@ -98,6 +91,7 @@ public class CoachellerServlet extends HttpServlet {
     } catch (Exception e) {
     } finally {
     }
+
   }
 
   private String checkNull(String s) {

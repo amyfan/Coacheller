@@ -10,12 +10,12 @@ public interface CoachellerServiceAsync {
 
   void loadSetData(AsyncCallback<String> callback) throws IllegalArgumentException;
 
-  void calculateSetRatingAverages(AsyncCallback<String> callback) throws IllegalArgumentException;
+  void recalculateSetRatingAverages(AsyncCallback<String> callback) throws IllegalArgumentException;
 
   void getSets(String email, String yearString, String day, AsyncCallback<String> callback)
       throws IllegalArgumentException;
 
-  void addRatingBySetArtist(String email, String setArtist, String weekend, String score,
+  void addRatingBySetArtist(String email, String setArtist, String year, String weekend, String score,
       AsyncCallback<String> callback) throws IllegalArgumentException;
 
   void getRatingsBySetArtist(String email, String setArtist, AsyncCallback<String> callback)

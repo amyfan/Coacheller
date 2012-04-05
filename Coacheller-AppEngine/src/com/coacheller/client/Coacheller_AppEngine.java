@@ -30,7 +30,8 @@ public class Coacheller_AppEngine implements EntryPoint {
   private static final String JSON_ERROR = "An error occurred while processing the JSON";
 
   /**
-   * Create a remote service proxy to talk to the server-side Coacheller service.
+   * Create a remote service proxy to talk to the server-side Coacheller
+   * service.
    */
   private final CoachellerServiceAsync coachellerService = GWT.create(CoachellerService.class);
 
@@ -39,7 +40,7 @@ public class Coacheller_AppEngine implements EntryPoint {
    */
   public void onModuleLoad() {
     final Button populateButton = new Button("Populate");
-    final Button calculateButton = new Button("Calculate Score Averages");
+    final Button recalculateButton = new Button("Recalculate Score Averages");
     final Button querySetButton = new Button("Query Sets");
     final Button addRatingButton = new Button("Add Rating");
     final Button queryRatingButton = new Button("Query Ratings");
@@ -72,7 +73,7 @@ public class Coacheller_AppEngine implements EntryPoint {
     RootPanel.get("weekendFieldContainer").add(weekendField);
     RootPanel.get("scoreFieldContainer").add(scoreField);
     RootPanel.get("populateButtonContainer").add(populateButton);
-    RootPanel.get("calculateButtonContainer").add(calculateButton);
+    RootPanel.get("recalculateButtonContainer").add(recalculateButton);
     RootPanel.get("querySetButtonContainer").add(querySetButton);
     RootPanel.get("addRatingButtonContainer").add(addRatingButton);
     RootPanel.get("queryRatingButtonContainer").add(queryRatingButton);
@@ -111,7 +112,7 @@ public class Coacheller_AppEngine implements EntryPoint {
         querySetButton.setFocus(true);
         queryRatingButton.setEnabled(true);
         populateButton.setEnabled(true);
-        calculateButton.setEnabled(true);
+        recalculateButton.setEnabled(true);
         addRatingButton.setEnabled(true);
         clearRatingButton.setEnabled(true);
         clearUserButton.setEnabled(true);
@@ -126,7 +127,7 @@ public class Coacheller_AppEngine implements EntryPoint {
       public void onClick(ClickEvent event) {
         if (event.getSource() == populateButton) {
           populateDatabase();
-        } else if (event.getSource() == calculateButton) {
+        } else if (event.getSource() == recalculateButton) {
           calculateScoreAverages();
         } else if (event.getSource() == addRatingButton) {
           addRating();
@@ -177,9 +178,9 @@ public class Coacheller_AppEngine implements EntryPoint {
         errorLabel.setText("");
 
         // Then, we send the input to the server.
-        calculateButton.setEnabled(false);
+        recalculateButton.setEnabled(false);
         serverResponseLabel.setText("");
-        coachellerService.calculateSetRatingAverages(new AsyncCallback<String>() {
+        coachellerService.recalculateSetRatingAverages(new AsyncCallback<String>() {
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             dialogBox.setText("Remote Procedure Call - Failure");
@@ -207,17 +208,30 @@ public class Coacheller_AppEngine implements EntryPoint {
         errorLabel.setText("");
         String email = emailField.getText();
         String artist = artistField.getText();
+        String year = yearField.getText();
         String weekend = weekendField.getText();
         String score = scoreField.getText();
         if (!FieldVerifier.isValidEmail(email)) {
-          errorLabel.setText("Please enter valid email address");
+          errorLabel.setText(FieldVerifier.EMAIL_ERROR);
+          return;
+        }
+        if (!FieldVerifier.isValidYear(year)) {
+          errorLabel.setText(FieldVerifier.YEAR_ERROR);
+          return;
+        }
+        if (!FieldVerifier.isValidWeekend(weekend)) {
+          errorLabel.setText(FieldVerifier.WEEKEND_ERROR);
+          return;
+        }
+        if (!FieldVerifier.isValidScore(score)) {
+          errorLabel.setText(FieldVerifier.SCORE_ERROR);
           return;
         }
 
         // Then, we send the input to the server.
         addRatingButton.setEnabled(false);
         serverResponseLabel.setText("");
-        coachellerService.addRatingBySetArtist(email, artist, weekend, score,
+        coachellerService.addRatingBySetArtist(email, artist, year, weekend, score,
             new AsyncCallback<String>() {
               public void onFailure(Throwable caught) {
                 // Show the RPC error message to the user
@@ -268,16 +282,16 @@ public class Coacheller_AppEngine implements EntryPoint {
         String year = yearField.getText();
         String day = dayField.getText();
         if (!FieldVerifier.isValidEmail(email)) {
-          errorLabel.setText("Please enter valid email address");
+          errorLabel.setText(FieldVerifier.EMAIL_ERROR);
           return;
         }
         if (!FieldVerifier.isValidYear(year)) {
-          errorLabel.setText("Please enter valid year");
+          errorLabel.setText(FieldVerifier.YEAR_ERROR);
           return;
         }
         if (day != null && !day.isEmpty()) {
           if (!FieldVerifier.isValidDay(day)) {
-            errorLabel.setText("Please enter valid day");
+            errorLabel.setText(FieldVerifier.DAY_ERROR);
             return;
           }
         }
@@ -317,7 +331,7 @@ public class Coacheller_AppEngine implements EntryPoint {
         String email = emailField.getText();
         String artist = artistField.getText();
         if (!FieldVerifier.isValidEmail(email)) {
-          errorLabel.setText("Please enter valid email address");
+          errorLabel.setText(FieldVerifier.EMAIL_ERROR);
           return;
         }
 
@@ -435,7 +449,7 @@ public class Coacheller_AppEngine implements EntryPoint {
     // Add a handler to send the name to the server
     PopulateHandler populateHandler = new PopulateHandler();
     populateButton.addClickHandler(populateHandler);
-    calculateButton.addClickHandler(populateHandler);
+    recalculateButton.addClickHandler(populateHandler);
     addRatingButton.addClickHandler(populateHandler);
     QueryHandler queryHandler = new QueryHandler();
     querySetButton.addClickHandler(queryHandler);

@@ -2,6 +2,7 @@ package com.coacheller.server.logic;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import com.coacheller.server.domain.Rating;
@@ -50,6 +51,7 @@ public class SetDataLoader {
           set.setTime(Integer.valueOf(fields[TIME_INDEX]));
           set.setArtistName(fields[ARTIST_NAME]);
 
+          set.setDateCreated(new Date());
           RatingManager.getInstance().updateSet(set);
 
           line = setFile.readLine();
@@ -63,7 +65,20 @@ public class SetDataLoader {
     }
   }
 
-  public void calculateSetRatingAverages() {
+  public void clearSetRatingAverages() {
+    List<Set> sets = RatingManager.getInstance().findAllSets();
+    for (Set set : sets) {
+      set.setNumRatingsOne(0);
+      set.setScoreSumOne(0);
+      set.setAvgScoreOne(0.0);
+      set.setNumRatingsTwo(0);
+      set.setScoreSumTwo(0);
+      set.setAvgScoreTwo(0.0);
+      RatingManager.getInstance().updateSet(set);
+    }
+  }
+
+  public void recalculateSetRatingAverages() {
     List<Set> sets = RatingManager.getInstance().findAllSets();
     for (Set set : sets) {
       List<Rating> ratings = RatingManager.getInstance().findRatingsBySetId(set.getId());
@@ -83,13 +98,17 @@ public class SetDataLoader {
       if (wkndOneCount > 0) {
         double average = wkndOneTotal;
         average = average / wkndOneCount;
-        set.setWkndOneAvgScore(average);
+        set.setNumRatingsOne(wkndOneCount);
+        set.setScoreSumOne(wkndOneTotal);
+        set.setAvgScoreOne(average);
         RatingManager.getInstance().updateSet(set);
       }
       if (wkndTwoCount > 0) {
         double average = wkndTwoTotal;
         average = average / wkndTwoCount;
-        set.setWkndTwoAvgScore(average);
+        set.setNumRatingsTwo(wkndTwoCount);
+        set.setScoreSumTwo(wkndTwoTotal);
+        set.setAvgScoreTwo(average);
         RatingManager.getInstance().updateSet(set);
       }
     }

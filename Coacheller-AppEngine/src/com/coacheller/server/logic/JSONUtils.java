@@ -32,8 +32,11 @@ public class JSONUtils {
       try {
         ret.put("id", set.getId());
         ret.put("artist", set.getArtistName());
-        ret.put("day", set.getDay());
+        // ret.put("year", set.getYear());
+        // ret.put("day", set.getDay());
         ret.put("time", set.getTime());
+        ret.put("avg_score_one", set.getAvgScoreOne());
+        ret.put("avg_score_two", set.getAvgScoreTwo());
         jsonObjs.put(ret);
       } catch (Exception e) {
         e.printStackTrace();
@@ -60,11 +63,20 @@ public class JSONUtils {
         if (obj.get("artist") != null) {
           set.setArtistName((String) obj.get("artist"));
         }
+        if (obj.get("year") != null) {
+          set.setYear((Integer) obj.get("year"));
+        }
         if (obj.get("day") != null) {
           set.setDay((String) obj.get("day"));
         }
         if (obj.get("time") != null) {
           set.setTime((Integer) obj.get("time"));
+        }
+        if (obj.get("avg_score_one") != null) {
+          set.setAvgScoreOne((Double) obj.get("avg_score_one"));
+        }
+        if (obj.get("avg_score_two") != null) {
+          set.setAvgScoreTwo((Double) obj.get("avg_score_two"));
         }
 
         sets.add(set);
@@ -77,6 +89,7 @@ public class JSONUtils {
     return sets;
   }
 
+  @Deprecated
   public static final String convertJSONArrayStringToSetString(String arrayString) {
     StringBuilder setString = new StringBuilder();
     try {
@@ -96,7 +109,6 @@ public class JSONUtils {
         setString.append("\n");
       }
     } catch (JSONException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     return setString.toString();

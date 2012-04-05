@@ -1,5 +1,7 @@
 package com.coacheller.server.domain;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,10 +17,14 @@ public class Set {
   private Integer year;
   private String day;
   private Integer time;
-  private Integer scoreSum; // stored for optimization purposes
-  private Integer numRatings; // stored for optimization purposes
-  private Double wkndOneAvgScore; // updated asynchronously for server quota purposes
-  private Double wkndTwoAvgScore; // updated asynchronously for server quota purposes
+  private Integer numRatingsOne; // stored for optimization purposes
+  private Integer numRatingsTwo; // stored for optimization purposes
+  private Integer scoreSumOne; // stored for optimization purposes
+  private Integer scoreSumTwo; // stored for optimization purposes
+  private Double avgScoreOne; // stored for optimization purposes
+  private Double avgScoreTwo; // stored for optimization purposes
+  private Date dateCreated;
+  private Date dateModified;
 
   public Set() {
   }
@@ -63,36 +69,68 @@ public class Set {
     this.time = time;
   }
 
-  public Integer getScoreSum() {
-    return scoreSum;
+  public Integer getNumRatingsOne() {
+    return numRatingsOne;
   }
 
-  public void setScoreSum(Integer scoreSum) {
-    this.scoreSum = scoreSum;
+  public void setNumRatingsOne(Integer numRatingsOne) {
+    this.numRatingsOne = numRatingsOne;
   }
 
-  public Integer getNumRatings() {
-    return numRatings;
+  public Integer getNumRatingsTwo() {
+    return numRatingsTwo;
   }
 
-  public void setNumRatings(Integer numRatings) {
-    this.numRatings = numRatings;
+  public void setNumRatingsTwo(Integer numRatingsTwo) {
+    this.numRatingsTwo = numRatingsTwo;
   }
 
-  public Double getWkndOneAvgScore() {
-    return wkndOneAvgScore;
+  public Integer getScoreSumOne() {
+    return scoreSumOne;
   }
 
-  public void setWkndOneAvgScore(Double wkndOneAvgScore) {
-    this.wkndOneAvgScore = wkndOneAvgScore;
+  public void setScoreSumOne(Integer scoreSumOne) {
+    this.scoreSumOne = scoreSumOne;
   }
 
-  public Double getWkndTwoAvgScore() {
-    return wkndTwoAvgScore;
+  public Integer getScoreSumTwo() {
+    return scoreSumTwo;
   }
 
-  public void setWkndTwoAvgScore(Double wkndTwoAvgScore) {
-    this.wkndTwoAvgScore = wkndTwoAvgScore;
+  public void setScoreSumTwo(Integer scoreSumTwo) {
+    this.scoreSumTwo = scoreSumTwo;
+  }
+
+  public Double getAvgScoreOne() {
+    return avgScoreOne;
+  }
+
+  public void setAvgScoreOne(Double avgScoreOne) {
+    this.avgScoreOne = avgScoreOne;
+  }
+
+  public Double getAvgScoreTwo() {
+    return avgScoreTwo;
+  }
+
+  public void setAvgScoreTwo(Double avgScoreTwo) {
+    this.avgScoreTwo = avgScoreTwo;
+  }
+
+  public Date getDateCreated() {
+    return dateCreated;
+  }
+
+  public void setDateCreated(Date dateCreated) {
+    this.dateCreated = dateCreated;
+  }
+
+  public Date getDateModified() {
+    return dateModified;
+  }
+
+  public void setDateModified(Date dateModified) {
+    this.dateModified = dateModified;
   }
 
 }

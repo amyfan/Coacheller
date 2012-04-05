@@ -9,20 +9,19 @@ import java.util.List;
 import org.json.JSONArray;
 
 import com.coacheller.client.CoachellerService;
-import com.coacheller.server.domain.AppUser;
-import com.coacheller.server.domain.DayEnum;
 import com.coacheller.server.domain.Rating;
 import com.coacheller.server.domain.Set;
 import com.coacheller.server.logic.JSONUtils;
 import com.coacheller.server.logic.RatingManager;
 import com.coacheller.server.logic.SetDataLoader;
 import com.coacheller.server.logic.UserAccountManager;
+import com.coacheller.shared.DayEnum;
 import com.coacheller.shared.FieldVerifier;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.googlecode.objectify.Key;
 
 /**
- * The server side implementation of the RPC service.
+ * The server side implementation of the RPC service. Currently used for GWT
+ * client.
  */
 @SuppressWarnings("serial")
 public class CoachellerServiceImpl extends RemoteServiceServlet implements CoachellerService {
@@ -47,24 +46,28 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
   }
 
   public String getSets(String email, String yearString, String day) {
-    // TODO: validate inputs properly
-    RatingManager ratingMgr = RatingManager.getInstance();
-
     String resp = null;
-    List<Set> sets = null;
 
-    if (yearString != null && !yearString.isEmpty()) {
+    if (!FieldVerifier.isValidEmail(email)) {
+      resp = FieldVerifier.EMAIL_ERROR;
+    } else if (!FieldVerifier.isValidYear(yearString)) {
+      resp = FieldVerifier.YEAR_ERROR;
+    } else if (!FieldVerifier.isValidDay(day)) {
+      resp = FieldVerifier.DAY_ERROR;
+    } else {
+      List<Set> sets = null;
+
       Integer year = Integer.valueOf(yearString);
       if (day != null && !day.isEmpty()) {
-        sets = ratingMgr.findSetsByYearAndDay(year, DayEnum.fromValue(day));
+        sets = RatingManager.getInstance().findSetsByYearAndDay(year, DayEnum.fromValue(day));
       } else {
-        sets = ratingMgr.findSetsByYear(year);
+        sets = RatingManager.getInstance().findSetsByYear(year);
       }
-    }
 
-    JSONArray jsonArray = JSONUtils.convertSetsToJSONArray(sets);
-    if (jsonArray != null) {
-      resp = jsonArray.toString();
+      JSONArray jsonArray = JSONUtils.convertSetsToJSONArray(sets);
+      if (jsonArray != null) {
+        resp = jsonArray.toString();
+      }
     }
 
     if (resp == null) {
@@ -74,47 +77,22 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     return resp;
   }
 
-  public String addRatingBySetArtist(String email, String setArtist, String weekend, String score) {
-    // TODO: validate inputs properly
-    RatingManager ratingMgr = RatingManager.getInstance();
-    UserAccountManager uam = UserAccountManager.getInstance();
+  public String addRatingBySetArtist(String email, String setArtist, String year, String weekend,
+      String score) {
 
     String resp = null;
 
-    if (email != null && setArtist != null && score != null) {
-      Rating rating;
-      List<Rating> ratings = ratingMgr.findRatingsBySetArtistAndUser(setArtist, email,
-          Integer.valueOf(weekend));
-      if (ratings == null || ratings.size() == 0) {
-        rating = new Rating();
-        // TODO omit year later
-        Key<Set> setKey = ratingMgr.findSetKeyByArtistAndYear(setArtist, null);
-        if (setKey != null) {
-          rating.setSet(setKey);
-          rating.setSetId(setKey.getId());
-          rating.setScore(Integer.valueOf(score));
-          rating.setWeekend(Integer.valueOf(weekend));
-
-          Key<AppUser> userKey = uam.getAppUserKeyByEmail(email);
-          if (userKey == null) {
-            AppUser user = uam.createAppUser(email);
-            rating.setRaterId(user.getId());
-          } else {
-            rating.setRater(userKey);
-            rating.setRaterId(userKey.getId());
-          }
-
-          ratingMgr.updateRating(rating);
-          resp = "rating added";
-        } else {
-          resp = "invalid artist name";
-        }
-      } else {
-        rating = ratings.get(0);
-        rating.setScore(Integer.valueOf(score));
-        ratingMgr.updateRating(rating);
-        resp = "rating updated";
-      }
+    if (!FieldVerifier.isValidEmail(email)) {
+      resp = FieldVerifier.EMAIL_ERROR;
+    } else if (!FieldVerifier.isValidYear(year)) {
+      resp = FieldVerifier.YEAR_ERROR;
+    } else if (!FieldVerifier.isValidWeekend(weekend)) {
+      resp = FieldVerifier.WEEKEND_ERROR;
+    } else if (!FieldVerifier.isValidScore(score)) {
+      resp = FieldVerifier.SCORE_ERROR;
+    } else if (setArtist != null) {
+      resp = RatingManager.getInstance().addRatingBySetArtist(email, setArtist,
+          Integer.valueOf(year), Integer.valueOf(weekend), Integer.valueOf(score));
     } else {
       resp = "null args";
     }
@@ -123,19 +101,22 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
   }
 
   public String getRatingsBySetArtist(String email, String setArtist) {
-    RatingManager ratingMgr = RatingManager.getInstance();
+    String resp = "null args";
 
-    String resp = "null data";
-    List<Rating> ratings = null;
+    if (!FieldVerifier.isValidEmail(email)) {
+      resp = FieldVerifier.EMAIL_ERROR;
+    } else {
+      List<Rating> ratings = null;
 
-    if (setArtist != null) {
-      ratings = ratingMgr.findRatingsBySetArtist(setArtist);
-    }
+      if (setArtist != null) {
+        ratings = RatingManager.getInstance().findRatingsBySetArtist(setArtist);
+      }
 
-    if (ratings != null) {
-      JSONArray jsonArray = JSONUtils.convertRatingsToJSONArray(ratings);
-      if (jsonArray != null) {
-        resp = jsonArray.toString();
+      if (ratings != null) {
+        JSONArray jsonArray = JSONUtils.convertRatingsToJSONArray(ratings);
+        if (jsonArray != null) {
+          resp = jsonArray.toString();
+        }
       }
     }
 
@@ -143,14 +124,13 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
   }
 
   public String getRatingsBySet(String email, String setIdString) {
-    RatingManager ratingMgr = RatingManager.getInstance();
-
     String resp = null;
+
     List<Rating> ratings = null;
 
     if (setIdString != null) {
       Long setId = Long.valueOf(setIdString);
-      ratings = ratingMgr.findRatingsBySetId(setId);
+      ratings = RatingManager.getInstance().findRatingsBySetId(setId);
     }
 
     JSONArray jsonArray = JSONUtils.convertRatingsToJSONArray(ratings);
@@ -164,6 +144,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
   public String deleteAllRatings() {
     String resp = "fail";
     RatingManager.getInstance().deleteAllRatings();
+    SetDataLoader.getInstance().clearSetRatingAverages();
     resp = "ratings deleted";
     return resp;
   }
@@ -178,16 +159,15 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
   public String loadSetData() {
     String success;
     String url;
-    // TODO: move all this to res file
-    // url = "http://http://127.0.0.1:8888/resources/sets_2012.txt";
+    // TODO: move this to res file
     url = "http://ratethisfest.appspot.com/resources/sets_2012.txt";
     success = loadFile(url);
 
     return success;
   }
 
-  public String calculateSetRatingAverages() {
-    SetDataLoader.getInstance().calculateSetRatingAverages();
+  public String recalculateSetRatingAverages() {
+    SetDataLoader.getInstance().recalculateSetRatingAverages();
     return "success i believe";
   }
 
