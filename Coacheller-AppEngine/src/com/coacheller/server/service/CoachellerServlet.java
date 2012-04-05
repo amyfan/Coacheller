@@ -13,11 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
 
-import com.coacheller.server.domain.DayEnum;
 import com.coacheller.server.domain.Set;
 import com.coacheller.server.logic.JSONUtils;
 import com.coacheller.server.logic.RatingManager;
 import com.coacheller.server.logic.SetDataLoader;
+import com.coacheller.shared.DayEnum;
+import com.coacheller.shared.FieldVerifier;
 
 @SuppressWarnings("serial")
 public class CoachellerServlet extends HttpServlet {
@@ -27,32 +28,35 @@ public class CoachellerServlet extends HttpServlet {
     resp.setContentType("text/plain");
 
     String action = checkNull(req.getParameter("action"));
-    String userEmail = checkNull(req.getParameter("email"));
+    String email = checkNull(req.getParameter("email"));
     String day = checkNull(req.getParameter("day"));
     String yearString = checkNull(req.getParameter("year"));
     String weekendString = checkNull(req.getParameter("weekend"));
 
-    try {
-      RatingManager ratingMgr = RatingManager.getInstance();
-
+    if (!FieldVerifier.isValidEmail(email)) {
+      resp.getWriter().println(FieldVerifier.EMAIL_ERROR);
+    } else if (!FieldVerifier.isValidYear(yearString)) {
+      resp.getWriter().println(FieldVerifier.YEAR_ERROR);
+    } else if (!FieldVerifier.isValidDay(day)) {
+      resp.getWriter().println(FieldVerifier.DAY_ERROR);
+    } else {
       List<Set> sets = null;
 
       if (yearString != null && !yearString.isEmpty()) {
         Integer year = Integer.valueOf(yearString);
         if (day != null && !day.isEmpty()) {
-          sets = ratingMgr.findSetsByYearAndDay(year, DayEnum.fromValue(day));
+          sets = RatingManager.getInstance().findSetsByYearAndDay(year, DayEnum.fromValue(day));
         } else {
-          sets = ratingMgr.findSetsByYear(year);
+          sets = RatingManager.getInstance().findSetsByYear(year);
         }
       }
 
       JSONArray jsonArray = JSONUtils.convertSetsToJSONArray(sets);
       if (jsonArray != null) {
         resp.getWriter().println(jsonArray.toString());
+      } else {
+        resp.getWriter().println("no data hrm");
       }
-    } catch (Exception e) {
-      e.printStackTrace();
-      resp.getWriter().println("ERROR processing request");
     }
   }
 

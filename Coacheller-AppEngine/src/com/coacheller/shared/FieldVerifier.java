@@ -21,6 +21,11 @@ package com.coacheller.shared;
  * </p>
  */
 public class FieldVerifier {
+  public static final String EMAIL_ERROR = "Please enter valid email address";
+  public static final String YEAR_ERROR = "Please enter valid year";
+  public static final String DAY_ERROR = "Please enter valid day";
+  public static final String WEEKEND_ERROR = "Please enter valid weekend number";
+  public static final String SCORE_ERROR = "Please enter valid score";
 
   /**
    * Verifies that the specified name is valid for our service.
@@ -66,9 +71,35 @@ public class FieldVerifier {
   }
 
   public static boolean isValidDay(String day) {
-    if ("Friday".equals(day) || "Saturday".equals(day) || "Sunday".equals(day)) {
+    if (DayEnum.FRIDAY.getValue().equals(day) || DayEnum.SATURDAY.getValue().equals(day)
+        || DayEnum.SUNDAY.getValue().equals(day)) {
       return true;
     }
     return false;
   }
+
+  public static boolean isValidWeekend(String weekend) {
+    if ("1".equals(weekend) || "2".equals(weekend)) {
+      return true;
+    }
+    return false;
+  }
+
+  public static boolean isValidScore(String score) {
+    if (score == null) {
+      return false;
+    } else {
+      try {
+        Integer scoreInt = Integer.parseInt(score);
+        if (scoreInt > 0 && scoreInt <= 5) {
+          return true;
+        } else {
+          return false;
+        }
+      } catch (Exception e) {
+        return false;
+      }
+    }
+  }
+
 }

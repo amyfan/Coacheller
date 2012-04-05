@@ -1,4 +1,4 @@
-package com.coacheller.server.domain;
+package com.coacheller.shared;
 
 import java.util.EnumSet;
 

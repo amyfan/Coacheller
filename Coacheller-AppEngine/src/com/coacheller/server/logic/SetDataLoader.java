@@ -63,7 +63,7 @@ public class SetDataLoader {
     }
   }
 
-  public void calculateSetRatingAverages() {
+  public void recalculateSetRatingAverages() {
     List<Set> sets = RatingManager.getInstance().findAllSets();
     for (Set set : sets) {
       List<Rating> ratings = RatingManager.getInstance().findRatingsBySetId(set.getId());
@@ -83,13 +83,17 @@ public class SetDataLoader {
       if (wkndOneCount > 0) {
         double average = wkndOneTotal;
         average = average / wkndOneCount;
-        set.setWkndOneAvgScore(average);
+        set.setNumRatingsOne(wkndOneCount);
+        set.setScoreSumOne(wkndOneTotal);
+        set.setAvgScoreOne(average);
         RatingManager.getInstance().updateSet(set);
       }
       if (wkndTwoCount > 0) {
         double average = wkndTwoTotal;
         average = average / wkndTwoCount;
-        set.setWkndTwoAvgScore(average);
+        set.setNumRatingsTwo(wkndTwoCount);
+        set.setScoreSumTwo(wkndTwoTotal);
+        set.setAvgScoreTwo(average);
         RatingManager.getInstance().updateSet(set);
       }
     }

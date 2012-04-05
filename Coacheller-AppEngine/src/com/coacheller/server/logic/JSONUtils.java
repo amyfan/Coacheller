@@ -30,10 +30,13 @@ public class JSONUtils {
     for (Set set : sets) {
       JSONObject ret = new JSONObject();
       try {
-        ret.put("id", set.getId());
+        // TODO: temporarily hiding to simplify gwt client display
+        // ret.put("id", set.getId());
         ret.put("artist", set.getArtistName());
-        ret.put("day", set.getDay());
-        ret.put("time", set.getTime());
+        // ret.put("day", set.getDay());
+        // ret.put("time", set.getTime());
+        ret.put("avg_score_one", set.getAvgScoreOne());
+        ret.put("avg_score_two", set.getAvgScoreTwo());
         jsonObjs.put(ret);
       } catch (Exception e) {
         e.printStackTrace();
@@ -65,6 +68,12 @@ public class JSONUtils {
         }
         if (obj.get("time") != null) {
           set.setTime((Integer) obj.get("time"));
+        }
+        if (obj.get("avg_score_one") != null) {
+          set.setAvgScoreOne((Double) obj.get("avg_score_one"));
+        }
+        if (obj.get("avg_score_two") != null) {
+          set.setAvgScoreTwo((Double) obj.get("avg_score_two"));
         }
 
         sets.add(set);

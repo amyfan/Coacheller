@@ -3,8 +3,8 @@ package com.coacheller.server.persistence;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.coacheller.server.domain.DayEnum;
 import com.coacheller.server.domain.Set;
+import com.coacheller.shared.DayEnum;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Query;
 

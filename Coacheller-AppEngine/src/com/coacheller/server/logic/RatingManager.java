@@ -5,11 +5,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.coacheller.server.domain.AppUser;
-import com.coacheller.server.domain.DayEnum;
 import com.coacheller.server.domain.Rating;
 import com.coacheller.server.domain.Set;
 import com.coacheller.server.persistence.RatingDAO;
 import com.coacheller.server.persistence.SetDAO;
+import com.coacheller.shared.DayEnum;
+import com.coacheller.shared.FieldVerifier;
 import com.googlecode.objectify.Key;
 
 /**
@@ -43,12 +44,114 @@ public class RatingManager {
     return SingletonHolder.instance;
   }
 
-  public Rating updateRating(Rating rating) {
+  public String addRatingBySetArtist(String email, String setArtist, Integer year, Integer weekend,
+      Integer score) {
+    String resp = null;
+
+    List<Rating> ratings = findRatingsBySetArtistAndUser(setArtist, email, weekend);
+    if (ratings == null || ratings.size() == 0) {
+      Key<Set> setKey = findSetKeyByArtistAndYear(setArtist, year);
+      if (setKey != null) {
+        addRating(setKey, email, weekend, score);
+        resp = "rating added";
+      } else {
+        resp = "invalid artist name";
+      }
+    } else {
+      updateRating(ratings.get(0), weekend, score);
+      resp = "rating updated";
+    }
+
+    return resp;
+  }
+
+  private Rating addRating(Key<Set> setKey, String email, Integer weekend, Integer score) {
+    Rating rating = new Rating();
+    rating.setSet(setKey);
+    rating.setSetId(setKey.getId());
+    rating.setScore(score);
+    rating.setWeekend(weekend);
+
+    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
+    if (userKey == null) {
+      AppUser user = UserAccountManager.getInstance().createAppUser(email);
+      rating.setRaterId(user.getId());
+    } else {
+      rating.setRater(userKey);
+      rating.setRaterId(userKey.getId());
+    }
+
+    // update set's avg score
+    Set set = setDao.findSet(rating.getSetId());
+    if (weekend == 1) {
+      Integer numRatings;
+      Integer sum;
+      if (set.getNumRatingsOne() == null) {
+        numRatings = 0;
+        sum = 0;
+      } else {
+        numRatings = set.getNumRatingsOne();
+        sum = set.getScoreSumOne();
+      }
+      numRatings++;
+      sum += score;
+      double average = sum;
+      average = average / numRatings;
+      set.setNumRatingsOne(numRatings);
+      set.setScoreSumOne(sum);
+      set.setAvgScoreOne(average);
+      updateSet(set);
+    } else {
+      Integer numRatings;
+      Integer sum;
+      if (set.getNumRatingsTwo() == null) {
+        numRatings = 0;
+        sum = 0;
+      } else {
+        numRatings = set.getNumRatingsTwo();
+        sum = set.getScoreSumTwo();
+      }
+      numRatings++;
+      sum += score;
+      double average = sum;
+      average = average / numRatings;
+      set.setNumRatingsTwo(numRatings);
+      set.setScoreSumTwo(sum);
+      set.setAvgScoreTwo(average);
+      updateSet(set);
+    }
+
+    return ratingDao.updateRating(rating);
+  }
+
+  private Rating updateRating(Rating rating, Integer weekend, Integer score) {
+    Integer difference = score - rating.getScore();
+    rating.setScore(score);
+
     UserAccountManager uam = UserAccountManager.getInstance();
     if (rating.getRater() == null && rating.getRaterId() != null) {
       rating.setRater(uam.getAppUserKeyById(rating.getRaterId()));
     }
-    if (rating.getSet() == null && rating.getSetId() != null) {
+    if (rating.getSetId() != null) {
+      // update set's avg score
+      Set set = setDao.findSet(rating.getSetId());
+      if (weekend == 1) {
+        Integer sum = set.getScoreSumOne();
+        sum += difference;
+        double average = sum;
+        average = average / set.getNumRatingsOne();
+        set.setScoreSumOne(sum);
+        set.setAvgScoreOne(average);
+        updateSet(set);
+      } else {
+        Integer sum = set.getScoreSumTwo();
+        sum += difference;
+        double average = sum;
+        average = average / set.getNumRatingsTwo();
+        set.setScoreSumTwo(sum);
+        set.setAvgScoreTwo(average);
+        updateSet(set);
+      }
       rating.setSet(setDao.findSetKeyById(rating.getSetId()));
     }
     return ratingDao.updateRating(rating);
@@ -80,7 +183,7 @@ public class RatingManager {
     return ratings;
   }
 
-  public List<Rating> findRatingsBySetArtistAndUser(String setArtist, String email, Integer weekend) {
+  private List<Rating> findRatingsBySetArtistAndUser(String setArtist, String email, Integer weekend) {
     // TODO: figure out whether to keep this method & query year properly
     Key<Set> setKey = findSetKeyByArtistAndYear(setArtist, null);
     UserAccountManager uam = UserAccountManager.getInstance();
@@ -114,7 +217,7 @@ public class RatingManager {
     return set;
   }
 
-  public Key<Set> findSetKeyByArtistAndYear(String artist, Integer year) {
+  private Key<Set> findSetKeyByArtistAndYear(String artist, Integer year) {
     Key<Set> set = setDao.findSetKeyByArtistAndYear(artist, year);
     return set;
   }
