@@ -30,11 +30,11 @@ public class JSONUtils {
     for (Set set : sets) {
       JSONObject ret = new JSONObject();
       try {
-        // TODO: temporarily hiding to simplify gwt client display
-        // ret.put("id", set.getId());
+        ret.put("id", set.getId());
         ret.put("artist", set.getArtistName());
+        // ret.put("year", set.getYear());
         // ret.put("day", set.getDay());
-        // ret.put("time", set.getTime());
+        ret.put("time", set.getTime());
         ret.put("avg_score_one", set.getAvgScoreOne());
         ret.put("avg_score_two", set.getAvgScoreTwo());
         jsonObjs.put(ret);
@@ -63,6 +63,9 @@ public class JSONUtils {
         if (obj.get("artist") != null) {
           set.setArtistName((String) obj.get("artist"));
         }
+        if (obj.get("year") != null) {
+          set.setYear((Integer) obj.get("year"));
+        }
         if (obj.get("day") != null) {
           set.setDay((String) obj.get("day"));
         }
@@ -86,6 +89,7 @@ public class JSONUtils {
     return sets;
   }
 
+  @Deprecated
   public static final String convertJSONArrayStringToSetString(String arrayString) {
     StringBuilder setString = new StringBuilder();
     try {
@@ -105,7 +109,6 @@ public class JSONUtils {
         setString.append("\n");
       }
     } catch (JSONException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     return setString.toString();

@@ -20,7 +20,8 @@ import com.coacheller.shared.FieldVerifier;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
- * The server side implementation of the RPC service.
+ * The server side implementation of the RPC service. Currently used for GWT
+ * client.
  */
 @SuppressWarnings("serial")
 public class CoachellerServiceImpl extends RemoteServiceServlet implements CoachellerService {
