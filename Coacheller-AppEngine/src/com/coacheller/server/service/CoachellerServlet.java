@@ -19,6 +19,12 @@ import com.coacheller.server.logic.JSONUtils;
 import com.coacheller.server.logic.RatingManager;
 import com.coacheller.server.logic.SetDataLoader;
 
+/**
+ * This is for talking to Android
+ * 
+ * @author Zero Hour
+ * 
+ */
 @SuppressWarnings("serial")
 public class CoachellerServlet extends HttpServlet {
 
@@ -75,6 +81,10 @@ public class CoachellerServlet extends HttpServlet {
 
   }
 
+  /**
+   * 
+   * @param url
+   */
   private void loadFile(String url) {
     try {
       URL inputData = new URL(url);
