@@ -83,7 +83,8 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
 
     if (email != null && setArtist != null && score != null) {
       Rating rating;
-      List<Rating> ratings = ratingMgr.findRatingsBySetArtistAndUser(setArtist, email);
+      List<Rating> ratings = ratingMgr.findRatingsBySetArtistAndUser(setArtist, email,
+          Integer.valueOf(weekend));
       if (ratings == null || ratings.size() == 0) {
         rating = new Rating();
         // TODO omit year later

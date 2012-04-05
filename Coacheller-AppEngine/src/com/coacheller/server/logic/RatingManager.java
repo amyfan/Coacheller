@@ -80,14 +80,14 @@ public class RatingManager {
     return ratings;
   }
 
-  public List<Rating> findRatingsBySetArtistAndUser(String setArtist, String email) {
+  public List<Rating> findRatingsBySetArtistAndUser(String setArtist, String email, Integer weekend) {
     // TODO: figure out whether to keep this method & query year properly
     Key<Set> setKey = findSetKeyByArtistAndYear(setArtist, null);
     UserAccountManager uam = UserAccountManager.getInstance();
     Key<AppUser> userKey = uam.getAppUserKeyByEmail(email);
     List<Rating> ratings = new ArrayList<Rating>();
     if (setKey != null) {
-      ratings = ratingDao.findRatingsBySetKeyAndUserKey(setKey, userKey);
+      ratings = ratingDao.findRatingsBySetKeyAndUserKey(setKey, userKey, weekend);
     }
     return ratings;
   }

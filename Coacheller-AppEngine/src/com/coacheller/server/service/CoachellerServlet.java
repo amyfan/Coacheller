@@ -30,18 +30,20 @@ public class CoachellerServlet extends HttpServlet {
     String userEmail = checkNull(req.getParameter("email"));
     String day = checkNull(req.getParameter("day"));
     String yearString = checkNull(req.getParameter("year"));
+    String weekendString = checkNull(req.getParameter("weekend"));
 
     try {
       RatingManager ratingMgr = RatingManager.getInstance();
 
       List<Set> sets = null;
 
-      if (!yearString.isEmpty()) {
+      if (yearString != null && !yearString.isEmpty()) {
         Integer year = Integer.valueOf(yearString);
-        if (!day.isEmpty()) {
-          sets = ratingMgr.findSetsByYearAndDay(year, DayEnum.valueOf(day));
+        if (day != null && !day.isEmpty()) {
+          sets = ratingMgr.findSetsByYearAndDay(year, DayEnum.fromValue(day));
+        } else {
+          sets = ratingMgr.findSetsByYear(year);
         }
-        sets = ratingMgr.findSetsByYear(year);
       }
 
       JSONArray jsonArray = JSONUtils.convertSetsToJSONArray(sets);

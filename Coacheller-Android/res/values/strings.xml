@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SDCrimeZone</string>
+    <string name="currLocation">Address</string>
+    <string name="defaultLocation">Current Location</string>
+    <string name="distance">Distance</string>
+    <string name="dateBackTo">Dating Back To</string>
+
+    <string-array name="distanceArray">
+        <item>1 mile</item>
+        <item>3 mile</item>
+    </string-array>
+    <string-array name="dateArray">
+        <item>2011</item>
+    </string-array>
+
+</resources>
