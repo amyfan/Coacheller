@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.json.JSONArray;
 
-import com.coacheller.client.GreetingService;
+import com.coacheller.client.CoachellerService;
 import com.coacheller.server.domain.AppUser;
 import com.coacheller.server.domain.DayEnum;
 import com.coacheller.server.domain.Rating;
@@ -25,7 +25,7 @@ import com.googlecode.objectify.Key;
  * The server side implementation of the RPC service.
  */
 @SuppressWarnings("serial")
-public class GreetingServiceImpl extends RemoteServiceServlet implements GreetingService {
+public class CoachellerServiceImpl extends RemoteServiceServlet implements CoachellerService {
 
   public String greetServer(String input) throws IllegalArgumentException {
     // Verify that the input is valid.

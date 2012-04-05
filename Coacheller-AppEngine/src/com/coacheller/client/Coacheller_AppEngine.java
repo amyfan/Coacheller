@@ -30,9 +30,9 @@ public class Coacheller_AppEngine implements EntryPoint {
   private static final String JSON_ERROR = "An error occurred while processing the JSON";
 
   /**
-   * Create a remote service proxy to talk to the server-side Greeting service.
+   * Create a remote service proxy to talk to the server-side Coacheller service.
    */
-  private final GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
+  private final CoachellerServiceAsync coachellerService = GWT.create(CoachellerService.class);
 
   /**
    * This is the entry point method.
@@ -152,7 +152,7 @@ public class Coacheller_AppEngine implements EntryPoint {
         // Then, we send the input to the server.
         populateButton.setEnabled(false);
         serverResponseLabel.setText("");
-        greetingService.loadSetData(new AsyncCallback<String>() {
+        coachellerService.loadSetData(new AsyncCallback<String>() {
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             dialogBox.setText("Remote Procedure Call - Failure");
@@ -179,7 +179,7 @@ public class Coacheller_AppEngine implements EntryPoint {
         // Then, we send the input to the server.
         calculateButton.setEnabled(false);
         serverResponseLabel.setText("");
-        greetingService.calculateSetRatingAverages(new AsyncCallback<String>() {
+        coachellerService.calculateSetRatingAverages(new AsyncCallback<String>() {
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             dialogBox.setText("Remote Procedure Call - Failure");
@@ -217,7 +217,7 @@ public class Coacheller_AppEngine implements EntryPoint {
         // Then, we send the input to the server.
         addRatingButton.setEnabled(false);
         serverResponseLabel.setText("");
-        greetingService.addRatingBySetArtist(email, artist, weekend, score,
+        coachellerService.addRatingBySetArtist(email, artist, weekend, score,
             new AsyncCallback<String>() {
               public void onFailure(Throwable caught) {
                 // Show the RPC error message to the user
@@ -286,7 +286,7 @@ public class Coacheller_AppEngine implements EntryPoint {
         querySetButton.setEnabled(false);
         textToServerLabel.setText(email);
         serverResponseLabel.setText("");
-        greetingService.getSets(email, year, day, new AsyncCallback<String>() {
+        coachellerService.getSets(email, year, day, new AsyncCallback<String>() {
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             dialogBox.setText("Remote Procedure Call - Failure");
@@ -325,7 +325,7 @@ public class Coacheller_AppEngine implements EntryPoint {
         queryRatingButton.setEnabled(false);
         textToServerLabel.setText(email);
         serverResponseLabel.setText("");
-        greetingService.getRatingsBySetArtist(email, artist, new AsyncCallback<String>() {
+        coachellerService.getRatingsBySetArtist(email, artist, new AsyncCallback<String>() {
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             dialogBox.setText("Remote Procedure Call - Failure");
@@ -377,7 +377,7 @@ public class Coacheller_AppEngine implements EntryPoint {
         // Then, we send the input to the server.
         clearRatingButton.setEnabled(false);
         serverResponseLabel.setText("");
-        greetingService.deleteAllRatings(new AsyncCallback<String>() {
+        coachellerService.deleteAllRatings(new AsyncCallback<String>() {
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             dialogBox.setText("Remote Procedure Call - Failure");
@@ -409,7 +409,7 @@ public class Coacheller_AppEngine implements EntryPoint {
         // Then, we send the input to the server.
         clearUserButton.setEnabled(false);
         serverResponseLabel.setText("");
-        greetingService.deleteAllUsers(new AsyncCallback<String>() {
+        coachellerService.deleteAllUsers(new AsyncCallback<String>() {
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             dialogBox.setText("Remote Procedure Call - Failure");

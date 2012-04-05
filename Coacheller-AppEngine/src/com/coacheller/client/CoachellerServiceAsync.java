@@ -3,9 +3,9 @@ package com.coacheller.client;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * The async counterpart of <code>GreetingService</code>.
+ * The async counterpart of <code>CoachellerService</code>.
  */
-public interface GreetingServiceAsync {
+public interface CoachellerServiceAsync {
   void greetServer(String input, AsyncCallback<String> callback) throws IllegalArgumentException;
 
   void loadSetData(AsyncCallback<String> callback) throws IllegalArgumentException;

@@ -15,8 +15,10 @@ public class Set {
   private Integer year;
   private String day;
   private Integer time;
-  private Double wkndOneAvgScore; // updated asynchronously for server limit purposes
-  private Double wkndTwoAvgScore; // updated asynchronously for server limit purposes
+  private Integer scoreSum; // stored for optimization purposes
+  private Integer numRatings; // stored for optimization purposes
+  private Double wkndOneAvgScore; // updated asynchronously for server quota purposes
+  private Double wkndTwoAvgScore; // updated asynchronously for server quota purposes
 
   public Set() {
   }
@@ -59,6 +61,22 @@ public class Set {
 
   public void setTime(Integer time) {
     this.time = time;
+  }
+
+  public Integer getScoreSum() {
+    return scoreSum;
+  }
+
+  public void setScoreSum(Integer scoreSum) {
+    this.scoreSum = scoreSum;
+  }
+
+  public Integer getNumRatings() {
+    return numRatings;
+  }
+
+  public void setNumRatings(Integer numRatings) {
+    this.numRatings = numRatings;
   }
 
   public Double getWkndOneAvgScore() {
