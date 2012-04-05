@@ -143,6 +143,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
   public String deleteAllRatings() {
     String resp = "fail";
     RatingManager.getInstance().deleteAllRatings();
+    SetDataLoader.getInstance().clearSetRatingAverages();
     resp = "ratings deleted";
     return resp;
   }

@@ -2,6 +2,7 @@ package com.coacheller.server.logic;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import com.coacheller.server.domain.Rating;
@@ -50,6 +51,7 @@ public class SetDataLoader {
           set.setTime(Integer.valueOf(fields[TIME_INDEX]));
           set.setArtistName(fields[ARTIST_NAME]);
 
+          set.setDateCreated(new Date());
           RatingManager.getInstance().updateSet(set);
 
           line = setFile.readLine();
@@ -60,6 +62,19 @@ public class SetDataLoader {
       }
     } catch (IOException e) {
       e.printStackTrace();
+    }
+  }
+
+  public void clearSetRatingAverages() {
+    List<Set> sets = RatingManager.getInstance().findAllSets();
+    for (Set set : sets) {
+      set.setNumRatingsOne(0);
+      set.setScoreSumOne(0);
+      set.setAvgScoreOne(0.0);
+      set.setNumRatingsTwo(0);
+      set.setScoreSumTwo(0);
+      set.setAvgScoreTwo(0.0);
+      RatingManager.getInstance().updateSet(set);
     }
   }
 

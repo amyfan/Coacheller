@@ -1,5 +1,6 @@
 package com.coacheller.server.logic;
 
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -17,8 +18,6 @@ import com.googlecode.objectify.Key;
 public class UserAccountManager {
 
   private static final Logger log = Logger.getLogger(UserAccountManager.class.getName());
-
-  private static final int MAX_DEVICES = 5;
 
   private AppUserDAO appUserDao;
 
@@ -84,11 +83,13 @@ public class UserAccountManager {
   }
 
   public AppUser createAppUser(String email) {
-    AppUser user = new AppUser();
-    user.setEmail(email);
-    user.setActive(true);
+    AppUser appUser = new AppUser();
+    appUser.setEmail(email);
+    appUser.setActive(true);
+    appUser.setDateCreated(new Date());
+    appUser.setDateModified(new Date());
     // initializes ID
-    return appUserDao.updateAppUser(user);
+    return appUserDao.updateAppUser(appUser);
   }
 
   public AppUser findAppUser(Long id) {
@@ -96,6 +97,7 @@ public class UserAccountManager {
   }
 
   public AppUser updateAppUser(AppUser appUser) {
+    appUser.setDateModified(new Date());
     return appUserDao.updateAppUser(appUser);
   }
 

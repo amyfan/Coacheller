@@ -1,5 +1,7 @@
 package com.coacheller.server.domain;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,6 +23,8 @@ public class Set {
   private Integer scoreSumTwo; // stored for optimization purposes
   private Double avgScoreOne; // stored for optimization purposes
   private Double avgScoreTwo; // stored for optimization purposes
+  private Date dateCreated;
+  private Date dateModified;
 
   public Set() {
   }
@@ -111,6 +115,22 @@ public class Set {
 
   public void setAvgScoreTwo(Double avgScoreTwo) {
     this.avgScoreTwo = avgScoreTwo;
+  }
+
+  public Date getDateCreated() {
+    return dateCreated;
+  }
+
+  public void setDateCreated(Date dateCreated) {
+    this.dateCreated = dateCreated;
+  }
+
+  public Date getDateModified() {
+    return dateModified;
+  }
+
+  public void setDateModified(Date dateModified) {
+    this.dateModified = dateModified;
   }
 
 }

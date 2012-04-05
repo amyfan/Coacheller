@@ -1,5 +1,6 @@
 package com.coacheller.server.persistence;
 
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -111,6 +112,7 @@ public class SetDAO {
   }
 
   public Set updateSet(Set set) {
+    set.setDateModified(new Date());
     dao.getObjectify().put(set); // id populated in this statement
     System.out.println("Updated Set to datastore: " + set.toString());
     return set;

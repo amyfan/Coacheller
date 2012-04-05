@@ -1,5 +1,6 @@
 package com.coacheller.server.persistence;
 
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -71,6 +72,7 @@ public class RatingDAO {
   }
 
   public Rating updateRating(Rating rating) {
+    rating.setDateModified(new Date());
     dao.getObjectify().put(rating); // id populated in this statement
     System.out.println("Updated Rating to datastore: " + rating.toString());
     return rating;

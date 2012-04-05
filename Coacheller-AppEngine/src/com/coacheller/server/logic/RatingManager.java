@@ -1,6 +1,7 @@
 package com.coacheller.server.logic;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -10,7 +11,6 @@ import com.coacheller.server.domain.Set;
 import com.coacheller.server.persistence.RatingDAO;
 import com.coacheller.server.persistence.SetDAO;
 import com.coacheller.shared.DayEnum;
-import com.coacheller.shared.FieldVerifier;
 import com.googlecode.objectify.Key;
 
 /**
@@ -74,12 +74,11 @@ public class RatingManager {
 
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     if (userKey == null) {
-      AppUser user = UserAccountManager.getInstance().createAppUser(email);
-      rating.setRaterId(user.getId());
-    } else {
-      rating.setRater(userKey);
-      rating.setRaterId(userKey.getId());
+      UserAccountManager.getInstance().createAppUser(email);
+      userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     }
+    rating.setRater(userKey);
+    rating.setRaterId(userKey.getId());
 
     // update set's avg score
     Set set = setDao.findSet(rating.getSetId());
@@ -120,6 +119,7 @@ public class RatingManager {
       set.setAvgScoreTwo(average);
       updateSet(set);
     }
+    rating.setDateCreated(new Date());
 
     return ratingDao.updateRating(rating);
   }
@@ -128,13 +128,12 @@ public class RatingManager {
     Integer difference = score - rating.getScore();
     rating.setScore(score);
 
-    UserAccountManager uam = UserAccountManager.getInstance();
     if (rating.getRater() == null && rating.getRaterId() != null) {
-      rating.setRater(uam.getAppUserKeyById(rating.getRaterId()));
+      rating.setRater(UserAccountManager.getInstance().getAppUserKeyById(rating.getRaterId()));
     }
-    if (rating.getSetId() != null) {
+    if (rating.getSet() != null) {
       // update set's avg score
-      Set set = setDao.findSet(rating.getSetId());
+      Set set = setDao.findSetByKey(rating.getSet());
       if (weekend == 1) {
         Integer sum = set.getScoreSumOne();
         sum += difference;
@@ -154,6 +153,7 @@ public class RatingManager {
       }
       rating.setSet(setDao.findSetKeyById(rating.getSetId()));
     }
+
     return ratingDao.updateRating(rating);
   }
 
@@ -186,8 +186,7 @@ public class RatingManager {
   private List<Rating> findRatingsBySetArtistAndUser(String setArtist, String email, Integer weekend) {
     // TODO: figure out whether to keep this method & query year properly
     Key<Set> setKey = findSetKeyByArtistAndYear(setArtist, null);
-    UserAccountManager uam = UserAccountManager.getInstance();
-    Key<AppUser> userKey = uam.getAppUserKeyByEmail(email);
+    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     List<Rating> ratings = new ArrayList<Rating>();
     if (setKey != null) {
       ratings = ratingDao.findRatingsBySetKeyAndUserKey(setKey, userKey, weekend);
