@@ -6,7 +6,7 @@
          xmlns="http://java.sun.com/xml/ns/javaee">
 
   <!-- Servlets -->
-  <!--servlet>
+  <servlet>
     <servlet-name>coachellerServlet</servlet-name>
     <servlet-class>com.coacheller.server.service.CoachellerServlet</servlet-class>
   </servlet>
@@ -14,7 +14,7 @@
   <servlet-mapping>
     <servlet-name>coachellerServlet</servlet-name>
     <url-pattern>/coachellerServlet</url-pattern>
-  </servlet-mapping-->
+  </servlet-mapping>
   
   <servlet>
     <servlet-name>greetServlet</servlet-name>
