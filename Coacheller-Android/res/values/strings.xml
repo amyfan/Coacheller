@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">SDCrimeZone</string>
+    <string name="app_name">Coacheller for Android</string>
     <string name="currLocation">Address</string>
     <string name="defaultLocation">Current Location</string>
     <string name="distance">Distance</string>
@@ -14,5 +14,18 @@
     <string-array name="dateArray">
         <item>2011</item>
     </string-array>
+        <string name="title_sets_search">Find Sets</string>
+        <string name="week_search_sets">Week#</string>
+        <string name="day_search_sets">Day</string>
+        <string name="buttonlabel_search_sets">Go!</string>
+        <string-array name="names_week">
+            <item >1 - April 13th-15th</item>
+            <item >2 - April 20th-22nd</item>
+        </string-array>
+        <string-array name="names_day">
+            <item >Friday</item>
+            <item >Saturday</item>
+            <item >Sunday</item>
+        </string-array>
 
 </resources>
