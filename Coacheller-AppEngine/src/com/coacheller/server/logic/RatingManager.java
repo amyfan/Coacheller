@@ -7,10 +7,10 @@ import java.util.logging.Logger;
 
 import com.coacheller.server.domain.AppUser;
 import com.coacheller.server.domain.Rating;
-import com.coacheller.server.domain.Set;
 import com.coacheller.server.persistence.RatingDAO;
 import com.coacheller.server.persistence.SetDAO;
 import com.coacheller.shared.DayEnum;
+import com.coacheller.shared.Set;
 import com.googlecode.objectify.Key;
 
 /**
@@ -50,6 +50,7 @@ public class RatingManager {
 
     List<Rating> ratings = findRatingsBySetArtistAndUser(setArtist, email, weekend);
     if (ratings == null || ratings.size() == 0) {
+      // add new rating
       Key<Set> setKey = findSetKeyByArtistAndYear(setArtist, year);
       if (setKey != null) {
         addRating(setKey, email, weekend, score);
@@ -58,6 +59,7 @@ public class RatingManager {
         resp = "invalid artist name";
       }
     } else {
+      // update existing rating
       updateRating(ratings.get(0), weekend, score);
       resp = "rating updated";
     }
@@ -68,7 +70,6 @@ public class RatingManager {
   private Rating addRating(Key<Set> setKey, String email, Integer weekend, Integer score) {
     Rating rating = new Rating();
     rating.setSet(setKey);
-    rating.setSetId(setKey.getId());
     rating.setScore(score);
     rating.setWeekend(weekend);
 
@@ -78,10 +79,9 @@ public class RatingManager {
       userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     }
     rating.setRater(userKey);
-    rating.setRaterId(userKey.getId());
 
     // update set's avg score
-    Set set = setDao.findSet(rating.getSetId());
+    Set set = setDao.findSet(rating.getSet().getId());
     if (weekend == 1) {
       Integer numRatings;
       Integer sum;
@@ -128,9 +128,6 @@ public class RatingManager {
     Integer difference = score - rating.getScore();
     rating.setScore(score);
 
-    if (rating.getRater() == null && rating.getRaterId() != null) {
-      rating.setRater(UserAccountManager.getInstance().getAppUserKeyById(rating.getRaterId()));
-    }
     if (rating.getSet() != null) {
       // update set's avg score
       Set set = setDao.findSetByKey(rating.getSet());
@@ -151,7 +148,7 @@ public class RatingManager {
         set.setAvgScoreTwo(average);
         updateSet(set);
       }
-      rating.setSet(setDao.findSetKeyById(rating.getSetId()));
+      rating.setSet(setDao.findSetKeyById(rating.getSet().getId()));
     }
 
     return ratingDao.updateRating(rating);

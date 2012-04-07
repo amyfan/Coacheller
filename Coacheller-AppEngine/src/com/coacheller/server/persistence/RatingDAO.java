@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 import com.coacheller.server.domain.AppUser;
 import com.coacheller.server.domain.Rating;
-import com.coacheller.server.domain.Set;
+import com.coacheller.shared.Set;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Query;
 

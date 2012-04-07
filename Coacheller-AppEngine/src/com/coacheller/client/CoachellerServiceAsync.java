@@ -1,5 +1,9 @@
 package com.coacheller.client;
 
+import java.util.List;
+
+import com.coacheller.shared.RatingGwt;
+import com.coacheller.shared.Set;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -12,16 +16,16 @@ public interface CoachellerServiceAsync {
 
   void recalculateSetRatingAverages(AsyncCallback<String> callback) throws IllegalArgumentException;
 
-  void getSets(String email, String yearString, String day, AsyncCallback<String> callback)
+  void getSets(String email, String yearString, String day, AsyncCallback<List<Set>> callback)
       throws IllegalArgumentException;
 
-  void addRatingBySetArtist(String email, String setArtist, String year, String weekend, String score,
-      AsyncCallback<String> callback) throws IllegalArgumentException;
+  void addRatingBySetArtist(String email, String setArtist, String year, String weekend,
+      String score, AsyncCallback<String> callback) throws IllegalArgumentException;
 
-  void getRatingsBySetArtist(String email, String setArtist, AsyncCallback<String> callback)
+  void getRatingsBySetArtist(String email, String setArtist, AsyncCallback<List<RatingGwt>> callback)
       throws IllegalArgumentException;
 
-  void getRatingsBySet(String email, String setIdString, AsyncCallback<String> callback)
+  void getRatingsBySet(String email, String setIdString, AsyncCallback<List<RatingGwt>> callback)
       throws IllegalArgumentException;
 
   void deleteAllRatings(AsyncCallback<String> callback) throws IllegalArgumentException;

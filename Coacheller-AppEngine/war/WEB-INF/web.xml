@@ -17,12 +17,12 @@
   </servlet-mapping>
   
   <servlet>
-    <servlet-name>greetServlet</servlet-name>
+    <servlet-name>gwtCoachellerServlet</servlet-name>
     <servlet-class>com.coacheller.server.service.CoachellerServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
-    <servlet-name>greetServlet</servlet-name>
+    <servlet-name>gwtCoachellerServlet</servlet-name>
     <url-pattern>/coacheller_appengine/greet</url-pattern>
   </servlet-mapping>
   

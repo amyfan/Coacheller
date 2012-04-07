@@ -10,13 +10,14 @@ import org.json.JSONArray;
 
 import com.coacheller.client.CoachellerService;
 import com.coacheller.server.domain.Rating;
-import com.coacheller.server.domain.Set;
 import com.coacheller.server.logic.JSONUtils;
 import com.coacheller.server.logic.RatingManager;
 import com.coacheller.server.logic.SetDataLoader;
 import com.coacheller.server.logic.UserAccountManager;
 import com.coacheller.shared.DayEnum;
 import com.coacheller.shared.FieldVerifier;
+import com.coacheller.shared.RatingGwt;
+import com.coacheller.shared.Set;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -45,7 +46,20 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
         + ".<br><br>It looks like you are using:<br>" + userAgent;
   }
 
-  public String getSets(String email, String yearString, String day) {
+  public List<Set> getSets(String email, String yearString, String day) {
+    List<Set> sets = null;
+
+    Integer year = Integer.valueOf(yearString);
+    if (day != null && !day.isEmpty()) {
+      sets = RatingManager.getInstance().findSetsByYearAndDay(year, DayEnum.fromValue(day));
+    } else {
+      sets = RatingManager.getInstance().findSetsByYear(year);
+    }
+
+    return sets;
+  }
+
+  public String getSetsJson(String email, String yearString, String day) {
     String resp = null;
 
     if (!FieldVerifier.isValidEmail(email)) {
@@ -100,7 +114,21 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     return resp;
   }
 
-  public String getRatingsBySetArtist(String email, String setArtist) {
+  public List<RatingGwt> getRatingsBySetArtist(String email, String setArtist) {
+
+    List<RatingGwt> ratingGwts = null;
+
+    if (setArtist != null) {
+      List<Rating> ratings = RatingManager.getInstance().findRatingsBySetArtist(setArtist);
+      if (ratings != null) {
+        ratingGwts = JSONUtils.convertRatingsToRatingGwts(ratings);
+      }
+    }
+
+    return ratingGwts;
+  }
+
+  public String getRatingsJsonBySetArtist(String email, String setArtist) {
     String resp = "null args";
 
     if (!FieldVerifier.isValidEmail(email)) {
@@ -123,7 +151,22 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     return resp;
   }
 
-  public String getRatingsBySet(String email, String setIdString) {
+  public List<RatingGwt> getRatingsBySet(String email, String setIdString) {
+
+    List<RatingGwt> ratingGwts = null;
+
+    if (setIdString != null) {
+      Long setId = Long.valueOf(setIdString);
+      List<Rating> ratings = RatingManager.getInstance().findRatingsBySetId(setId);
+      if (ratings != null) {
+        ratingGwts = JSONUtils.convertRatingsToRatingGwts(ratings);
+      }
+    }
+
+    return ratingGwts;
+  }
+
+  public String getRatingsJsonBySet(String email, String setIdString) {
     String resp = null;
 
     List<Rating> ratings = null;

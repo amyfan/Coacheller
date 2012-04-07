@@ -1,2 +1,6 @@
 # Module coacheller_appengine
 # RPC service class, partial path of RPC policy file
+<<<<<<< HEAD
+=======
+com.coacheller.client.CoachellerService, 509B472B666E2F402D9EFD97760540AD.gwt.rpc
+>>>>>>> 06b6c2989ae9d3e40f36ea7c126c568d8e2912bc
