@@ -2,7 +2,7 @@ package com.coacheller.server.persistence;
 
 import com.coacheller.server.domain.AppUser;
 import com.coacheller.server.domain.Rating;
-import com.coacheller.server.domain.Set;
+import com.coacheller.shared.Set;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.DAOBase;

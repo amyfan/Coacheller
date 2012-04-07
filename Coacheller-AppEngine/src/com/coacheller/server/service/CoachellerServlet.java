@@ -9,11 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
 
-import com.coacheller.server.domain.Set;
 import com.coacheller.server.logic.JSONUtils;
 import com.coacheller.server.logic.RatingManager;
 import com.coacheller.shared.DayEnum;
 import com.coacheller.shared.FieldVerifier;
+import com.coacheller.shared.Set;
 
 /**
  * HTTP Servlet, intended for Android/etc. device use.

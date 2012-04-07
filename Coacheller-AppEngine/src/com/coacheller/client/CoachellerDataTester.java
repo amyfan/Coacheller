@@ -2,6 +2,7 @@ package com.coacheller.client;
 
 import java.util.List;
 
+import com.coacheller.server.domain.Rating;
 import com.coacheller.shared.FieldVerifier;
 import com.coacheller.shared.RatingGwt;
 import com.coacheller.shared.Set;
@@ -23,7 +24,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class Coacheller_AppEngine implements EntryPoint {
+public class CoachellerDataTester implements EntryPoint {
   /**
    * The message displayed to the user when the server cannot be reached or
    * returns an error.
@@ -31,6 +32,7 @@ public class Coacheller_AppEngine implements EntryPoint {
   private static final String SERVER_ERROR = "An error occurred while "
       + "attempting to contact the server. Please check your network "
       + "connection and try again.";
+  private static final String JSON_ERROR = "An error occurred while processing the JSON";
 
   /**
    * Create a remote service proxy to talk to the server-side Coacheller
@@ -51,6 +53,8 @@ public class Coacheller_AppEngine implements EntryPoint {
     final Button clearUserButton = new Button("Clear Users");
     final TextBox emailField = new TextBox();
     emailField.setText("amyfan@gmail.com");
+    final TextBox yearField = new TextBox();
+    yearField.setText("2012");
     final TextBox dayField = new TextBox();
     dayField.setText("Friday");
     final TextBox artistField = new TextBox();
@@ -68,6 +72,7 @@ public class Coacheller_AppEngine implements EntryPoint {
     // Add the nameField and sendButton to the RootPanel
     // Use RootPanel.get() to get the entire body element
     RootPanel.get("emailFieldContainer").add(emailField);
+    RootPanel.get("yearFieldContainer").add(yearField);
     RootPanel.get("dayFieldContainer").add(dayField);
     RootPanel.get("artistFieldContainer").add(artistField);
     RootPanel.get("weekendFieldContainer").add(weekendField);
@@ -208,10 +213,15 @@ public class Coacheller_AppEngine implements EntryPoint {
         errorLabel.setText("");
         String email = emailField.getText();
         String artist = artistField.getText();
+        String year = yearField.getText();
         String weekend = weekendField.getText();
         String score = scoreField.getText();
         if (!FieldVerifier.isValidEmail(email)) {
           errorLabel.setText(FieldVerifier.EMAIL_ERROR);
+          return;
+        }
+        if (!FieldVerifier.isValidYear(year)) {
+          errorLabel.setText(FieldVerifier.YEAR_ERROR);
           return;
         }
         if (!FieldVerifier.isValidWeekend(weekend)) {
@@ -226,7 +236,7 @@ public class Coacheller_AppEngine implements EntryPoint {
         // Then, we send the input to the server.
         addRatingButton.setEnabled(false);
         serverResponseLabel.setText("");
-        coachellerService.addRatingBySetArtist(email, artist, "2012", weekend, score,
+        coachellerService.addRatingBySetArtist(email, artist, year, weekend, score,
             new AsyncCallback<String>() {
               public void onFailure(Throwable caught) {
                 // Show the RPC error message to the user
@@ -274,9 +284,14 @@ public class Coacheller_AppEngine implements EntryPoint {
         // First, we validate the input.
         errorLabel.setText("");
         String email = emailField.getText();
+        String year = yearField.getText();
         String day = dayField.getText();
         if (!FieldVerifier.isValidEmail(email)) {
           errorLabel.setText(FieldVerifier.EMAIL_ERROR);
+          return;
+        }
+        if (!FieldVerifier.isValidYear(year)) {
+          errorLabel.setText(FieldVerifier.YEAR_ERROR);
           return;
         }
         if (day != null && !day.isEmpty()) {
@@ -290,7 +305,7 @@ public class Coacheller_AppEngine implements EntryPoint {
         querySetButton.setEnabled(false);
         textToServerLabel.setText(email);
         serverResponseLabel.setText("");
-        coachellerService.getSets(email, "2012", day, new AsyncCallback<List<Set>>() {
+        coachellerService.getSets(email, year, day, new AsyncCallback<List<Set>>() {
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             dialogBox.setText("Remote Procedure Call - Failure");

@@ -8,7 +8,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.coacheller.server.domain.Rating;
-import com.coacheller.server.domain.Set;
+import com.coacheller.shared.RatingGwt;
+import com.coacheller.shared.Set;
 
 /**
  * 
@@ -43,6 +44,26 @@ public class JSONUtils {
       }
     }
     return jsonObjs;
+  }
+
+  /**
+   * TODO: impl if i create SetGwts
+   * 
+   * @param sets
+   * @return
+   */
+  public static final List<Set> convertSetsToSetGwts(List<Set> sets) {
+    if (sets == null) {
+      return null;
+    }
+    List<Set> setGwts = new ArrayList<Set>();
+    for (Set rating : sets) {
+      Set setGwt = new Set();
+      setGwt.setId(rating.getId());
+
+      setGwts.add(setGwt);
+    }
+    return setGwts;
   }
 
   /**
@@ -89,31 +110,6 @@ public class JSONUtils {
     return sets;
   }
 
-  @Deprecated
-  public static final String convertJSONArrayStringToSetString(String arrayString) {
-    StringBuilder setString = new StringBuilder();
-    try {
-      JSONArray array = new JSONArray(arrayString);
-      for (int i = 0; i < array.length(); i++) {
-        JSONObject obj;
-        obj = array.getJSONObject(i);
-
-        setString.append("Artist: ");
-        setString.append((String) obj.get("artist"));
-        setString.append(", Artist: ");
-        setString.append("Day: ");
-        setString.append((String) obj.get("day"));
-        setString.append(", Day: ");
-        setString.append("Time: ");
-        setString.append((Integer) obj.get("time"));
-        setString.append("\n");
-      }
-    } catch (JSONException e) {
-      e.printStackTrace();
-    }
-    return setString.toString();
-  }
-
   /**
    * 
    * @param ratings
@@ -141,9 +137,32 @@ public class JSONUtils {
 
   /**
    * 
+   * @param ratings
+   * @return
+   */
+  public static final List<RatingGwt> convertRatingsToRatingGwts(List<Rating> ratings) {
+    if (ratings == null) {
+      return null;
+    }
+    List<RatingGwt> ratingGwts = new ArrayList<RatingGwt>();
+    for (Rating rating : ratings) {
+      RatingGwt ratingGwt = new RatingGwt();
+      ratingGwt.setId(rating.getId());
+      ratingGwt.setRaterId(rating.getRater().getId());
+      ratingGwt.setSetId(rating.getSet().getId());
+      ratingGwt.setWeekend(rating.getWeekend());
+      ratingGwt.setScore(rating.getScore());
+      ratingGwts.add(ratingGwt);
+    }
+    return ratingGwts;
+  }
+
+  /**
+   * 
    * @param array
    * @return
    */
+  @Deprecated
   public static final List<Rating> convertJSONArrayToRatings(JSONArray array) {
     List<Rating> ratings = new ArrayList<Rating>();
     for (int i = 0; i < array.length(); i++) {
@@ -151,12 +170,12 @@ public class JSONUtils {
       try {
         Rating rating = new Rating();
         obj = array.getJSONObject(i);
-        if (obj.get("rater_id") != null) {
-          rating.setRaterId((Long) obj.get("rater_id"));
-        }
-        if (obj.get("set_id") != null) {
-          rating.setSetId((Long) obj.get("set_id"));
-        }
+        // if (obj.get("rater_id") != null) {
+        // rating.setRaterId((Long) obj.get("rater_id"));
+        // }
+        // if (obj.get("set_id") != null) {
+        // rating.setSetId((Long) obj.get("set_id"));
+        // }
         if (obj.get("weekend") != null) {
           rating.setWeekend((Integer) obj.get("weekend"));
         }

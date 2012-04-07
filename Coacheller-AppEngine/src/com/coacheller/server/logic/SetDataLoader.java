@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.coacheller.server.domain.Rating;
-import com.coacheller.server.domain.Set;
+import com.coacheller.shared.Set;
 
 /**
  * Class to populate the datastore with crime data and averages

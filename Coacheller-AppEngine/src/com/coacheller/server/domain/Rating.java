@@ -6,8 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Transient;
 
+import com.coacheller.shared.Set;
 import com.googlecode.objectify.Key;
 
 @Entity
@@ -22,10 +22,6 @@ public class Rating {
   private Date dateModified;
   private Key<Set> set;
   private Key<AppUser> rater;
-  @Transient
-  private Long setId;
-  @Transient
-  private Long raterId;
 
   public Rating() {
   }
@@ -84,22 +80,6 @@ public class Rating {
 
   public void setRater(Key<AppUser> rater) {
     this.rater = rater;
-  }
-
-  public Long getSetId() {
-    return setId;
-  }
-
-  public void setSetId(Long setId) {
-    this.setId = setId;
-  }
-
-  public Long getRaterId() {
-    return raterId;
-  }
-
-  public void setRaterId(Long raterId) {
-    this.raterId = raterId;
   }
 
 }

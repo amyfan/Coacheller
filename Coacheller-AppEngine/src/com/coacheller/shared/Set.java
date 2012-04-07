@@ -1,4 +1,4 @@
-package com.coacheller.server.domain;
+package com.coacheller.shared;
 
 import java.util.Date;
 
@@ -7,8 +7,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 @Entity
-public class Set {
+public class Set implements IsSerializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
