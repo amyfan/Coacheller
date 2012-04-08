@@ -1,0 +1,41 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:c='urn:import:com.google.gwt.cell.client' xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:t='urn:import:com.coacheller.client' xmlns:d='urn:import:com.google.gwt.user.datepicker.client'
+	xmlns:v='urn:import:com.google.gwt.visualization.client.visualizations.corechart'>
+
+	<g:HTMLPanel>
+		<div id="container">
+			<div id="android"></div>
+			<div class="appname">
+				Coachella 2012 Set Ratings
+				<div class="balls"></div>
+			</div>
+			<div class="roundrect">
+				<div class="emailinputcell">
+					Email Address
+					<g:TextBox ui:field="userEmailAddressInput" />
+				</div>
+				<div class="dayInputcell">
+					Day
+					<g:ListBox ui:field="dayInput" />
+				</div>
+				<div class="buttoncell">
+					<g:Button ui:field="queryButton" text="Retrieve Sets" />
+				</div>
+				<div class="tablecell">
+					<t:CoachellerListComposite.SetsTable
+						ui:field="setsTable" />
+				</div>
+				<div class="chartcell">
+					<g:SimplePanel
+						ui:field="setsChartPanel" />
+					<!--g:Button ui:field="viewChartButton" text="View Chart" /-->
+				</div>
+				<div class="infocell">
+					<g:Label ui:field="infoBox" />
+				</div>
+			</div>
+		</div>
+	</g:HTMLPanel>
+
+</ui:UiBinder>
