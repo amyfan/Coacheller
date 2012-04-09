@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.coacheller.shared.FieldVerifier;
 import com.coacheller.shared.Set;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.cell.client.CheckboxCell;
@@ -12,6 +13,8 @@ import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -28,10 +31,12 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
+import com.google.gwt.visualization.client.ChartArea;
 import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.VisualizationUtils;
+import com.google.gwt.visualization.client.visualizations.corechart.AxisOptions;
+import com.google.gwt.visualization.client.visualizations.corechart.BarChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
-import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
 
 public class CoachellerListComposite extends Composite {
 
@@ -46,10 +51,22 @@ public class CoachellerListComposite extends Composite {
   Label infoBox;
 
   @UiField
+  TextBox userEmailAddressInput;
+
+  @UiField
   ListBox dayInput;
 
   @UiField
-  TextBox userEmailAddressInput;
+  TextBox artistInput;
+
+  @UiField
+  ListBox weekendInput;
+
+  @UiField
+  ListBox scoreInput;
+
+  @UiField
+  ListBox chartTypeInput;
 
   @UiField
   SetsTable setsTable;
@@ -59,6 +76,18 @@ public class CoachellerListComposite extends Composite {
 
   @UiField
   com.google.gwt.user.client.ui.Button queryButton;
+
+  @UiField
+  com.google.gwt.user.client.ui.Button recalculateButton;
+
+  @UiField
+  com.google.gwt.user.client.ui.Button addRatingButton;
+
+  @UiField
+  com.google.gwt.user.client.ui.Button clearRatingButton;
+
+  @UiField
+  com.google.gwt.user.client.ui.Button clearUserButton;
 
   // @UiField
   // com.google.gwt.user.client.ui.Button viewChartButton;
@@ -76,7 +105,7 @@ public class CoachellerListComposite extends Composite {
    * service.
    */
   private final CoachellerServiceAsync coachellerService = GWT.create(CoachellerService.class);
-  private List<Set> usersList;
+  private List<Set> setsList;
 
   public CoachellerListComposite() {
     initWidget(uiBinder.createAndBindUi(this));
@@ -95,21 +124,21 @@ public class CoachellerListComposite extends Composite {
   private void initUiElements() {
     ListDataProvider<Set> listDataProvider = new ListDataProvider<Set>();
     listDataProvider.addDataDisplay(setsTable);
-    usersList = listDataProvider.getList();
+    setsList = listDataProvider.getList();
 
     // Create a callback to be called when the visualization API
     // has been loaded.
     Runnable onLoadCallback = new Runnable() {
       public void run() {
         // Create a pie chart visualization.
-        PieChart pie = new PieChart(createTable(), createOptions());
-        setsChartPanel.add(pie);
+        BarChart chart = new BarChart(createChartDataTable(), createOptions());
+        setsChartPanel.add(chart);
       }
     };
 
     // Load the visualization api, passing the onLoadCallback to be called
     // when loading is done.
-    VisualizationUtils.loadVisualizationApi(onLoadCallback, PieChart.PACKAGE);
+    VisualizationUtils.loadVisualizationApi(onLoadCallback, BarChart.PACKAGE);
 
     Element androidElement = getElement().getFirstChildElement().getFirstChildElement();
     final Animation androidAnimation = new AndroidAnimation(androidElement);
@@ -140,14 +169,49 @@ public class CoachellerListComposite extends Composite {
     // public void update(int index, Set appUser, String value) {
     // AppUserRequest request = requestFactory.appUserRequest();
     // request.deleteAppUser(appUser).fire();
-    // usersList.remove(appUser);
+    // setsList.remove(appUser);
     // }
     // });
+
+    userEmailAddressInput.getElement().setPropertyString("placeholder", "Enter email address here");
 
     dayInput.addItem("Friday");
     dayInput.addItem("Saturday");
     dayInput.addItem("Sunday");
-    userEmailAddressInput.getElement().setPropertyString("placeholder", "Enter email address here");
+
+    weekendInput.addItem("1");
+    weekendInput.addItem("2");
+
+    scoreInput.addItem("1");
+    scoreInput.addItem("2");
+    scoreInput.addItem("3");
+    scoreInput.addItem("4");
+    scoreInput.addItem("5");
+
+    chartTypeInput.addItem("Artist Name");
+    chartTypeInput.addItem("Set Time");
+
+    chartTypeInput.addChangeHandler(new ChangeHandler() {
+      @Override
+      public void onChange(ChangeEvent event) {
+        final DataTable dataTable = (DataTable) createChartDataTable();
+
+        // Create a callback to be called when the visualization API
+        // has been loaded.
+        Runnable onLoadCallback = new Runnable() {
+          public void run() {
+            // Create a pie chart visualization.
+            BarChart chart = new BarChart(dataTable, createOptions());
+            setsChartPanel.clear();
+            setsChartPanel.add(chart);
+          }
+        };
+
+        // Load the visualization api, passing the onLoadCallback to be called
+        // when loading is done.
+        VisualizationUtils.loadVisualizationApi(onLoadCallback, BarChart.PACKAGE);
+      }
+    });
 
     // userNameInput.addKeyUpHandler(new KeyUpHandler() {
     // public void onKeyUp(KeyUpEvent event) {
@@ -164,9 +228,73 @@ public class CoachellerListComposite extends Composite {
     queryButton.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        String day = dayInput.getItemText(dayInput.getSelectedIndex());
-        String email = userEmailAddressInput.getText();
-        retrieveSets(email, day);
+        retrieveSets();
+
+        androidAnimation.run(400);
+      }
+    });
+
+    recalculateButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        coachellerService.recalculateSetRatingAverages(new AsyncCallback<String>() {
+
+          public void onFailure(Throwable caught) {
+            // Show the RPC error message to the user
+            infoBox.setText(SERVER_ERROR);
+          }
+
+          public void onSuccess(String result) {
+            infoBox.setText(result);
+          }
+        });
+
+        androidAnimation.run(400);
+      }
+    });
+
+    addRatingButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        addRating();
+
+        androidAnimation.run(400);
+      }
+    });
+
+    clearRatingButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        infoBox.setText("");
+        coachellerService.deleteAllRatings(new AsyncCallback<String>() {
+          public void onFailure(Throwable caught) {
+            // Show the RPC error message to the user
+            infoBox.setText(SERVER_ERROR);
+          }
+
+          public void onSuccess(String result) {
+            infoBox.setText(result);
+          }
+        });
+
+        androidAnimation.run(400);
+      }
+    });
+
+    clearUserButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        infoBox.setText("");
+        coachellerService.deleteAllUsers(new AsyncCallback<String>() {
+          public void onFailure(Throwable caught) {
+            // Show the RPC error message to the user
+            infoBox.setText(SERVER_ERROR);
+          }
+
+          public void onSuccess(String result) {
+            infoBox.setText(result);
+          }
+        });
 
         androidAnimation.run(400);
       }
@@ -185,7 +313,10 @@ public class CoachellerListComposite extends Composite {
     return PageToken.LIST.getValue();
   }
 
-  private void retrieveSets(String email, String day) {
+  private void retrieveSets() {
+    infoBox.setText("");
+    String day = dayInput.getItemText(dayInput.getSelectedIndex());
+    String email = userEmailAddressInput.getText();
     coachellerService.getSets(email, "2012", day, new AsyncCallback<List<Set>>() {
 
       public void onFailure(Throwable caught) {
@@ -194,44 +325,127 @@ public class CoachellerListComposite extends Composite {
       }
 
       public void onSuccess(List<Set> result) {
-        // sort first
-        ArrayList<Set> sortedTasks = new ArrayList<Set>(result);
-        Collections.sort(sortedTasks, SET_COMPARATOR);
+        setsList.clear();
+        setsList = result;
 
-        usersList.clear();
-        for (Set appUser : sortedTasks) {
-          usersList.add(appUser);
-        }
+        final DataTable dataTable = (DataTable) createChartDataTable();
+
+        // Create a callback to be called when the visualization API
+        // has been loaded.
+        Runnable onLoadCallback = new Runnable() {
+          public void run() {
+            // Create a pie chart visualization.
+            BarChart chart = new BarChart(dataTable, createOptions());
+            setsChartPanel.clear();
+            setsChartPanel.add(chart);
+          }
+        };
+
+        // Load the visualization api, passing the onLoadCallback to be called
+        // when loading is done.
+        VisualizationUtils.loadVisualizationApi(onLoadCallback, BarChart.PACKAGE);
+
       }
     });
   }
 
-  // @UiFactory
-  // PieChart makePieChart() { // method name is insignificant
-  // return new PieChart(createTable(), createOptions());
-  // }
+  private void addRating() {
+    infoBox.setText("");
+    String email = userEmailAddressInput.getText();
+    String artist = artistInput.getText();
+    String weekend = weekendInput.getItemText(weekendInput.getSelectedIndex());
+    String score = scoreInput.getItemText(scoreInput.getSelectedIndex());
+    if (!FieldVerifier.isValidEmail(email)) {
+      infoBox.setText(FieldVerifier.EMAIL_ERROR);
+      return;
+    }
+    if (!FieldVerifier.isValidWeekend(weekend)) {
+      infoBox.setText(FieldVerifier.WEEKEND_ERROR);
+      return;
+    }
+    if (!FieldVerifier.isValidScore(score)) {
+      infoBox.setText(FieldVerifier.SCORE_ERROR);
+      return;
+    }
+
+    // Then, we send the input to the server.
+    coachellerService.addRatingBySetArtist(email, artist, "2012", weekend, score,
+        new AsyncCallback<String>() {
+          public void onFailure(Throwable caught) {
+            // Show the RPC error message to the user
+            infoBox.setText(SERVER_ERROR);
+          }
+
+          public void onSuccess(String result) {
+            infoBox.setText(result);
+          }
+        });
+  }
 
   private Options createOptions() {
     Options options = Options.create();
-    options.setWidth(400);
-    options.setHeight(240);
-    options.setTitle("My Daily Activities");
+    // options.setWidth(400);
+    // options.setHeight(240);
+    options.setHeight(setsList.size() * 40);
+    options.setTitle("Coachella Set Ratings");
+    AxisOptions axisOptions = AxisOptions.create();
+    axisOptions.setMinValue(0);
+    axisOptions.setMaxValue(5);
+    options.setHAxisOptions(axisOptions);
+    ChartArea chartArea = ChartArea.create();
+    chartArea.setTop(10);
+    options.setChartArea(chartArea);
     return options;
   }
 
-  private AbstractDataTable createTable() {
+  private AbstractDataTable createChartDataTable() {
     DataTable data = DataTable.create();
-    data.addColumn(ColumnType.STRING, "Task");
-    data.addColumn(ColumnType.NUMBER, "Hours per Day");
-    data.addRows(2);
-    data.setValue(0, 0, "Work");
-    data.setValue(0, 1, 14);
-    data.setValue(1, 0, "Sleep");
-    data.setValue(1, 1, 10);
+    if (setsList == null) {
+      data.addColumn(ColumnType.STRING, "Artist Name");
+      data.addColumn(ColumnType.NUMBER, "Weekend 1 Average Score");
+      data.addColumn(ColumnType.NUMBER, "Weekend 2 Average Score");
+    } else {
+      data.addColumn(ColumnType.STRING, "Artist Name");
+      data.addColumn(ColumnType.NUMBER, "Weekend 1 Average Score");
+      data.addColumn(ColumnType.NUMBER, "Weekend 2 Average Score");
+      data.addRows(setsList.size());
+      if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Artist Name")) {
+        // sort first
+        ArrayList<Set> sortedTasks = new ArrayList<Set>(setsList);
+        Collections.sort(sortedTasks, SET_NAME_COMPARATOR);
+
+        int setNum = 0;
+        for (Set set : sortedTasks) {
+          data.setValue(setNum, 0, set.getArtistName());
+          data.setValue(setNum, 1, set.getAvgScoreOne());
+          data.setValue(setNum, 2, set.getAvgScoreTwo());
+          setNum++;
+        }
+      } else {
+        // sort first
+        ArrayList<Set> sortedTasks = new ArrayList<Set>(setsList);
+        Collections.sort(sortedTasks, SET_TIME_COMPARATOR);
+
+        int setNum = 0;
+        for (Set set : sortedTasks) {
+          String nameCombo = set.getTime() + ": " + set.getArtistName();
+          data.setValue(setNum, 0, nameCombo);
+          data.setValue(setNum, 1, set.getAvgScoreOne());
+          data.setValue(setNum, 2, set.getAvgScoreTwo());
+          setNum++;
+        }
+      }
+    }
     return data;
   }
 
-  public static final Comparator<? super Set> SET_COMPARATOR = new Comparator<Set>() {
+  public static final Comparator<? super Set> SET_NAME_COMPARATOR = new Comparator<Set>() {
+    public int compare(Set t0, Set t1) {
+      return t0.getArtistName().compareTo(t1.getArtistName());
+    }
+  };
+
+  public static final Comparator<? super Set> SET_TIME_COMPARATOR = new Comparator<Set>() {
     public int compare(Set t0, Set t1) {
       // Sort by set time first
       if (t0.getTime() < t1.getTime()) {
