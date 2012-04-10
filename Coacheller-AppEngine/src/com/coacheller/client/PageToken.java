@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 public enum PageToken {
 
-  INDEX("index"), LIST("list"), CHART("chart");
+  INDEX("index"), VIEW("view"), RATE("rate"), EMAIL("email");
 
   private String value;
 

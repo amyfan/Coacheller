@@ -35,11 +35,13 @@ public class FlowControl {
     PageToken token = getPageFromToken(tokenString);
     String param = getParamFromToken(tokenString);
     if (token == null) {
-      go(new CoachellerListComposite());
-    } else if (PageToken.LIST.equals(token)) {
-      go(new CoachellerListComposite());
-    } else if (PageToken.CHART.equals(token)) {
-      go(new CoachellerChartComposite());
+      go(new CoachellerViewComposite());
+    } else if (PageToken.VIEW.equals(token)) {
+      go(new CoachellerViewComposite());
+    } else if (PageToken.EMAIL.equals(token)) {
+      go(new CoachellerEmailComposite());
+    } else if (PageToken.RATE.equals(token)) {
+      go(new CoachellerRateComposite(param));
     }
     // TODO: add retrievePoll to PollPhotoWidget
     // else if (PageToken.UPLOAD.equals(token)) {

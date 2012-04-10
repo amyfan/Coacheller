@@ -1,2 +1,0 @@
-serviceClass: com.coacheller.client.CoachellerService
-path: 19F1D4C018ED776A0F0B60ECB963D3F8.gwt.rpc

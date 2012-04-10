@@ -21,7 +21,7 @@ public class Coacheller_AppEngine implements EntryPoint, ValueChangeHandler<Stri
     if (History.getToken().isEmpty()) {
       History.newItem(PageToken.INDEX.getValue());
     }
-    Composite c = new CoachellerListComposite();
+    Composite c = new CoachellerViewComposite();
     FlowControl.go(c);
   }
 

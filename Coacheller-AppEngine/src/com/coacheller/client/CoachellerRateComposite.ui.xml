@@ -1,0 +1,40 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:c='urn:import:com.google.gwt.cell.client' xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:t='urn:import:com.coacheller.client' xmlns:d='urn:import:com.google.gwt.user.datepicker.client'>
+
+	<ui:style src="Coacheller.css" />
+	<g:HTMLPanel>
+		<div id="container" align="center">
+			<div id="android"></div>
+			<div class="appname">
+				<g:Label ui:field="title" addStyleNames="{style.header_mobile}" />
+			</div>
+			<div class="roundrect">
+				<div class="inputcell">
+					<g:Label ui:field="emailLabel" addStyleNames="{style.info}" />
+				</div>
+				<div class="inputcell">
+					<g:ListBox ui:field="artistInput" addStyleNames="{style.text}" />
+				</div>
+				<div class="inputcell">
+					<g:Label ui:field="weekendLabel" addStyleNames="{style.label}" />
+					<g:ListBox ui:field="weekendInput" addStyleNames="{style.text}" />
+				</div>
+				<div class="inputcell">
+					<g:Label ui:field="scoreLabel" addStyleNames="{style.label}" />
+					<g:ListBox ui:field="scoreInput" addStyleNames="{style.text}" />
+				</div>
+				<div class="buttoncell">
+					<g:Button ui:field="addRatingButton" text="Add Rating" addStyleNames="{style.button}" />
+					<!--g:Button ui:field="clearRatingButton" text="Clear Ratings" /-->
+					<!--g:Button ui:field="clearUserButton" text="Clear Users" /-->
+					<g:Button ui:field="backButton" text="Back" addStyleNames="{style.button}" />
+				</div>
+				<div class="infocell">
+					<g:Label ui:field="infoBox" addStyleNames="{style.info}" />
+				</div>
+			</div>
+		</div>
+	</g:HTMLPanel>
+
+</ui:UiBinder>

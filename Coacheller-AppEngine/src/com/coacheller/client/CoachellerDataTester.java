@@ -2,7 +2,6 @@ package com.coacheller.client;
 
 import java.util.List;
 
-import com.coacheller.server.domain.Rating;
 import com.coacheller.shared.FieldVerifier;
 import com.coacheller.shared.RatingGwt;
 import com.coacheller.shared.Set;
@@ -305,7 +304,7 @@ public class CoachellerDataTester implements EntryPoint {
         querySetButton.setEnabled(false);
         textToServerLabel.setText(email);
         serverResponseLabel.setText("");
-        coachellerService.getSets(email, year, day, new AsyncCallback<List<Set>>() {
+        coachellerService.getSets(year, day, new AsyncCallback<List<Set>>() {
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             dialogBox.setText("Remote Procedure Call - Failure");

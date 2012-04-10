@@ -1,0 +1,38 @@
+@CHARSET "UTF-8";
+.header {
+	font-weight: bold;
+	font-size: 18px;
+	color: black;
+	margin-bottom: 14px;
+}
+
+.header_mobile {
+	font-weight: bold;
+	font-size: 16px;
+	color: black;
+	margin-bottom: 12px;
+}
+
+.label {
+	font-weight: bold;
+	font-size: 14px;
+	margin-bottom: 6px;
+}
+
+.text {
+	font-size: 14px;
+	margin-bottom: 6px;
+}
+
+.button {
+	font-size: 14px;
+	margin-top: 10px;
+	margin-right: 4px;
+	margin-bottom: 4px;
+}
+
+.info {
+	font-style: italic;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}

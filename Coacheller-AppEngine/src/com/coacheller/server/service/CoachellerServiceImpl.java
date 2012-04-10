@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -46,7 +47,26 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
         + ".<br><br>It looks like you are using:<br>" + userAgent;
   }
 
-  public List<Set> getSets(String email, String yearString, String day) {
+  public List<String> getSetArtists(String yearString, String day) {
+    List<Set> sets = null;
+
+    Integer year = Integer.valueOf(yearString);
+    if (day != null && !day.isEmpty()) {
+      sets = RatingManager.getInstance().findSetsByYearAndDay(year, DayEnum.fromValue(day));
+    } else {
+      sets = RatingManager.getInstance().findSetsByYear(year);
+    }
+
+    List<String> artistNames = new ArrayList<String>();
+
+    for (Set set : sets) {
+      artistNames.add(set.getArtistName());
+    }
+
+    return artistNames;
+  }
+
+  public List<Set> getSets(String yearString, String day) {
     List<Set> sets = null;
 
     Integer year = Integer.valueOf(yearString);

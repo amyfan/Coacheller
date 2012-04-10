@@ -18,12 +18,23 @@
 	width: 1px;
 }
 
-.columnText {
-	max-width: 1000px;
+.columnDay {
+	width: 16px;
+}
+
+.columnTime {
+	width: 10px;
+}
+
+.columnName {
 	white-space: nowrap;
-	width: 100%;
+	width: 50px;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+.columnScore {
+	width: 10px;
 }
 
 .columnDate {
@@ -51,11 +62,11 @@
 }
 
 .cellTableHeader {
-	display: none;
+	font-size: 14px;
 }
 
 .cellTableCell {
-	padding: 8px 5px 8px 0px;
+	padding: 8px 2px 8px 0px;
 	overflow: hidden;
 }
 
@@ -95,7 +106,8 @@
 	border-bottom: 1px solid #ddd;
 	padding: 10px 0 10px 13px;
 	list-style-type: none;
-	color: #666;
+	color: navy;
+	font-weight: bold;
 	font-size: 18px;
 	white-space: nowrap;
 	width: 95%;
@@ -112,7 +124,8 @@
 	border-bottom: 1px solid #ddd;
 	padding: 10px 0 10px 13px;
 	list-style-type: none;
-	color: #666;
+	color: gray;
+	font-weight: bold;
 	font-size: 18px;
 	white-space: nowrap;
 	width: 95%;
