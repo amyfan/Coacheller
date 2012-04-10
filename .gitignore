@@ -54,6 +54,7 @@ local.properties
 ############################
 *.gwt-log
 *.prefs
+gwt-unitCache/
 
 ############################
 # Eclipse #

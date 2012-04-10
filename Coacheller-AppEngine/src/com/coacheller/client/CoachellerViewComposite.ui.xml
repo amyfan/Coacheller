@@ -18,8 +18,6 @@
 						addStyleNames="{style.button}" />
 				</div>
 				<div class="buttoncell">
-					<!--g:Button ui:field="recalculateButton" text="Recalculate Scores" 
-						/ -->
 					<g:Button ui:field="rateButton" text="Rate a Set"
 						addStyleNames="{style.button}" />
 				</div>

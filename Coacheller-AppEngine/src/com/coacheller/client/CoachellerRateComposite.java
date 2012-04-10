@@ -30,6 +30,9 @@ public class CoachellerRateComposite extends Composite {
       + "attempting to contact the server. Please check your network "
       + "connection and try again.";
 
+  private static final String ADMIN_EMAIL = "afan@coacheller.com";
+  private static final String ADMIN_ERROR = "You do not have permission to do this. Sorry.";
+
   private String ownerEmail = "";
 
   interface Binder extends UiBinder<Widget, CoachellerRateComposite> {
@@ -66,11 +69,17 @@ public class CoachellerRateComposite extends Composite {
   @UiField
   com.google.gwt.user.client.ui.Button addRatingButton;
 
-  // @UiField
-  // com.google.gwt.user.client.ui.Button clearRatingButton;
-  //
-  // @UiField
-  // com.google.gwt.user.client.ui.Button clearUserButton;
+  @UiField
+  com.google.gwt.user.client.ui.Button reloadButton;
+
+  @UiField
+  com.google.gwt.user.client.ui.Button recalculateButton;
+
+  @UiField
+  com.google.gwt.user.client.ui.Button clearRatingButton;
+
+  @UiField
+  com.google.gwt.user.client.ui.Button clearUserButton;
 
   @UiField
   com.google.gwt.user.client.ui.Button backButton;
@@ -116,43 +125,98 @@ public class CoachellerRateComposite extends Composite {
       }
     });
 
-    // clearRatingButton.addClickHandler(new ClickHandler() {
-    // @Override
-    // public void onClick(ClickEvent event) {
-    // infoBox.setText("");
-    // coachellerService.deleteAllRatings(new AsyncCallback<String>() {
-    // public void onFailure(Throwable caught) {
-    // // Show the RPC error message to the user
-    // infoBox.setText(SERVER_ERROR);
-    // }
-    //
-    // public void onSuccess(String result) {
-    // infoBox.setText(result);
-    // }
-    // });
-    //
-    // androidAnimation.run(400);
-    // }
-    // });
-    //
-    // clearUserButton.addClickHandler(new ClickHandler() {
-    // @Override
-    // public void onClick(ClickEvent event) {
-    // infoBox.setText("");
-    // coachellerService.deleteAllUsers(new AsyncCallback<String>() {
-    // public void onFailure(Throwable caught) {
-    // // Show the RPC error message to the user
-    // infoBox.setText(SERVER_ERROR);
-    // }
-    //
-    // public void onSuccess(String result) {
-    // infoBox.setText(result);
-    // }
-    // });
-    //
-    // androidAnimation.run(400);
-    // }
-    // });
+    reloadButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        if (ownerEmail.equals(ADMIN_EMAIL)) {
+          infoBox.setText("");
+          coachellerService.loadSetData(new AsyncCallback<String>() {
+
+            public void onFailure(Throwable caught) {
+              // Show the RPC error message to the user
+              infoBox.setText(SERVER_ERROR);
+            }
+
+            public void onSuccess(String result) {
+              infoBox.setText(result);
+            }
+          });
+
+          androidAnimation.run(400);
+        } else {
+          infoBox.setText(ADMIN_ERROR);
+        }
+      }
+    });
+
+    recalculateButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        if (ownerEmail.equals(ADMIN_EMAIL)) {
+          infoBox.setText("");
+          coachellerService.recalculateSetRatingAverages(new AsyncCallback<String>() {
+
+            public void onFailure(Throwable caught) {
+              // Show the RPC error message to the user
+              infoBox.setText(SERVER_ERROR);
+            }
+
+            public void onSuccess(String result) {
+              infoBox.setText(result);
+            }
+          });
+
+          androidAnimation.run(400);
+        } else {
+          infoBox.setText(ADMIN_ERROR);
+        }
+      }
+    });
+
+    clearRatingButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        if (ownerEmail.equals(ADMIN_EMAIL)) {
+          infoBox.setText("");
+          coachellerService.deleteAllRatings(new AsyncCallback<String>() {
+            public void onFailure(Throwable caught) {
+              // Show the RPC error message to the user
+              infoBox.setText(SERVER_ERROR);
+            }
+
+            public void onSuccess(String result) {
+              infoBox.setText(result);
+            }
+          });
+          androidAnimation.run(400);
+        } else {
+          infoBox.setText(ADMIN_ERROR);
+        }
+      }
+    });
+
+    clearUserButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        if (ownerEmail.equals(ADMIN_EMAIL)) {
+          infoBox.setText("");
+          coachellerService.deleteAllUsers(new AsyncCallback<String>() {
+            public void onFailure(Throwable caught) {
+              // Show the RPC error message to the user
+              infoBox.setText(SERVER_ERROR);
+            }
+
+            public void onSuccess(String result) {
+              infoBox.setText(result);
+            }
+          });
+
+          androidAnimation.run(400);
+        } else {
+          infoBox.setText(ADMIN_ERROR);
+        }
+      }
+    });
 
     backButton.addClickHandler(new ClickHandler() {
       @Override
