@@ -278,6 +278,7 @@ public class CoachellerViewComposite extends Composite {
     Options options = Options.create();
     options.setHeight((setsList.size() * 30) + 20);
     // options.setTitle("Coachella Set Ratings");
+    options.setColors("blue", "green");
     AxisOptions axisOptions = AxisOptions.create();
     axisOptions.setMinValue(0);
     axisOptions.setMaxValue(5);
@@ -302,11 +303,10 @@ public class CoachellerViewComposite extends Composite {
       data.addRows(setsList.size());
       if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Artist Name")) {
         // sort first
-        ArrayList<Set> sortedTasks = new ArrayList<Set>(setsList);
-        Collections.sort(sortedTasks, SET_NAME_COMPARATOR);
+        Collections.sort(setsList, SET_NAME_COMPARATOR);
 
         int setNum = 0;
-        for (Set set : sortedTasks) {
+        for (Set set : setsList) {
           data.setValue(setNum, 0, set.getArtistName());
           data.setValue(setNum, 1, set.getAvgScoreOne());
           data.setValue(setNum, 2, set.getAvgScoreTwo());
@@ -314,11 +314,10 @@ public class CoachellerViewComposite extends Composite {
         }
       } else {
         // sort first
-        ArrayList<Set> sortedTasks = new ArrayList<Set>(setsList);
-        Collections.sort(sortedTasks, SET_TIME_COMPARATOR);
+        Collections.sort(setsList, SET_TIME_COMPARATOR);
 
         int setNum = 0;
-        for (Set set : sortedTasks) {
+        for (Set set : setsList) {
           String nameCombo = set.getTime() + ": " + set.getArtistName();
           data.setValue(setNum, 0, nameCombo);
           data.setValue(setNum, 1, set.getAvgScoreOne());
