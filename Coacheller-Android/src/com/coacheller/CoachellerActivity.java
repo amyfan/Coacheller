@@ -5,7 +5,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.util.Calendar;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -13,21 +12,16 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 public class CoachellerActivity extends Activity implements View.OnClickListener {
 
@@ -39,26 +33,33 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    
+
     CoachellerApplication.debug(this, "CoachellerActivity Launched");
     initializeApp();
   }
 
-  
-
-  
-
-
-
   private void initializeApp() {
     setContentView(R.layout.sets_list);
+
+    
+    JSONArray results = sendHttpRequestToServer();
+    
+    
+    try {
+      
+      JSONObject obj = results.getJSONObject(0);
+      CoachellerApplication.debug(this, obj.toString());
+      CoachellerApplication.debug(this, obj.names().toString());
+
+
+      JSONArraySortMap sortMap = new JSONArraySortMap(results, "artist", JSONArraySortMap.VALUE_STRING);
+      
+    } catch (JSONException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
   }
-
-
-
-
-
-
 
   /**
    * Sends an HttpRequest to SDCrimeZone-AppEngine with lat, long, radius (and
@@ -66,14 +67,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
    * page.
    * 
    **/
-  private String sendHttpRequestToServer(View v) {
+  private JSONArray sendHttpRequestToServer() {
     // get the current GPS coordinates, distance, and dates selected
-
-    JSONArray jsonObjs = new JSONArray();
-
-    EditText addr = (EditText) this.findViewById(R.id.addressText);
-    Spinner dist = (Spinner) this.findViewById(R.id.distanceList);
-    String currentAddress = addr.getText().toString();
 
     try {
 
@@ -84,23 +79,36 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
       // Sample URL
       // http://ratethisfest.appspot.com/coachellerServlet?year=2012&day=Friday&weekend=1&email=sample@email.com
-      String requestString = "HTTPGet = http://ratethisfest.appspot.com/coachellerServlet?year="
+      String requestString = "http://ratethisfest.appspot.com/coachellerServlet?year="
           + "2012" + "&day=" + "Friday" + "&weekend=" + "1" + "&email=" + "sample@email.com";
-      CoachellerApplication.debug(this, requestString);
+      CoachellerApplication.debug(this, "HTTPGet = " +requestString);
       HttpGet get = new HttpGet(requestString);
       response = hc.execute(get);
-
+      
       // get the response from GAE server, should be in JSON format
       if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+        CoachellerApplication.debug(this, "Received HTTP Response");
+        
+        BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+        StringBuilder builder = new StringBuilder();
+        for (String line = null; (line = reader.readLine()) != null;) {
+            builder.append(line).append("\n");
+        }
+        JSONTokener tokener = new JSONTokener(builder.toString());
+        JSONArray finalResult = new JSONArray(tokener);     
+        return finalResult;
+  
+        /*
         File responseFile = File.createTempFile("results", "json", this.getFilesDir());
         // Buffers
         BufferedReader bufReader = new BufferedReader(new InputStreamReader(response.getEntity()
-            .getContent()));
+            .getContent()));  
         BufferedWriter bufWriter = new BufferedWriter(new FileWriter(responseFile));
         int nbCharRead = 0;
         int i = 0;
         int totalRead = 0;
         char[] buffer = new char[10000];
+        
 
         while ((nbCharRead = bufReader.read(buffer, 0, 10000)) != -1) {
           totalRead += nbCharRead;
@@ -114,6 +122,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         }
 
         return responseFile.getPath();
+        */
       } else {
         CoachellerApplication.debug(this, "HTTP Response was not OK: "
             + response.getStatusLine().getStatusCode());
@@ -130,7 +139,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   @Override
   public void onClick(View arg0) {
     // TODO Auto-generated method stub
-    
+
   }
 
 }
