@@ -33,9 +33,12 @@ public class JSONUtils {
       try {
         ret.put("id", set.getId());
         ret.put("artist", set.getArtistName());
-        // ret.put("year", set.getYear());
-        // ret.put("day", set.getDay());
-        ret.put("time", set.getTime());
+        ret.put("year", set.getYear());
+        ret.put("day", set.getDay());
+        ret.put("time_one", set.getTimeOne());
+        ret.put("time_two", set.getTimeTwo());
+        ret.put("stage_one", set.getStageOne());
+        ret.put("stage_two", set.getStageTwo());
         ret.put("avg_score_one", set.getAvgScoreOne());
         ret.put("avg_score_two", set.getAvgScoreTwo());
         jsonObjs.put(ret);
@@ -91,7 +94,7 @@ public class JSONUtils {
           set.setDay((String) obj.get("day"));
         }
         if (obj.get("time") != null) {
-          set.setTime((Integer) obj.get("time"));
+          set.setTimeOne((Integer) obj.get("time"));
         }
         if (obj.get("avg_score_one") != null) {
           set.setAvgScoreOne((Double) obj.get("avg_score_one"));

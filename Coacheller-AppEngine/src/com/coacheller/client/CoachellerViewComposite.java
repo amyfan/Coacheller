@@ -1,6 +1,5 @@
 package com.coacheller.client;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -292,7 +291,7 @@ public class CoachellerViewComposite extends Composite {
 
         int setNum = 0;
         for (Set set : setsList) {
-          String nameCombo = set.getTime() + ": " + set.getArtistName();
+          String nameCombo = set.getTimeOne() + ": " + set.getArtistName();
           data.setValue(setNum, 0, nameCombo);
           data.setValue(setNum, 1, set.getAvgScoreOne());
           data.setValue(setNum, 2, set.getAvgScoreTwo());
@@ -312,9 +311,9 @@ public class CoachellerViewComposite extends Composite {
   public static final Comparator<? super Set> SET_TIME_COMPARATOR = new Comparator<Set>() {
     public int compare(Set t0, Set t1) {
       // Sort by set time first
-      if (t0.getTime() < t1.getTime()) {
+      if (t0.getTimeOne() > t1.getTimeOne()) {
         return 1;
-      } else if (t0.getTime() > t1.getTime()) {
+      } else if (t0.getTimeOne() < t1.getTimeOne()) {
         return -1;
       } else {
         // Sort items alphabetically within each group
@@ -325,14 +324,18 @@ public class CoachellerViewComposite extends Composite {
 
   public static class SetsTable extends CellTable<Set> {
 
-    public Column<Set, Boolean> activeColumn;
+    // public Column<Set, Boolean> activeColumn;
     public Column<Set, String> dayColumn;
-    public Column<Set, String> timeColumn;
+    public Column<Set, String> timeOneColumn;
+    // public Column<Set, String> timeTwoColumn;
     public Column<Set, String> artistNameColumn;
     public Column<Set, String> avgScoreOneColumn;
     public Column<Set, String> avgScoreTwoColumn;
     public Column<Set, String> numRatingsOneColumn;
     public Column<Set, String> numRatingsTwoColumn;
+    public Column<Set, String> stageOneColumn;
+
+    // public Column<Set, String> stageTwoColumn;
 
     interface TasksTableResources extends CellTable.Resources {
       @Source("CoachellerTable.css")
@@ -340,7 +343,7 @@ public class CoachellerViewComposite extends Composite {
     }
 
     interface TableStyle extends CellTable.Style {
-      String columnCheckbox();
+      // String columnCheckbox();
 
       String columnTime();
 
@@ -352,9 +355,7 @@ public class CoachellerViewComposite extends Composite {
 
       String columnCount();
 
-      String columnTrash();
-
-      String columnDate();
+      String columnStage();
     }
 
     private static TasksTableResources resources = GWT.create(TasksTableResources.class);
@@ -362,15 +363,15 @@ public class CoachellerViewComposite extends Composite {
     public SetsTable() {
       super(100, resources);
 
-      activeColumn = new Column<Set, Boolean>(new CheckboxCell()) {
-        @Override
-        public Boolean getValue(Set object) {
-          return false;
-          // return object.isActive() == Boolean.TRUE;
-        }
-      };
-      addColumn(activeColumn, "\u2713"); // Checkmark
-      addColumnStyleName(0, resources.cellTableStyle().columnCheckbox());
+      // activeColumn = new Column<Set, Boolean>(new CheckboxCell()) {
+      // @Override
+      // public Boolean getValue(Set object) {
+      // return false;
+      // // return object.isActive() == Boolean.TRUE;
+      // }
+      // };
+      // addColumn(activeColumn, "\u2713"); // Checkmark
+      // addColumnStyleName(0, resources.cellTableStyle().columnCheckbox());
 
       dayColumn = new Column<Set, String>(new TextCell()) {
         @Override
@@ -379,18 +380,28 @@ public class CoachellerViewComposite extends Composite {
         }
       };
       addColumn(dayColumn, "Day");
-      addColumnStyleName(1, "columnFill");
-      addColumnStyleName(1, resources.cellTableStyle().columnDay());
+      addColumnStyleName(0, "columnFill");
+      addColumnStyleName(0, resources.cellTableStyle().columnDay());
 
-      timeColumn = new Column<Set, String>(new TextCell()) {
+      timeOneColumn = new Column<Set, String>(new TextCell()) {
         @Override
         public String getValue(Set object) {
-          return object.getTime().toString();
+          return object.getTimeOne().toString();
         }
       };
-      addColumn(timeColumn, "Set Time");
+      addColumn(timeOneColumn, "Set Time");
+      addColumnStyleName(1, "columnFill");
+      addColumnStyleName(1, resources.cellTableStyle().columnTime());
+
+      stageOneColumn = new Column<Set, String>(new TextCell()) {
+        @Override
+        public String getValue(Set object) {
+          return object.getStageOne();
+        }
+      };
+      addColumn(stageOneColumn, "Stage");
       addColumnStyleName(2, "columnFill");
-      addColumnStyleName(2, resources.cellTableStyle().columnTime());
+      addColumnStyleName(2, resources.cellTableStyle().columnStage());
 
       artistNameColumn = new Column<Set, String>(new TextCell()) {
         @Override
@@ -398,7 +409,6 @@ public class CoachellerViewComposite extends Composite {
           return object.getArtistName();
         }
       };
-      // TODO: figure out why the hell I don't see column headers
       addColumn(artistNameColumn, "Artist Name");
       addColumnStyleName(3, "columnFill");
       addColumnStyleName(3, resources.cellTableStyle().columnName());
