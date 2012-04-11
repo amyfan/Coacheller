@@ -14,9 +14,6 @@
  * the License.
  */
 @def selectionBorderWidth 2px;
-.columnCheckbox {
-	width: 1px;
-}
 
 .columnDay {
 	width: 16px;
@@ -43,12 +40,8 @@
 	width: 10px;
 }
 
-.columnDate {
-	color: red;
-}
-
-.columnTrash {
-	
+.columnStage {
+	width: 30px;
 }
 
 .cellTableWidget {
