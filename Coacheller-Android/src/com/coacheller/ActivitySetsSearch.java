@@ -115,8 +115,8 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
 
         bun.putString("results", results); // add two parameters: a
                                            // string and a boolean
-        EditText addr = (EditText) this.findViewById(R.id.addressText);
-        String currentAddress = addr.getText().toString();
+        //EditText addr = (EditText) this.findViewById(R.id.addressText);
+        //String currentAddress = addr.getText().toString();
 
         //bun.putString("year", _selectedDate);
        //bun.putString("radius", _selectedRadius);

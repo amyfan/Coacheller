@@ -14,17 +14,21 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
-public class CoachellerActivity extends Activity implements View.OnClickListener, OnItemSelectedListener {
+public class CoachellerActivity extends Activity implements View.OnClickListener, OnItemSelectedListener, OnItemClickListener {
 
   private CustomSetListAdapter _setListAdapter;
   private int _weekToQuery;
@@ -49,6 +53,13 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     
     initializeApp();
   }
+  
+  public void onResume() {
+    super.onResume();
+    
+    Toast clickToRate = Toast.makeText(this, "Tap any set to rate it!", 25);
+    clickToRate.show();
+  }
 
   private void initializeApp() {
     setContentView(R.layout.sets_list);
@@ -56,6 +67,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     _setListAdapter = new CustomSetListAdapter(this, _timeFieldName);
     ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
     viewSetsList.setAdapter(_setListAdapter);
+    viewSetsList.setOnItemClickListener(this);
     
     Button buttonSearchSets = (Button) this.findViewById(R.id.buttonChangeToSearchSets);
     buttonSearchSets.setOnClickListener(this);
@@ -150,6 +162,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   @Override
   public void onClick(View arg0) {
+
     if (arg0.getId() == R.id.buttonChangeToSearchSets) {
       System.out.println("Button: Find Other Sets");
       Intent intent = new Intent();
@@ -185,6 +198,38 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     CoachellerApplication.debug(this, "Search Type Spinner: Nothing Selected");
     Spinner spinnerSortType =(Spinner)findViewById(R.id.spinner_sort_by);
     spinnerSortType.setSelection(0);
+  }
+
+  @Override
+  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+   
+    JSONObject obj = (JSONObject) _setListAdapter.getItem(position);
+    CoachellerApplication.debug(this, "You Clicked On: "+ obj);
+    
+    showDialog(333);
+    
+
+
+    
+    
+    
+  }
+
+  @Override
+  protected Dialog onCreateDialog(int id) {
+    
+    if (id == 333) {
+      
+      Context context = this;
+      Dialog dialog = new Dialog(context);
+      
+      dialog.setContentView(R.layout.dialog_rate_set);
+      dialog.setTitle("Rate this Set!");
+      
+      return dialog;
+    }
+    
+    return super.onCreateDialog(id);
   }
 
 }
