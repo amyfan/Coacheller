@@ -46,7 +46,7 @@ public class JSONArraySortMap {
       }
       
       Pair<Integer, Object> nextPair = new Pair<Integer, Object>(i, value);
-      System.out.println(i + " || " + value.toString());
+      //System.out.println(i + " || " + value.toString());
       _pairs.add(nextPair);
       
     }
@@ -72,15 +72,17 @@ public class JSONArraySortMap {
     Collections.sort(_pairs, comparator);
   }
 
-  public JSONObject getSortedIntValue(int index) throws JSONException {
-    if (_valueType != VALUE_INTEGER) {
-      throw new RuntimeException();
-    }
+  public JSONObject getSortedJSONObj(int index) throws JSONException {
+    //if (_valueType != VALUE_INTEGER) {
+      //throw new RuntimeException();
+    //}
     
     Integer indexToReturn = (Integer) _pairs.get(index).first;
     return _arrayToSort.getJSONObject(indexToReturn);
   }
   
+  //Redundant, did not need
+  /*
   public JSONObject getSortedStringValue(int index) throws JSONException {
     if (_valueType != VALUE_STRING) {
       throw new RuntimeException();
@@ -89,4 +91,5 @@ public class JSONArraySortMap {
     Integer indexToReturn = (Integer) _pairs.get(index).first;
     return _arrayToSort.getJSONObject(indexToReturn);
   }
+  */
 }

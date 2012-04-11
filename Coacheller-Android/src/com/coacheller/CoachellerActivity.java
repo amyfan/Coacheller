@@ -1,9 +1,6 @@
 package com.coacheller;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.InputStreamReader;
 
 import org.apache.http.HttpResponse;
@@ -17,11 +14,11 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.Button;
 
 public class CoachellerActivity extends Activity implements View.OnClickListener {
 
@@ -42,6 +39,11 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     setContentView(R.layout.sets_list);
 
     
+    Button submitButton = (Button) this.findViewById(R.id.buttonChangeToSearchSets);
+    submitButton.setOnClickListener(this);
+    
+    //JSON Request Crap is ideally done in another thread
+    
     JSONArray results = sendHttpRequestToServer();
     
     
@@ -54,12 +56,12 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       
       JSONArraySortMap sortMapArtist = new JSONArraySortMap(results, "artist", JSONArraySortMap.VALUE_STRING);
       for (int i = 0; i < results.length(); i++) {  
-        CoachellerApplication.debug(this, sortMapArtist.getSortedStringValue(i).toString());
+        CoachellerApplication.debug(this, sortMapArtist.getSortedJSONObj(i).toString());
       }
       
       JSONArraySortMap sortMapId = new JSONArraySortMap(results, "id", JSONArraySortMap.VALUE_INTEGER);
       for (int i = 0; i < results.length(); i++) {  
-        CoachellerApplication.debug(this, sortMapId.getSortedIntValue(i).toString());
+        CoachellerApplication.debug(this, sortMapId.getSortedJSONObj(i).toString());
       }
       
     } catch (JSONException e) {
@@ -146,7 +148,15 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   @Override
   public void onClick(View arg0) {
-    // TODO Auto-generated method stub
+    if (arg0.getId() == R.id.buttonChangeToSearchSets) {
+      System.out.println("Button: Find Other Sets");
+      Intent intent = new Intent();
+      intent.setClass(this, ActivitySetsSearch.class);
+    //intent.putExtras(bun);
+
+    startActivity(intent);
+    }
+
 
   }
 

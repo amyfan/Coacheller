@@ -16,13 +16,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:baselineAligned="false" >
-
+
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/buttonChangeToSearchSets"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="findothersetstext" />
+            android:text="Find Other Sets" />
 
         <LinearLayout
             android:id="@+id/layout_sets_sort_spacer"
@@ -37,13 +37,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-
+
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="right"
-                android:text="sortbytext"
+                android:text="Sort By:"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <Spinner
