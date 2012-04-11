@@ -29,11 +29,17 @@
 .columnName {
 	white-space: nowrap;
 	width: 50px;
+	font-weight: bold;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
 .columnScore {
+	width: 10px;
+	font-weight: bold;
+}
+
+.columnCount {
 	width: 10px;
 }
 
@@ -107,7 +113,6 @@
 	padding: 10px 0 10px 13px;
 	list-style-type: none;
 	color: navy;
-	font-weight: bold;
 	font-size: 18px;
 	white-space: nowrap;
 	width: 95%;
@@ -125,7 +130,6 @@
 	padding: 10px 0 10px 13px;
 	list-style-type: none;
 	color: gray;
-	font-weight: bold;
 	font-size: 18px;
 	white-space: nowrap;
 	width: 95%;

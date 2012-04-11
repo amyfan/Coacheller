@@ -350,6 +350,8 @@ public class CoachellerViewComposite extends Composite {
 
       String columnScore();
 
+      String columnCount();
+
       String columnTrash();
 
       String columnDate();
@@ -425,7 +427,7 @@ public class CoachellerViewComposite extends Composite {
       };
       addColumn(numRatingsOneColumn, "# Ratings");
       addColumnStyleName(5, "columnFill");
-      addColumnStyleName(5, resources.cellTableStyle().columnScore());
+      addColumnStyleName(5, resources.cellTableStyle().columnCount());
 
       avgScoreTwoColumn = new Column<Set, String>(new TextCell()) {
         @Override
@@ -451,7 +453,7 @@ public class CoachellerViewComposite extends Composite {
       };
       addColumn(numRatingsTwoColumn, "# Ratings");
       addColumnStyleName(7, "columnFill");
-      addColumnStyleName(7, resources.cellTableStyle().columnScore());
+      addColumnStyleName(7, resources.cellTableStyle().columnCount());
 
     }
   }
