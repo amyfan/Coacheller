@@ -4,6 +4,8 @@ import com.coacheller.shared.FieldVerifier;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -44,20 +46,22 @@ public class CoachellerEmailComposite extends Composite {
 
   private void initUiElements() {
     title.setText("Coachella Set Rater");
-    emailLabel.setText("Email (as ID)");
+    emailLabel.setText("Email (as ID) (will NOT be misused, pinky swear)");
 
     userEmailAddressInput.getElement().setPropertyString("placeholder", "Enter email address here");
+
+    userEmailAddressInput.addKeyPressHandler(new KeyPressHandler() {
+      public void onKeyPress(KeyPressEvent event) {
+        if (((int) event.getCharCode()) == 13) {
+          submitEmail();
+        }
+      }
+    });
 
     submitButton.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        String email = userEmailAddressInput.getText();
-
-        if (!FieldVerifier.isValidEmail(email)) {
-          infoBox.setText(FieldVerifier.EMAIL_ERROR);
-        } else {
-          FlowControl.go(new CoachellerRateComposite(email));
-        }
+        submitEmail();
       }
     });
 
@@ -67,6 +71,16 @@ public class CoachellerEmailComposite extends Composite {
         FlowControl.go(new CoachellerViewComposite());
       }
     });
+  }
+
+  private void submitEmail() {
+    String email = userEmailAddressInput.getText();
+
+    if (!FieldVerifier.isValidEmail(email)) {
+      infoBox.setText(FieldVerifier.EMAIL_ERROR);
+    } else {
+      FlowControl.go(new CoachellerRateComposite(email));
+    }
   }
 
   @Override

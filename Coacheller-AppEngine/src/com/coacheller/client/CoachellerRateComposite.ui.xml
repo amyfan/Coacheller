@@ -40,6 +40,10 @@
 				<div class="infocell">
 					<g:Label ui:field="infoBox" addStyleNames="{style.info}" />
 				</div>
+				<div class="tablecell">
+					<t:CoachellerRateComposite.RatingsTable
+						ui:field="ratingsTable" />
+				</div>
 			</div>
 		</div>
 	</g:HTMLPanel>

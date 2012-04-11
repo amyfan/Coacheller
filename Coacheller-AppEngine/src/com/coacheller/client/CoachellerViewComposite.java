@@ -267,12 +267,12 @@ public class CoachellerViewComposite extends Composite {
     DataTable data = DataTable.create();
     if (setsList == null) {
       data.addColumn(ColumnType.STRING, "Artist Name");
-      data.addColumn(ColumnType.NUMBER, "Weekend 1 Average Score");
-      data.addColumn(ColumnType.NUMBER, "Weekend 2 Average Score");
+      data.addColumn(ColumnType.NUMBER, "Week 1 Average Score");
+      data.addColumn(ColumnType.NUMBER, "Week 2 Average Score");
     } else {
       data.addColumn(ColumnType.STRING, "Artist Name");
-      data.addColumn(ColumnType.NUMBER, "Weekend 1 Average Score");
-      data.addColumn(ColumnType.NUMBER, "Weekend 2 Average Score");
+      data.addColumn(ColumnType.NUMBER, "Week 1 Average Score");
+      data.addColumn(ColumnType.NUMBER, "Week 2 Average Score");
       data.addRows(setsList.size());
       if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Artist Name")) {
         // sort first
@@ -324,7 +324,6 @@ public class CoachellerViewComposite extends Composite {
 
   public static class SetsTable extends CellTable<Set> {
 
-    // public Column<Set, Boolean> activeColumn;
     public Column<Set, String> dayColumn;
     public Column<Set, String> timeOneColumn;
     // public Column<Set, String> timeTwoColumn;
@@ -338,12 +337,11 @@ public class CoachellerViewComposite extends Composite {
     // public Column<Set, String> stageTwoColumn;
 
     interface TasksTableResources extends CellTable.Resources {
-      @Source("CoachellerTable.css")
+      @Source("SetsTable.css")
       TableStyle cellTableStyle();
     }
 
     interface TableStyle extends CellTable.Style {
-      // String columnCheckbox();
 
       String columnTime();
 
@@ -362,16 +360,6 @@ public class CoachellerViewComposite extends Composite {
 
     public SetsTable() {
       super(100, resources);
-
-      // activeColumn = new Column<Set, Boolean>(new CheckboxCell()) {
-      // @Override
-      // public Boolean getValue(Set object) {
-      // return false;
-      // // return object.isActive() == Boolean.TRUE;
-      // }
-      // };
-      // addColumn(activeColumn, "\u2713"); // Checkmark
-      // addColumnStyleName(0, resources.cellTableStyle().columnCheckbox());
 
       dayColumn = new Column<Set, String>(new TextCell()) {
         @Override
@@ -422,7 +410,7 @@ public class CoachellerViewComposite extends Composite {
           return "";
         }
       };
-      addColumn(avgScoreOneColumn, "Wknd 1 Score");
+      addColumn(avgScoreOneColumn, "Week 1 Score");
       addColumnStyleName(4, "columnFill");
       addColumnStyleName(4, resources.cellTableStyle().columnScore());
 
@@ -448,7 +436,7 @@ public class CoachellerViewComposite extends Composite {
           return "";
         }
       };
-      addColumn(avgScoreTwoColumn, "Wknd 2 Score");
+      addColumn(avgScoreTwoColumn, "Week 2 Score");
       addColumnStyleName(6, "columnFill");
       addColumnStyleName(6, resources.cellTableStyle().columnScore());
 

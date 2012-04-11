@@ -6,7 +6,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.coacheller.shared.FieldVerifier;
+import com.coacheller.shared.RatingGwt;
 import com.google.gwt.animation.client.Animation;
+import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
@@ -14,11 +16,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ListDataProvider;
 
 public class CoachellerRateComposite extends Composite {
 
@@ -41,6 +46,7 @@ public class CoachellerRateComposite extends Composite {
   private static Binder uiBinder = GWT.create(Binder.class);
 
   private final CoachellerServiceAsync coachellerService = GWT.create(CoachellerService.class);
+  private List<RatingGwt> ratingsList;
 
   @UiField
   Label title;
@@ -82,12 +88,16 @@ public class CoachellerRateComposite extends Composite {
   com.google.gwt.user.client.ui.Button clearUserButton;
 
   @UiField
-  com.google.gwt.user.client.ui.Button backButton;
+  com.google.gwt.user.client.ui.Button backButton;;
+
+  @UiField
+  RatingsTable ratingsTable;
 
   public CoachellerRateComposite() {
     initWidget(uiBinder.createAndBindUi(this));
 
     retrieveSets();
+    retrieveRatings();
 
     initUiElements();
   }
@@ -99,8 +109,12 @@ public class CoachellerRateComposite extends Composite {
   }
 
   private void initUiElements() {
-
     title.setText("Coachella Set Rater");
+
+    ListDataProvider<RatingGwt> listDataProvider = new ListDataProvider<RatingGwt>();
+    listDataProvider.addDataDisplay(ratingsTable);
+    ratingsList = listDataProvider.getList();
+
     weekendLabel.setText("Weekend");
     scoreLabel.setText("Score");
 
@@ -115,6 +129,7 @@ public class CoachellerRateComposite extends Composite {
     scoreInput.addItem("3");
     scoreInput.addItem("4");
     scoreInput.addItem("5");
+    scoreInput.setSelectedIndex(4);
 
     addRatingButton.addClickHandler(new ClickHandler() {
       @Override
@@ -280,8 +295,25 @@ public class CoachellerRateComposite extends Composite {
 
           public void onSuccess(String result) {
             infoBox.setText(result);
+            retrieveRatings();
           }
         });
+  }
+
+  private void retrieveRatings() {
+    coachellerService.getRatingsByUserEmail(ownerEmail, new AsyncCallback<List<RatingGwt>>() {
+
+      public void onFailure(Throwable caught) {
+        // Show the RPC error message to the user
+        infoBox.setText(SERVER_ERROR);
+      }
+
+      public void onSuccess(List<RatingGwt> result) {
+        ratingsList.clear();
+        ratingsList.addAll(result);
+        Collections.sort(ratingsList, RATING_NAME_COMPARATOR);
+      }
+    });
   }
 
   public static final Comparator<? super String> SET_NAME_COMPARATOR = new Comparator<String>() {
@@ -289,6 +321,83 @@ public class CoachellerRateComposite extends Composite {
       return t0.compareTo(t1);
     }
   };
+
+  public static final Comparator<? super RatingGwt> RATING_NAME_COMPARATOR = new Comparator<RatingGwt>() {
+    public int compare(RatingGwt t0, RatingGwt t1) {
+      // Sort by set time first
+      if (t0.getScore() < t1.getScore()) {
+        return 1;
+      } else if (t0.getScore() > t1.getScore()) {
+        return -1;
+      } else {
+        // Sort items alphabetically within each group
+        return t0.getArtistName().compareTo(t1.getArtistName());
+      }
+    }
+  };
+
+  public static class RatingsTable extends CellTable<RatingGwt> {
+
+    public Column<RatingGwt, String> artistNameColumn;
+    public Column<RatingGwt, String> weekendColumn;
+    public Column<RatingGwt, String> scoreColumn;
+
+    interface TasksTableResources extends CellTable.Resources {
+      @Source("RatingsTable.css")
+      TableStyle cellTableStyle();
+    }
+
+    interface TableStyle extends CellTable.Style {
+
+      String columnName();
+
+      String columnScore();
+
+    }
+
+    private static TasksTableResources resources = GWT.create(TasksTableResources.class);
+
+    public RatingsTable() {
+      super(100, resources);
+
+      artistNameColumn = new Column<RatingGwt, String>(new TextCell()) {
+        @Override
+        public String getValue(RatingGwt object) {
+          return object.getArtistName();
+        }
+      };
+      addColumn(artistNameColumn, "Artist Name");
+      addColumnStyleName(0, "columnFill");
+      addColumnStyleName(0, resources.cellTableStyle().columnName());
+
+      weekendColumn = new Column<RatingGwt, String>(new TextCell()) {
+        @Override
+        public String getValue(RatingGwt object) {
+          if (object.getWeekend() != null) {
+            return object.getWeekend().toString();
+          }
+          return "";
+        }
+      };
+      addColumn(weekendColumn, "Weekend");
+      addColumnStyleName(1, "columnFill");
+      addColumnStyleName(1, resources.cellTableStyle().columnScore());
+
+      scoreColumn = new Column<RatingGwt, String>(new TextCell()) {
+        @Override
+        public String getValue(RatingGwt object) {
+          if (object.getScore() != null) {
+            return object.getScore().toString();
+          }
+          return "";
+        }
+      };
+      addColumn(scoreColumn, "Score");
+      addColumnStyleName(2, "columnFill");
+      addColumnStyleName(2, resources.cellTableStyle().columnScore());
+
+    }
+  }
 
   class AndroidAnimation extends Animation {
     private static final int TOP = -50;

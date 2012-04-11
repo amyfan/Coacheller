@@ -149,10 +149,12 @@ public class JSONUtils {
     }
     List<RatingGwt> ratingGwts = new ArrayList<RatingGwt>();
     for (Rating rating : ratings) {
+      Set set = RatingManager.getInstance().findSet(rating.getSet().getId());
       RatingGwt ratingGwt = new RatingGwt();
       ratingGwt.setId(rating.getId());
       ratingGwt.setRaterId(rating.getRater().getId());
       ratingGwt.setSetId(rating.getSet().getId());
+      ratingGwt.setArtistName(set.getArtistName());
       ratingGwt.setWeekend(rating.getWeekend());
       ratingGwt.setScore(rating.getScore());
       ratingGwts.add(ratingGwt);
