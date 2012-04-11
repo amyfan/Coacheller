@@ -55,6 +55,9 @@ local.properties
 *.gwt-log
 *.prefs
 gwt-unitCache/
+classes/
+deploy/
+*_appengine/
 
 ############################
 # Eclipse #
