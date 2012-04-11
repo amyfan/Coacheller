@@ -1,7 +1,7 @@
 2012,Friday,1200,1200,Gobi,Gobi,Abe Vigoda
 2012,Friday,2135,2135,Sahara,Sahara,Afrojack
 2012,Friday,1955,1955,Sahara,Sahara,Alesso
-2012,Friday,0000,0000,Mojave,Mojave,Amon Tobin : ISAM Live
+2012,Friday,2400,2400,Mojave,Mojave,Amon Tobin : ISAM Live
 2012,Friday,1830,1830,Coachella,Coachella,Arctic Monkeys
 2012,Friday,2130,2130,Gobi,Gobi,Atari Teenage Riot
 2012,Friday,1430,1430,Sahara,Sahara,Breakbot
@@ -39,7 +39,7 @@
 2012,Friday,2250,2250,Gobi,Gobi,The Black Angels
 2012,Friday,2145,2145,Coachella,Coachella,The Black Keys
 2012,Friday,1400,1400,Outdoor,Outdoor,The Dear Hunter
-2012,Friday,0000,0000,Gobi,Gobi,The Horrors
+2012,Friday,2400,2400,Gobi,Gobi,The Horrors
 2012,Friday,2055,2055,Mojave,Mojave,The Rapture
 2012,Friday,1300,1300,Outdoor,Outdoor,The Sheepdogs
 2012,Friday,1210,1210,Mojave,Mojave,Wallpaper.

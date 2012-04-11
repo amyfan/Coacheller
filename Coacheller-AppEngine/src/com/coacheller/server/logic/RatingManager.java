@@ -180,6 +180,13 @@ public class RatingManager {
     return ratings;
   }
 
+  public List<Rating> findRatingsByUser(String email) {
+    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
+    List<Rating> ratings = new ArrayList<Rating>();
+    ratings = ratingDao.findRatingsByUserKey(userKey);
+    return ratings;
+  }
+
   private List<Rating> findRatingsBySetArtistAndUser(String setArtist, String email, Integer weekend) {
     // TODO: figure out whether to keep this method & query year properly
     Key<Set> setKey = findSetKeyByArtistAndYear(setArtist, null);
