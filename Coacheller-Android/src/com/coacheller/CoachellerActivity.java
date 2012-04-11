@@ -37,9 +37,9 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   private void initializeApp() {
     setContentView(R.layout.sets_list);
 
-    _setListAdapter = new CustomSetListAdapter();
+    _setListAdapter = new CustomSetListAdapter(this);
     ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
-    viewSetsList.setAdapter(adapter);
+    viewSetsList.setAdapter(_setListAdapter);
     
     Button submitButton = (Button) this.findViewById(R.id.buttonChangeToSearchSets);
     submitButton.setOnClickListener(this);
@@ -52,6 +52,10 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       JSONObject obj = results.getJSONObject(0);
       CoachellerApplication.debug(this, obj.toString());
       CoachellerApplication.debug(this, obj.names().toString());
+      
+      _setListAdapter.setData(results);
+      _setListAdapter.sortByField("id", JSONArraySortMap.VALUE_INTEGER);
+      
       
       
       JSONArraySortMap sortMapArtist = new JSONArraySortMap(results, "artist", JSONArraySortMap.VALUE_STRING);
