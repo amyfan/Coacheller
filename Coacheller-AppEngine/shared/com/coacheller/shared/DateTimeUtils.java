@@ -1,16 +1,6 @@
 package com.coacheller.shared;
 
-import java.util.Calendar;
-
 public class DateTimeUtils {
-
-  public static int whichWeekIsToday() {
-    if (Calendar.getInstance().get(Calendar.DAY_OF_MONTH) < 19) {
-      return 1;
-    } else {
-      return 2;
-    }
-  }
 
   public static String militaryToCivilianTime(int milTime) {
     String ampm;
