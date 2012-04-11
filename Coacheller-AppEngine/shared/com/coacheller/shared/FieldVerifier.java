@@ -51,8 +51,10 @@ public class FieldVerifier {
       return false;
     } else if (!name.contains("@")) {
       return false;
+    } else if (!name.contains(".")) {
+      return false;
     }
-    return name.length() > 3;
+    return name.length() > 10;
   }
 
   public static boolean isValidYear(String year) {
