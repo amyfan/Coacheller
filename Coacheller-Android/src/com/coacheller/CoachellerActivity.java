@@ -19,12 +19,11 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 
 public class CoachellerActivity extends Activity implements View.OnClickListener {
 
-  public static Location _currLocation;
-  public static String _selectedRadius;
-  public static String _selectedDate;
+  private CustomSetListAdapter _setListAdapter;
 
   /** Called by Android Framework when the activity is first created. */
   @Override
@@ -38,14 +37,15 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   private void initializeApp() {
     setContentView(R.layout.sets_list);
 
+    _setListAdapter = new CustomSetListAdapter();
+    ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
+    viewSetsList.setAdapter(adapter);
     
     Button submitButton = (Button) this.findViewById(R.id.buttonChangeToSearchSets);
     submitButton.setOnClickListener(this);
     
     //JSON Request Crap is ideally done in another thread
-    
     JSONArray results = sendHttpRequestToServer();
-    
     
     try {
       
@@ -108,31 +108,6 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         JSONArray finalResult = new JSONArray(tokener);     
         return finalResult;
   
-        /*
-        File responseFile = File.createTempFile("results", "json", this.getFilesDir());
-        // Buffers
-        BufferedReader bufReader = new BufferedReader(new InputStreamReader(response.getEntity()
-            .getContent()));  
-        BufferedWriter bufWriter = new BufferedWriter(new FileWriter(responseFile));
-        int nbCharRead = 0;
-        int i = 0;
-        int totalRead = 0;
-        char[] buffer = new char[10000];
-        
-
-        while ((nbCharRead = bufReader.read(buffer, 0, 10000)) != -1) {
-          totalRead += nbCharRead;
-          // System.out.println("buffer = " + String.valueOf(buffer));
-          bufWriter.write(buffer, 0, nbCharRead);
-        }
-
-        if (bufWriter != null) {
-          bufWriter.flush();
-          bufWriter.close();
-        }
-
-        return responseFile.getPath();
-        */
       } else {
         CoachellerApplication.debug(this, "HTTP Response was not OK: "
             + response.getStatusLine().getStatusCode());
@@ -153,11 +128,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       Intent intent = new Intent();
       intent.setClass(this, ActivitySetsSearch.class);
     //intent.putExtras(bun);
-
     startActivity(intent);
     }
-
-
   }
 
 }
