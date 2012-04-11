@@ -46,6 +46,7 @@ public class JSONArraySortMap {
       }
       
       Pair<Integer, Object> nextPair = new Pair<Integer, Object>(i, value);
+      System.out.println(i + " || " + value.toString());
       _pairs.add(nextPair);
       
     }
@@ -59,9 +60,9 @@ public class JSONArraySortMap {
               Integer bValue = (Integer)pairB.second;
               return aValue.compareTo(bValue);
             } else if (_valueType == VALUE_STRING) {
-              String aValue = (String)pairA.second;
-              String bValue = (String)pairB.second;
-              return aValue.compareTo(bValue);
+              String aValue = (String)(pairA.second);
+              String bValue = (String)(pairB.second);
+              return aValue.toLowerCase().compareTo(bValue.toLowerCase());
             } else {
               throw new RuntimeException();
             }
@@ -71,21 +72,21 @@ public class JSONArraySortMap {
     Collections.sort(_pairs, comparator);
   }
 
-  public int getSortedIntValue(int index) throws JSONException {
+  public JSONObject getSortedIntValue(int index) throws JSONException {
     if (_valueType != VALUE_INTEGER) {
       throw new RuntimeException();
     }
     
-    Integer indexToReturn = (Integer) _pairs.get(index).second;
-    return _arrayToSort.getInt(indexToReturn);
+    Integer indexToReturn = (Integer) _pairs.get(index).first;
+    return _arrayToSort.getJSONObject(indexToReturn);
   }
   
-  public String getSortedStringValue(int index) throws JSONException {
+  public JSONObject getSortedStringValue(int index) throws JSONException {
     if (_valueType != VALUE_STRING) {
       throw new RuntimeException();
     }
     
-    Integer indexToReturn = (Integer) _pairs.get(index).second;
-    return _arrayToSort.getString(indexToReturn);
+    Integer indexToReturn = (Integer) _pairs.get(index).first;
+    return _arrayToSort.getJSONObject(indexToReturn);
   }
 }

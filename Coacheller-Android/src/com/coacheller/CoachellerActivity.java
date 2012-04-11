@@ -50,9 +50,17 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       JSONObject obj = results.getJSONObject(0);
       CoachellerApplication.debug(this, obj.toString());
       CoachellerApplication.debug(this, obj.names().toString());
-
-
-      JSONArraySortMap sortMap = new JSONArraySortMap(results, "artist", JSONArraySortMap.VALUE_STRING);
+      
+      
+      JSONArraySortMap sortMapArtist = new JSONArraySortMap(results, "artist", JSONArraySortMap.VALUE_STRING);
+      for (int i = 0; i < results.length(); i++) {  
+        CoachellerApplication.debug(this, sortMapArtist.getSortedStringValue(i).toString());
+      }
+      
+      JSONArraySortMap sortMapId = new JSONArraySortMap(results, "id", JSONArraySortMap.VALUE_INTEGER);
+      for (int i = 0; i < results.length(); i++) {  
+        CoachellerApplication.debug(this, sortMapId.getSortedIntValue(i).toString());
+      }
       
     } catch (JSONException e) {
       // TODO Auto-generated catch block
