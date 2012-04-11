@@ -1,6 +1,5 @@
 package com.coacheller.client;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -292,7 +291,7 @@ public class CoachellerViewComposite extends Composite {
 
         int setNum = 0;
         for (Set set : setsList) {
-          String nameCombo = set.getTime() + ": " + set.getArtistName();
+          String nameCombo = set.getTimeOne() + ": " + set.getArtistName();
           data.setValue(setNum, 0, nameCombo);
           data.setValue(setNum, 1, set.getAvgScoreOne());
           data.setValue(setNum, 2, set.getAvgScoreTwo());
@@ -312,9 +311,9 @@ public class CoachellerViewComposite extends Composite {
   public static final Comparator<? super Set> SET_TIME_COMPARATOR = new Comparator<Set>() {
     public int compare(Set t0, Set t1) {
       // Sort by set time first
-      if (t0.getTime() < t1.getTime()) {
+      if (t0.getTimeOne() < t1.getTimeOne()) {
         return 1;
-      } else if (t0.getTime() > t1.getTime()) {
+      } else if (t0.getTimeOne() > t1.getTimeOne()) {
         return -1;
       } else {
         // Sort items alphabetically within each group
@@ -385,7 +384,7 @@ public class CoachellerViewComposite extends Composite {
       timeColumn = new Column<Set, String>(new TextCell()) {
         @Override
         public String getValue(Set object) {
-          return object.getTime().toString();
+          return object.getTimeOne().toString();
         }
       };
       addColumn(timeColumn, "Set Time");

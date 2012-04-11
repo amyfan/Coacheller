@@ -1,139 +1,148 @@
-2012,Friday,1200,Afrojack
-2012,Friday,1200,Alesso
-2012,Friday,1200,Amon Tobin : ISAM Live
-2012,Friday,1200,Arctic Monkeys
-2012,Friday,1200,Atari Teenage Riot
-2012,Friday,1200,Breakbot
-2012,Friday,1200,Datsik
-2012,Friday,1200,Dawes
-2012,Friday,1200,Death Grips
-2012,Friday,1200,EMA
-2012,Friday,1200,Explosions in the Sky
-2012,Friday,1200,Feed Me
-2012,Friday,1200,Frank Ocean
-2012,Friday,1200,GIRLS
-2012,Friday,1200,GIVERS
-2012,Friday,1200,Hello Seahorse!
-2012,Friday,1200,honeyhoney
-2012,Friday,1200,James
-2012,Friday,1200,Jimmy Cliff with Tim Armstrong and the Engine Band
-2012,Friday,1200,Kendrick Lamar
-2012,Friday,1200,LA Riots
-2012,Friday,1200,M. Ward
-2012,Friday,1200,M83
-2012,Friday,1200,Madeon
-2012,Friday,1200,Madness
-2012,Friday,1200,Mazzy Star
-2012,Friday,1200,Mea
-2012,Friday,1200,Neon Indian
-2012,Friday,1200,Other Lives
-2012,Friday,1200,Pulp
-2012,Friday,1200,R3hab
-2012,Friday,1200,Refused
-2012,Friday,1200,SebastiAn
-2012,Friday,1200,Swedish House Mafia
-2012,Friday,1200,The Black Angels
-2012,Friday,1200,The Black Keys
-2012,Friday,1200,The Dear Hunter
-2012,Friday,1200,The Horrors
-2012,Friday,1200,The Midnight Beast
-2012,Friday,1200,The Rapture
-2012,Friday,1200,The Sheepdogs
-2012,Friday,1200,Wallpaper
-2012,Friday,1200,Wolf Gang
-2012,Friday,1200,WU LYF
-2012,Friday,1200,Ximena Sarinana
-2012,Friday,1200,Yuck
-2012,Saturday,1200,A$AP Rocky
-2012,Saturday,1200,Andrew Bird
-2012,Saturday,1200,AWOLNATION
-2012,Saturday,1200,Azealia Banks
-2012,Saturday,1200,Black Lips
-2012,Saturday,1200,Bon Iver
-2012,Saturday,1200,Borgore
-2012,Saturday,1200,Buzzcocks
-2012,Saturday,1200,Childish Gambino
-2012,Saturday,1200,David Guetta
-2012,Saturday,1200,Destroyer
-2012,Saturday,1200,Destructo
-2012,Saturday,1200,Dragonette
-2012,Saturday,1200,Feist
-2012,Saturday,1200,fIREHOSE
-2012,Saturday,1200,Flying Lotus
-2012,Saturday,1200,Gary Clark Jr.
-2012,Saturday,1200,Godspeed You! Black Emperor
-2012,Saturday,1200,Grace Potter and the Nocturnals
-2012,Saturday,1200,Grouplove
-2012,Saturday,1200,Jacques Lu Cont
-2012,Saturday,1200,Jeff Mangum
-2012,Saturday,1200,Kaiser Chiefs
-2012,Saturday,1200,Kasabian
-2012,Saturday,1200,Kaskade
-2012,Saturday,1200,Keep Shelly in Athens
-2012,Saturday,1200,Laura Marling
-2012,Saturday,1200,Manchester Orchestra
-2012,Saturday,1200,Martin Solveig
-2012,Saturday,1200,Miike Snow
-2012,Saturday,1200,Mt Eden
-2012,Saturday,1200,Noel Gallagher's High Flying Birds
-2012,Saturday,1200,Pure Filth Sound
-2012,Saturday,1200,Radiohead
-2012,Saturday,1200,SBTRKT
-2012,Saturday,1200,Sebastian Ingrosso
-2012,Saturday,1200,Squeeze
-2012,Saturday,1200,St. Vincent
-2012,Saturday,1200,Sub Focus
-2012,Saturday,1200,Suedehead
-2012,Saturday,1200,The Big Pink
-2012,Saturday,1200,The Head and the Heart
-2012,Saturday,1200,The Shins
-2012,Saturday,1200,The Vaccines
-2012,Saturday,1200,tUnE-yArDs
-2012,Saturday,1200,We Are Augustines
-2012,Saturday,1200,We Were Promised Jetpacks
-2012,Saturday,1200,Zeds Dead
-2012,Sunday,1200,araabMUZIK
-2012,Sunday,1200,At The Drive-In
-2012,Sunday,1200,AVICII
-2012,Sunday,1200,Band of Skulls
-2012,Sunday,1200,Beats Antique
-2012,Sunday,1200,Beirut
-2012,Sunday,1200,Calvin Harris
-2012,Sunday,1200,Company Flow
-2012,Sunday,1200,Dada Life
-2012,Sunday,1200,DJ Shadow
-2012,Sunday,1200,Dr. Dre & Snoop Dogg
-2012,Sunday,1200,Fanfarlo
-2012,Sunday,1200,First Aid Kit
-2012,Sunday,1200,Fitz and the Tantrums
-2012,Sunday,1200,Florence and the Machine
-2012,Sunday,1200,Flux Pavilion @ Dr. P
-2012,Sunday,1200,Gardens & Villa
-2012,Sunday,1200,Girl Talk
-2012,Sunday,1200,Gotye
-2012,Sunday,1200,Greg Ginn and the Royal We
-2012,Sunday,1200,Housse de Racket
-2012,Sunday,1200,Justice
-2012,Sunday,1200,Le Butcherettes
-2012,Sunday,1200,Lissie
-2012,Sunday,1200,Metronomy
-2012,Sunday,1200,Modeselektor
-2012,Sunday,1200,Morgan Page
-2012,Sunday,1200,Nero
-2012,Sunday,1200,NOISIA
-2012,Sunday,1200,Oberhofer
-2012,Sunday,1200,Porter Robinson
-2012,Sunday,1200,Real Estate
-2012,Sunday,1200,Santigold
-2012,Sunday,1200,Seun Kuti & Egypt 80
-2012,Sunday,1200,Sleeper Agent
-2012,Sunday,1200,Spector
-2012,Sunday,1200,The Airplane Boys
-2012,Sunday,1200,The Gaslamp Killer
-2012,Sunday,1200,The Growlers
-2012,Sunday,1200,The Hives
-2012,Sunday,1200,The Weeknd
-2012,Sunday,1200,Thundercat
-2012,Sunday,1200,Wild Beasts
-2012,Sunday,1200,Wild Flag
-2012,Sunday,1200,Zedd
+2012,Friday,1200,1200,Gobi,Gobi,Abe Vigoda
+2012,Friday,2135,2135,Sahara,Sahara,Afrojack
+2012,Friday,1955,1955,Sahara,Sahara,Alesso
+2012,Friday,0000,0000,Mojave,Mojave,Amon Tobin : ISAM Live
+2012,Friday,1830,1830,Coachella,Coachella,Arctic Monkeys
+2012,Friday,2130,2130,Gobi,Gobi,Atari Teenage Riot
+2012,Friday,1430,1430,Sahara,Sahara,Breakbot
+2012,Friday,2350,2350,Sahara,Sahara,Datsik
+2012,Friday,1820,1820,Mojave,Mojave,Dawes
+2012,Friday,1745,1745,Gobi,Gobi,Death Grips
+2012,Friday,1515,1515,Gobi,Gobi,EMA
+2012,Friday,2205,2205,Outdoor,Outdoor,Explosions in the Sky
+2012,Friday,1710,1710,Sahara,Sahara,Feed Me
+2012,Friday,2015,2015,Gobi,Gobi,Frank Ocean
+2012,Friday,1300,1300,Coachella,Coachella,Gabe Real
+2012,Friday,1630,1630,Gobi,Gobi,Gary Clark Jr.
+2012,Friday,1740,1740,Outdoor,Outdoor,GIRLS
+2012,Friday,1435,1435,Mojave,Mojave,GIVERS
+2012,Friday,1705,1705,Mojave,Mojave,Grouplove
+2012,Friday,1330,1330,Coachella,Coachella,Hello Seahorse!
+2012,Friday,1320,1320,Mojave,Mojave,honeyhoney
+2012,Friday,1550,1550,Coachella,Coachella,James
+2012,Friday,1710,1710,Coachella,Coachella,Jimmy Cliff with Tim Armstrong and the Engine Band
+2012,Friday,1440,1440,Coachella,Coachella,Kendrick Lamar
+2012,Friday,1215,1215,Sahara,Sahara,LA Riots
+2012,Friday,1935,1935,Mojave,Mojave,M. Ward
+2012,Friday,2215,2215,Mojave,Mojave,M83
+2012,Friday,1835,1835,Sahara,Sahara,Madeon
+2012,Friday,1900,1900,Outdoor,Outdoor,Madness
+2012,Friday,2050,2050,Outdoor,Outdoor,Mazzy Star
+2012,Friday,1120,1120,Sahara,Sahara,Mea
+2012,Friday,1625,1625,Outdoor,Outdoor,Neon Indian
+2012,Friday,1405,1405,Gobi,Gobi,Other Lives
+2012,Friday,1950,1950,Coachella,Coachella,Pulp
+2012,Friday,1315,1315,Sahara,Sahara,R3hab
+2012,Friday,2320,2320,Outdoor,Outdoor,Refused
+2012,Friday,1550,1550,Sahara,Sahara,SebastiAn
+2012,Friday,2330,2330,Coachella,Coachella,Swedish House Mafia
+2012,Friday,2250,2250,Gobi,Gobi,The Black Angels
+2012,Friday,2145,2145,Coachella,Coachella,The Black Keys
+2012,Friday,1400,1400,Outdoor,Outdoor,The Dear Hunter
+2012,Friday,0000,0000,Gobi,Gobi,The Horrors
+2012,Friday,2055,2055,Mojave,Mojave,The Rapture
+2012,Friday,1300,1300,Outdoor,Outdoor,The Sheepdogs
+2012,Friday,1210,1210,Mojave,Mojave,Wallpaper.
+2012,Friday,1300,1300,Gobi,Gobi,Wolf Gang
+2012,Friday,1900,1900,Gobi,Gobi,WU LYF
+2012,Friday,1550,1550,Mojave,Mojave,Ximena Sarinana
+2012,Friday,1515,1515,Outdoor,Outdoor,Yuck
+2012,Saturday,2335,2335,Gobi,Gobi,A$AP Rocky
+2012,Saturday,1805,1805,Outdoor,Outdoor,Andrew Bird
+2012,Saturday,1600,1600,Coachella,Coachella,AWOLNATION
+2012,Saturday,1450,1450,Gobi,Gobi,Azealia Banks
+2012,Saturday,1415,1415,Mojave,Mojave,Black Lips
+2012,Saturday,2130,2130,Coachella,Coachella,Bon Iver
+2012,Saturday,1430,1430,Sahara,Sahara,Borgore
+2012,Saturday,1715,1715,Gobi,Gobi,Buzzcocks
+2012,Saturday,1450,1450,Coachella,Coachella,Childish Gambino
+2012,Saturday,2115,2115,Sahara,Sahara,David Guetta
+2012,Saturday,1430,1430,Outdoor,Outdoor,Destroyer
+2012,Saturday,1225,1225,Sahara,Sahara,Destructo
+2012,Saturday,1140,1140,Outdoor,Outdoor,DJP
+2012,Saturday,1305,1305,Mojave,Mojave,Dragonette
+2012,Saturday,2040,2040,Outdoor,Outdoor,Feist
+2012,Saturday,1600,1600,Gobi,Gobi,fIREHOSE
+2012,Saturday,2100,2100,Gobi,Gobi,Flying Lotus
+2012,Saturday,2200,2200,Mojave,Mojave,Godspeed You! Black Emperor
+2012,Saturday,1540,1540,Outdoor,Outdoor,Grace Potter and the Nocturnals
+2012,Saturday,1535,1535,Sahara,Sahara,Jacques Lu Cont
+2012,Saturday,1920,1920,Outdoor,Outdoor,Jeff Mangum
+2012,Saturday,1300,1300,Coachella,Coachella,Juice
+2012,Saturday,1710,1710,Coachella,Coachella,Kaiser Chiefs
+2012,Saturday,2035,2035,Mojave,Mojave,Kasabian
+2012,Saturday,2315,2315,Sahara,Sahara,Kaskade
+2012,Saturday,1205,1205,Mojave,Mojave,Keep Shelly in Athens
+2012,Saturday,1140,1140,Gobi,Gobi,Kiss Kiss Bang Bang
+2012,Saturday,1830,1830,Gobi,Gobi,Laura Marling
+2012,Saturday,1755,1755,Mojave,Mojave,Manchester Orchestra
+2012,Saturday,1810,1810,Sahara,Sahara,Martin Solveig
+2012,Saturday,2210,2210,Outdoor,Outdoor,Miike Snow
+2012,Saturday,1325,1325,Sahara,Sahara,Mt Eden
+2012,Saturday,1830,1830,Coachella,Coachella,Noel Gallagher's High Flying Birds
+2012,Saturday,1125,1125,Sahara,Sahara,Pure Filth Sound
+2012,Saturday,2305,2305,Coachella,Coachella,Radiohead
+2012,Saturday,2215,2215,Gobi,Gobi,SBTRKT
+2012,Saturday,1935,1935,Sahara,Sahara,Sebastian Ingrosso
+2012,Saturday,1230,1230,Gobi,Gobi,Spector
+2012,Saturday,1915,1915,Mojave,Mojave,Squeeze
+2012,Saturday,1945,1945,Gobi,Gobi,St. Vincent
+2012,Saturday,2340,2340,Mojave,Mojave,Sub Focus
+2012,Saturday,1220,1220,Outdoor,Outdoor,Suedehead
+2012,Saturday,1525,1525,Mojave,Mojave,The Big Pink
+2012,Saturday,1640,1640,Mojave,Mojave,The Head and the Heart
+2012,Saturday,2010,2010,Coachella,Coachella,The Shins
+2012,Saturday,1340,1340,Gobi,Gobi,The Vaccines
+2012,Saturday,1125,1125,Mojave,Mojave,Tijuana Panthers
+2012,Saturday,1650,1650,Outdoor,Outdoor,tUnE-yArDs
+2012,Saturday,1345,1345,Coachella,Coachella,We Are Augustines
+2012,Saturday,1320,1320,Outdoor,Outdoor,We Were Promised Jetpacks
+2012,Saturday,1650,1650,Sahara,Sahara,Zeds Dead
+2012,Sunday,1115,1115,Gobi,Gobi,Alf Alpha
+2012,Sunday,1750,1750,Mojave,Mojave,araabMUZIK
+2012,Sunday,2110,2110,Coachella,Coachella,At The Drive-In
+2012,Sunday,2210,2210,Sahara,Sahara,AVICII
+2012,Sunday,1405,1405,Coachella,Coachella,Band of Skulls
+2012,Sunday,1635,1635,Mojave,Mojave,Beats Antique
+2012,Sunday,2030,2030,Mojave,Mojave,Beirut
+2012,Sunday,2025,2025,Sahara,Sahara,Calvin Harris
+2012,Sunday,2020,2020,Gobi,Gobi,Company Flow
+2012,Sunday,1730,1730,Sahara,Sahara,Dada Life
+2012,Sunday,2140,2140,Gobi,Gobi,DJ Shadow
+2012,Sunday,2235,2235,Coachella,Coachella,Dr. Dre & Snoop Dogg
+2012,Sunday,1200,1200,Gobi,Gobi,Fanfarlo
+2012,Sunday,1415,1415,Mojave,Mojave,First Aid Kit
+2012,Sunday,1645,1645,Coachella,Coachella,Fitz and the Tantrums
+2012,Sunday,2145,2145,Outdoor,Outdoor,Florence and the Machine
+2012,Sunday,1505,1505,Sahara,Sahara,Flux Pavilion @ Dr. P
+2012,Sunday,1205,1205,Mojave,Mojave,Gardens & Villa
+2012,Sunday,2025,2025,Outdoor,Outdoor,Girl Talk
+2012,Sunday,1910,1910,Mojave,Mojave,Gotye
+2012,Sunday,1500,1500,Gobi,Gobi,Greg Ginn and the Royal We
+2012,Sunday,1255,1255,Gobi,Gobi,Housse de Racket
+2012,Sunday,1945,1945,Coachella,Coachella,Justice
+2012,Sunday,1115,1115,Sahara,Sahara,Jimbo Jenkins
+2012,Sunday,1355,1355,Gobi,Gobi,Le Butcherettes
+2012,Sunday,1250,1250,Outdoor,Outdoor,Lissie
+2012,Sunday,1300,1300,Coachella,Coachella,Mantastique
+2012,Sunday,1400,1400,Outdoor,Outdoor,Metronomy
+2012,Sunday,2145,2145,Mojave,Mojave,Modeselektor
+2012,Sunday,1200,1200,Sahara,Sahara,Morgan Page
+2012,Sunday,1850,1850,Sahara,Sahara,Nero
+2012,Sunday,1300,1300,Sahara,Sahara,NOISIA
+2012,Sunday,1310,1310,Mojave,Mojave,Oberhofer
+2012,Sunday,1620,1620,Sahara,Sahara,Porter Robinson
+2012,Sunday,1610,1610,Gobi,Gobi,Real Estate
+2012,Sunday,1525,1525,Coachella,Coachella,Santigold
+2012,Sunday,1510,1510,Outdoor,Outdoor,Seun Kuti & Egypt 80
+2012,Sunday,1200,1200,Outdoor,Outdoor,Sleeper Agent
+2012,Sunday,1910,1910,Gobi,Gobi,The Airplane Boys
+2012,Sunday,1800,1800,Gobi,Gobi,The Gaslamp Killer
+2012,Sunday,1620,1620,Outdoor,Outdoor,The Growlers
+2012,Sunday,1805,1805,Coachella,Coachella,The Hives
+2012,Sunday,1855,1855,Outdoor,Outdoor,The Weeknd
+2012,Sunday,1720,1720,Gobi,Gobi,Thundercat
+2012,Sunday,1115,1115,Mojave,Mojave,Tyler Uppercut
+2012,Sunday,1525,1525,Mojave,Mojave,Wild Beasts
+2012,Sunday,1730,1730,Outdoor,Outdoor,Wild Flag
+2012,Sunday,1400,1400,Sahara,Sahara,Zedd

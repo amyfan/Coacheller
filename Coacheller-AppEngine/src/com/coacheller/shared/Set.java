@@ -18,8 +18,10 @@ public class Set implements IsSerializable {
   private String artistName;
   private Integer year;
   private String day;
-  private Integer time;
-  private Integer timeTwo; // in case of possibly changed set time, initialized to 'time' field by default
+  private Integer timeOne;
+  private Integer timeTwo;
+  private String stageOne;
+  private String stageTwo;
   private Integer numRatingsOne; // stored for optimization purposes
   private Integer numRatingsTwo; // stored for optimization purposes
   private Integer scoreSumOne; // stored for optimization purposes
@@ -64,12 +66,12 @@ public class Set implements IsSerializable {
     this.day = day;
   }
 
-  public Integer getTime() {
-    return time;
+  public Integer getTimeOne() {
+    return timeOne;
   }
 
-  public void setTime(Integer time) {
-    this.time = time;
+  public void setTimeOne(Integer timeOne) {
+    this.timeOne = timeOne;
   }
 
   public Integer getTimeTwo() {
@@ -78,6 +80,22 @@ public class Set implements IsSerializable {
 
   public void setTimeTwo(Integer timeTwo) {
     this.timeTwo = timeTwo;
+  }
+
+  public String getStageOne() {
+    return stageOne;
+  }
+
+  public void setStageOne(String stageOne) {
+    this.stageOne = stageOne;
+  }
+
+  public String getStageTwo() {
+    return stageTwo;
+  }
+
+  public void setStageTwo(String stageTwo) {
+    this.stageTwo = stageTwo;
   }
 
   public Integer getNumRatingsOne() {

@@ -17,8 +17,11 @@ import com.coacheller.shared.Set;
 public class SetDataLoader {
   private static final int YEAR_INDEX = 0;
   private static final int DAY_INDEX = 1;
-  private static final int TIME_INDEX = 2;
-  private static final int ARTIST_NAME = 3;
+  private static final int TIME_ONE_INDEX = 2;
+  private static final int TIME_TWO_INDEX = 3;
+  private static final int STAGE_ONE_INDEX = 4;
+  private static final int STAGE_TWO_INDEX = 5;
+  private static final int ARTIST_NAME_INDEX = 6;
 
   // Private constructor prevents instantiation from other classes
   private SetDataLoader() {
@@ -48,15 +51,17 @@ public class SetDataLoader {
 
           set.setYear(Integer.valueOf(fields[YEAR_INDEX]));
           set.setDay(fields[DAY_INDEX]);
-          set.setTime(Integer.valueOf(fields[TIME_INDEX]));
-          set.setTimeTwo(Integer.valueOf(fields[TIME_INDEX]));
-          set.setArtistName(fields[ARTIST_NAME]);
+          set.setTimeOne(Integer.valueOf(fields[TIME_ONE_INDEX]));
+          set.setTimeTwo(Integer.valueOf(fields[TIME_TWO_INDEX]));
+          set.setStageOne(fields[STAGE_ONE_INDEX]);
+          set.setStageTwo(fields[STAGE_TWO_INDEX]);
+          set.setArtistName(fields[ARTIST_NAME_INDEX]);
           set.setNumRatingsOne(0);
           set.setNumRatingsTwo(0);
           set.setScoreSumOne(0);
           set.setScoreSumTwo(0);
           set.setAvgScoreOne(0.0);
-          set.setAvgScoreTwo(0.0);          
+          set.setAvgScoreTwo(0.0);
 
           set.setDateCreated(new Date());
           RatingManager.getInstance().updateSet(set);
@@ -64,7 +69,8 @@ public class SetDataLoader {
           line = setFile.readLine();
         } catch (Exception e) {
           e.printStackTrace();
-          continue;
+          break;
+          // continue;
         }
       }
     } catch (IOException e) {
