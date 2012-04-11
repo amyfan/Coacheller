@@ -7,10 +7,6 @@
     <string name="distance">Distance</string>
     <string name="dateBackTo">Dating Back To</string>
 
-    <string-array name="distanceArray">
-        <item>1 mile</item>
-        <item>3 mile</item>
-    </string-array>
     <string-array name="dateArray">
         <item>2011</item>
     </string-array>
@@ -32,5 +28,7 @@
             <item >Time</item>
             <item >Artist</item>
         </string-array>
+        <string name="name_week1_short">4/13-4/15</string>
+        <string name="name_week2_short">4/20-4/22</string>
 
 </resources>

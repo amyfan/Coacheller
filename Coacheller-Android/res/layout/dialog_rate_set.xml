@@ -9,13 +9,14 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center" >
-
+
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/text_rateBand_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Rate (band)"
             android:textAppearance="?android:attr/textAppearanceLarge" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -38,20 +39,20 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.54"
         android:orientation="horizontal" >
-
+
         <RadioButton
             android:id="@+id/radio_button_week1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="week 1" />
-
+            android:text="@string/name_week1_short" />
+
         <RadioButton
             android:id="@+id/radio_button_week2"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Week 2" />
+            android:text="@string/name_week2_short" />
 
     </RadioGroup>
 
@@ -68,37 +69,59 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
     </LinearLayout>
-
+
     <RadioGroup
         android:id="@+id/radio_pick_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:checkedButton="-1"
         android:orientation="horizontal" >
 
         <RadioButton
             android:id="@+id/radio_button_score1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
+            android:checked="false"
             android:text="1" />
+
+        <LinearLayout
+            android:layout_width="10dp"
+            android:layout_height="fill_parent" >
+
+        </LinearLayout>
 
         <RadioButton
             android:id="@+id/radio_button_score2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2" />
+
+        <LinearLayout
+            android:layout_width="10dp"
+            android:layout_height="fill_parent" >
+        </LinearLayout>
 
         <RadioButton
             android:id="@+id/radio_button_score3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="3" />
+
+        <LinearLayout
+            android:layout_width="10dp"
+            android:layout_height="fill_parent" >
+        </LinearLayout>
 
         <RadioButton
             android:id="@+id/radio_button_score4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="4" />
+
+        <LinearLayout
+            android:layout_width="10dp"
+            android:layout_height="fill_parent" >
+        </LinearLayout>
 
         <RadioButton
             android:id="@+id/radio_button_score5"
@@ -106,6 +129,32 @@
             android:layout_height="wrap_content"
             android:text="5" />
 
+        <LinearLayout
+            android:layout_width="10dp"
+            android:layout_height="fill_parent" >
+        </LinearLayout>
+
     </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/button_rate_okgo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Rate It!!!" />
+
+        <Button
+            android:id="@+id/button_rate_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Go Back" />
+
+    </LinearLayout>
 
 </LinearLayout>

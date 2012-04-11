@@ -2,6 +2,7 @@ package com.coacheller;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -17,7 +18,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,7 +25,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class CoachellerActivity extends Activity implements View.OnClickListener, OnItemSelectedListener, OnItemClickListener {
@@ -33,6 +36,10 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   private CustomSetListAdapter _setListAdapter;
   private int _weekToQuery;
   private String _timeFieldName;
+  private Dialog _lastDialog;
+  private JSONObject _lastItemSelected;
+  private HashMap<Integer, Integer> _ratingSelectedIdToValue = new HashMap<Integer, Integer>();
+
 
   /** Called by Android Framework when the activity is first created. */
   @Override
@@ -42,6 +49,16 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     CoachellerApplication.debug(this, "CoachellerActivity Launched");
     
     _weekToQuery = 1;
+    
+    _ratingSelectedIdToValue.put(R.id.radio_button_week1, 1);
+    _ratingSelectedIdToValue.put(R.id.radio_button_week2, 2);
+    
+    _ratingSelectedIdToValue.put(R.id.radio_button_score1, 1);
+    _ratingSelectedIdToValue.put(R.id.radio_button_score2, 2);
+    _ratingSelectedIdToValue.put(R.id.radio_button_score3, 3);
+    _ratingSelectedIdToValue.put(R.id.radio_button_score4, 4);
+    _ratingSelectedIdToValue.put(R.id.radio_button_score5, 5);
+    
     
     if (_weekToQuery == 1) {
       _timeFieldName = "time_one";
@@ -160,17 +177,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   }
 
-  @Override
-  public void onClick(View arg0) {
 
-    if (arg0.getId() == R.id.buttonChangeToSearchSets) {
-      System.out.println("Button: Find Other Sets");
-      Intent intent = new Intent();
-      intent.setClass(this, ActivitySetsSearch.class);
-    //intent.putExtras(bun);
-    startActivity(intent);
-    }
-  }
 
   @Override
   public void onItemSelected(AdapterView<?> parent, View arg1, int arg2, long arg3) {
@@ -201,18 +208,58 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   }
 
   @Override
+  public void onClick(View viewClicked) {
+
+    if (viewClicked.getId() == R.id.buttonChangeToSearchSets) {
+      System.out.println("Button: Find Other Sets");
+      Intent intent = new Intent();
+      intent.setClass(this, ActivitySetsSearch.class);
+      //intent.putExtras(bun);
+      startActivity(intent);
+    }
+    
+    if (viewClicked.getId() == R.id.button_rate_okgo) {
+      RadioGroup weekGroup = (RadioGroup) _lastDialog.findViewById(R.id.radio_pick_week);
+      int weekSelectedId = weekGroup.getCheckedRadioButtonId();
+      
+      RadioGroup scoreGroup = (RadioGroup) _lastDialog.findViewById(R.id.radio_pick_score);
+      int scoreSelectedId = scoreGroup.getCheckedRadioButtonId();
+      
+    
+       
+      if (weekSelectedId == -1 || scoreSelectedId == -1) {
+        Toast selectEverything = Toast.makeText(this, "Please select a rating and week of this Set", 25);
+        selectEverything.show();
+        
+      } else { 
+        int weekSelectedValue = _ratingSelectedIdToValue.get(weekSelectedId);
+        int scoreSelectedValue = _ratingSelectedIdToValue.get(scoreSelectedId);
+        
+        CoachellerApplication.debug(this, "Selected Week["+ weekSelectedValue +"] Score["+ scoreSelectedValue +"] WeekId["+ weekSelectedId +"] ScoreId["+ scoreSelectedId +"]");
+        
+        
+        scoreGroup.clearCheck();
+        _lastDialog.dismiss();
+      }
+    }
+    
+    if (viewClicked.getId() == R.id.button_rate_cancel) {
+      //Dialog dialog = (Dialog) viewClicked.getParent();
+      RadioGroup scoreGroup = (RadioGroup) _lastDialog.findViewById(R.id.radio_pick_score);
+      scoreGroup.clearCheck();
+      
+      _lastDialog.dismiss();
+    }
+
+  }
+  
+  
+  @Override
   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-   
     JSONObject obj = (JSONObject) _setListAdapter.getItem(position);
+    _lastItemSelected = obj;
     CoachellerApplication.debug(this, "You Clicked On: "+ obj);
-    
     showDialog(333);
-    
-
-
-    
-    
-    
   }
 
   @Override
@@ -221,12 +268,45 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     if (id == 333) {
       
       Context context = this;
-      Dialog dialog = new Dialog(context);
+      _lastDialog = new Dialog(context);
       
-      dialog.setContentView(R.layout.dialog_rate_set);
-      dialog.setTitle("Rate this Set!");
+      _lastDialog.setContentView(R.layout.dialog_rate_set);
+      _lastDialog.setTitle("Rate this Set!");
       
-      return dialog;
+      try {
+        TextView subtitleText = (TextView) _lastDialog.findViewById(R.id.text_rateBand_subtitle);
+        subtitleText.setText(_lastItemSelected.getString("artist"));
+      } catch (JSONException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      
+      int week = CoachellerApplication.whichWeekIsToday();
+      RadioGroup weekGroup = (RadioGroup) _lastDialog.findViewById(R.id.radio_pick_week);
+      if (week == 1) {
+        RadioButton buttonWeek1 = (RadioButton) _lastDialog.findViewById(R.id.radio_button_week1);
+        buttonWeek1.setChecked(true);
+      } else if (week == 2) {
+        RadioButton buttonWeek2 = (RadioButton) _lastDialog.findViewById(R.id.radio_button_week2);
+        buttonWeek2.setChecked(true);
+      } else {
+        //Don't suggest a week
+        weekGroup.clearCheck();
+      }
+      
+      //TODO If the user already rated this set, default to their last rating
+      //This does not seem to work here, wtf
+      RadioGroup scoreGroup = (RadioGroup) _lastDialog.findViewById(R.id.radio_pick_score);
+      scoreGroup.clearCheck();
+      
+      Button buttonOK = (Button) _lastDialog.findViewById(R.id.button_rate_okgo);
+      buttonOK.setOnClickListener(this);
+      
+      Button buttonCancel = (Button) _lastDialog.findViewById(R.id.button_rate_cancel);
+      buttonCancel.setOnClickListener(this);
+      
+      
+      return _lastDialog;
     }
     
     return super.onCreateDialog(id);

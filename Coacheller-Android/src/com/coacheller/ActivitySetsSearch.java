@@ -28,7 +28,7 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
   
   public void initializeApp() {
     setContentView(R.layout.sets_search);
-    Calendar cal = Calendar.getInstance();
+    
 
     // Setup Week Spinner
     Spinner weekendSpinner = (Spinner) this.findViewById(R.id.search_spinner_week);
@@ -52,12 +52,11 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
     // Hard coded, so I am probably going to hell,
     // but the error is not fatal next year
     // TODO un-hardcode day of month value
-    if (cal.get(Calendar.DAY_OF_MONTH) < 19) {
-
+    if (CoachellerApplication.whichWeekIsToday() == 1) {
       CoachellerApplication.debug(this, "Date suggests week 1");
       weekendSpinner.setSelection(0);
-
-    } else {
+      
+    } else if (CoachellerApplication.whichWeekIsToday() == 2) {
       CoachellerApplication.debug(this, "Date suggests week 2");
       weekendSpinner.setSelection(1);
     }
@@ -80,6 +79,7 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
       }
     });
 
+    Calendar cal = Calendar.getInstance();
     int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
     if (dayOfWeek == Calendar.FRIDAY) {
       daySpinner.setSelection(0);
