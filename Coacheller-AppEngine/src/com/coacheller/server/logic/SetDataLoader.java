@@ -49,7 +49,14 @@ public class SetDataLoader {
           set.setYear(Integer.valueOf(fields[YEAR_INDEX]));
           set.setDay(fields[DAY_INDEX]);
           set.setTime(Integer.valueOf(fields[TIME_INDEX]));
+          set.setTimeTwo(Integer.valueOf(fields[TIME_INDEX]));
           set.setArtistName(fields[ARTIST_NAME]);
+          set.setNumRatingsOne(0);
+          set.setNumRatingsTwo(0);
+          set.setScoreSumOne(0);
+          set.setScoreSumTwo(0);
+          set.setAvgScoreOne(0.0);
+          set.setAvgScoreTwo(0.0);          
 
           set.setDateCreated(new Date());
           RatingManager.getInstance().updateSet(set);

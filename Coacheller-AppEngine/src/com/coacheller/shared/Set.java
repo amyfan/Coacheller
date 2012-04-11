@@ -19,6 +19,7 @@ public class Set implements IsSerializable {
   private Integer year;
   private String day;
   private Integer time;
+  private Integer timeTwo; // in case of possibly changed set time, initialized to 'time' field by default
   private Integer numRatingsOne; // stored for optimization purposes
   private Integer numRatingsTwo; // stored for optimization purposes
   private Integer scoreSumOne; // stored for optimization purposes
@@ -69,6 +70,14 @@ public class Set implements IsSerializable {
 
   public void setTime(Integer time) {
     this.time = time;
+  }
+
+  public Integer getTimeTwo() {
+    return timeTwo;
+  }
+
+  public void setTimeTwo(Integer timeTwo) {
+    this.timeTwo = timeTwo;
   }
 
   public Integer getNumRatingsOne() {

@@ -79,14 +79,8 @@ public class CoachellerViewComposite extends Composite {
   @UiField
   com.google.gwt.user.client.ui.Button queryButton;
 
-  // @UiField
-  // com.google.gwt.user.client.ui.Button recalculateButton;
-
   @UiField
   com.google.gwt.user.client.ui.Button rateButton;
-
-  // @UiField
-  // com.google.gwt.user.client.ui.Button viewChartButton;
 
   public CoachellerViewComposite() {
     initWidget(uiBinder.createAndBindUi(this));
@@ -205,26 +199,6 @@ public class CoachellerViewComposite extends Composite {
         androidAnimation.run(400);
       }
     });
-
-    // recalculateButton.addClickHandler(new ClickHandler() {
-    // @Override
-    // public void onClick(ClickEvent event) {
-    // coachellerService.recalculateSetRatingAverages(new
-    // AsyncCallback<String>() {
-    //
-    // public void onFailure(Throwable caught) {
-    // // Show the RPC error message to the user
-    // infoBox.setText(SERVER_ERROR);
-    // }
-    //
-    // public void onSuccess(String result) {
-    // infoBox.setText(result);
-    // }
-    // });
-    //
-    // androidAnimation.run(400);
-    // }
-    // });
 
     rateButton.addClickHandler(new ClickHandler() {
       @Override
