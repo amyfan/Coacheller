@@ -18,12 +18,17 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 
-public class CoachellerActivity extends Activity implements View.OnClickListener {
+public class CoachellerActivity extends Activity implements View.OnClickListener, OnItemSelectedListener {
 
   private CustomSetListAdapter _setListAdapter;
+  private int _weekToQuery;
+  private String _timeFieldName;
 
   /** Called by Android Framework when the activity is first created. */
   @Override
@@ -31,33 +36,49 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     super.onCreate(savedInstanceState);
 
     CoachellerApplication.debug(this, "CoachellerActivity Launched");
+    
+    _weekToQuery = 1;
+    
+    if (_weekToQuery == 1) {
+      _timeFieldName = "time_one";
+    } else if (_weekToQuery == 2) {
+      _timeFieldName = "time_two";
+    }
+    
+    
+    
     initializeApp();
   }
 
   private void initializeApp() {
     setContentView(R.layout.sets_list);
 
-    _setListAdapter = new CustomSetListAdapter(this);
+    _setListAdapter = new CustomSetListAdapter(this, _timeFieldName);
     ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
     viewSetsList.setAdapter(_setListAdapter);
     
-    Button submitButton = (Button) this.findViewById(R.id.buttonChangeToSearchSets);
-    submitButton.setOnClickListener(this);
+    Button buttonSearchSets = (Button) this.findViewById(R.id.buttonChangeToSearchSets);
+    buttonSearchSets.setOnClickListener(this);
+    
+    Spinner spinnerSortType =(Spinner)findViewById(R.id.spinner_sort_by);
+    CoachellerApplication.populateSpinnerWithArray(spinnerSortType, R.array.search_types);
+    spinnerSortType.setOnItemSelectedListener(this);
     
     //JSON Request Crap is ideally done in another thread
     JSONArray results = sendHttpRequestToServer();
     
+    _setListAdapter.setData(results);
+    
     try {
       
+      _setListAdapter.sortByField(_timeFieldName, JSONArraySortMap.VALUE_INTEGER); 
+      
+      
+      /*
       JSONObject obj = results.getJSONObject(0);
       CoachellerApplication.debug(this, obj.toString());
       CoachellerApplication.debug(this, obj.names().toString());
-      
-      _setListAdapter.setData(results);
-      _setListAdapter.sortByField("id", JSONArraySortMap.VALUE_INTEGER);
-      
-      
-      
+
       JSONArraySortMap sortMapArtist = new JSONArraySortMap(results, "artist", JSONArraySortMap.VALUE_STRING);
       for (int i = 0; i < results.length(); i++) {  
         CoachellerApplication.debug(this, sortMapArtist.getSortedJSONObj(i).toString());
@@ -67,11 +88,13 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       for (int i = 0; i < results.length(); i++) {  
         CoachellerApplication.debug(this, sortMapId.getSortedJSONObj(i).toString());
       }
-      
+     */
     } catch (JSONException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
+    
+    CoachellerApplication.debug(this, "Sample Data is Ready");
 
   }
 
@@ -134,6 +157,34 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     //intent.putExtras(bun);
     startActivity(intent);
     }
+  }
+
+  @Override
+  public void onItemSelected(AdapterView<?> parent, View arg1, int arg2, long arg3) {
+    // TODO Auto-generated method stub
+    CoachellerApplication.debug(this, "Search Type Spinner: Selected -> " + parent.getSelectedItem() +"("+ arg2 +")");
+    ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
+    
+    try {
+      if (parent.getSelectedItem().toString().toLowerCase().equals("time")) {
+        _setListAdapter.sortByField(_timeFieldName, JSONArraySortMap.VALUE_INTEGER);
+        
+      } else if (parent.getSelectedItem().toString().toLowerCase().equals("artist")) {
+        _setListAdapter.sortByField("artist", JSONArraySortMap.VALUE_STRING);
+      } 
+      
+      viewSetsList.invalidateViews();
+    } catch (JSONException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void onNothingSelected(AdapterView<?> arg0) {
+    CoachellerApplication.debug(this, "Search Type Spinner: Nothing Selected");
+    Spinner spinnerSortType =(Spinner)findViewById(R.id.spinner_sort_by);
+    spinnerSortType.setSelection(0);
   }
 
 }

@@ -17,9 +17,11 @@ public class CustomSetListAdapter implements ListAdapter {
   private JSONArray _data;
   private JSONArraySortMap _sortMap;
   private Context _context;
+  private String _timeFieldName;
   
-  public CustomSetListAdapter(Context context) {
+  public CustomSetListAdapter(Context context, String timeFieldName) {
     _context = context;
+    _timeFieldName = timeFieldName;
   }
   
   public void setData(JSONArray data) {
@@ -65,10 +67,9 @@ public class CustomSetListAdapter implements ListAdapter {
     
     try {
       TextView textSetTime = (TextView)rowView.findViewById(R.id.text_set_time);
-      String timeStr = _sortMap.getSortedJSONObj(position).getString("time");
-      int timeStrLen = timeStr.length();
-      timeStr = timeStr.substring(0, timeStrLen-2) +":"+ timeStr.substring(timeStrLen-2, timeStrLen);
-      textSetTime.setText(timeStr);
+      int milTime = _sortMap.getSortedJSONObj(position).getInt(_timeFieldName);
+      
+      textSetTime.setText(militaryToCivilianTime(milTime));
       
       
       TextView textArtistName = (TextView)rowView.findViewById(R.id.text_artist_name);
@@ -90,6 +91,29 @@ public class CustomSetListAdapter implements ListAdapter {
     }
    
     return rowView;
+  }
+  
+  public String militaryToCivilianTime(int milTime) {
+    String ampm;
+    if (milTime < 1200) {
+      ampm = "a";
+    } else {
+      ampm = "p";
+    }
+    
+    if (milTime < 100) {
+      milTime += 1200;
+    }
+    
+    if (milTime >= 1300) {
+      milTime -= 1200;
+    }
+    
+    String timeStr = milTime +"";
+    
+    int timeStrLen = timeStr.length();
+    timeStr = timeStr.substring(0, timeStrLen-2) +":"+ timeStr.substring(timeStrLen-2, timeStrLen) + ampm;
+    return timeStr;
   }
 
   @Override

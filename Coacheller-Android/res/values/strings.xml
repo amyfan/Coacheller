@@ -28,5 +28,9 @@
             <item >Sunday</item>
         </string-array>
         <string name="set_rate">Rate</string>
+        <string-array name="search_types">
+            <item >Time</item>
+            <item >Artist</item>
+        </string-array>
 
 </resources>
