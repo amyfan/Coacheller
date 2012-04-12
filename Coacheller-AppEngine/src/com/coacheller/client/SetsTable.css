@@ -107,6 +107,7 @@
 	list-style-type: none;
 	color: navy;
 	font-size: 18px;
+	font-weight: bold;
 	white-space: nowrap;
 	width: 95%;
 	overflow: hidden;
@@ -124,6 +125,7 @@
 	list-style-type: none;
 	color: gray;
 	font-size: 18px;
+	font-weight: bold;
 	white-space: nowrap;
 	width: 95%;
 	overflow: hidden;

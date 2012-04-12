@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.coacheller.shared.DateTimeUtils;
 import com.coacheller.shared.Set;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.cell.client.CheckboxCell;
@@ -291,7 +292,8 @@ public class CoachellerViewComposite extends Composite {
 
         int setNum = 0;
         for (Set set : setsList) {
-          String nameCombo = set.getTimeOne() + ": " + set.getArtistName();
+          String timeString = DateTimeUtils.militaryToCivilianTime(set.getTimeOne());
+          String nameCombo = timeString + ": " + set.getArtistName();
           data.setValue(setNum, 0, nameCombo);
           data.setValue(setNum, 1, set.getAvgScoreOne());
           data.setValue(setNum, 2, set.getAvgScoreTwo());
@@ -374,7 +376,7 @@ public class CoachellerViewComposite extends Composite {
       timeOneColumn = new Column<Set, String>(new TextCell()) {
         @Override
         public String getValue(Set object) {
-          return object.getTimeOne().toString();
+          return DateTimeUtils.militaryToCivilianTime(object.getTimeOne());
         }
       };
       addColumn(timeOneColumn, "Set Time");
