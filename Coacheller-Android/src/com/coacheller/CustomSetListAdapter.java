@@ -33,8 +33,16 @@ public class CustomSetListAdapter implements ListAdapter {
   
   public CustomSetListAdapter(Context context, String timeFieldName, JSONArrayHashMap myRatings_JAHM) {
     _context = context;
-    _timeFieldName = timeFieldName;
+    setTimeFieldName(timeFieldName);
+    updateJAHM(myRatings_JAHM);
+  }
+  
+  public void updateJAHM(JSONArrayHashMap myRatings_JAHM) {
     _myRatings_JAHM = myRatings_JAHM;
+  }
+  
+  public void setTimeFieldName(String name) {
+    _timeFieldName = name;
   }
   
   public void setData(JSONArray data) {
