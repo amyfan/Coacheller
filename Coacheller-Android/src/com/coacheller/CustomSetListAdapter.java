@@ -117,8 +117,22 @@ public class CustomSetListAdapter implements ListAdapter {
       int milTime = setObj.getInt(_timeFieldName);
       holder.textTime.setText(militaryToCivilianTime(milTime));
       holder.textArtist.setText(  setObj.getString("artist"));
-      holder.ratingWk1.setText("Wk1 Avg: "+ setObj.getString("avg_score_one"));
-      holder.ratingWk2.setText("Wk2 Avg: "+ setObj.getString("avg_score_two"));
+      String week1Avg = setObj.getString("avg_score_one");
+      String week2Avg = setObj.getString("avg_score_two");
+      
+      if (week1Avg.equals("0")) {
+        week1Avg = "";
+      } else {
+        week1Avg = "Wk1 Avg: "+ week1Avg;
+      }
+      
+      if (week2Avg.equals("0")) {
+        week2Avg = "";
+      } else {
+        week2Avg = "Wk2 Avg: "+ week2Avg;
+      }
+      holder.ratingWk1.setText(week1Avg);
+      holder.ratingWk2.setText(week2Avg);
       
       if (!score1.equals("*") || !score2.equals("*")) {
          holder.myRating.setText("My Rtg: "+ score1 +"/"+ score2);
