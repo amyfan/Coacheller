@@ -75,7 +75,9 @@ public class ServiceUtils {
     return null;
   }
 
-  public static JSONArray getRatings(String email, Context context) {
+  //Sample of working URL
+  //  http://ratethisfest.appspot.com/coachellerServlet?email=testing@this.com&action=get_sets&year=2012&day=Friday
+  public static JSONArray getRatings(String email, String day, Context context) {
     try {
       // Returning FAKE DATA
       // if (1 < 3) {
@@ -91,9 +93,10 @@ public class ServiceUtils {
       requestString.append("=");
       requestString.append(email);
       requestString.append("&");
+      requestString.append("year=2012&day="+ day +"&");
       requestString.append(HttpConstants.PARAM_ACTION);
       requestString.append("=");
-      requestString.append(HttpConstants.ACTION_GET_SETS);
+      requestString.append(HttpConstants.ACTION_GET_RATINGS);
 
       CoachellerApplication.debug(context, "HTTPGet = " + requestString.toString());
       HttpGet get = new HttpGet(requestString.toString());

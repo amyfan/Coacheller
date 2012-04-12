@@ -41,6 +41,10 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   private static final int DIALOG_GETEMAIL = 2;
   
   private static final String USER_EMAIL = "USER_EMAIL";
+  public static final String QUERY_RATINGS__SET_ID = "set_id";
+  public static final String QUERY_RATINGS__WEEK = "weekend";
+  public static final String QUERY_SETS__SET_ID = "id";
+  public static final String QUERY_RATINGS__RATING = "score";
 
   private CustomSetListAdapter _setListAdapter;
   private int _weekToQuery;
@@ -51,9 +55,10 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   private HashMap<Integer, Integer> _ratingSelectedIdToValue = new HashMap<Integer, Integer>();
   private CoachellerStorageManager _storageManager;
   
-  
+  private String _dayToExamine;
   private boolean _have_email = false;
   private boolean _tried_to_get_email = false;
+  private JSONArrayHashMap _myRatings_JAHM;
 
   /** Called by Android Framework when the activity is first created. */
   @Override
@@ -72,6 +77,14 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     
     
     _weekToQuery = CoachellerApplication.whichWeekIsToday();
+    _dayToExamine = CoachellerApplication.whatDayIsToday();
+    
+    if (!_dayToExamine.equals("Friday") 
+        && !_dayToExamine.equals("Saturday") 
+        && !_dayToExamine.equals("Sunday")) {
+      _dayToExamine = "Friday";
+    }
+    
     if (_weekToQuery == 1) {
       _timeFieldName = "time_one";
     } else if (_weekToQuery == 2) {
@@ -88,8 +101,19 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     
     CoachellerApplication.debug(this, "Have email: "+ _have_email +", value["+ loadedEmail +"]");
     if (_have_email) { //Get my ratings
-      JSONArray myRatings = ServiceUtils.getRatings(loadedEmail, this);
+       
+      JSONArray myRatings = ServiceUtils.getRatings(loadedEmail, _dayToExamine, this);
+      try {
+        _myRatings_JAHM = new JSONArrayHashMap(myRatings, QUERY_RATINGS__SET_ID, QUERY_RATINGS__WEEK);
+      } catch (JSONException e) {
+        // TODO Auto-generated catch block
+        //Could not get my ratings :(
+        e.printStackTrace();
+      }
+    } else {
+      _myRatings_JAHM = new JSONArrayHashMap(QUERY_RATINGS__SET_ID);
     }
+    
     initializeApp();
   }
 
@@ -98,12 +122,13 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     Toast clickToRate = Toast.makeText(this, "Tap any set to rate it!", 25);
     clickToRate.show();
-  }
+  }  
+ 
 
   private void initializeApp() {
     setContentView(R.layout.sets_list);
 
-    _setListAdapter = new CustomSetListAdapter(this, _timeFieldName);
+    _setListAdapter = new CustomSetListAdapter(this, _timeFieldName, _myRatings_JAHM);
     ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
     viewSetsList.setAdapter(_setListAdapter);
     viewSetsList.setOnItemClickListener(this);
@@ -116,7 +141,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     spinnerSortType.setOnItemSelectedListener(this);
 
     // TODO: pass proper values (year can remain hard-coded for now)
-    JSONArray results = ServiceUtils.getSets("2012", "Friday", this);
+    JSONArray results = ServiceUtils.getSets("2012", _dayToExamine, this);
 
     _setListAdapter.setData(results);
 
@@ -221,7 +246,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
       } else {
         int weekSelectedValue = _ratingSelectedIdToValue.get(weekSelectedId);
-        int scoreSelectedValue = _ratingSelectedIdToValue.get(scoreSelectedId);
+        String scoreSelectedValue = _ratingSelectedIdToValue.get(scoreSelectedId)+"";
 
         CoachellerApplication.debug(this, "Selected Week[" + weekSelectedValue + "] Score["
             + scoreSelectedValue + "] WeekId[" + weekSelectedId + "] ScoreId[" + scoreSelectedId
@@ -230,11 +255,37 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         scoreGroup.clearCheck();
         _lastRateDialog.dismiss();
         
+        int checkedRadioId = ((RadioGroup)_lastRateDialog.findViewById(R.id.radio_pick_week)).getCheckedRadioButtonId();
+        String weekNumber = _ratingSelectedIdToValue.get(checkedRadioId)+"";
+        
+        
+        //submit rating
         ServiceUtils.addRating(_storageManager.getString(USER_EMAIL), 
             ((TextView)_lastRateDialog.findViewById(R.id.text_rateBand_subtitle)).getText().toString(), 
-            "2012", CoachellerApplication.whichWeekIsToday() +"",
-            scoreSelectedValue +"", 
+            "2012", weekNumber,
+            scoreSelectedValue, 
             this);
+        
+        //Need this in order to make the new rating appear in real time
+        
+        try {
+          JSONObject newObj = new JSONObject();
+          String set_id = _lastItemSelected.get(QUERY_SETS__SET_ID)+"";
+          newObj.put(QUERY_RATINGS__SET_ID, set_id);
+          newObj.put(QUERY_RATINGS__WEEK, weekNumber);
+          newObj.put(QUERY_RATINGS__RATING, scoreSelectedValue);
+          
+          //CRITICAL that the keys are listed in this order
+          _myRatings_JAHM.addValues(QUERY_RATINGS__SET_ID, QUERY_RATINGS__WEEK, newObj);
+          
+          ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
+          viewSetsList.invalidateViews();
+            
+        } catch (JSONException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        
       }
     }
 
