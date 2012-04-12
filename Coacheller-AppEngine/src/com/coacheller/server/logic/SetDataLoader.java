@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.coacheller.server.domain.Rating;
 import com.coacheller.shared.Set;
@@ -15,6 +17,8 @@ import com.coacheller.shared.Set;
  * 
  */
 public class SetDataLoader {
+  private static final Logger log = Logger.getLogger(SetDataLoader.class.getName());
+
   private static final int YEAR_INDEX = 0;
   private static final int DAY_INDEX = 1;
   private static final int TIME_ONE_INDEX = 2;
@@ -69,12 +73,14 @@ public class SetDataLoader {
           line = setFile.readLine();
         } catch (Exception e) {
           e.printStackTrace();
+          log.log(Level.SEVERE, "insertSets: " + e.getMessage());
           break;
           // continue;
         }
       }
     } catch (IOException e) {
       e.printStackTrace();
+      log.log(Level.SEVERE, "insertSets: " + e.getMessage());
     }
   }
 

@@ -6,6 +6,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.json.JSONArray;
 
@@ -27,6 +29,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 @SuppressWarnings("serial")
 public class CoachellerServiceImpl extends RemoteServiceServlet implements CoachellerService {
+  private static final Logger log = Logger.getLogger(CoachellerServiceImpl.class.getName());
 
   public String greetServer(String input) throws IllegalArgumentException {
     // Verify that the input is valid.
@@ -96,6 +99,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
       resp = RatingManager.getInstance().addRatingBySetArtist(email, setArtist,
           Integer.valueOf(year), Integer.valueOf(weekend), Integer.valueOf(score));
     } else {
+      log.log(Level.WARNING, "addRatingBySetArtist: null args");
       resp = "null args";
     }
 
@@ -235,6 +239,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
       success = "success i believe";
     } catch (Exception e) {
       success = "something happened";
+      log.log(Level.WARNING, "loadFile: " + e.getMessage());
     } finally {
     }
     return success;
