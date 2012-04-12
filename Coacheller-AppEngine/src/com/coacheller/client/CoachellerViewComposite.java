@@ -7,7 +7,6 @@ import java.util.List;
 import com.coacheller.shared.DateTimeUtils;
 import com.coacheller.shared.Set;
 import com.google.gwt.animation.client.Animation;
-import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -82,8 +81,8 @@ public class CoachellerViewComposite extends Composite {
   @UiField
   com.google.gwt.user.client.ui.Button queryButton;
 
-  @UiField
-  com.google.gwt.user.client.ui.Button rateButton;
+//  @UiField
+//  com.google.gwt.user.client.ui.Button rateButton;
 
   public CoachellerViewComposite() {
     initWidget(uiBinder.createAndBindUi(this));
@@ -204,12 +203,12 @@ public class CoachellerViewComposite extends Composite {
       }
     });
 
-    rateButton.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        FlowControl.go(new CoachellerEmailComposite());
-      }
-    });
+    // rateButton.addClickHandler(new ClickHandler() {
+    // @Override
+    // public void onClick(ClickEvent event) {
+    // FlowControl.go(new CoachellerEmailComposite());
+    // }
+    // });
   }
 
   @Override
