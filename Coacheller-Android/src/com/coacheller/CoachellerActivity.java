@@ -18,6 +18,7 @@ import com.coacheller.shared.FieldVerifier;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -80,7 +81,15 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     _storageManager = new CoachellerStorageManager(this);
     _storageManager.load();
     String loadedEmail = _storageManager.getString(USER_EMAIL);
-
+    
+    if ((loadedEmail != null) && FieldVerifier.isValidEmail(loadedEmail)) {
+      _have_email = true;
+    }
+    
+    CoachellerApplication.debug(this, "Have email: "+ _have_email +", value["+ loadedEmail +"]");
+    if (_have_email) { //Get my ratings
+      JSONArray myRatings = ServiceUtils.getRatings(loadedEmail, this);
+    }
     initializeApp();
   }
 
@@ -124,6 +133,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   }
 
+  
+  //An item was selected from the list of sets
   @Override
   public void onItemSelected(AdapterView<?> parent, View arg1, int arg2, long arg3) {
 
@@ -154,6 +165,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     spinnerSortType.setSelection(0);
   }
 
+  
+  //Any button in any view or dialog was clicked
   @Override
   public void onClick(View viewClicked) {
 
@@ -162,21 +175,27 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       String email = emailField.getText().toString();
 
       CoachellerApplication.debug(this, "User provided email address: " + email);
+      
 
       // if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
       if (!FieldVerifier.isValidEmail(email)) {
         Toast invalidEmail = Toast.makeText(this, "Please enter your real email address.", 25);
         invalidEmail.show();
-      } else {
+          
+      } else {  //Email is valid.  Save email and let user get on with rating
+        _storageManager.putString(USER_EMAIL, email);
+        _storageManager.save();
+        _have_email = true;
         _lastGetEmailDialog.dismiss();
         showDialog(DIALOG_RATE);
       }
     }
 
     if (viewClicked.getId() == R.id.button_declineEmail) {
-      Toast youMustObey = Toast.makeText(this,"You may not decline...  Coacheller will not be denied!  ALL YOUR EMAILS ARE BELONG TO US!",25);
-      youMustObey.show();
-      // _lastGetEmailDialog.dismiss();
+      //Toast youMustObey = Toast.makeText(this,"You may not decline...  Coacheller will not be denied!  ALL YOUR EMAILS ARE BELONG TO US!",25);
+      //youMustObey.show();
+      
+      _lastGetEmailDialog.dismiss();
       // showDialog(DIALOG_RATE);
     }
 
@@ -210,6 +229,12 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
         scoreGroup.clearCheck();
         _lastRateDialog.dismiss();
+        
+        ServiceUtils.addRating(_storageManager.getString(USER_EMAIL), 
+            ((TextView)_lastRateDialog.findViewById(R.id.text_rateBand_subtitle)).getText().toString(), 
+            "2012", CoachellerApplication.whichWeekIsToday() +"",
+            scoreSelectedValue +"", 
+            this);
       }
     }
 
@@ -228,9 +253,9 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     _lastItemSelected = obj;
     CoachellerApplication.debug(this, "You Clicked On: " + obj);
 
-    if (!_tried_to_get_email) {
+    if (!_have_email && !_tried_to_get_email) {
       showDialog(DIALOG_GETEMAIL);
-      _tried_to_get_email = true;
+      //_tried_to_get_email = true;
     } else {
 
       showDialog(DIALOG_RATE);

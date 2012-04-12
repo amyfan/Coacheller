@@ -27,17 +27,34 @@ public class CoachellerStorageManager {
     return _data.keySet();
   }
 
+  // Don't use this ever again
+  /*
+   * priva/
+   *//**//* te String resolveSav *//**//* eFilePath() { */
+  /* File sdCar *//* d = Environment.getE *//* xternalStora *//* geDirectory(); */
+  /* return sdCard *//* .getAbsolutePath() + _context *//* .getString(R.stri *//*
+                                                                                * ng
+                                                                                * .
+                                                                                * save_file_path
+                                                                                * )
+                                                                                * ;
+                                                                                */
+  /* } *//**/
+
+  private String getSaveFileName() {
+    return _context.getString(R.string.save_file_name);
+  }
+
+  
+  //File gets saved here on a good day     /data/data/com.coacheller/files/CoachellerData.dat
   public void save() {
-    File sdCard = Environment.getExternalStorageDirectory();
-    File saveFile = new File(sdCard.getAbsolutePath() + R.string.save_file_full_path);
-    saveFile.getParentFile().mkdirs();
 
     try {
-      FileOutputStream fos = _context.openFileOutput(saveFile.getAbsolutePath(),
-          Context.MODE_PRIVATE);
+      FileOutputStream fos = _context.openFileOutput(getSaveFileName(), Context.MODE_PRIVATE);
       ObjectOutputStream os = new ObjectOutputStream(fos);
       os.writeObject(_data);
       os.close();
+      // System.out.println("FILE SHOULD BE WRITTEN NOW");
     } catch (FileNotFoundException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -48,34 +65,34 @@ public class CoachellerStorageManager {
 
   }
 
+  //File should get loaded from here, if we are all extremely lucky
+  //   /data/data/com.coacheller/files/CoachellerData.dat
   public void load() {
-    File sdCard = Environment.getExternalStorageDirectory();
-    File saveFile = new File(sdCard.getAbsolutePath() + R.string.save_file_full_path);
 
-    if (saveFile.exists()) {
-      try {
-        FileInputStream fis = _context.openFileInput(saveFile.getAbsolutePath());
-        ObjectInputStream is = new ObjectInputStream(fis);
-        _data = (HashMap<String, Object>) is.readObject();
-        is.close();
-      } catch (FileNotFoundException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } catch (StreamCorruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } catch (ClassNotFoundException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-    } else {
-        _data = new HashMap<String, Object>();
-      }
+    try {
+      // fis = _context.openFileInput(saveFile.getName());
+      FileInputStream fis = _context.openFileInput(getSaveFileName());
+      ObjectInputStream is = new ObjectInputStream(fis);
+      _data = (HashMap<String, Object>) is.readObject();
+      is.close();
+    } catch (FileNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (StreamCorruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (ClassNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
 
+    if (_data == null) {
+      _data = new HashMap<String, Object>();
+    }
+  }
 
   public void putString(String name, String value) {
     _data.put(name, value);
