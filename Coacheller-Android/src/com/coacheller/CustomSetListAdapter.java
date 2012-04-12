@@ -2,6 +2,7 @@ package com.coacheller;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -20,6 +21,7 @@ public class CustomSetListAdapter implements ListAdapter {
   private JSONArraySortMap _sortMap;
   private Context _context;
   private String _timeFieldName;
+  private JSONArrayHashMap _myRatings_JAHM;
   
   static class ViewHolder {
     public TextView textTime;
@@ -29,9 +31,10 @@ public class CustomSetListAdapter implements ListAdapter {
     public TextView myRating;
 }
   
-  public CustomSetListAdapter(Context context, String timeFieldName) {
+  public CustomSetListAdapter(Context context, String timeFieldName, JSONArrayHashMap myRatings_JAHM) {
     _context = context;
     _timeFieldName = timeFieldName;
+    _myRatings_JAHM = myRatings_JAHM;
   }
   
   public void setData(JSONArray data) {
@@ -94,13 +97,37 @@ public class CustomSetListAdapter implements ListAdapter {
     try {
 
       ViewHolder holder = (ViewHolder) rowView.getTag();
-
-      int milTime = _sortMap.getSortedJSONObj(position).getInt(_timeFieldName);
+      JSONObject setObj = _sortMap.getSortedJSONObj(position);
+      String setId = setObj.getString(CoachellerActivity.QUERY_SETS__SET_ID);  //Get the set Id
+      
+      //Get Ratings for this set Id
+      JSONObject ratingsObjWk1 = _myRatings_JAHM.getJSONObject(setId, "1"); 
+      JSONObject ratingsObjWk2 = _myRatings_JAHM.getJSONObject(setId, "2");
+      
+      String score1 = "*";
+      if (ratingsObjWk1 != null) {
+        score1 = ratingsObjWk1.get(CoachellerActivity.QUERY_RATINGS__RATING).toString();
+      }
+      
+      String score2 = "*";
+      if (ratingsObjWk2 != null) {
+        score2 = ratingsObjWk2.get(CoachellerActivity.QUERY_RATINGS__RATING).toString();
+      }
+      
+      int milTime = setObj.getInt(_timeFieldName);
       holder.textTime.setText(militaryToCivilianTime(milTime));
-      holder.textArtist.setText(_sortMap.getSortedJSONObj(position).getString("artist"));
-      holder.ratingWk1.setText("Wk1 Avg: "+ _sortMap.getSortedJSONObj(position).getString("avg_score_one"));
-      holder.ratingWk2.setText("Wk2 Avg: "+ _sortMap.getSortedJSONObj(position).getString("avg_score_two"));
-         
+      holder.textArtist.setText(  setObj.getString("artist"));
+      holder.ratingWk1.setText("Wk1 Avg: "+ setObj.getString("avg_score_one"));
+      holder.ratingWk2.setText("Wk2 Avg: "+ setObj.getString("avg_score_two"));
+      
+      if (!score1.equals("*") || !score2.equals("*")) {
+         holder.myRating.setText("My Rtg: "+ score1 +"/"+ score2);
+      } else {
+        holder.myRating.setText("");
+      }
+     
+     
+      
     } catch (JSONException e) {
        //TODO Auto-generated catch block
       e.printStackTrace();

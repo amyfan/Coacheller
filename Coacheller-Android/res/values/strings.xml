@@ -30,6 +30,7 @@
         </string-array>
         <string name="name_week1_short">4/13-4/15</string>
         <string name="name_week2_short">4/20-4/22</string>
-        <string name="save_file_full_path">/Coacheller/CoachellerData</string>
+        <string name="save_file_path">/Coacheller/</string>
+        <string name="save_file_name">CoachellerData.dat</string>
 
 </resources>

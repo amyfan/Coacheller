@@ -2,6 +2,7 @@ package com.coacheller;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URLEncoder;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -11,6 +12,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONTokener;
+
+import com.coacheller.shared.HttpConstants;
 
 import android.content.Context;
 
@@ -79,13 +82,18 @@ public class ServiceUtils {
     return null;
   }
 
+
+  //Sample of working URL
+  //  http://ratethisfest.appspot.com/coachellerServlet?email=testing@this.com&action=get_sets&year=2012&day=Friday
+  public static JSONArray getRatings(String email, String day, Context context) {
+
   /**
    * 
    * @param email
    * @param context
    * @return
    */
-  public static JSONArray getRatings(String email, Context context) {
+
     try {
       StringBuilder requestString = new StringBuilder();
       requestString.append(HttpConstants.SERVER_URL);
@@ -93,9 +101,10 @@ public class ServiceUtils {
       requestString.append("=");
       requestString.append(email);
       requestString.append("&");
+      requestString.append("year=2012&day="+ day +"&");
       requestString.append(HttpConstants.PARAM_ACTION);
       requestString.append("=");
-      requestString.append(HttpConstants.ACTION_GET_SETS);
+      requestString.append(HttpConstants.ACTION_GET_RATINGS);
 
       CoachellerApplication.debug(context, "HTTPGet = " + requestString.toString());
       HttpGet get = new HttpGet(requestString.toString());
@@ -137,7 +146,9 @@ public class ServiceUtils {
    * @param context
    * @return
    */
-  public static JSONArray addRating(String email, String artist, String year, String weekend,
+  
+  //TODO returns JSONArray which is probably null - is this correct?
+  public static String addRating(String email, String artist, String year, String weekend,
       String score, Context context) {
     try {
 
@@ -149,7 +160,7 @@ public class ServiceUtils {
       requestString.append("&");
       requestString.append(HttpConstants.PARAM_ARTIST);
       requestString.append("=");
-      requestString.append(artist);
+      requestString.append(URLEncoder.encode(artist, "utf-8"));
       requestString.append("&");
       requestString.append(HttpConstants.PARAM_YEAR);
       requestString.append("=");
@@ -182,9 +193,9 @@ public class ServiceUtils {
         for (String line = null; (line = reader.readLine()) != null;) {
           builder.append(line).append("\n");
         }
-        JSONTokener tokener = new JSONTokener(builder.toString());
-        JSONArray finalResult = new JSONArray(tokener);
-        return finalResult;
+        
+        
+        return builder.toString();
 
       } else {
         CoachellerApplication.debug(context, HTTP_FAILURE
