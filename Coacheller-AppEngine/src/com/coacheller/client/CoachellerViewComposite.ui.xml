@@ -10,6 +10,7 @@
 			<div id="android"></div>
 			<div class="appname">
 				<g:Label ui:field="title" addStyleNames="{style.header}" />
+				<g:Label ui:field="beta" addStyleNames="{style.beta}" />
 			</div>
 			<div class="roundrect">
 				<div class="inputcell">

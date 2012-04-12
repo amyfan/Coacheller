@@ -17,19 +17,25 @@ import com.coacheller.shared.HttpConstants;
 
 import android.content.Context;
 
+import com.coacheller.shared.HttpConstants;
+
 public class ServiceUtils {
   private final static String HTTP_SUCCESS = "Received HTTP Response";
   private final static String HTTP_FAILURE = "HTTP Response was not OK: ";
 
+  /**
+   * 
+   * @param year
+   * @param day
+   * @param context
+   * @return
+   */
   public static JSONArray getSets(String year, String day, Context context) {
     try {
       // Returning FAKE DATA
       // if (1 < 3) {
       // return FakeDataSource.getData();
       // }
-
-      HttpResponse response;
-      HttpClient hc = new DefaultHttpClient();
 
       StringBuilder requestString = new StringBuilder();
       requestString.append(HttpConstants.SERVER_URL);
@@ -47,7 +53,8 @@ public class ServiceUtils {
 
       CoachellerApplication.debug(context, "HTTPGet = " + requestString.toString());
       HttpGet get = new HttpGet(requestString.toString());
-      response = hc.execute(get);
+      HttpClient hc = new DefaultHttpClient();
+      HttpResponse response = hc.execute(get);
 
       // get the response from GAE server, should be in JSON format
       if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -75,18 +82,19 @@ public class ServiceUtils {
     return null;
   }
 
+
   //Sample of working URL
   //  http://ratethisfest.appspot.com/coachellerServlet?email=testing@this.com&action=get_sets&year=2012&day=Friday
   public static JSONArray getRatings(String email, String day, Context context) {
+
+  /**
+   * 
+   * @param email
+   * @param context
+   * @return
+   */
+
     try {
-      // Returning FAKE DATA
-      // if (1 < 3) {
-      // return FakeDataSource.getData();
-      // }
-
-      HttpResponse response;
-      HttpClient hc = new DefaultHttpClient();
-
       StringBuilder requestString = new StringBuilder();
       requestString.append(HttpConstants.SERVER_URL);
       requestString.append(HttpConstants.PARAM_EMAIL);
@@ -100,7 +108,8 @@ public class ServiceUtils {
 
       CoachellerApplication.debug(context, "HTTPGet = " + requestString.toString());
       HttpGet get = new HttpGet(requestString.toString());
-      response = hc.execute(get);
+      HttpClient hc = new DefaultHttpClient();
+      HttpResponse response = hc.execute(get);
 
       // get the response from GAE server, should be in JSON format
       if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -142,13 +151,6 @@ public class ServiceUtils {
   public static String addRating(String email, String artist, String year, String weekend,
       String score, Context context) {
     try {
-      // Returning FAKE DATA
-      // if (1 < 3) {
-      // return FakeDataSource.getData();
-      // }
-
-      HttpResponse response;
-      HttpClient hc = new DefaultHttpClient();
 
       StringBuilder requestString = new StringBuilder();
       requestString.append(HttpConstants.SERVER_URL);
@@ -178,7 +180,8 @@ public class ServiceUtils {
 
       CoachellerApplication.debug(context, "HTTPPost = " + requestString.toString());
       HttpPost post = new HttpPost(requestString.toString());
-      response = hc.execute(post);
+      HttpClient hc = new DefaultHttpClient();
+      HttpResponse response = hc.execute(post);
 
       // get the response from GAE server, should be in JSON format
       if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
