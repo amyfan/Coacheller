@@ -2,6 +2,8 @@ package com.coacheller.server.logic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,6 +19,7 @@ import com.coacheller.shared.Set;
  * 
  */
 public class JSONUtils {
+  private static final Logger log = Logger.getLogger(JSONUtils.class.getName());
 
   /**
    * 
@@ -44,6 +47,7 @@ public class JSONUtils {
         jsonObjs.put(ret);
       } catch (Exception e) {
         e.printStackTrace();
+        log.log(Level.SEVERE, "convertSetsToJSONArray: " + e.getMessage());
       }
     }
     return jsonObjs;
@@ -105,8 +109,8 @@ public class JSONUtils {
 
         sets.add(set);
       } catch (JSONException e) {
-        // TODO Auto-generated catch block
         e.printStackTrace();
+        log.log(Level.SEVERE, "convertJSONArrayToSets: " + e.getMessage());
         continue;
       }
     }
@@ -133,6 +137,7 @@ public class JSONUtils {
         jsonObjs.put(ret);
       } catch (Exception e) {
         e.printStackTrace();
+        log.log(Level.SEVERE, "convertRatingsToJSONArray: " + e.getMessage());
       }
     }
     return jsonObjs;
@@ -160,42 +165,6 @@ public class JSONUtils {
       ratingGwts.add(ratingGwt);
     }
     return ratingGwts;
-  }
-
-  /**
-   * 
-   * @param array
-   * @return
-   */
-  @Deprecated
-  public static final List<Rating> convertJSONArrayToRatings(JSONArray array) {
-    List<Rating> ratings = new ArrayList<Rating>();
-    for (int i = 0; i < array.length(); i++) {
-      JSONObject obj;
-      try {
-        Rating rating = new Rating();
-        obj = array.getJSONObject(i);
-        // if (obj.get("rater_id") != null) {
-        // rating.setRaterId((Long) obj.get("rater_id"));
-        // }
-        // if (obj.get("set_id") != null) {
-        // rating.setSetId((Long) obj.get("set_id"));
-        // }
-        if (obj.get("weekend") != null) {
-          rating.setWeekend((Integer) obj.get("weekend"));
-        }
-        if (obj.get("score") != null) {
-          rating.setScore((Integer) obj.get("score"));
-        }
-
-        ratings.add(rating);
-      } catch (JSONException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-        continue;
-      }
-    }
-    return ratings;
   }
 
 }

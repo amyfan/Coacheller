@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.coacheller.server.domain.AppUser;
@@ -58,6 +59,7 @@ public class RatingManager {
         resp = "rating added";
       } else {
         resp = "invalid artist name";
+        log.log(Level.WARNING, "invalid artist name: " + setArtist);
       }
     } else {
       // update existing rating
