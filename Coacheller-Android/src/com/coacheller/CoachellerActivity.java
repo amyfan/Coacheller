@@ -182,7 +182,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     
      
     TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
-    titleView.setText(_dayToExamine +", Week "+ _weekToQuery +" "+ weekString);
+    titleView.setText(_dayToExamine +", Weekend "+ _weekToQuery);
+        //+" "+ weekString);
     _setListAdapter.setTimeFieldName(_timeFieldName);
     
     obtainEmailFromStorage();
