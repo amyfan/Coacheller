@@ -131,6 +131,7 @@ public class CustomSetListAdapter implements ListAdapter {
       } else {
         week2Avg = "Wk2 Avg: "+ week2Avg;
       }
+      
       holder.ratingWk1.setText(week1Avg);
       holder.ratingWk2.setText(week2Avg);
       
