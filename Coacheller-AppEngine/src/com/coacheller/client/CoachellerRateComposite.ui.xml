@@ -28,6 +28,8 @@
 				<div class="buttoncell">
 					<g:Button ui:field="addRatingButton" text="Add Rating"
 						addStyleNames="{style.button}" />
+				</div>
+				<div class="buttoncell">
 					<g:Button ui:field="backButton" text="Back" addStyleNames="{style.button}" />
 				</div>
 				<div class="buttoncell">

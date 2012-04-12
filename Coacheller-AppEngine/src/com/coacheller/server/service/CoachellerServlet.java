@@ -14,6 +14,7 @@ import com.coacheller.server.logic.JSONUtils;
 import com.coacheller.server.logic.RatingManager;
 import com.coacheller.shared.DayEnum;
 import com.coacheller.shared.FieldVerifier;
+import com.coacheller.shared.HttpConstants;
 import com.coacheller.shared.Set;
 
 /**
@@ -24,9 +25,6 @@ import com.coacheller.shared.Set;
  */
 @SuppressWarnings("serial")
 public class CoachellerServlet extends HttpServlet {
-  private final String ACTION_GET_SETS = "get_sets";
-  private final String ACTION_GET_RATINGS = "get_ratings";
-  private final String ACTION_UPDATE_RATING = "update_rating";
 
   /**
    * This method is accessible by visiting the URL
@@ -39,26 +37,26 @@ public class CoachellerServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     resp.setContentType("text/plain");
 
-    String action = checkNull(req.getParameter("action"));
-    String email = checkNull(req.getParameter("email"));
-    String day = checkNull(req.getParameter("day"));
-    String year = checkNull(req.getParameter("year"));
-    String artist = checkNull(req.getParameter("artist"));
-    String score = checkNull(req.getParameter("score"));
-    String weekend = checkNull(req.getParameter("weekend"));
+    String action = checkNull(req.getParameter(HttpConstants.PARAM_ACTION));
+    String email = checkNull(req.getParameter(HttpConstants.PARAM_EMAIL));
+    String day = checkNull(req.getParameter(HttpConstants.PARAM_DAY));
+    String year = checkNull(req.getParameter(HttpConstants.PARAM_YEAR));
+    String artist = checkNull(req.getParameter(HttpConstants.PARAM_ARTIST));
+    String score = checkNull(req.getParameter(HttpConstants.PARAM_SCORE));
+    String weekend = checkNull(req.getParameter(HttpConstants.PARAM_WEEKEND));
 
     String respString = "";
 
-    if (action.equals(ACTION_GET_SETS)) {
+    if (action.equals(HttpConstants.ACTION_GET_SETS)) {
       respString = getSetsJson(email, year, day);
-    } else if (action.equals(ACTION_GET_RATINGS)) {
+    } else if (action.equals(HttpConstants.ACTION_GET_RATINGS)) {
       respString = getRatingsJsonByUser(email);
-    } else if (action.equals(ACTION_UPDATE_RATING)) {
+    } else if (action.equals(HttpConstants.ACTION_UPDATE_RATING)) {
       // TODO: prefer to stick this in doPost()
       respString = addRatingBySetArtist(email, artist, year, weekend, score);
     }
 
-    resp.getWriter().println();
+    resp.getWriter().println(respString);
   }
 
   /**
@@ -72,7 +70,7 @@ public class CoachellerServlet extends HttpServlet {
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     String action = checkNull(req.getParameter("action"));
 
-    if (action.equals(ACTION_UPDATE_RATING)) {
+    if (action.equals(HttpConstants.ACTION_UPDATE_RATING)) {
 
     }
 
