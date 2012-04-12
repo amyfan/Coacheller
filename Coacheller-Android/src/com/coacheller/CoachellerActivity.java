@@ -152,45 +152,47 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   private void refreshData() {
     // Below here is stuff to be done each refresh
-
-    if (!_dayToExamine.equals("Friday") && !_dayToExamine.equals("Saturday")
-        && !_dayToExamine.equals("Sunday")) {
-      _dayToExamine = "Friday";
-    }
-
-    String weekString = "";
-    if (_weekToQuery == 1) {
-      _timeFieldName = QUERY_SETS__TIME_ONE;
-      weekString = getString(R.string.name_week1_short);
-    } else if (_weekToQuery == 2) {
-      _timeFieldName = QUERY_SETS__TIME_TWO;
-      weekString = getString(R.string.name_week2_short);
-    }
-
-    TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
-    titleView.setText(_dayToExamine + ", Weekend " + _weekToQuery);
-    // +" "+ weekString);
-    _setListAdapter.setTimeFieldName(_timeFieldName);
-
-    obtainEmailFromStorage();
-    rebuildJAHM();
-
-    // TODO: pass proper values (year can remain hard-coded for now)
-    JSONArray results = ServiceUtils.getSets("2012", _dayToExamine, this);
-    _setListAdapter.setData(results);
     try {
+
+      if (!_dayToExamine.equals("Friday") && !_dayToExamine.equals("Saturday")
+          && !_dayToExamine.equals("Sunday")) {
+        _dayToExamine = "Friday";
+      }
+
+      String weekString = "";
+      if (_weekToQuery == 1) {
+        _timeFieldName = QUERY_SETS__TIME_ONE;
+        weekString = getString(R.string.name_week1_short);
+      } else if (_weekToQuery == 2) {
+        _timeFieldName = QUERY_SETS__TIME_TWO;
+        weekString = getString(R.string.name_week2_short);
+      }
+
+      TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
+      titleView.setText(_dayToExamine + ", Weekend " + _weekToQuery);
+      // +" "+ weekString);
+      _setListAdapter.setTimeFieldName(_timeFieldName);
+
+      obtainEmailFromStorage();
+      rebuildJAHM();
+
+      // TODO: pass proper values (year can remain hard-coded for now)
+      JSONArray results = ServiceUtils.getSets("2012", _dayToExamine, this);
+      _setListAdapter.setData(results);
       setView_reSort();
+      ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
+      viewSetsList.invalidateViews();
+
+      CoachellerApplication.debug(this, "Data Refresh is complete");
+      _lastRefresh = System.currentTimeMillis();
 
     } catch (JSONException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
+      CoachellerApplication.debug(this, "Data Refresh failed");
+      _lastRefresh = System.currentTimeMillis();
     }
 
-    ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
-    viewSetsList.invalidateViews();
-
-    CoachellerApplication.debug(this, "Data Refresh is complete");
-    _lastRefresh = System.currentTimeMillis();
   }
 
   // An item was selected from the list of sets
