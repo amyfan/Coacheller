@@ -9,25 +9,40 @@ import org.json.JSONObject;
 
 public class JSONArrayHashMap {
   
-  private String _keyName;
+  private String _key1Name;
+  private String _key2Name;
   
   private HashMap<String, JSONObject> _hash = new HashMap<String, JSONObject>();
   
   public JSONArrayHashMap(String keyName) {
-    _keyName = keyName;
+    _key1Name = keyName;
+  }
+  
+  public JSONArrayHashMap(String key1Name, String key2Name) {
+    _key1Name = key1Name;
+    _key2Name = key2Name;
+  }
+  
+    public void wipe() {
+    _key1Name = "";
+    _key2Name = "";
+    _hash.clear();
   }
   
   public JSONArrayHashMap(JSONArray data, String keyName) throws JSONException {
-    _keyName = keyName;
+    _key1Name = keyName;
     
     for (int i = 0; i < data.length(); i++) {
       JSONObject obj = (JSONObject) data.get(i);
-      _hash.put(obj.getString(_keyName), obj);
+      _hash.put(obj.getString(_key1Name), obj);
     }
   }
   
+
+  
   public JSONArrayHashMap(JSONArray data, String firstKeyName, String secondKeyName) throws JSONException {
-    _keyName = firstKeyName +"-"+ secondKeyName;
+    _key1Name = firstKeyName;
+    _key2Name = secondKeyName;
     
     for (int i = 0; i < data.length(); i++) {
       JSONObject obj = (JSONObject) data.get(i);
@@ -56,7 +71,7 @@ public class JSONArrayHashMap {
   }
   
   public String getKeyName() {
-    return _keyName;
+    return _key1Name;
   }
 
 }
