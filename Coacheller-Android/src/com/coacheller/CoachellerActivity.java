@@ -39,6 +39,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   private static final int DIALOG_RATE = 1;
   private static final int DIALOG_GETEMAIL = 2;
+  private static final int SORT_TIME = 1;
+  private static final int SORT_ARTIST = 2;
 
   private static final String USER_EMAIL = "USER_EMAIL";
   public static final String QUERY_RATINGS__SET_ID = "set_id";
@@ -52,6 +54,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   private CustomSetListAdapter _setListAdapter;
   private int _weekToQuery;
+  private int _sortMode;
   private String _timeFieldName;
   private Dialog _lastRateDialog;
   private Dialog _lastGetEmailDialog;
@@ -103,7 +106,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     
     _weekToQuery = CoachellerApplication.whichWeekIsToday();
     _dayToExamine = CoachellerApplication.whatDayIsToday();
-
+    _sortMode = SORT_TIME;
+    
     // Above here is stuff to be done once
     
  
@@ -166,11 +170,19 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         && !_dayToExamine.equals("Sunday")) {
       _dayToExamine = "Friday";
     }
+    
+    String weekString="";
     if (_weekToQuery == 1) {
       _timeFieldName = QUERY_SETS__TIME_ONE;
+      weekString = getString(R.string.name_week1_short);
     } else if (_weekToQuery == 2) {
       _timeFieldName = QUERY_SETS__TIME_TWO;
+       weekString = getString(R.string.name_week2_short);
     }
+    
+     
+    TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
+    titleView.setText(_dayToExamine +", Week "+ _weekToQuery +" "+ weekString);
     _setListAdapter.setTimeFieldName(_timeFieldName);
     
     obtainEmailFromStorage();
@@ -181,7 +193,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     JSONArray results = ServiceUtils.getSets("2012", _dayToExamine, this);
     _setListAdapter.setData(results);
     try {
-      setView_sortByTime();
+      setView_reSort();
 
     } catch (JSONException e) {
       // TODO Auto-generated catch block
@@ -207,25 +219,29 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     try {
       if (parent.getSelectedItem().toString().toLowerCase().equals("time")) {
-        setView_sortByTime();
+        _sortMode = SORT_TIME;
 
       } else if (parent.getSelectedItem().toString().toLowerCase().equals("artist")) {
-        setView_sortByArtist();
+        _sortMode = SORT_ARTIST;
       }
 
+      setView_reSort();
       viewSetsList.invalidateViews();
     } catch (JSONException e) {
       CoachellerApplication.debug(this, "JSONException re-sorting data");
       e.printStackTrace();
     }
   }
-
-  private void setView_sortByArtist() throws JSONException {
-    _setListAdapter.sortByField("artist", JSONArraySortMap.VALUE_STRING);
-  }
-
-  private void setView_sortByTime() throws JSONException {
-    _setListAdapter.sortByField(_timeFieldName, JSONArraySortMap.VALUE_INTEGER);
+  
+  private void setView_reSort() throws JSONException {
+    if (_sortMode == SORT_TIME) {
+      _setListAdapter.sortByField(_timeFieldName, JSONArraySortMap.VALUE_INTEGER);
+    } else if (_sortMode == SORT_ARTIST) {
+      _setListAdapter.sortByField("artist", JSONArraySortMap.VALUE_STRING);
+    } else {
+      CoachellerApplication.debug(this, "Unexpected sort mode: "+_sortMode);
+      (new Exception()).printStackTrace();
+    }
   }
 
   @Override

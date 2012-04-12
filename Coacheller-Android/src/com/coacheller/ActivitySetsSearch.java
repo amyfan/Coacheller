@@ -108,7 +108,6 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
       CoachellerApplication.debug(this, "Search button pressed");
 
       try {
-        String results = "";
         Intent intent = new Intent();
         Bundle bun = new Bundle();
 

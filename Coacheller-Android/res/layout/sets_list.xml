@@ -3,9 +3,9 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="horizontal" >
-
+
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/text_set_list_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Date and Day of Performances"
