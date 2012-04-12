@@ -13,8 +13,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONTokener;
 
-import com.coacheller.shared.HttpConstants;
-
 import android.content.Context;
 
 import com.coacheller.shared.HttpConstants;

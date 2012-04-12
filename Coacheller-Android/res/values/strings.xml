@@ -10,7 +10,7 @@
     <string-array name="dateArray">
         <item>2011</item>
     </string-array>
-        <string name="title_sets_search">Load Other Sets</string>
+        <string name="title_sets_search">Choose Day to Load</string>
         <string name="week_search_sets">Week</string>
         <string name="day_search_sets">Day</string>
         <string name="buttonlabel_search_sets">Go!</string>
