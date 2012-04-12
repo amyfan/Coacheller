@@ -44,7 +44,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:text="Sort By:"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+            	android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <Spinner
                 android:id="@+id/spinner_sort_by"
