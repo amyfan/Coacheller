@@ -40,10 +40,11 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:text="@string/week_search_sets"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textStyle="bold"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <Spinner
             android:id="@+id/search_spinner_week"
@@ -70,9 +71,11 @@
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="2"
             android:text="@string/day_search_sets"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textStyle="bold"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <Spinner
             android:id="@+id/search_spinner_day"
