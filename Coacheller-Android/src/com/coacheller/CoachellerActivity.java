@@ -16,7 +16,6 @@ import org.json.JSONTokener;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -24,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -31,14 +31,21 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class CoachellerActivity extends Activity implements View.OnClickListener, OnItemSelectedListener, OnItemClickListener {
+public class CoachellerActivity extends Activity 
+implements View.OnClickListener, OnItemSelectedListener, OnItemClickListener {
 
+  private static final int DIALOG_RATE = 1;
+  private static final int DIALOG_GETEMAIL = 2;
+  
   private CustomSetListAdapter _setListAdapter;
   private int _weekToQuery;
   private String _timeFieldName;
-  private Dialog _lastDialog;
+  private Dialog _lastRateDialog;
+  private Dialog _lastGetEmailDialog;
   private JSONObject _lastItemSelected;
   private HashMap<Integer, Integer> _ratingSelectedIdToValue = new HashMap<Integer, Integer>();
+  
+  private boolean _tried_to_get_email = false;
 
 
   /** Called by Android Framework when the activity is first created. */
@@ -127,6 +134,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   }
 
+  
   /**
    * Sends an HttpRequest to SDCrimeZone-AppEngine with lat, long, radius (and
    * date). Gets the JSON result and returns it. Should ONLY be called from main
@@ -138,6 +146,11 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     try {
 
+      //Returning FAKE DATA
+      if (1 < 3) {
+        return FakeDataSource.getData();
+      }
+      
       HttpResponse response;
       HttpClient hc = new DefaultHttpClient();
 
@@ -209,6 +222,29 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   @Override
   public void onClick(View viewClicked) {
+    
+    if (viewClicked.getId() == R.id.button_provideEmail) {
+      EditText emailField = (EditText)_lastGetEmailDialog.findViewById(R.id.textField_enterEmail);
+      String email = emailField.getText().toString();
+      
+      CoachellerApplication.debug(this, "User provided email address: "+ email);
+      
+      if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        Toast invalidEmail = Toast.makeText(this, "Please enter your real email address.", 25);
+        invalidEmail.show();
+      } else {
+        _lastGetEmailDialog.dismiss();
+        showDialog(DIALOG_RATE);
+      }
+    }
+    
+    if (viewClicked.getId() == R.id.button_declineEmail) {
+      Toast youMustObey = Toast.makeText(this, "You may not decline...  Coacheller will not be denied!  ALL YOUR EMAILS ARE BELONG TO US!", 25);
+      youMustObey.show();
+      //_lastGetEmailDialog.dismiss();
+      //showDialog(DIALOG_RATE);
+    }
+    
 
     if (viewClicked.getId() == R.id.buttonChangeToSearchSets) {
       System.out.println("Button: Find Other Sets");
@@ -219,10 +255,10 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     }
     
     if (viewClicked.getId() == R.id.button_rate_okgo) {
-      RadioGroup weekGroup = (RadioGroup) _lastDialog.findViewById(R.id.radio_pick_week);
+      RadioGroup weekGroup = (RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_week);
       int weekSelectedId = weekGroup.getCheckedRadioButtonId();
       
-      RadioGroup scoreGroup = (RadioGroup) _lastDialog.findViewById(R.id.radio_pick_score);
+      RadioGroup scoreGroup = (RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_score);
       int scoreSelectedId = scoreGroup.getCheckedRadioButtonId();
       
     
@@ -239,16 +275,15 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         
         
         scoreGroup.clearCheck();
-        _lastDialog.dismiss();
+        _lastRateDialog.dismiss();
       }
     }
     
     if (viewClicked.getId() == R.id.button_rate_cancel) {
       //Dialog dialog = (Dialog) viewClicked.getParent();
-      RadioGroup scoreGroup = (RadioGroup) _lastDialog.findViewById(R.id.radio_pick_score);
+      RadioGroup scoreGroup = (RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_score);
       scoreGroup.clearCheck();
-      
-      _lastDialog.dismiss();
+      _lastRateDialog.dismiss();
     }
 
   }
@@ -259,54 +294,86 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     JSONObject obj = (JSONObject) _setListAdapter.getItem(position);
     _lastItemSelected = obj;
     CoachellerApplication.debug(this, "You Clicked On: "+ obj);
-    showDialog(333);
+    
+    if (!_tried_to_get_email) {
+      showDialog(DIALOG_GETEMAIL);
+      _tried_to_get_email = true;
+    } else {
+    
+      showDialog(DIALOG_RATE);
+    }
+  }
+  
+  @Override
+  protected void onPrepareDialog(int id, Dialog dialog) {
+      //Always call through to super implementation
+      super.onPrepareDialog(id, dialog);
+      
+      if (id == DIALOG_RATE) {
+
+        //_lastRateDialog.setTitle("Rate this Set!");
+        try {
+          TextView subtitleText = (TextView) _lastRateDialog.findViewById(R.id.text_rateBand_subtitle);
+          subtitleText.setText(_lastItemSelected.getString("artist"));
+
+        } catch (JSONException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+
+        int week = CoachellerApplication.whichWeekIsToday();
+        RadioGroup weekGroup = (RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_week);
+        if (week == 1) {
+          RadioButton buttonWeek1 = (RadioButton) _lastRateDialog.findViewById(R.id.radio_button_week1);
+          buttonWeek1.setChecked(true);
+        } else if (week == 2) {
+          RadioButton buttonWeek2 = (RadioButton) _lastRateDialog.findViewById(R.id.radio_button_week2);
+          buttonWeek2.setChecked(true);
+        } else {
+          //Don't suggest a week
+          weekGroup.clearCheck();
+        }
+
+        //TODO If the user already rated this set, default to their last rating
+        RadioGroup scoreGroup = (RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_score);
+        scoreGroup.clearCheck();
+      }
+
   }
 
   @Override
   protected Dialog onCreateDialog(int id) {
     
-    if (id == 333) {
+    if (id == DIALOG_GETEMAIL) {
+      _lastGetEmailDialog = new Dialog(this);
+      _lastGetEmailDialog.setContentView(R.layout.get_email_address);
+      _lastGetEmailDialog.setTitle("Keep Track of Everything");
       
-      Context context = this;
-      _lastDialog = new Dialog(context);
+      EditText emailField = (EditText) _lastGetEmailDialog.findViewById(R.id.textField_enterEmail);
+      emailField.setText("me@here.com");
+      emailField.selectAll();
       
-      _lastDialog.setContentView(R.layout.dialog_rate_set);
-      _lastDialog.setTitle("Rate this Set!");
-      
-      try {
-        TextView subtitleText = (TextView) _lastDialog.findViewById(R.id.text_rateBand_subtitle);
-        subtitleText.setText(_lastItemSelected.getString("artist"));
-      } catch (JSONException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      
-      int week = CoachellerApplication.whichWeekIsToday();
-      RadioGroup weekGroup = (RadioGroup) _lastDialog.findViewById(R.id.radio_pick_week);
-      if (week == 1) {
-        RadioButton buttonWeek1 = (RadioButton) _lastDialog.findViewById(R.id.radio_button_week1);
-        buttonWeek1.setChecked(true);
-      } else if (week == 2) {
-        RadioButton buttonWeek2 = (RadioButton) _lastDialog.findViewById(R.id.radio_button_week2);
-        buttonWeek2.setChecked(true);
-      } else {
-        //Don't suggest a week
-        weekGroup.clearCheck();
-      }
-      
-      //TODO If the user already rated this set, default to their last rating
-      //This does not seem to work here, wtf
-      RadioGroup scoreGroup = (RadioGroup) _lastDialog.findViewById(R.id.radio_pick_score);
-      scoreGroup.clearCheck();
-      
-      Button buttonOK = (Button) _lastDialog.findViewById(R.id.button_rate_okgo);
+      Button buttonOK = (Button) _lastGetEmailDialog.findViewById(R.id.button_provideEmail);
       buttonOK.setOnClickListener(this);
       
-      Button buttonCancel = (Button) _lastDialog.findViewById(R.id.button_rate_cancel);
+      Button buttonCancel = (Button) _lastGetEmailDialog.findViewById(R.id.button_declineEmail);
       buttonCancel.setOnClickListener(this);
       
-      
-      return _lastDialog;
+      return _lastGetEmailDialog;
+    }
+
+    if (id == DIALOG_RATE) {
+
+      _lastRateDialog = new Dialog(this);
+      _lastRateDialog.setContentView(R.layout.dialog_rate_set);
+      _lastRateDialog.setTitle("Rate this Set!");
+
+      Button buttonOK = (Button) _lastRateDialog.findViewById(R.id.button_rate_okgo);
+      buttonOK.setOnClickListener(this);
+
+      Button buttonCancel = (Button) _lastRateDialog.findViewById(R.id.button_rate_cancel);
+      buttonCancel.setOnClickListener(this);
+      return _lastRateDialog;
     }
     
     return super.onCreateDialog(id);
