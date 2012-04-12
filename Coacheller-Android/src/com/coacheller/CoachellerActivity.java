@@ -38,6 +38,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   private static final int DIALOG_RATE = 1;
   private static final int DIALOG_GETEMAIL = 2;
+  
+  private static final String USER_EMAIL = "USER_EMAIL";
 
   private CustomSetListAdapter _setListAdapter;
   private int _weekToQuery;
@@ -46,7 +48,10 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   private Dialog _lastGetEmailDialog;
   private JSONObject _lastItemSelected;
   private HashMap<Integer, Integer> _ratingSelectedIdToValue = new HashMap<Integer, Integer>();
-
+  private CoachellerStorageManager _storageManager;
+  
+  
+  private boolean _have_email = false;
   private boolean _tried_to_get_email = false;
 
   /** Called by Android Framework when the activity is first created. */
@@ -56,22 +61,25 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     CoachellerApplication.debug(this, "CoachellerActivity Launched");
 
-    _weekToQuery = 1;
-
     _ratingSelectedIdToValue.put(R.id.radio_button_week1, 1);
     _ratingSelectedIdToValue.put(R.id.radio_button_week2, 2);
-
     _ratingSelectedIdToValue.put(R.id.radio_button_score1, 1);
     _ratingSelectedIdToValue.put(R.id.radio_button_score2, 2);
     _ratingSelectedIdToValue.put(R.id.radio_button_score3, 3);
     _ratingSelectedIdToValue.put(R.id.radio_button_score4, 4);
     _ratingSelectedIdToValue.put(R.id.radio_button_score5, 5);
-
+    
+    
+    _weekToQuery = CoachellerApplication.whichWeekIsToday();
     if (_weekToQuery == 1) {
       _timeFieldName = "time_one";
     } else if (_weekToQuery == 2) {
       _timeFieldName = "time_two";
     }
+    
+    _storageManager = new CoachellerStorageManager(this);
+    _storageManager.load();
+    String loadedEmail = _storageManager.getString(USER_EMAIL);
 
     initializeApp();
   }
@@ -107,21 +115,6 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
       _setListAdapter.sortByField(_timeFieldName, JSONArraySortMap.VALUE_INTEGER);
 
-      /*
-       * JSONObject obj = results.getJSONObject(0);
-       * CoachellerApplication.debug(this, obj.toString());
-       * CoachellerApplication.debug(this, obj.names().toString());
-       * 
-       * JSONArraySortMap sortMapArtist = new JSONArraySortMap(results,
-       * "artist", JSONArraySortMap.VALUE_STRING); for (int i = 0; i <
-       * results.length(); i++) { CoachellerApplication.debug(this,
-       * sortMapArtist.getSortedJSONObj(i).toString()); }
-       * 
-       * JSONArraySortMap sortMapId = new JSONArraySortMap(results, "id",
-       * JSONArraySortMap.VALUE_INTEGER); for (int i = 0; i < results.length();
-       * i++) { CoachellerApplication.debug(this,
-       * sortMapId.getSortedJSONObj(i).toString()); }
-       */
     } catch (JSONException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -181,11 +174,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     }
 
     if (viewClicked.getId() == R.id.button_declineEmail) {
-      Toast youMustObey = Toast
-          .makeText(
-              this,
-              "You may not decline...  Coacheller will not be denied!  ALL YOUR EMAILS ARE BELONG TO US!",
-              25);
+      Toast youMustObey = Toast.makeText(this,"You may not decline...  Coacheller will not be denied!  ALL YOUR EMAILS ARE BELONG TO US!",25);
       youMustObey.show();
       // _lastGetEmailDialog.dismiss();
       // showDialog(DIALOG_RATE);
