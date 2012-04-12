@@ -62,6 +62,9 @@ public class CoachellerViewComposite extends Composite {
   Label title;
 
   @UiField
+  Label beta;
+
+  @UiField
   Label infoBox;
 
   @UiField
@@ -98,6 +101,7 @@ public class CoachellerViewComposite extends Composite {
 
   private void initUiElements() {
     title.setText("Coachella 2012 Set Ratings");
+    beta.setText("beta");
 
     ListDataProvider<Set> listDataProvider = new ListDataProvider<Set>();
     listDataProvider.addDataDisplay(setsTable);
