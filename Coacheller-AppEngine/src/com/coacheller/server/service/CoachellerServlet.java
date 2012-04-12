@@ -48,10 +48,10 @@ public class CoachellerServlet extends HttpServlet {
     String respString = "";
 
     if (action.equals(HttpConstants.ACTION_GET_SETS)) {
-      respString = getSetsJson(email, year, day);
+      respString = getSetsJson(year, day);
     } else if (action.equals(HttpConstants.ACTION_GET_RATINGS)) {
       respString = getRatingsJsonByUser(email);
-    } else if (action.equals(HttpConstants.ACTION_UPDATE_RATING)) {
+    } else if (action.equals(HttpConstants.ACTION_ADD_RATING)) {
       // TODO: prefer to stick this in doPost()
       respString = addRatingBySetArtist(email, artist, year, weekend, score);
     }
@@ -68,20 +68,23 @@ public class CoachellerServlet extends HttpServlet {
    */
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    String action = checkNull(req.getParameter("action"));
+    String action = checkNull(req.getParameter(HttpConstants.PARAM_ACTION));
+    String email = checkNull(req.getParameter(HttpConstants.PARAM_EMAIL));
+    String year = checkNull(req.getParameter(HttpConstants.PARAM_YEAR));
+    String artist = checkNull(req.getParameter(HttpConstants.PARAM_ARTIST));
+    String score = checkNull(req.getParameter(HttpConstants.PARAM_SCORE));
+    String weekend = checkNull(req.getParameter(HttpConstants.PARAM_WEEKEND));
 
-    if (action.equals(HttpConstants.ACTION_UPDATE_RATING)) {
-
+    if (action.equals(HttpConstants.ACTION_ADD_RATING)) {
+      addRatingBySetArtist(email, artist, year, weekend, score);
     }
 
   }
 
-  private String getSetsJson(String email, String yearString, String day) {
+  private String getSetsJson(String yearString, String day) {
     String resp = null;
 
-    if (!FieldVerifier.isValidEmail(email)) {
-      resp = FieldVerifier.EMAIL_ERROR;
-    } else if (!FieldVerifier.isValidYear(yearString)) {
+    if (!FieldVerifier.isValidYear(yearString)) {
       resp = FieldVerifier.YEAR_ERROR;
     } else if (!FieldVerifier.isValidDay(day)) {
       resp = FieldVerifier.DAY_ERROR;
