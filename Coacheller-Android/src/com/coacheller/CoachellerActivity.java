@@ -110,27 +110,12 @@ implements View.OnClickListener, OnItemSelectedListener, OnItemClickListener {
       _setListAdapter.sortByField(_timeFieldName, JSONArraySortMap.VALUE_INTEGER); 
       
       
-      /*
-      JSONObject obj = results.getJSONObject(0);
-      CoachellerApplication.debug(this, obj.toString());
-      CoachellerApplication.debug(this, obj.names().toString());
-
-      JSONArraySortMap sortMapArtist = new JSONArraySortMap(results, "artist", JSONArraySortMap.VALUE_STRING);
-      for (int i = 0; i < results.length(); i++) {  
-        CoachellerApplication.debug(this, sortMapArtist.getSortedJSONObj(i).toString());
-      }
-      
-      JSONArraySortMap sortMapId = new JSONArraySortMap(results, "id", JSONArraySortMap.VALUE_INTEGER);
-      for (int i = 0; i < results.length(); i++) {  
-        CoachellerApplication.debug(this, sortMapId.getSortedJSONObj(i).toString());
-      }
-     */
     } catch (JSONException e) {
-      // TODO Auto-generated catch block
+      CoachellerApplication.debug(this, "JSONException preparing data");
       e.printStackTrace();
     }
     
-    CoachellerApplication.debug(this, "Sample Data is Ready");
+    
 
   }
 
@@ -194,7 +179,6 @@ implements View.OnClickListener, OnItemSelectedListener, OnItemClickListener {
 
   @Override
   public void onItemSelected(AdapterView<?> parent, View arg1, int arg2, long arg3) {
-    // TODO Auto-generated method stub
     CoachellerApplication.debug(this, "Search Type Spinner: Selected -> " + parent.getSelectedItem() +"("+ arg2 +")");
     ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
     
@@ -208,7 +192,7 @@ implements View.OnClickListener, OnItemSelectedListener, OnItemClickListener {
       
       viewSetsList.invalidateViews();
     } catch (JSONException e) {
-      // TODO Auto-generated catch block
+      CoachellerApplication.debug(this, "JSONException re-sorting data");
       e.printStackTrace();
     }
   }
@@ -317,7 +301,7 @@ implements View.OnClickListener, OnItemSelectedListener, OnItemClickListener {
           subtitleText.setText(_lastItemSelected.getString("artist"));
 
         } catch (JSONException e) {
-          // TODO Auto-generated catch block
+          CoachellerApplication.debug(this, "JSONException assigning Artist name to Rating dialog");
           e.printStackTrace();
         }
 

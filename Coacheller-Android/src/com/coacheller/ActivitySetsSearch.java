@@ -37,7 +37,6 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
 
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        // TODO: save selection in memory
         CoachellerApplication.debug(parent.getContext(),
             "Week Selected: " + parent.getSelectedItem());
       }
@@ -48,10 +47,6 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
       }
     });
 
-    // Detect which week we are in
-    // Hard coded, so I am probably going to hell,
-    // but the error is not fatal next year
-    // TODO un-hardcode day of month value
     if (CoachellerApplication.whichWeekIsToday() == 1) {
       CoachellerApplication.debug(this, "Date suggests week 1");
       weekendSpinner.setSelection(0);
@@ -68,7 +63,6 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
 
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        // TODO Save selection in memory
         CoachellerApplication.debug(parent.getContext(),
             "Day Selected: " + parent.getSelectedItem());
       }
