@@ -393,17 +393,21 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         CoachellerApplication.debug(this, "JSONException assigning Artist name to Rating dialog");
         e.printStackTrace();
       }
+      
 
       int week = CoachellerApplication.whichWeekIsToday();
       RadioGroup weekGroup = (RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_week);
+      RadioButton buttonWeek1 = (RadioButton) _lastRateDialog.findViewById(R.id.radio_button_week1);
+      RadioButton buttonWeek2 = (RadioButton) _lastRateDialog.findViewById(R.id.radio_button_week2);
       if (week == 1) {
-        RadioButton buttonWeek1 = (RadioButton) _lastRateDialog
-            .findViewById(R.id.radio_button_week1);
+        
         buttonWeek1.setChecked(true);
+        buttonWeek2.setClickable(false);
+        
       } else if (week == 2) {
-        RadioButton buttonWeek2 = (RadioButton) _lastRateDialog
-            .findViewById(R.id.radio_button_week2);
+        buttonWeek1.setClickable(false);
         buttonWeek2.setChecked(true);
+        
       } else {
         // Don't suggest a week
         weekGroup.clearCheck();
@@ -426,7 +430,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       _lastGetEmailDialog.setTitle("Keep Track of Everything");
 
       EditText emailField = (EditText) _lastGetEmailDialog.findViewById(R.id.textField_enterEmail);
-      emailField.setText("me@here.com");
+      //emailField.setText("me@here.com");
       emailField.selectAll();
 
       Button buttonOK = (Button) _lastGetEmailDialog.findViewById(R.id.button_provideEmail);
