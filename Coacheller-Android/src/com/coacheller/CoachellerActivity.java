@@ -133,6 +133,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   @Override
   public void onItemSelected(AdapterView<?> parent, View arg1, int arg2, long arg3) {
+
     // TODO Auto-generated method stub
     CoachellerApplication.debug(this,
         "Search Type Spinner: Selected -> " + parent.getSelectedItem() + "(" + arg2 + ")");
@@ -148,7 +149,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
       viewSetsList.invalidateViews();
     } catch (JSONException e) {
-      // TODO Auto-generated catch block
+      CoachellerApplication.debug(this, "JSONException re-sorting data");
       e.printStackTrace();
     }
   }
@@ -249,6 +250,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   @Override
   protected void onPrepareDialog(int id, Dialog dialog) {
+
     // Always call through to super implementation
     super.onPrepareDialog(id, dialog);
 
@@ -261,7 +263,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         subtitleText.setText(_lastItemSelected.getString("artist"));
 
       } catch (JSONException e) {
-        // TODO Auto-generated catch block
+        CoachellerApplication.debug(this, "JSONException assigning Artist name to Rating dialog");
         e.printStackTrace();
       }
 
@@ -283,6 +285,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       // TODO If the user already rated this set, default to their last rating
       RadioGroup scoreGroup = (RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_score);
       scoreGroup.clearCheck();
+
     }
 
   }
