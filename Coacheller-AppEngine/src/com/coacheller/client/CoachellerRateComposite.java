@@ -96,15 +96,14 @@ public class CoachellerRateComposite extends Composite {
   public CoachellerRateComposite() {
     initWidget(uiBinder.createAndBindUi(this));
 
-    retrieveSets();
-    retrieveRatings();
-
     initUiElements();
   }
 
   public CoachellerRateComposite(String ownerEmail) {
     this();
     this.ownerEmail = ownerEmail;
+    retrieveSets();
+    retrieveRatings();
     emailLabel.setText(ownerEmail);
   }
 
