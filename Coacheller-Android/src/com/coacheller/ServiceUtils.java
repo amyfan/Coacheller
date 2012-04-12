@@ -14,6 +14,8 @@ import org.json.JSONTokener;
 
 import android.content.Context;
 
+import com.coacheller.shared.HttpConstants;
+
 public class ServiceUtils {
   private final static String HTTP_SUCCESS = "Received HTTP Response";
   private final static String HTTP_FAILURE = "HTTP Response was not OK: ";
