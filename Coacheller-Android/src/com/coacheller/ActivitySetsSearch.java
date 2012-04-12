@@ -15,6 +15,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 public class ActivitySetsSearch extends Activity implements OnClickListener {
+  
+  private String _weekSelected;
+  private String _daySelected;
 
   /** Called when the activity is first created. */
   @Override
@@ -37,8 +40,8 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
 
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        CoachellerApplication.debug(parent.getContext(),
-            "Week Selected: " + parent.getSelectedItem());
+        CoachellerApplication.debug(parent.getContext(), "Week Selected: " + parent.getSelectedItem());
+        _weekSelected = parent.getSelectedItem().toString().substring(0, 1);
       }
 
       @Override
@@ -65,6 +68,8 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
       public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         CoachellerApplication.debug(parent.getContext(),
             "Day Selected: " + parent.getSelectedItem());
+        _daySelected = parent.getSelectedItem().toString();
+        
       }
 
       @Override
@@ -107,36 +112,25 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
         Intent intent = new Intent();
         Bundle bun = new Bundle();
 
-        bun.putString("results", results); // add two parameters: a
-                                           // string and a boolean
-        //EditText addr = (EditText) this.findViewById(R.id.addressText);
-        //String currentAddress = addr.getText().toString();
+        bun.putString("WEEK", _weekSelected);
+        bun.putString("DAY", _daySelected);
 
-        //bun.putString("year", _selectedDate);
-       //bun.putString("radius", _selectedRadius);
-
-        /*
-         * Check if the current address entered is actually in San Diego
-         */
-        /*
-         * if (latlong[0] >= 33.427045 || latlong[1] <= -117.612003 ||
-         * latlong[0] <= 32 || latlong[1] >= -116.0775811) { Toast notInSD =
-         * Toast.makeText(this, "Currently only supporting San Diego locations",
-         * 5); notInSD.show(); } else {
-         */
-        // intent.setClass(this, SDCrimeSummaryActivity.class);
+        intent.setClass(this, CoachellerActivity.class);
+        
         intent.putExtras(bun);
         startActivity(intent);
-        // }
       } catch (Exception e) {
         e.printStackTrace();
-        Toast addrNotFound = Toast.makeText(this, "Address Not Found", 5);
-        addrNotFound.show();
+        Toast exceptionText = Toast.makeText(this, "Exception Launching Activity", 5);
+        exceptionText.show();
       }
     } else {
       CoachellerApplication.debug(this, "An unknown button was pressed - Unexpected");
     }
 
   }
+  
+  
+  
 
 }
