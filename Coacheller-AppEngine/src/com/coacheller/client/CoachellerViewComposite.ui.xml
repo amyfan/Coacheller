@@ -18,10 +18,10 @@
 					<g:Button ui:field="queryButton" text="Retrieve Sets"
 						addStyleNames="{style.button}" />
 				</div>
-				<!--div class="buttoncell">
+				<div class="buttoncell">
 					<g:Button ui:field="rateButton" text="Rate a Set"
 						addStyleNames="{style.button}" />
-				</div-->
+				</div>
 				<div class="infocell">
 					<g:Label ui:field="infoBox" addStyleNames="{style.info}" />
 				</div>

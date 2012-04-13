@@ -81,8 +81,8 @@ public class CoachellerViewComposite extends Composite {
   @UiField
   com.google.gwt.user.client.ui.Button queryButton;
 
-//  @UiField
-//  com.google.gwt.user.client.ui.Button rateButton;
+  @UiField
+  com.google.gwt.user.client.ui.Button rateButton;
 
   public CoachellerViewComposite() {
     initWidget(uiBinder.createAndBindUi(this));
@@ -203,12 +203,12 @@ public class CoachellerViewComposite extends Composite {
       }
     });
 
-    // rateButton.addClickHandler(new ClickHandler() {
-    // @Override
-    // public void onClick(ClickEvent event) {
-    // FlowControl.go(new CoachellerEmailComposite());
-    // }
-    // });
+    rateButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        FlowControl.go(new CoachellerEmailComposite());
+      }
+    });
   }
 
   @Override
