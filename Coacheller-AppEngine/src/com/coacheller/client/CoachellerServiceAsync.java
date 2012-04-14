@@ -34,6 +34,9 @@ public interface CoachellerServiceAsync {
   void getRatingsBySet(String email, String setIdString, AsyncCallback<List<RatingGwt>> callback)
       throws IllegalArgumentException;
 
+  void deleteRatingsByUser(String email, AsyncCallback<String> callback)
+      throws IllegalArgumentException;
+
   void deleteAllRatings(AsyncCallback<String> callback) throws IllegalArgumentException;
 
   void deleteAllUsers(AsyncCallback<String> callback) throws IllegalArgumentException;

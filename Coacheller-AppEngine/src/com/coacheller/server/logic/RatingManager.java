@@ -211,12 +211,19 @@ public class RatingManager {
     return ratings;
   }
 
-  public void deleteAllRatings() {
-    ratingDao.deleteAllRatings();
-  }
-
   public void deleteRating(Rating rating) {
     ratingDao.deleteRating(rating.getId());
+  }
+
+  public void deleteRatingsByUser(String email) {
+    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
+    if (userKey != null) {
+      ratingDao.deleteRatingsByUser(userKey);
+    }
+  }
+
+  public void deleteAllRatings() {
+    ratingDao.deleteAllRatings();
   }
 
   public Set updateSet(Set set) {

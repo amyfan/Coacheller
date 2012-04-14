@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import com.coacheller.server.domain.AppUser;
 import com.coacheller.server.domain.Rating;
 import com.coacheller.shared.Set;
+import com.google.appengine.api.datastore.QueryResultIterable;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Query;
 
@@ -86,6 +87,13 @@ public class RatingDAO {
   public void deleteRating(Long id) {
     System.out.println("Deleting Rating from datastore: " + id);
     dao.getObjectify().delete(Rating.class, id);
+  }
+
+  public void deleteRatingsByUser(Key<AppUser> user) {
+    System.out.println("Deleting all Ratings from datastore: ");
+    QueryResultIterable<Key<Rating>> ratings = dao.getObjectify().query(Rating.class)
+        .filter("rater", user).fetchKeys();
+    dao.getObjectify().delete(ratings);
   }
 
   public void deleteAllRatings() {

@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.00"
         android:text="@string/title_sets_search"
+        android:textStyle="bold"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView

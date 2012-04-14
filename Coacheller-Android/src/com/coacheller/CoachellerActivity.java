@@ -1,24 +1,13 @@
 package com.coacheller;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import com.coacheller.shared.FieldVerifier;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -33,6 +22,8 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.coacheller.shared.FieldVerifier;
 
 public class CoachellerActivity extends Activity implements View.OnClickListener,
     OnItemSelectedListener, OnItemClickListener {
@@ -49,7 +40,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   public static final String QUERY_SETS__TIME_ONE = "time_one";
   public static final String QUERY_SETS__TIME_TWO = "time_two";
   public static final String QUERY_RATINGS__RATING = "score";
-  
+
   private static final int REFRESH_INTERVAL__SECONDS = 15;
 
   private CustomSetListAdapter _setListAdapter;
@@ -63,7 +54,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   private CoachellerStorageManager _storageManager;
 
   private String _dayToExamine;
-  //private boolean _have_email = false;
+  // private boolean _have_email = false;
   private String _obtained_email = null;
   private JSONArrayHashMap _myRatings_JAHM;
   private long _lastRefresh = 0;
@@ -87,11 +78,11 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     _storageManager.load();
 
     initJAHM();
-    
+
     setContentView(R.layout.sets_list);
     _setListAdapter = new CustomSetListAdapter(this, QUERY_SETS__TIME_ONE, _myRatings_JAHM);
     _setListAdapter.setData(new JSONArray());
-    
+
     ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
     viewSetsList.setAdapter(_setListAdapter);
     viewSetsList.setOnItemClickListener(this);
@@ -102,18 +93,14 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     Spinner spinnerSortType = (Spinner) findViewById(R.id.spinner_sort_by);
     CoachellerApplication.populateSpinnerWithArray(spinnerSortType, R.array.search_types);
     spinnerSortType.setOnItemSelectedListener(this);
-    
+
     _weekToQuery = CoachellerApplication.whichWeekIsToday();
     _dayToExamine = CoachellerApplication.whatDayIsToday();
     _sortMode = SORT_TIME;
-    
+
     // Above here is stuff to be done once
-    
- 
-    
 
     processExtraData();
-
 
   }
 
@@ -125,6 +112,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     }
 
     CoachellerApplication.debug(this, "Using email: " + _obtained_email + ", on disk:[" + loadedEmail + "]");
+
   }
 
   private void rebuildJAHM() {
@@ -154,60 +142,59 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   public void onResume() {
     super.onResume();
-    
-    if ((System.currentTimeMillis() - _lastRefresh)/1000 > REFRESH_INTERVAL__SECONDS) {
+
+    if ((System.currentTimeMillis() - _lastRefresh) / 1000 > REFRESH_INTERVAL__SECONDS) {
       refreshData();
     }
-    
+
     Toast clickToRate = Toast.makeText(this, "Tap any set to rate it!", 25);
     clickToRate.show();
-    
-    
+
   }
 
   private void refreshData() {
     // Below here is stuff to be done each refresh
-    
-    if (!_dayToExamine.equals("Friday") && !_dayToExamine.equals("Saturday")
-        && !_dayToExamine.equals("Sunday")) {
-      _dayToExamine = "Friday";
-    }
-    
-    String weekString="";
-    if (_weekToQuery == 1) {
-      _timeFieldName = QUERY_SETS__TIME_ONE;
-      weekString = getString(R.string.name_week1_short);
-    } else if (_weekToQuery == 2) {
-      _timeFieldName = QUERY_SETS__TIME_TWO;
-       weekString = getString(R.string.name_week2_short);
-    }
-    
-     
-    TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
-    titleView.setText(_dayToExamine +", Week "+ _weekToQuery +" "+ weekString);
-    _setListAdapter.setTimeFieldName(_timeFieldName);
-    
-    obtainEmailFromStorage();
-    rebuildJAHM();
-
-
-    // TODO: pass proper values (year can remain hard-coded for now)
-    JSONArray results = ServiceUtils.getSets("2012", _dayToExamine, this);
-    _setListAdapter.setData(results);
     try {
+
+      if (!_dayToExamine.equals("Friday") && !_dayToExamine.equals("Saturday")
+          && !_dayToExamine.equals("Sunday")) {
+        _dayToExamine = "Friday";
+      }
+
+      String weekString = "";
+      if (_weekToQuery == 1) {
+        _timeFieldName = QUERY_SETS__TIME_ONE;
+        weekString = getString(R.string.name_week1_short);
+      } else if (_weekToQuery == 2) {
+        _timeFieldName = QUERY_SETS__TIME_TWO;
+        weekString = getString(R.string.name_week2_short);
+      }
+
+      TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
+      titleView.setText(_dayToExamine + ", Weekend " + _weekToQuery);
+      // +" "+ weekString);
+      _setListAdapter.setTimeFieldName(_timeFieldName);
+
+      obtainEmailFromStorage();
+      rebuildJAHM();
+
+      // TODO: pass proper values (year can remain hard-coded for now)
+      JSONArray results = ServiceUtils.getSets("2012", _dayToExamine, this);
+      _setListAdapter.setData(results);
       setView_reSort();
+      ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
+      viewSetsList.invalidateViews();
+
+      CoachellerApplication.debug(this, "Data Refresh is complete");
+      _lastRefresh = System.currentTimeMillis();
 
     } catch (JSONException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
+      CoachellerApplication.debug(this, "Data Refresh failed");
+      _lastRefresh = System.currentTimeMillis();
     }
-    
 
-    ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
-    viewSetsList.invalidateViews(); 
-    
-    CoachellerApplication.debug(this, "Data Refresh is complete");
-    _lastRefresh = System.currentTimeMillis();
   }
 
   // An item was selected from the list of sets
@@ -234,14 +221,14 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       e.printStackTrace();
     }
   }
-  
+
   private void setView_reSort() throws JSONException {
     if (_sortMode == SORT_TIME) {
       _setListAdapter.sortByField(_timeFieldName, JSONArraySortMap.VALUE_INTEGER);
     } else if (_sortMode == SORT_ARTIST) {
       _setListAdapter.sortByField("artist", JSONArraySortMap.VALUE_STRING);
     } else {
-      CoachellerApplication.debug(this, "Unexpected sort mode: "+_sortMode);
+      CoachellerApplication.debug(this, "Unexpected sort mode: " + _sortMode);
       (new Exception()).printStackTrace();
     }
   }
@@ -287,7 +274,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     }
 
     if (viewClicked.getId() == R.id.buttonChangeToSearchSets) {
-      System.out.println("Button: Find Other Sets");
+      System.out.println("Button: Switch Day");
       Intent intent = new Intent();
       intent.setClass(this, ActivitySetsSearch.class);
       // intent.putExtras(bun);
@@ -338,17 +325,17 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
           // CRITICAL that the keys are listed in this order
           _myRatings_JAHM.addValues(QUERY_RATINGS__SET_ID, QUERY_RATINGS__WEEK, newObj);
 
-          
-          //Don't need since we are refreshing
-          //ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
-          //viewSetsList.invalidateViews(); 
+          // Don't need since we are refreshing
+          // ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
+          // viewSetsList.invalidateViews();
 
         } catch (JSONException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
         }
-        
-        refreshData();  //If this is removed, uncomment ListView and invalidate above ^^^
+
+        refreshData(); // If this is removed, uncomment ListView and invalidate
+                       // above ^^^
 
       }
     }
@@ -395,21 +382,20 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         CoachellerApplication.debug(this, "JSONException assigning Artist name to Rating dialog");
         e.printStackTrace();
       }
-      
 
       int week = CoachellerApplication.whichWeekIsToday();
       RadioGroup weekGroup = (RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_week);
       RadioButton buttonWeek1 = (RadioButton) _lastRateDialog.findViewById(R.id.radio_button_week1);
       RadioButton buttonWeek2 = (RadioButton) _lastRateDialog.findViewById(R.id.radio_button_week2);
       if (week == 1) {
-        
+
         buttonWeek1.setChecked(true);
         buttonWeek2.setClickable(false);
-        
+
       } else if (week == 2) {
         buttonWeek1.setClickable(false);
         buttonWeek2.setChecked(true);
-        
+
       } else {
         // Don't suggest a week
         weekGroup.clearCheck();
@@ -436,6 +422,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       //emailField.setText("me@here.com");
       //emailField.selectAll();
 
+
       Button buttonOK = (Button) _lastGetEmailDialog.findViewById(R.id.button_provideEmail);
       buttonOK.setOnClickListener(this);
 
@@ -449,7 +436,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
       _lastRateDialog = new Dialog(this);
       _lastRateDialog.setContentView(R.layout.dialog_rate_set);
-      _lastRateDialog.setTitle("Rate this Set!");
+      _lastRateDialog.setTitle("Rate This Set!");
 
       Button buttonOK = (Button) _lastRateDialog.findViewById(R.id.button_rate_okgo);
       buttonOK.setOnClickListener(this);
@@ -461,28 +448,26 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     return super.onCreateDialog(id);
   }
-  
-  
- 
+
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
-    setIntent(intent);//must store the new intent unless getIntent() will return the old one
+    setIntent(intent);// must store the new intent unless getIntent() will
+                      // return the old one
     processExtraData();
   }
-  
-  
-  private void processExtraData(){
+
+  private void processExtraData() {
     Intent intent = getIntent();
     Bundle bundle = intent.getExtras();
-    
+
     if (bundle == null) {
       return;
     }
-    
+
     String week = intent.getExtras().getString("WEEK");
     String day = intent.getExtras().getString("DAY");
-    
-    CoachellerApplication.debug(this, "Searching week["+ week +"] day["+ day +"]");
+
+    CoachellerApplication.debug(this, "Searching week[" + week + "] day[" + day + "]");
     _weekToQuery = Integer.valueOf(week);
     _dayToExamine = day;
     refreshData();

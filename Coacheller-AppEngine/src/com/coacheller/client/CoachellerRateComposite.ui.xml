@@ -32,13 +32,14 @@
 				<div class="buttoncell">
 					<g:Button ui:field="backButton" text="Back" addStyleNames="{style.button}" />
 				</div>
-				<div class="buttoncell">
+				<!--div class="buttoncell">
 					Temporary Test Buttons:
 					<g:Button ui:field="reloadButton" text="Reload Sets" />
 					<g:Button ui:field="recalculateButton" text="Recalculate Scores" />
+					<g:Button ui:field="clearMyRatingButton" text="Clear My Ratings" />
 					<g:Button ui:field="clearRatingButton" text="Clear Ratings" />
 					<g:Button ui:field="clearUserButton" text="Clear Users" />
-				</div>
+				</div-->
 				<div class="infocell">
 					<g:Label ui:field="infoBox" addStyleNames="{style.info}" />
 				</div>

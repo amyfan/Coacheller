@@ -7,7 +7,6 @@ import java.util.List;
 import com.coacheller.shared.DateTimeUtils;
 import com.coacheller.shared.Set;
 import com.google.gwt.animation.client.Animation;
-import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;

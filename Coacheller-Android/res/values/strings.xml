@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Coacheller for Android</string>
+    <string name="app_name">Coacheller</string>
     <string name="currLocation">Address</string>
     <string name="defaultLocation">Current Location</string>
     <string name="distance">Distance</string>
@@ -10,7 +10,7 @@
     <string-array name="dateArray">
         <item>2011</item>
     </string-array>
-        <string name="title_sets_search">Load Other Sets</string>
+        <string name="title_sets_search">Choose Day to Load</string>
         <string name="week_search_sets">Week</string>
         <string name="day_search_sets">Day</string>
         <string name="buttonlabel_search_sets">Go!</string>
@@ -28,8 +28,8 @@
             <item >Time</item>
             <item >Artist</item>
         </string-array>
-        <string name="name_week1_short">APR 13-15</string>
-        <string name="name_week2_short">APR 20-22</string>
+        <string name="name_week1_short">April 13-15</string>
+        <string name="name_week2_short">April 20-22</string>
         <string name="save_file_path">/Coacheller/</string>
         <string name="save_file_name">CoachellerData.dat</string>
 

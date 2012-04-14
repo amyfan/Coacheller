@@ -75,17 +75,20 @@ public class CoachellerRateComposite extends Composite {
   @UiField
   com.google.gwt.user.client.ui.Button addRatingButton;
 
-  @UiField
-  com.google.gwt.user.client.ui.Button reloadButton;
-
-  @UiField
-  com.google.gwt.user.client.ui.Button recalculateButton;
-
-  @UiField
-  com.google.gwt.user.client.ui.Button clearRatingButton;
-
-  @UiField
-  com.google.gwt.user.client.ui.Button clearUserButton;
+  // @UiField
+  // com.google.gwt.user.client.ui.Button reloadButton;
+  //
+  // @UiField
+  // com.google.gwt.user.client.ui.Button recalculateButton;
+  //
+  // @UiField
+  // com.google.gwt.user.client.ui.Button clearMyRatingButton;
+  //
+  // @UiField
+  // com.google.gwt.user.client.ui.Button clearRatingButton;
+  //
+  // @UiField
+  // com.google.gwt.user.client.ui.Button clearUserButton;
 
   @UiField
   com.google.gwt.user.client.ui.Button backButton;;
@@ -139,105 +142,126 @@ public class CoachellerRateComposite extends Composite {
       }
     });
 
-    reloadButton.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        if (ownerEmail.equals(ADMIN_EMAIL)) {
-          infoBox.setText("");
-          coachellerService.loadSetData(new AsyncCallback<String>() {
-
-            public void onFailure(Throwable caught) {
-              // Show the RPC error message to the user
-              infoBox.setText(SERVER_ERROR);
-            }
-
-            public void onSuccess(String result) {
-              infoBox.setText(result);
-            }
-          });
-
-          androidAnimation.run(400);
-        } else {
-          infoBox.setText(ADMIN_ERROR);
-        }
-      }
-    });
-
-    recalculateButton.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        if (ownerEmail.equals(ADMIN_EMAIL)) {
-          infoBox.setText("");
-          coachellerService.recalculateSetRatingAverages(new AsyncCallback<String>() {
-
-            public void onFailure(Throwable caught) {
-              // Show the RPC error message to the user
-              infoBox.setText(SERVER_ERROR);
-            }
-
-            public void onSuccess(String result) {
-              infoBox.setText(result);
-            }
-          });
-
-          androidAnimation.run(400);
-        } else {
-          infoBox.setText(ADMIN_ERROR);
-        }
-      }
-    });
-
-    clearRatingButton.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        if (ownerEmail.equals(ADMIN_EMAIL)) {
-          infoBox.setText("");
-          coachellerService.deleteAllRatings(new AsyncCallback<String>() {
-            public void onFailure(Throwable caught) {
-              // Show the RPC error message to the user
-              infoBox.setText(SERVER_ERROR);
-            }
-
-            public void onSuccess(String result) {
-              infoBox.setText(result);
-            }
-          });
-          androidAnimation.run(400);
-        } else {
-          infoBox.setText(ADMIN_ERROR);
-        }
-      }
-    });
-
-    clearUserButton.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        if (ownerEmail.equals(ADMIN_EMAIL)) {
-          infoBox.setText("");
-          coachellerService.deleteAllUsers(new AsyncCallback<String>() {
-            public void onFailure(Throwable caught) {
-              // Show the RPC error message to the user
-              infoBox.setText(SERVER_ERROR);
-            }
-
-            public void onSuccess(String result) {
-              infoBox.setText(result);
-            }
-          });
-
-          androidAnimation.run(400);
-        } else {
-          infoBox.setText(ADMIN_ERROR);
-        }
-      }
-    });
-
     backButton.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
         FlowControl.go(new CoachellerViewComposite());
       }
     });
+
+    // reloadButton.addClickHandler(new ClickHandler() {
+    // @Override
+    // public void onClick(ClickEvent event) {
+    // if (ownerEmail.equals(ADMIN_EMAIL)) {
+    // infoBox.setText("");
+    // coachellerService.loadSetData(new AsyncCallback<String>() {
+    //
+    // public void onFailure(Throwable caught) {
+    // // Show the RPC error message to the user
+    // infoBox.setText(SERVER_ERROR);
+    // }
+    //
+    // public void onSuccess(String result) {
+    // infoBox.setText(result);
+    // }
+    // });
+    //
+    // androidAnimation.run(400);
+    // } else {
+    // infoBox.setText(ADMIN_ERROR);
+    // }
+    // }
+    // });
+    //
+    // recalculateButton.addClickHandler(new ClickHandler() {
+    // @Override
+    // public void onClick(ClickEvent event) {
+    // if (ownerEmail.equals(ADMIN_EMAIL)) {
+    // infoBox.setText("");
+    // coachellerService.recalculateSetRatingAverages(new
+    // AsyncCallback<String>() {
+    //
+    // public void onFailure(Throwable caught) {
+    // // Show the RPC error message to the user
+    // infoBox.setText(SERVER_ERROR);
+    // }
+    //
+    // public void onSuccess(String result) {
+    // infoBox.setText(result);
+    // }
+    // });
+    //
+    // androidAnimation.run(400);
+    // } else {
+    // infoBox.setText(ADMIN_ERROR);
+    // }
+    // }
+    // });
+    //
+    // clearMyRatingButton.addClickHandler(new ClickHandler() {
+    // @Override
+    // public void onClick(ClickEvent event) {
+    // infoBox.setText("");
+    // coachellerService.deleteRatingsByUser(ownerEmail, new
+    // AsyncCallback<String>() {
+    // public void onFailure(Throwable caught) {
+    // // Show the RPC error message to the user
+    // infoBox.setText(SERVER_ERROR);
+    // }
+    //
+    // public void onSuccess(String result) {
+    // infoBox.setText(result);
+    // }
+    // });
+    // androidAnimation.run(400);
+    // }
+    // });
+    //
+    // clearRatingButton.addClickHandler(new ClickHandler() {
+    // @Override
+    // public void onClick(ClickEvent event) {
+    // if (ownerEmail.equals(ADMIN_EMAIL)) {
+    // infoBox.setText("");
+    // coachellerService.deleteAllRatings(new AsyncCallback<String>() {
+    // public void onFailure(Throwable caught) {
+    // // Show the RPC error message to the user
+    // infoBox.setText(SERVER_ERROR);
+    // }
+    //
+    // public void onSuccess(String result) {
+    // infoBox.setText(result);
+    // }
+    // });
+    // androidAnimation.run(400);
+    // } else {
+    // infoBox.setText(ADMIN_ERROR);
+    // }
+    // }
+    // });
+    //
+    // clearUserButton.addClickHandler(new ClickHandler() {
+    // @Override
+    // public void onClick(ClickEvent event) {
+    // if (ownerEmail.equals(ADMIN_EMAIL)) {
+    // infoBox.setText("");
+    // coachellerService.deleteAllUsers(new AsyncCallback<String>() {
+    // public void onFailure(Throwable caught) {
+    // // Show the RPC error message to the user
+    // infoBox.setText(SERVER_ERROR);
+    // }
+    //
+    // public void onSuccess(String result) {
+    // infoBox.setText(result);
+    // }
+    // });
+    //
+    // androidAnimation.run(400);
+    // } else {
+    // infoBox.setText(ADMIN_ERROR);
+    // }
+    // }
+    // });
+
   }
 
   @Override
