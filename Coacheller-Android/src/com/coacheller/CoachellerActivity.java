@@ -65,7 +65,6 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   private String _dayToExamine;
   //private boolean _have_email = false;
   private String _obtained_email = null;
-  private boolean _tried_to_get_email = false;
   private JSONArrayHashMap _myRatings_JAHM;
   private long _lastRefresh = 0;
 
@@ -125,7 +124,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       _obtained_email = loadedEmail;
     }
 
-    CoachellerApplication.debug(this, "Have email: " + _obtained_email + ", value[" + loadedEmail + "]");
+    CoachellerApplication.debug(this, "Using email: " + _obtained_email + ", on disk:[" + loadedEmail + "]");
   }
 
   private void rebuildJAHM() {
@@ -133,6 +132,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
       JSONArray myRatings = ServiceUtils.getRatings(_obtained_email, _dayToExamine, this);
       try {
+        //TODO this may not be correct.  JAHM should only be initialized once.
         _myRatings_JAHM = new JSONArrayHashMap(myRatings, QUERY_RATINGS__SET_ID,
             QUERY_RATINGS__WEEK);
       } catch (JSONException e) {
@@ -141,6 +141,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         e.printStackTrace();
       }
     } else {
+      //TODO This may not be correct.  initJAHM() may have already been called on startup and
+      //TODO the reference to the JAHM may have been passed to the adapter already
       initJAHM();
     }
     _setListAdapter.updateJAHM(_myRatings_JAHM);
@@ -429,9 +431,10 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       _lastGetEmailDialog.setContentView(R.layout.get_email_address);
       _lastGetEmailDialog.setTitle("Keep Track of Everything");
 
+      //TODO should display 'your email here' message and clear it when user selects field
       EditText emailField = (EditText) _lastGetEmailDialog.findViewById(R.id.textField_enterEmail);
       //emailField.setText("me@here.com");
-      emailField.selectAll();
+      //emailField.selectAll();
 
       Button buttonOK = (Button) _lastGetEmailDialog.findViewById(R.id.button_provideEmail);
       buttonOK.setOnClickListener(this);
