@@ -43,23 +43,28 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   private static final int REFRESH_INTERVAL__SECONDS = 15;
 
-  private CustomSetListAdapter _setListAdapter;
+
   private int _weekToQuery;
+  private String _dayToExamine;
   private int _sortMode;
+  private long _lastRefresh = 0;
+  
+  
+  
   private String _timeFieldName;
   private Dialog _lastRateDialog;
   private Dialog _lastGetEmailDialog;
+  
+  private String _obtained_email = null;
+  private CustomSetListAdapter _setListAdapter;
   private JSONObject _lastItemSelected;
   private HashMap<Integer, Integer> _ratingSelectedIdToValue = new HashMap<Integer, Integer>();
   private CoachellerStorageManager _storageManager;
-
-  private String _dayToExamine;
-  // private boolean _have_email = false;
-  private String _obtained_email = null;
+  
   private JSONArrayHashMap _myRatings_JAHM;
-  private long _lastRefresh = 0;
-
+  
   /** Called by Android Framework when the activity is first created. */
+  
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -104,6 +109,19 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   }
 
+  /** Called by Android Framework when activity (re)gains foreground status */
+  public void onResume() {
+    super.onResume();
+
+    if ((System.currentTimeMillis() - _lastRefresh) / 1000 > REFRESH_INTERVAL__SECONDS) {
+      refreshData(); //TODO multi-thread this
+    }
+
+    Toast clickToRate = Toast.makeText(this, "Tap any set to rate it!", 25);
+    clickToRate.show();
+  }
+  
+  
   private void obtainEmailFromStorage() {
     String loadedEmail = _storageManager.getString(USER_EMAIL);
 
@@ -115,6 +133,11 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   }
 
+  
+  private void initJAHM() {
+    _myRatings_JAHM = new JSONArrayHashMap(QUERY_RATINGS__SET_ID, QUERY_RATINGS__WEEK);
+  }
+  
   private void rebuildJAHM() {
     if (_obtained_email != null) { // Get my ratings
 
@@ -134,22 +157,6 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       initJAHM();
     }
     _setListAdapter.updateJAHM(_myRatings_JAHM);
-  }
-
-  private void initJAHM() {
-    _myRatings_JAHM = new JSONArrayHashMap(QUERY_RATINGS__SET_ID, QUERY_RATINGS__WEEK);
-  }
-
-  public void onResume() {
-    super.onResume();
-
-    if ((System.currentTimeMillis() - _lastRefresh) / 1000 > REFRESH_INTERVAL__SECONDS) {
-      refreshData();
-    }
-
-    Toast clickToRate = Toast.makeText(this, "Tap any set to rate it!", 25);
-    clickToRate.show();
-
   }
 
   private void refreshData() {
@@ -364,6 +371,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     }
   }
 
+  //Dialog handling, called before any dialog is shown
   @Override
   protected void onPrepareDialog(int id, Dialog dialog) {
 
@@ -409,6 +417,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   }
 
+  //Dialog handling, called once the first time this activity displays each type of dialog
   @Override
   protected Dialog onCreateDialog(int id) {
 
@@ -449,6 +458,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     return super.onCreateDialog(id);
   }
 
+  
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
     setIntent(intent);// must store the new intent unless getIntent() will
