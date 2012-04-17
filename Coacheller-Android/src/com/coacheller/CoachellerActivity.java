@@ -39,6 +39,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   public static final String QUERY_SETS__SET_ID = "id";
   public static final String QUERY_SETS__TIME_ONE = "time_one";
   public static final String QUERY_SETS__TIME_TWO = "time_two";
+  public static final String QUERY_SETS__STAGE_ONE = "stage_one";
+  public static final String QUERY_SETS__STAGE_TWO = "stage_two";
   public static final String QUERY_RATINGS__RATING = "score";
 
   private static final int REFRESH_INTERVAL__SECONDS = 15;
@@ -47,6 +49,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   private int _weekToQuery;
   private int _sortMode;
   private String _timeFieldName;
+  private String _stageFieldName;
   private Dialog _lastRateDialog;
   private Dialog _lastGetEmailDialog;
   private JSONObject _lastItemSelected;
@@ -80,7 +83,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     initJAHM();
 
     setContentView(R.layout.sets_list);
-    _setListAdapter = new CustomSetListAdapter(this, QUERY_SETS__TIME_ONE, _myRatings_JAHM);
+    _setListAdapter = new CustomSetListAdapter(this, QUERY_SETS__TIME_ONE, QUERY_SETS__STAGE_ONE,
+        _myRatings_JAHM);
     _setListAdapter.setData(new JSONArray());
 
     ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
@@ -111,7 +115,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       _obtained_email = loadedEmail;
     }
 
-    CoachellerApplication.debug(this, "Using email: " + _obtained_email + ", on disk:[" + loadedEmail + "]");
+    CoachellerApplication.debug(this, "Using email: " + _obtained_email + ", on disk:["
+        + loadedEmail + "]");
 
   }
 
@@ -120,7 +125,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
       JSONArray myRatings = ServiceUtils.getRatings(_obtained_email, _dayToExamine, this);
       try {
-        //TODO this may not be correct.  JAHM should only be initialized once.
+        // TODO this may not be correct. JAHM should only be initialized once.
         _myRatings_JAHM = new JSONArrayHashMap(myRatings, QUERY_RATINGS__SET_ID,
             QUERY_RATINGS__WEEK);
       } catch (JSONException e) {
@@ -129,8 +134,10 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         e.printStackTrace();
       }
     } else {
-      //TODO This may not be correct.  initJAHM() may have already been called on startup and
-      //TODO the reference to the JAHM may have been passed to the adapter already
+      // TODO This may not be correct. initJAHM() may have already been called
+      // on startup and
+      // TODO the reference to the JAHM may have been passed to the adapter
+      // already
       initJAHM();
     }
     _setListAdapter.updateJAHM(_myRatings_JAHM);
@@ -164,9 +171,11 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       String weekString = "";
       if (_weekToQuery == 1) {
         _timeFieldName = QUERY_SETS__TIME_ONE;
+        _stageFieldName = QUERY_SETS__STAGE_ONE;
         weekString = getString(R.string.name_week1_short);
       } else if (_weekToQuery == 2) {
         _timeFieldName = QUERY_SETS__TIME_TWO;
+        _stageFieldName = QUERY_SETS__STAGE_TWO;
         weekString = getString(R.string.name_week2_short);
       }
 
@@ -174,6 +183,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       titleView.setText(_dayToExamine + ", Weekend " + _weekToQuery);
       // +" "+ weekString);
       _setListAdapter.setTimeFieldName(_timeFieldName);
+      _setListAdapter.setStageFieldName(_stageFieldName);
 
       obtainEmailFromStorage();
       rebuildJAHM();
@@ -417,11 +427,11 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       _lastGetEmailDialog.setContentView(R.layout.get_email_address);
       _lastGetEmailDialog.setTitle("Keep Track of Everything");
 
-      //TODO should display 'your email here' message and clear it when user selects field
+      // TODO should display 'your email here' message and clear it when user
+      // selects field
       EditText emailField = (EditText) _lastGetEmailDialog.findViewById(R.id.textField_enterEmail);
-      //emailField.setText("me@here.com");
-      //emailField.selectAll();
-
+      // emailField.setText("me@here.com");
+      // emailField.selectAll();
 
       Button buttonOK = (Button) _lastGetEmailDialog.findViewById(R.id.button_provideEmail);
       buttonOK.setOnClickListener(this);

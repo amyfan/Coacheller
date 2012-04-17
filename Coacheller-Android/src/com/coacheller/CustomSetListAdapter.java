@@ -18,6 +18,7 @@ public class CustomSetListAdapter implements ListAdapter {
   private JSONArraySortMap _sortMap;
   private Context _context;
   private String _timeFieldName;
+  private String _stageFieldName;
   private JSONArrayHashMap _myRatings_JAHM;
 
   static class ViewHolder {
@@ -29,9 +30,11 @@ public class CustomSetListAdapter implements ListAdapter {
     public TextView myRating;
   }
 
-  public CustomSetListAdapter(Context context, String timeFieldName, JSONArrayHashMap myRatings_JAHM) {
+  public CustomSetListAdapter(Context context, String timeFieldName, String stageFieldName,
+      JSONArrayHashMap myRatings_JAHM) {
     _context = context;
     setTimeFieldName(timeFieldName);
+    setStageFieldName(stageFieldName);
     updateJAHM(myRatings_JAHM);
   }
 
@@ -41,6 +44,10 @@ public class CustomSetListAdapter implements ListAdapter {
 
   public void setTimeFieldName(String name) {
     _timeFieldName = name;
+  }
+
+  public void setStageFieldName(String name) {
+    _stageFieldName = name;
   }
 
   public void setData(JSONArray data) {
@@ -127,7 +134,7 @@ public class CustomSetListAdapter implements ListAdapter {
       int milTime = setObj.getInt(_timeFieldName);
       holder.textTime.setText(militaryToCivilianTime(milTime));
       holder.textArtist.setText(setObj.getString("artist"));
-      holder.textStage.setText(setObj.getString("stage_one").toUpperCase());
+      holder.textStage.setText(setObj.getString(_stageFieldName).toUpperCase());
       String week1Avg = setObj.getString("avg_score_one");
       String week2Avg = setObj.getString("avg_score_two");
 
