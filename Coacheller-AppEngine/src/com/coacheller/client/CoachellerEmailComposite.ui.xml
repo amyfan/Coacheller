@@ -8,11 +8,11 @@
 		<div id="container" align="center">
 			<div id="android"></div>
 			<div class="appname">
-				<g:Label ui:field="title" addStyleNames="{style.header_mobile}" />
+				<g:Label ui:field="title" addStyleNames="{style.header}" />
 			</div>
 			<div class="roundrect">
 				<div class="inputcell">
-					<g:Label ui:field="emailLabel" addStyleNames="{style.label}" />
+					<g:Label ui:field="emailLabel" addStyleNames="{style.subheader}" />
 					<g:TextBox ui:field="userEmailAddressInput"
 						addStyleNames="{style.text}" />
 				</div>

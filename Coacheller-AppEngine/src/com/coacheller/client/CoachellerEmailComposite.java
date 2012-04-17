@@ -45,8 +45,8 @@ public class CoachellerEmailComposite extends Composite {
   }
 
   private void initUiElements() {
-    title.setText("Coachella Set Rater");
-    emailLabel.setText("Email (as ID) (will NOT be misused, pinky swear)");
+    title.setText("Coacheller");
+    emailLabel.setText("Email to track your ratings (will NOT be shared or misused)");
 
     userEmailAddressInput.getElement().setPropertyString("placeholder", "Enter email address here");
 

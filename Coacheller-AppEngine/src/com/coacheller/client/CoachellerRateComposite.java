@@ -8,12 +8,18 @@ import java.util.List;
 import com.coacheller.shared.FieldVerifier;
 import com.coacheller.shared.RatingGwt;
 import com.google.gwt.animation.client.Animation;
+import com.google.gwt.cell.client.ButtonCell;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -22,6 +28,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
@@ -52,6 +59,9 @@ public class CoachellerRateComposite extends Composite {
   Label title;
 
   @UiField
+  Label subtitle;
+
+  @UiField
   Label infoBox;
 
   @UiField
@@ -67,10 +77,25 @@ public class CoachellerRateComposite extends Composite {
   ListBox artistInput;
 
   @UiField
-  ListBox weekendInput;
+  RadioButton weekendOneRadioButton;
+
+  // @UiField
+  // RadioButton weekendTwoRadioButton;
 
   @UiField
-  ListBox scoreInput;
+  RadioButton scoreOneRadioButton;
+
+  @UiField
+  RadioButton scoreTwoRadioButton;
+
+  @UiField
+  RadioButton scoreThreeRadioButton;
+
+  @UiField
+  RadioButton scoreFourRadioButton;
+
+  @UiField
+  RadioButton scoreFiveRadioButton;
 
   @UiField
   com.google.gwt.user.client.ui.Button addRatingButton;
@@ -111,27 +136,27 @@ public class CoachellerRateComposite extends Composite {
   }
 
   private void initUiElements() {
-    title.setText("Coachella Set Rater");
+    title.setText("Coacheller");
+    subtitle.setText("Rate This Set");
 
     ListDataProvider<RatingGwt> listDataProvider = new ListDataProvider<RatingGwt>();
     listDataProvider.addDataDisplay(ratingsTable);
     ratingsList = listDataProvider.getList();
 
     weekendLabel.setText("Weekend");
+    weekendOneRadioButton.setText("1");
+    weekendOneRadioButton.setValue(true);
+    // weekendTwoRadioButton.setText("2");
+
     scoreLabel.setText("Score");
+    scoreOneRadioButton.setText("1");
+    scoreTwoRadioButton.setText("2");
+    scoreThreeRadioButton.setText("3");
+    scoreFourRadioButton.setText("4");
+    scoreFiveRadioButton.setText("5");
 
     Element androidElement = getElement().getFirstChildElement().getFirstChildElement();
     final Animation androidAnimation = new AndroidAnimation(androidElement);
-
-    weekendInput.addItem("1");
-    weekendInput.addItem("2");
-
-    scoreInput.addItem("1");
-    scoreInput.addItem("2");
-    scoreInput.addItem("3");
-    scoreInput.addItem("4");
-    scoreInput.addItem("5");
-    scoreInput.setSelectedIndex(4);
 
     addRatingButton.addClickHandler(new ClickHandler() {
       @Override
@@ -262,6 +287,11 @@ public class CoachellerRateComposite extends Composite {
     // }
     // });
 
+    ratingsTable.deleteColumn.setFieldUpdater(new FieldUpdater<RatingGwt, String>() {
+      public void update(int index, RatingGwt rating, String value) {
+        deleteRating(rating);
+      }
+    });
   }
 
   @Override
@@ -290,11 +320,44 @@ public class CoachellerRateComposite extends Composite {
     });
   }
 
+  private void retrieveRatings() {
+    coachellerService.getRatingsByUserEmail(ownerEmail, new AsyncCallback<List<RatingGwt>>() {
+
+      public void onFailure(Throwable caught) {
+        // Show the RPC error message to the user
+        infoBox.setText(SERVER_ERROR);
+      }
+
+      public void onSuccess(List<RatingGwt> result) {
+        ratingsList.clear();
+        ratingsList.addAll(result);
+        Collections.sort(ratingsList, RATING_NAME_COMPARATOR);
+      }
+    });
+  }
+
   private void addRating() {
     infoBox.setText("");
     String artist = artistInput.getItemText(artistInput.getSelectedIndex());
-    String weekend = weekendInput.getItemText(weekendInput.getSelectedIndex());
-    String score = scoreInput.getItemText(scoreInput.getSelectedIndex());
+    String weekend = null;
+    if (weekendOneRadioButton.getValue()) {
+      weekend = weekendOneRadioButton.getText();
+    }
+    // else if (weekendtwoRadioButton.getValue()) {
+    // weekend = weekendtwoRadioButton.getText();
+    // }
+    String score = null;
+    if (scoreOneRadioButton.getValue()) {
+      score = scoreOneRadioButton.getText();
+    } else if (scoreTwoRadioButton.getValue()) {
+      score = scoreTwoRadioButton.getText();
+    } else if (scoreThreeRadioButton.getValue()) {
+      score = scoreThreeRadioButton.getText();
+    } else if (scoreFourRadioButton.getValue()) {
+      score = scoreFourRadioButton.getText();
+    } else if (scoreFiveRadioButton.getValue()) {
+      score = scoreFiveRadioButton.getText();
+    }
     if (!FieldVerifier.isValidEmail(ownerEmail)) {
       infoBox.setText(FieldVerifier.EMAIL_ERROR);
       return;
@@ -323,20 +386,20 @@ public class CoachellerRateComposite extends Composite {
         });
   }
 
-  private void retrieveRatings() {
-    coachellerService.getRatingsByUserEmail(ownerEmail, new AsyncCallback<List<RatingGwt>>() {
-
+  private void deleteRating(RatingGwt rating) {
+    infoBox.setText("");
+    coachellerService.deleteRating(rating.getId(), new AsyncCallback<String>() {
       public void onFailure(Throwable caught) {
         // Show the RPC error message to the user
         infoBox.setText(SERVER_ERROR);
       }
 
-      public void onSuccess(List<RatingGwt> result) {
-        ratingsList.clear();
-        ratingsList.addAll(result);
-        Collections.sort(ratingsList, RATING_NAME_COMPARATOR);
+      public void onSuccess(String result) {
+        infoBox.setText(result);
+        retrieveRatings();
       }
     });
+    ratingsList.remove(rating);
   }
 
   public static final Comparator<? super String> SET_NAME_COMPARATOR = new Comparator<String>() {
@@ -364,6 +427,7 @@ public class CoachellerRateComposite extends Composite {
     public Column<RatingGwt, String> artistNameColumn;
     public Column<RatingGwt, String> weekendColumn;
     public Column<RatingGwt, String> scoreColumn;
+    public Column<RatingGwt, String> deleteColumn;
 
     interface TasksTableResources extends CellTable.Resources {
       @Source("RatingsTable.css")
@@ -374,8 +438,11 @@ public class CoachellerRateComposite extends Composite {
 
       String columnName();
 
+      String columnWeekend();
+
       String columnScore();
 
+      String columnTrash();
     }
 
     private static TasksTableResources resources = GWT.create(TasksTableResources.class);
@@ -404,7 +471,7 @@ public class CoachellerRateComposite extends Composite {
       };
       addColumn(weekendColumn, "Weekend");
       addColumnStyleName(1, "columnFill");
-      addColumnStyleName(1, resources.cellTableStyle().columnScore());
+      addColumnStyleName(1, resources.cellTableStyle().columnWeekend());
 
       scoreColumn = new Column<RatingGwt, String>(new TextCell()) {
         @Override
@@ -419,6 +486,25 @@ public class CoachellerRateComposite extends Composite {
       addColumnStyleName(2, "columnFill");
       addColumnStyleName(2, resources.cellTableStyle().columnScore());
 
+      ButtonCell buttonCell = new ButtonCell(new SafeHtmlRenderer<String>() {
+        public SafeHtml render(String object) {
+          return SafeHtmlUtils.fromTrustedString("<img src=\"delete.png\"></img>");
+        }
+
+        public void render(String object, SafeHtmlBuilder builder) {
+          builder.append(render(object));
+        }
+      });
+
+      deleteColumn = new Column<RatingGwt, String>(buttonCell) {
+        @Override
+        public String getValue(RatingGwt object) {
+          return "\u2717"; // Ballot "X" mark
+        }
+      };
+      addColumn(deleteColumn, "\u2717");
+      addColumnStyleName(3, "columnFill");
+      addColumnStyleName(3, resources.cellTableStyle().columnTrash());
     }
   }
 

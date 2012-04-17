@@ -22,7 +22,15 @@
 	text-overflow: ellipsis;
 }
 
+.columnWeekend {
+	width: 15px;
+}
+
 .columnScore {
+	width: 10px;
+}
+
+.columnTrash {
 	width: 10px;
 }
 
@@ -43,6 +51,7 @@
 }
 
 .cellTableHeader {
+	text-align: left;
 	font-size: 14px;
 }
 

@@ -190,6 +190,16 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     return resp;
   }
 
+  public String deleteRating(Long ratingId) {
+    String resp = "fail";
+    if (ratingId != null) {
+      RatingManager.getInstance().deleteRatingById(ratingId);
+      resp = "ratings deleted";
+    }
+    // TODO: maybe recalc score avgs, but i'll leave that up to be done manually
+    return resp;
+  }
+
   public String deleteRatingsByUser(String email) {
     String resp = "fail";
     RatingManager.getInstance().deleteRatingsByUser(email);

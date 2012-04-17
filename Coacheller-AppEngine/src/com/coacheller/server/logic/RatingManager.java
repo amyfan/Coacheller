@@ -211,6 +211,10 @@ public class RatingManager {
     return ratings;
   }
 
+  public void deleteRatingById(Long id) {
+    ratingDao.deleteRating(id);
+  }
+
   public void deleteRating(Rating rating) {
     ratingDao.deleteRating(rating.getId());
   }

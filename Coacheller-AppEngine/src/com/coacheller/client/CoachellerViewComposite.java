@@ -99,7 +99,7 @@ public class CoachellerViewComposite extends Composite {
   }
 
   private void initUiElements() {
-    title.setText("Coachella 2012 Set Ratings");
+    title.setText("Coacheller 2012");
     beta.setText("beta");
 
     ListDataProvider<Set> listDataProvider = new ListDataProvider<Set>();
