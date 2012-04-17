@@ -20,6 +20,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -64,6 +65,9 @@ public class CoachellerViewComposite extends Composite {
   Label beta;
 
   @UiField
+  Anchor android;
+
+  @UiField
   Label infoBox;
 
   @UiField
@@ -101,6 +105,9 @@ public class CoachellerViewComposite extends Composite {
   private void initUiElements() {
     title.setText("Coacheller 2012");
     beta.setText("beta");
+    android.setHref("http://play.google.com/store/apps/details?id=com.coacheller");
+    android.setText("Download Coacheller for Android");
+    android.setTarget("_blank");
 
     ListDataProvider<Set> listDataProvider = new ListDataProvider<Set>();
     listDataProvider.addDataDisplay(setsTable);
