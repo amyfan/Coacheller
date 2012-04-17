@@ -37,11 +37,19 @@
         android:baselineAligned="true" >
 
         <TextView
+            android:id="@+id/text_stage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="STAGE"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+        
+        <TextView
             android:id="@+id/text_wk1_rating"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Wk1 Avg"
+            android:text="Wk1"
             android:textStyle="bold"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -50,7 +58,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Wk2 Avg"
+            android:text="Wk2"
             android:textStyle="bold"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
