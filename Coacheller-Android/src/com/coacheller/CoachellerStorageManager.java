@@ -50,7 +50,7 @@ public class CoachellerStorageManager {
 
   // File gets saved here on a good day
   // /data/data/com.coacheller/files/CoachellerData.dat
-  public void save() {
+  public synchronized void save() {
 
     try {
       FileOutputStream fos = _context.openFileOutput(getSaveFileName(), Context.MODE_PRIVATE);
@@ -70,7 +70,7 @@ public class CoachellerStorageManager {
 
   // File should get loaded from here, if we are all extremely lucky
   // /data/data/com.coacheller/files/CoachellerData.dat
-  public void load() {
+  public synchronized void load() {
 
     try {
       // fis = _context.openFileInput(saveFile.getName());
@@ -97,19 +97,19 @@ public class CoachellerStorageManager {
     }
   }
 
-  public void putString(String name, String value) {
+  public synchronized void putString(String name, String value) {
     _data.put(name, value);
   }
 
-  public String getString(String name) {
+  public synchronized String getString(String name) {
     return (String) _data.get(name);
   }
 
-  public void putJSONArray(String dataName, JSONArray data) {
+  public synchronized void putJSONArray(String dataName, JSONArray data) {
     _data.put(dataName, data.toString());
   }
 
-  public JSONArray getJSONArray(String dataName) throws JSONException {
+  public synchronized JSONArray getJSONArray(String dataName) throws JSONException {
     String storedArrayAsString = (String) _data.get(dataName);
 
     if (storedArrayAsString == null) {

@@ -10,6 +10,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -42,6 +44,9 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   private static final int DIALOG_RATE = 1;
   private static final int DIALOG_GETEMAIL = 2;
   private static final int DIALOG_NETWORK_ERROR = 3;
+  
+  private static final int THREAD_UPDATE_UI = 1;
+  private static final int THREAD_SUBMIT_RATING = 2;
 
   private static final int SORT_TIME = 1;
   private static final int SORT_ARTIST = 2;
@@ -80,10 +85,14 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   private JSONObject _lastItemSelected;
   private HashMap<Integer, Integer> _ratingSelectedIdToValue = new HashMap<Integer, Integer>();
   private CoachellerStorageManager _storageManager;
+  private int _ratingSelectedWeek;
+  private int _ratingSelectedScore;
 
   private JSONArrayHashMap _myRatings_JAHM = new JSONArrayHashMap(QUERY_RATINGS__SET_ID,
       QUERY_RATINGS__WEEK);
   private boolean _networkErrors;
+
+  private Handler _networkIOHandler;
 
   /** Called by Android Framework when the activity is first created. */
 
@@ -128,8 +137,52 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     // Above here is stuff to be done once
 
+    _networkIOHandler = new Handler() {
+      @Override
+      public void handleMessage(Message msg) {
+        
+        super.handleMessage(msg);
+        
+        if (msg.what == THREAD_UPDATE_UI) {
+          System.out.println("Executing update UI thread callback ");
+          redrawUI();
+        }
+        
+        if (msg.what == THREAD_SUBMIT_RATING) {
+          System.out.println("Executing submit rating thread callback ");
+          doSubmitRating(_ratingSelectedWeek+"", _ratingSelectedScore+"");
+        }
+      }  
+      
+      
+    };
+    
     processExtraData();
 
+  }
+
+  protected void redrawUI() {
+    try {
+      setView_reSort();
+
+    } catch (JSONException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
+    viewSetsList.invalidateViews();
+
+    CoachellerApplication.debug(this, "Data Refresh is complete");
+    _lastRefresh = System.currentTimeMillis();
+
+    if (!_networkErrors) {
+      _storageManager.save(); // TODO only if both sets and ratings were
+                              // retrieved
+
+    } else {
+      showDialog(DIALOG_NETWORK_ERROR);
+    }
   }
 
   /** Called by Android Framework when activity (re)gains foreground status */
@@ -163,7 +216,77 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
    * QUERY_RATINGS__WEEK); }
    */
 
-  private void rebuildJAHM() {
+  private void refreshData() {
+    // Below here is stuff to be done each refresh
+    _networkErrors = false;
+
+    
+
+      if (!_dayToExamine.equals("Friday") && !_dayToExamine.equals("Saturday")
+          && !_dayToExamine.equals("Sunday")) {
+        _dayToExamine = "Friday";
+      }
+
+      String weekString = "";
+      if (_weekToQuery == 1) {
+        _timeFieldName = QUERY_SETS__TIME_ONE;
+        _stageFieldName = QUERY_SETS__STAGE_ONE;
+        weekString = getString(R.string.name_week1_short);
+      } else if (_weekToQuery == 2) {
+        _timeFieldName = QUERY_SETS__TIME_TWO;
+        _stageFieldName = QUERY_SETS__STAGE_TWO;
+        weekString = getString(R.string.name_week2_short);
+      }
+
+      TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
+      titleView.setText(_dayToExamine + ", Weekend " + _weekToQuery);
+      // +" "+ weekString);
+      _setListAdapter.setTimeFieldName(_timeFieldName);
+      _setListAdapter.setStageFieldName(_stageFieldName);
+
+      obtainEmailFromStorage();
+
+      launchGetDataThread(); // TODO multithread this
+  }
+
+  private void launchGetDataThread() {
+    CoachellerApplication.debug(this, "Launching getData thread");
+
+    new Thread() {
+      public void run() {
+        try {
+          doNetworkOperations();
+        } catch (JSONException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        _networkIOHandler.sendEmptyMessage(THREAD_UPDATE_UI);
+      }
+    }.start();
+    CoachellerApplication.debug(this, "getData thread launched");
+  }
+  
+  private void launchSubmitRatingThread() {
+       CoachellerApplication.debug(this, "Launching Rating thread");
+
+    new Thread() {
+      public void run() {
+        try {
+          doNetworkOperations();
+        } catch (JSONException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        Message msgToSend = Message.obtain(_networkIOHandler, THREAD_SUBMIT_RATING);
+        msgToSend.sendToTarget();
+      }
+    }.start();
+    CoachellerApplication.debug(this, "Rating thread launched");
+    
+  }
+
+  public void doNetworkOperations() throws JSONException {
+
     CoachellerApplication.debug(this, "rebuildJAHM()");
     if (_obtained_email != null) { // Get my ratings
 
@@ -209,70 +332,6 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     }
 
     _setListAdapter.updateJAHM(_myRatings_JAHM);
-  }
-
-  private void refreshData() {
-    // Below here is stuff to be done each refresh
-    _networkErrors = false;
-
-    try {
-
-      if (!_dayToExamine.equals("Friday") && !_dayToExamine.equals("Saturday")
-          && !_dayToExamine.equals("Sunday")) {
-        _dayToExamine = "Friday";
-      }
-
-      String weekString = "";
-      if (_weekToQuery == 1) {
-        _timeFieldName = QUERY_SETS__TIME_ONE;
-        _stageFieldName = QUERY_SETS__STAGE_ONE;
-        weekString = getString(R.string.name_week1_short);
-      } else if (_weekToQuery == 2) {
-        _timeFieldName = QUERY_SETS__TIME_TWO;
-        _stageFieldName = QUERY_SETS__STAGE_TWO;
-        weekString = getString(R.string.name_week2_short);
-      }
-
-      TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
-      titleView.setText(_dayToExamine + ", Weekend " + _weekToQuery);
-      // +" "+ weekString);
-      _setListAdapter.setTimeFieldName(_timeFieldName);
-      _setListAdapter.setStageFieldName(_stageFieldName);
-
-      obtainEmailFromStorage();
-      
-      
-      doNetworkOperation();  //TODO multithread this
-      
-      
-      setView_reSort();
-
-      ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
-      viewSetsList.invalidateViews();
-
-      CoachellerApplication.debug(this, "Data Refresh is complete");
-      _lastRefresh = System.currentTimeMillis();
-
-      if (!_networkErrors) {
-        _storageManager.save(); // TODO only if both sets and ratings were
-                                // retrieved
-       
-      } else {
-        showDialog(DIALOG_NETWORK_ERROR);
-      }
-
-    } catch (JSONException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      CoachellerApplication.debug(this, "Data Refresh failed");
-      // _lastRefresh = System.currentTimeMillis(); //Refresh failed, do not
-      // update
-    }
-
-  }
-
-  private void doNetworkOperation() throws JSONException {
-    rebuildJAHM();
 
     JSONArray setData = null;
     try {
@@ -291,6 +350,47 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       setData = new JSONArray();
     }
     _setListAdapter.setData(setData);
+  }
+  
+  public void doSubmitRating(String weekNumber, String scoreSelectedValue) {
+    // submit rating
+    // If Exception is thrown, do not store rating locally
+    try {
+      ServiceUtils.addRating(_storageManager.getString(USER_EMAIL), ((TextView) _lastRateDialog
+          .findViewById(R.id.text_rateBand_subtitle)).getText().toString(), "2012", weekNumber,
+          scoreSelectedValue, this);
+
+      // Need this in order to make the new rating appear in real time
+
+      try {
+        JSONObject newObj = new JSONObject();
+        String set_id = _lastItemSelected.get(QUERY_SETS__SET_ID) + "";
+        newObj.put(QUERY_RATINGS__SET_ID, set_id);
+        newObj.put(QUERY_RATINGS__WEEK, weekNumber);
+        newObj.put(QUERY_RATINGS__RATING, scoreSelectedValue);
+
+        // CRITICAL that the keys are listed in this order
+        _myRatings_JAHM.addValues(QUERY_RATINGS__SET_ID, QUERY_RATINGS__WEEK, newObj);
+
+        // Don't need since we are refreshing
+        // ListView viewSetsList = (ListView)
+        // findViewById(R.id.viewSetsList);
+        // viewSetsList.invalidateViews();
+
+      } catch (JSONException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
+      refreshData(); // If this is removed, uncomment ListView and
+                     // invalidate
+                     // above ^^^
+
+    } catch (Exception e1) {
+      CoachellerApplication.debug(this, "Error submitting rating");
+      e1.printStackTrace();
+      showDialog(DIALOG_NETWORK_ERROR);
+    }
   }
 
   // An item was selected from the list of sets
@@ -361,23 +461,19 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     }
 
     if (viewClicked.getId() == R.id.button_declineEmail) {
-      // Toast youMustObey =
-      // Toast.makeText(this,"You may not decline...  Coacheller will not be denied!  ALL YOUR EMAILS ARE BELONG TO US!",25);
-      // youMustObey.show();
-
       _lastGetEmailDialog.dismiss();
-      // showDialog(DIALOG_RATE);
+
     }
 
     if (viewClicked.getId() == R.id.buttonChangeToSearchSets) {
       System.out.println("Button: Switch Day");
       Intent intent = new Intent();
       intent.setClass(this, ActivitySetsSearch.class);
-      // intent.putExtras(bun);
       startActivity(intent);
     }
 
-    if (viewClicked.getId() == R.id.button_rate_okgo) {
+    //Submit rating for a set
+    if (viewClicked.getId() == R.id.button_rate_okgo) {  //Selections incomplete
       RadioGroup weekGroup = (RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_week);
       int weekSelectedId = weekGroup.getCheckedRadioButtonId();
 
@@ -389,12 +485,12 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
             "Please select a rating and week of this Set", 25);
         selectEverything.show();
 
-      } else {
-        int weekSelectedValue = _ratingSelectedIdToValue.get(weekSelectedId);
-        String scoreSelectedValue = _ratingSelectedIdToValue.get(scoreSelectedId) + "";
+      } else { //Selections are valid
+        _ratingSelectedWeek = _ratingSelectedIdToValue.get(weekSelectedId);
+        _ratingSelectedScore = _ratingSelectedIdToValue.get(scoreSelectedId);
 
-        CoachellerApplication.debug(this, "Selected Week[" + weekSelectedValue + "] Score["
-            + scoreSelectedValue + "] WeekId[" + weekSelectedId + "] ScoreId[" + scoreSelectedId
+        CoachellerApplication.debug(this, "Selected Week[" + _ratingSelectedWeek + "] Score["
+            + _ratingSelectedScore + "] WeekId[" + weekSelectedId + "] ScoreId[" + scoreSelectedId
             + "]");
 
         scoreGroup.clearCheck();
@@ -403,48 +499,11 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         int checkedRadioId = ((RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_week))
             .getCheckedRadioButtonId();
         String weekNumber = _ratingSelectedIdToValue.get(checkedRadioId) + "";
+        
 
-        // submit rating
-        // If Exception is thrown, do not store rating locally
-        try {
-          ServiceUtils.addRating(_storageManager.getString(USER_EMAIL), ((TextView) _lastRateDialog
-              .findViewById(R.id.text_rateBand_subtitle)).getText().toString(), "2012", weekNumber,
-              scoreSelectedValue, this);
-
-          // Need this in order to make the new rating appear in real time
-
-          try {
-            JSONObject newObj = new JSONObject();
-            String set_id = _lastItemSelected.get(QUERY_SETS__SET_ID) + "";
-            newObj.put(QUERY_RATINGS__SET_ID, set_id);
-            newObj.put(QUERY_RATINGS__WEEK, weekNumber);
-            newObj.put(QUERY_RATINGS__RATING, scoreSelectedValue);
-
-            // CRITICAL that the keys are listed in this order
-            _myRatings_JAHM.addValues(QUERY_RATINGS__SET_ID, QUERY_RATINGS__WEEK, newObj);
-
-            // Don't need since we are refreshing
-            // ListView viewSetsList = (ListView)
-            // findViewById(R.id.viewSetsList);
-            // viewSetsList.invalidateViews();
-
-          } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
-
-          refreshData(); // If this is removed, uncomment ListView and
-                         // invalidate
-                         // above ^^^
-
-        } catch (Exception e1) {
-          CoachellerApplication.debug(this, "Error submitting rating");
-          e1.printStackTrace();
-          showDialog(DIALOG_NETWORK_ERROR);
-        }
-
+        launchSubmitRatingThread();
       }
-    }  //End rating dialog submitted
+    } // End rating dialog submitted
 
     if (viewClicked.getId() == R.id.button_rate_cancel) {
       // Dialog dialog = (Dialog) viewClicked.getParent();
@@ -566,7 +625,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       Button buttonOK = (Button) _lastNetworkErrorDialog.findViewById(R.id.button_network_error_ok);
       buttonOK.setOnClickListener(this);
       return _lastNetworkErrorDialog;
-      
+
     }
 
     return super.onCreateDialog(id);
