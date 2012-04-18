@@ -10,12 +10,13 @@
         android:layout_height="wrap_content"
         android:text="Entering your email address will allow you to view all your ratings, and later share them with your friends!"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
+
     <EditText
         android:id="@+id/textField_enterEmail"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="your email here"
         android:inputType="textEmailAddress" >
 
         <requestFocus />

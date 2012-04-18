@@ -1,4 +1,4 @@
-package com.coacheller;
+package com.coacheller.data;
 
 import org.json.JSONArray;
 import org.json.JSONException;

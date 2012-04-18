@@ -1,4 +1,4 @@
-package com.coacheller;
+package com.coacheller.data;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,14 +8,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.gson.internal.Pair;
+
+
 
 public class JSONArraySortMap {
 
   final public static int VALUE_INTEGER = 0;
   final public static int VALUE_STRING = 1;
 
-  private ArrayList<Pair<Integer, Object>> _pairs = new ArrayList<Pair<Integer, Object>>();
+  private ArrayList<CustomPair<Integer, Object>> _pairs = new ArrayList<CustomPair<Integer, Object>>();
   JSONArray _arrayToSort;
   private String _parameterToSort;
   private int _valueType;
@@ -42,15 +43,15 @@ public class JSONArraySortMap {
         value = currentObj.getString(_parameterToSort);
       }
 
-      Pair<Integer, Object> nextPair = new Pair<Integer, Object>(i, value);
+      CustomPair<Integer, Object> nextPair = new CustomPair<Integer, Object>(i, value);
       // System.out.println(i + " || " + value.toString());
       _pairs.add(nextPair);
 
     }
 
-    Comparator<Pair<Integer, Object>> comparator = new Comparator<Pair<Integer, Object>>() {
+    Comparator<CustomPair<Integer, Object>> comparator = new Comparator<CustomPair<Integer, Object>>() {
 
-      public int compare(Pair<Integer, Object> pairA, Pair<Integer, Object> pairB) {
+      public int compare(CustomPair<Integer, Object> pairA, CustomPair<Integer, Object> pairB) {
         if (_valueType == VALUE_INTEGER) {
           Integer aValue = (Integer) pairA.second;
           Integer bValue = (Integer) pairB.second;

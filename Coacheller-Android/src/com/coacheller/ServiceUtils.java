@@ -1,16 +1,20 @@
 package com.coacheller;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONTokener;
 
 import android.content.Context;
@@ -27,8 +31,9 @@ public class ServiceUtils {
    * @param day
    * @param context
    * @return
+   * @throws Exception 
    */
-  public static JSONArray getSets(String year, String day, Context context) {
+  public static JSONArray getSets(String year, String day, Context context) throws Exception {
     try {
       // Returning FAKE DATA
       // if (1 < 3) {
@@ -71,19 +76,25 @@ public class ServiceUtils {
       } else {
         CoachellerApplication.debug(context, HTTP_FAILURE
             + response.getStatusLine().getStatusCode());
+        throw new Exception();
       }
 
-    } catch (Exception e) {
+    } catch (ClientProtocolException e) {  //TODO: Could have created a custom Exception class
       e.printStackTrace();
+      throw new Exception();
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new Exception();
+    } catch (JSONException e) {
+      e.printStackTrace();
+      throw new Exception();
     }
-
-    return null;
   }
 
 
   //Sample of working URL
   //  http://ratethisfest.appspot.com/coachellerServlet?email=testing@this.com&action=get_sets&year=2012&day=Friday
-  public static JSONArray getRatings(String email, String day, Context context) {
+  public static JSONArray getRatings(String email, String day, Context context) throws Exception {
 
   /**
    * 
@@ -126,13 +137,19 @@ public class ServiceUtils {
       } else {
         CoachellerApplication.debug(context, HTTP_FAILURE
             + response.getStatusLine().getStatusCode());
+        throw new Exception();
       }
 
-    } catch (Exception e) {
+    } catch (ClientProtocolException e) {  //TODO: Could have created a custom Exception class
       e.printStackTrace();
+      throw new Exception();
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new Exception();
+    } catch (JSONException e) {
+      e.printStackTrace();
+      throw new Exception();
     }
-
-    return null;
   }
 
   /**
@@ -143,11 +160,12 @@ public class ServiceUtils {
    * @param score
    * @param context
    * @return
+   * @throws Exception 
    */
   
   //TODO returns JSONArray which is probably null - is this correct?
   public static String addRating(String email, String artist, String year, String weekend,
-      String score, Context context) {
+      String score, Context context) throws Exception {
     try {
 
       StringBuilder requestString = new StringBuilder();
@@ -198,13 +216,18 @@ public class ServiceUtils {
       } else {
         CoachellerApplication.debug(context, HTTP_FAILURE
             + response.getStatusLine().getStatusCode());
+        throw new Exception();
       }
 
-    } catch (Exception e) {
+    } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
+      throw new Exception();
+    } catch (IllegalStateException e) {
+      e.printStackTrace();
+      throw new Exception();
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new Exception();
     }
-
-    return null;
   }
-
 }

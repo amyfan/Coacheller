@@ -1,8 +1,14 @@
-package com.coacheller;
+package com.coacheller.data;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.coacheller.R;
+import com.coacheller.R.id;
+import com.coacheller.R.layout;
+import com.coacheller.shared.DateTimeUtils;
+import com.coacheller.ui.CoachellerActivity;
 
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -132,7 +138,7 @@ public class CustomSetListAdapter implements ListAdapter {
       }
 
       int milTime = setObj.getInt(_timeFieldName);
-      holder.textTime.setText(militaryToCivilianTime(milTime));
+      holder.textTime.setText(DateTimeUtils.militaryToCivilianTime(milTime));
       holder.textArtist.setText(setObj.getString("artist"));
       holder.textStage.setText(setObj.getString(_stageFieldName).toUpperCase());
       String week1Avg = setObj.getString("avg_score_one");
@@ -167,29 +173,20 @@ public class CustomSetListAdapter implements ListAdapter {
     return rowView;
   }
 
-  public String militaryToCivilianTime(int milTime) {
-    String ampm;
-    if (milTime < 1200 || milTime == 2400) {
-      ampm = "a";
-    } else {
-      ampm = "p";
-    }
-
-    if (milTime < 100) {
-      milTime += 1200;
-    }
-
-    if (milTime >= 1300) {
-      milTime -= 1200;
-    }
-
-    String timeStr = milTime + "";
-
-    int timeStrLen = timeStr.length();
-    timeStr = timeStr.substring(0, timeStrLen - 2) + ":"
-        + timeStr.substring(timeStrLen - 2, timeStrLen) + ampm;
-    return timeStr;
-  }
+  /*
+   * public String militaryToCivilianTime(int milTime) { String ampm; if
+   * (milTime < 1200 || milTime == 2400) { ampm = "a"; } else { ampm = "p"; }
+   * 
+   * if (milTime < 100) { milTime += 1200; }
+   * 
+   * if (milTime >= 1300) { milTime -= 1200; }
+   * 
+   * String timeStr = milTime + "";
+   * 
+   * int timeStrLen = timeStr.length(); timeStr = timeStr.substring(0,
+   * timeStrLen - 2) + ":" + timeStr.substring(timeStrLen - 2, timeStrLen) +
+   * ampm; return timeStr; }
+   */
 
   @Override
   public int getViewTypeCount() {
@@ -202,10 +199,14 @@ public class CustomSetListAdapter implements ListAdapter {
     return false;
   }
 
+  //Implemented prior to week 2, hope nothing breaks.
   @Override
   public boolean isEmpty() {
-    // TODO Auto-generated method stub
-    return false;
+    if (_data.length() == 0) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @Override

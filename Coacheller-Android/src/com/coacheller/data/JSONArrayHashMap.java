@@ -1,4 +1,4 @@
-package com.coacheller;
+package com.coacheller.data;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -12,18 +12,40 @@ public class JSONArrayHashMap {
   private String _key1Name;
   private String _key2Name;
 
+  
+  //TODO: Could be expanded to operate with an arbitrary number of keys
   private HashMap<String, JSONObject> _hash = new HashMap<String, JSONObject>();
 
   public JSONArrayHashMap(String keyName) {
     _key1Name = keyName;
   }
 
-  //TODO this could be the reason for the crash in the release version.
-  //TODO This constructor does not initialize the hashmap
-  //TODO Inconsistency between re-creating and re-using JAHM object could have made the bug harder to find
-  public JSONArrayHashMap(String key1Name, String key2Name) {
+  // TODO this could be the reason for the crash in the release version.
+  // TODO This constructor does not initialize the hashmap
+  // TODO Inconsistency between re-creating and re-using JAHM object could have
+  // made the bug harder to find
+
+  public void setKeyNames(String key1Name, String key2Name) {
     _key1Name = key1Name;
     _key2Name = key2Name;
+
+  }
+  
+  public void setData(JSONArray data) throws JSONException {
+    for (int i = 0; i < data.length(); i++) {
+      JSONObject obj = (JSONObject) data.get(i);
+      storeTwoKeyObj(_key1Name, _key2Name, obj);
+    }
+  }
+
+  public JSONArrayHashMap(String key1Name, String key2Name) {
+    setKeyNames(key1Name, key2Name);
+  }
+  
+  public JSONArrayHashMap(JSONArray data, String firstKeyName, String secondKeyName)
+  throws JSONException {
+    setKeyNames(firstKeyName, secondKeyName);
+    setData(data);
   }
 
   public void wipe() {
@@ -41,22 +63,14 @@ public class JSONArrayHashMap {
    * data.get(i); _hash.put(obj.getString(_key1Name), obj); } }
    */
 
-  public JSONArrayHashMap(JSONArray data, String firstKeyName, String secondKeyName)
-      throws JSONException {
-    _key1Name = firstKeyName;
-    _key2Name = secondKeyName;
 
-    for (int i = 0; i < data.length(); i++) {
-      JSONObject obj = (JSONObject) data.get(i);
-      storeTwoKeyObj(firstKeyName, secondKeyName, obj);
-    }
-  }
 
   private void storeTwoKeyObj(String key1Name, String key2Name, JSONObject obj)
       throws JSONException {
     _hash.put(obj.getString(key1Name) + "-" + obj.getString(key2Name), obj);
   }
 
+  // This should be called using a function specific to a two-parameter key
   public JSONObject getJSONObject(String value) {
     return _hash.get(value);
   }
@@ -73,8 +87,8 @@ public class JSONArrayHashMap {
     return _hash.keySet();
   }
 
-  public String getKeyName() {
-    return _key1Name;
-  }
-
+  // Not used, so commented
+  /*
+   * public String getKeyName() { return _key1Name; }
+   */
 }

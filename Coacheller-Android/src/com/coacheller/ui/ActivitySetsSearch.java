@@ -1,6 +1,12 @@
-package com.coacheller;
+package com.coacheller.ui;
 
 import java.util.Calendar;
+
+import com.coacheller.CoachellerApplication;
+import com.coacheller.R;
+import com.coacheller.R.array;
+import com.coacheller.R.id;
+import com.coacheller.R.layout;
 
 import android.app.Activity;
 import android.content.Intent;

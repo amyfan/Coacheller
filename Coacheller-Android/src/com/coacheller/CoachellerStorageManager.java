@@ -11,6 +11,9 @@ import java.io.StreamCorruptedException;
 import java.util.HashMap;
 import java.util.Set;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import android.content.Context;
 import android.os.Environment;
 
@@ -45,8 +48,8 @@ public class CoachellerStorageManager {
     return _context.getString(R.string.save_file_name);
   }
 
-  
-  //File gets saved here on a good day     /data/data/com.coacheller/files/CoachellerData.dat
+  // File gets saved here on a good day
+  // /data/data/com.coacheller/files/CoachellerData.dat
   public void save() {
 
     try {
@@ -65,8 +68,8 @@ public class CoachellerStorageManager {
 
   }
 
-  //File should get loaded from here, if we are all extremely lucky
-  //   /data/data/com.coacheller/files/CoachellerData.dat
+  // File should get loaded from here, if we are all extremely lucky
+  // /data/data/com.coacheller/files/CoachellerData.dat
   public void load() {
 
     try {
@@ -100,6 +103,20 @@ public class CoachellerStorageManager {
 
   public String getString(String name) {
     return (String) _data.get(name);
+  }
+
+  public void putJSONArray(String dataName, JSONArray data) {
+    _data.put(dataName, data.toString());
+  }
+
+  public JSONArray getJSONArray(String dataName) throws JSONException {
+    String storedArrayAsString = (String) _data.get(dataName);
+
+    if (storedArrayAsString == null) {
+      return new JSONArray();
+    } else {
+      return new JSONArray(storedArrayAsString);
+    }
   }
 
 }
