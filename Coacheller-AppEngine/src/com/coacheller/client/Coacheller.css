@@ -1,4 +1,8 @@
 @CHARSET "UTF-8";
+.body {	
+	font-family: "Arial";
+}
+
 .header {
 	font-weight: bold;
 	font-size: 24px;

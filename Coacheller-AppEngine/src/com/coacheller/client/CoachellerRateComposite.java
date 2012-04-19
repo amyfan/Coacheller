@@ -100,6 +100,10 @@ public class CoachellerRateComposite extends Composite {
   @UiField
   com.google.gwt.user.client.ui.Button addRatingButton;
 
+  @UiField
+  com.google.gwt.user.client.ui.Button backButton;
+
+  // ADMIN PANEL:
   // @UiField
   // com.google.gwt.user.client.ui.Button reloadButton;
   //
@@ -114,9 +118,6 @@ public class CoachellerRateComposite extends Composite {
   //
   // @UiField
   // com.google.gwt.user.client.ui.Button clearUserButton;
-
-  @UiField
-  com.google.gwt.user.client.ui.Button backButton;;
 
   @UiField
   RatingsTable ratingsTable;
@@ -136,7 +137,7 @@ public class CoachellerRateComposite extends Composite {
   }
 
   private void initUiElements() {
-    title.setText("Coacheller 2012");
+    title.setText("COACHELLER 2012");
     subtitle.setText("Rate This Set");
 
     ListDataProvider<RatingGwt> listDataProvider = new ListDataProvider<RatingGwt>();

@@ -14,11 +14,6 @@
 				<g:Anchor ui:field="android" addStyleNames="{style.text}" />
 			</div>
 			<div class="roundrect">
-				<div class="inputcell">
-					<g:ListBox ui:field="dayInput" addStyleNames="{style.text}" />
-					<g:Button ui:field="queryButton" text="Retrieve Sets"
-						addStyleNames="{style.button}" />
-				</div>
 				<div class="buttoncell">
 					<g:Button ui:field="rateButton" text="Rate a Set"
 						addStyleNames="{style.button}" />
@@ -29,6 +24,7 @@
 				<div class="inputcell">
 					Sort By
 					<g:ListBox ui:field="chartTypeInput" />
+					<g:ListBox ui:field="dayInput" addStyleNames="{style.text}" />
 				</div>
 				<div class="chartcell">
 					<g:SimplePanel ui:field="setsChartPanel" />

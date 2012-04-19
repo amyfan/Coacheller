@@ -1,6 +1,5 @@
 package com.coacheller.server.logic;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +11,7 @@ import com.coacheller.server.domain.Rating;
 import com.coacheller.server.persistence.RatingDAO;
 import com.coacheller.server.persistence.SetDAO;
 import com.coacheller.shared.DayEnum;
+import com.coacheller.shared.MathUtils;
 import com.coacheller.shared.Set;
 import com.googlecode.objectify.Key;
 
@@ -101,7 +101,7 @@ public class RatingManager {
       average = average / numRatings;
       set.setNumRatingsOne(numRatings);
       set.setScoreSumOne(sum);
-      set.setAvgScoreOne(roundTwoDecimals(average));
+      set.setAvgScoreOne(MathUtils.roundTwoDecimals(average));
       updateSet(set);
     } else {
       Integer numRatings;
@@ -119,7 +119,7 @@ public class RatingManager {
       average = average / numRatings;
       set.setNumRatingsTwo(numRatings);
       set.setScoreSumTwo(sum);
-      set.setAvgScoreTwo(roundTwoDecimals(average));
+      set.setAvgScoreTwo(MathUtils.roundTwoDecimals(average));
       updateSet(set);
     }
     rating.setDateCreated(new Date());
@@ -140,7 +140,7 @@ public class RatingManager {
         double average = sum;
         average = average / set.getNumRatingsOne();
         set.setScoreSumOne(sum);
-        set.setAvgScoreOne(roundTwoDecimals(average));
+        set.setAvgScoreOne(MathUtils.roundTwoDecimals(average));
         updateSet(set);
       } else {
         Integer sum = set.getScoreSumTwo();
@@ -148,18 +148,13 @@ public class RatingManager {
         double average = sum;
         average = average / set.getNumRatingsTwo();
         set.setScoreSumTwo(sum);
-        set.setAvgScoreTwo(roundTwoDecimals(average));
+        set.setAvgScoreTwo(MathUtils.roundTwoDecimals(average));
         updateSet(set);
       }
       rating.setSet(setDao.findSetKeyById(rating.getSet().getId()));
     }
 
     return ratingDao.updateRating(rating);
-  }
-
-  private double roundTwoDecimals(double d) {
-    DecimalFormat twoDForm = new DecimalFormat("#.##");
-    return Double.valueOf(twoDForm.format(d));
   }
 
   public Rating findRating(Long id) {
