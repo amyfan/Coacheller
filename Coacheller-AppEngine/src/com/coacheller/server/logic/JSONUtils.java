@@ -134,6 +134,7 @@ public class JSONUtils {
         ret.put("set_id", rating.getSet().getId());
         ret.put("weekend", rating.getWeekend());
         ret.put("score", rating.getScore());
+        ret.put("notes", rating.getNotes());
         jsonObjs.put(ret);
       } catch (Exception e) {
         e.printStackTrace();
@@ -162,6 +163,7 @@ public class JSONUtils {
       ratingGwt.setArtistName(set.getArtistName());
       ratingGwt.setWeekend(rating.getWeekend());
       ratingGwt.setScore(rating.getScore());
+      ratingGwt.setNotes(rating.getNotes());
       ratingGwts.add(ratingGwt);
     }
     return ratingGwts;

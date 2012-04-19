@@ -18,6 +18,7 @@ public class Rating {
   private Long id; // internal PK
   private Integer score;
   private Integer weekend;
+  private String notes;
   private Date dateCreated;
   private Date dateModified;
   private Key<Set> set;
@@ -48,6 +49,14 @@ public class Rating {
 
   public void setWeekend(Integer weekend) {
     this.weekend = weekend;
+  }
+
+  public String getNotes() {
+    return notes;
+  }
+
+  public void setNotes(String notes) {
+    this.notes = notes;
   }
 
   public Date getDateCreated() {

@@ -7,6 +7,7 @@ public class RatingGwt implements IsSerializable {
   private Long id; // internal PK
   private Integer score;
   private Integer weekend;
+  private String notes;
   private Long setId;
   private Long raterId;
   private String artistName;
@@ -36,6 +37,14 @@ public class RatingGwt implements IsSerializable {
 
   public void setWeekend(Integer weekend) {
     this.weekend = weekend;
+  }
+
+  public String getNotes() {
+    return notes;
+  }
+
+  public void setNotes(String notes) {
+    this.notes = notes;
   }
 
   public Long getSetId() {

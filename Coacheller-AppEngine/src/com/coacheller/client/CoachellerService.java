@@ -23,7 +23,7 @@ public interface CoachellerService extends RemoteService {
   List<Set> getSets(String day, String yearString) throws IllegalArgumentException;
 
   String addRatingBySetArtist(String email, String setArtist, String year, String weekend,
-      String score) throws IllegalArgumentException;
+      String score, String notes) throws IllegalArgumentException;
 
   List<RatingGwt> getRatingsByUserEmail(String email) throws IllegalArgumentException;
 
