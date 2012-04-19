@@ -82,8 +82,8 @@ public class CoachellerViewComposite extends Composite {
   @UiField
   SetsTable setsTable;
 
-  @UiField
-  com.google.gwt.user.client.ui.Button queryButton;
+  // @UiField
+  // com.google.gwt.user.client.ui.Button queryButton;
 
   @UiField
   com.google.gwt.user.client.ui.Button rateButton;
@@ -92,6 +92,8 @@ public class CoachellerViewComposite extends Composite {
     initWidget(uiBinder.createAndBindUi(this));
 
     initUiElements();
+
+    retrieveSets();
 
     // TODO: see if we wanna auto refresh
     // Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
@@ -103,7 +105,7 @@ public class CoachellerViewComposite extends Composite {
   }
 
   private void initUiElements() {
-    title.setText("Coacheller 2012");
+    title.setText("COACHELLER 2012");
     beta.setText("beta");
     android.setHref("http://play.google.com/store/apps/details?id=com.coacheller");
     android.setText("Download Coacheller for Android");
@@ -164,8 +166,17 @@ public class CoachellerViewComposite extends Composite {
     dayInput.addItem("Saturday");
     dayInput.addItem("Sunday");
 
-    chartTypeInput.addItem("Artist Name");
+    dayInput.addChangeHandler(new ChangeHandler() {
+      @Override
+      public void onChange(ChangeEvent event) {
+        retrieveSets();
+        // androidAnimation.run(400);
+      }
+    });
+
+    chartTypeInput.addItem("Score");
     chartTypeInput.addItem("Set Time");
+    chartTypeInput.addItem("Artist Name");
 
     chartTypeInput.addChangeHandler(new ChangeHandler() {
       @Override
@@ -201,14 +212,15 @@ public class CoachellerViewComposite extends Composite {
     // }
     // });
 
-    queryButton.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        retrieveSets();
-
-        androidAnimation.run(400);
-      }
-    });
+    // TODO: DEPRECATED
+    // queryButton.addClickHandler(new ClickHandler() {
+    // @Override
+    // public void onClick(ClickEvent event) {
+    // retrieveSets();
+    //
+    // androidAnimation.run(400);
+    // }
+    // });
 
     rateButton.addClickHandler(new ClickHandler() {
       @Override
@@ -260,7 +272,7 @@ public class CoachellerViewComposite extends Composite {
 
   private Options createOptions() {
     Options options = Options.create();
-    options.setHeight((setsList.size() * 30) + 20);
+    options.setHeight((setsList.size() * 25) + 20);
     // options.setTitle("Coachella Set Ratings");
     options.setColors("blue", "green");
     AxisOptions axisOptions = AxisOptions.create();
@@ -269,7 +281,7 @@ public class CoachellerViewComposite extends Composite {
     options.setHAxisOptions(axisOptions);
     ChartArea chartArea = ChartArea.create();
     // chartArea.setTop(10);
-    chartArea.setHeight(setsList.size() * 30);
+    chartArea.setHeight(setsList.size() * 25);
     options.setChartArea(chartArea);
     return options;
   }
@@ -288,6 +300,17 @@ public class CoachellerViewComposite extends Composite {
       if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Artist Name")) {
         // sort first
         Collections.sort(setsList, SET_NAME_COMPARATOR);
+
+        int setNum = 0;
+        for (Set set : setsList) {
+          data.setValue(setNum, 0, set.getArtistName());
+          data.setValue(setNum, 1, set.getAvgScoreOne());
+          data.setValue(setNum, 2, set.getAvgScoreTwo());
+          setNum++;
+        }
+      } else if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Score")) {
+        // sort first
+        Collections.sort(setsList, SET_SCORE_COMPARATOR);
 
         int setNum = 0;
         for (Set set : setsList) {
@@ -317,6 +340,29 @@ public class CoachellerViewComposite extends Composite {
   public static final Comparator<? super Set> SET_NAME_COMPARATOR = new Comparator<Set>() {
     public int compare(Set t0, Set t1) {
       return t0.getArtistName().compareTo(t1.getArtistName());
+    }
+  };
+
+  public static final Comparator<? super Set> SET_SCORE_COMPARATOR = new Comparator<Set>() {
+    public int compare(Set t0, Set t1) {
+      // Sort by cumulative scores first
+      if (averageScore(t0) < averageScore(t1)) {
+        return 1;
+      } else if (averageScore(t0) > averageScore(t1)) {
+        return -1;
+      } else {
+        // Sort items alphabetically within each group
+        return t0.getArtistName().compareTo(t1.getArtistName());
+      }
+    }
+
+    private double averageScore(Set set) {
+      double sumOne = set.getAvgScoreOne() + set.getAvgScoreTwo();
+      double average = sumOne;
+      if (set.getAvgScoreOne() != 0 && set.getAvgScoreTwo() != 0) {
+        average = sumOne / 2.0;
+      }
+      return average;
     }
   };
 

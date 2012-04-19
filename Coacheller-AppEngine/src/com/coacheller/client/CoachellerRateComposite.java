@@ -137,7 +137,7 @@ public class CoachellerRateComposite extends Composite {
   }
 
   private void initUiElements() {
-    title.setText("Coacheller 2012");
+    title.setText("COACHELLER 2012");
     subtitle.setText("Rate This Set");
 
     ListDataProvider<RatingGwt> listDataProvider = new ListDataProvider<RatingGwt>();
