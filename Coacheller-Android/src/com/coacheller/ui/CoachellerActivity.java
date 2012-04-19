@@ -726,10 +726,12 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
               CoachellerApplication.debug(this, "Menu button 'email me' pressed");
               
               if (_obtained_email == null) {
-                Toast.makeText(this, "Try rating at least one set first", 25).show();
+                Toast.makeText(this, "Try rating at least one set first", 15).show();
               } else {
                 try {
-                  ServiceUtils.sendMyRatings(this, _obtained_email);
+                  
+                  Toast.makeText(this, "This feature coming soon!", 15).show();
+                  //ServiceUtils.sendMyRatings(this, _obtained_email);
                 } catch (Exception e) {
                   CoachellerApplication.debug(this, "Error requesting ratings email");
                   e.printStackTrace();
