@@ -12,6 +12,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -52,7 +55,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   private static final int SORT_ARTIST = 2;
 
   // Local Storage
-  private static final String USER_EMAIL = "USER_EMAIL";
+  private static final String DATA_USER_EMAIL = "DATA_USER_EMAIL";
   private static final String DATA_SETS = "DATA_SETS";
   private static final String DATA_RATINGS = "DATA_RATINGS";
 
@@ -193,12 +196,12 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       refreshData(); // TODO multi-thread this
     }
 
-    Toast clickToRate = Toast.makeText(this, "Tap any set to rate it!", 25);
+    Toast clickToRate = Toast.makeText(this, "Tap any set to rate it!", 20);
     clickToRate.show();
   }
 
   private void obtainEmailFromStorage() {
-    String loadedEmail = _storageManager.getString(USER_EMAIL);
+    String loadedEmail = _storageManager.getString(DATA_USER_EMAIL);
 
     if ((loadedEmail != null) && FieldVerifier.isValidEmail(loadedEmail)) {
       _obtained_email = loadedEmail;
@@ -316,7 +319,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
           myRatings = new JSONArray();
         }
 
-        _myRatings_JAHM.setData(myRatings);
+        _myRatings_JAHM.rebuildDataWith(myRatings);
 
       } catch (JSONException e) {
         // TODO Auto-generated catch block
@@ -329,9 +332,14 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       // TODO the reference to the JAHM may have been passed to the adapter
       // already
       // initJAHM(); //Commented in hope of addressing crash issue
+      
+      
+      //Need to wipe out ratings if email was just deleted
+      _myRatings_JAHM.wipeData();
     }
 
-    _setListAdapter.updateJAHM(_myRatings_JAHM);
+    //New strategy does not re-instantiate this object, this line should not be needed
+    //_setListAdapter.setNewJAHM(_myRatings_JAHM);
 
     JSONArray setData = null;
     try {
@@ -356,7 +364,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     // submit rating
     // If Exception is thrown, do not store rating locally
     try {
-      ServiceUtils.addRating(_storageManager.getString(USER_EMAIL), ((TextView) _lastRateDialog
+      ServiceUtils.addRating(_storageManager.getString(DATA_USER_EMAIL), ((TextView) _lastRateDialog
           .findViewById(R.id.text_rateBand_subtitle)).getText().toString(), "2012", weekNumber,
           scoreSelectedValue, this);
 
@@ -452,7 +460,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         invalidEmail.show();
 
       } else { // Email is valid. Save email and let user get on with rating
-        _storageManager.putString(USER_EMAIL, email);
+        _storageManager.putString(DATA_USER_EMAIL, email);
         _storageManager.save();
         _obtained_email = email;
         _lastGetEmailDialog.dismiss();
@@ -653,6 +661,44 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     _weekToQuery = Integer.valueOf(week);
     _dayToExamine = day;
     refreshData();
+  }
+  
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+      MenuInflater inflater = getMenuInflater();
+      inflater.inflate(R.menu.menu_global_options, menu);
+      return true;
+  }
+  
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+      switch (item.getItemId()) {
+          case R.id.menu_item_email_me:
+              CoachellerApplication.debug(this, "Menu button 'email me' pressed");
+              
+              if (_obtained_email == null) {
+                Toast.makeText(this, "Try rating at least one set first", 25).show();
+              } else {
+                try {
+                  ServiceUtils.sendMyRatings(this, _obtained_email);
+                } catch (Exception e) {
+                  CoachellerApplication.debug(this, "Error requesting ratings email");
+                  e.printStackTrace();
+                }
+              }
+              return true;
+              
+          case R.id.menu_item_delete_email:
+              CoachellerApplication.debug(this, "Menu button 'delete email' pressed");
+              _obtained_email = null;
+              _storageManager.putString(DATA_USER_EMAIL, null);
+              _storageManager.save();
+              refreshData();
+              return true;
+              
+          default:
+              return super.onOptionsItemSelected(item);
+      }
   }
 
 }

@@ -31,7 +31,8 @@ public class JSONArrayHashMap {
 
   }
   
-  public void setData(JSONArray data) throws JSONException {
+  public void rebuildDataWith(JSONArray data) throws JSONException {
+    wipeData();
     for (int i = 0; i < data.length(); i++) {
       JSONObject obj = (JSONObject) data.get(i);
       storeTwoKeyObj(_key1Name, _key2Name, obj);
@@ -45,12 +46,16 @@ public class JSONArrayHashMap {
   public JSONArrayHashMap(JSONArray data, String firstKeyName, String secondKeyName)
   throws JSONException {
     setKeyNames(firstKeyName, secondKeyName);
-    setData(data);
+    rebuildDataWith(data);
   }
 
-  public void wipe() {
+  public void wipeSchema() {
     _key1Name = "";
     _key2Name = "";
+    wipeData();
+  }
+  
+  public void wipeData() {
     _hash.clear();
   }
 

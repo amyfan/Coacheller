@@ -230,4 +230,57 @@ public class ServiceUtils {
       throw new Exception();
     }
   }
+
+
+  
+  //This may have a bug or 3, I was getting tired
+  public static String sendMyRatings(Context context, String email) throws Exception {
+      try {
+        StringBuilder requestString = new StringBuilder();
+        requestString.append(HttpConstants.SERVER_URL);
+        requestString.append(HttpConstants.PARAM_EMAIL);
+        requestString.append("=");
+        requestString.append(email);
+        requestString.append("&");
+        requestString.append(HttpConstants.PARAM_ACTION);
+        requestString.append("=");
+        
+        //TODO fix this for email feature
+        requestString.append(HttpConstants.ACTION_ADD_RATING);
+
+        CoachellerApplication.debug(context, "HTTPPost = " + requestString.toString());
+        HttpPost post = new HttpPost(requestString.toString());
+        HttpClient hc = new DefaultHttpClient();
+        HttpResponse response = hc.execute(post);
+
+        // get the response from GAE server, should be in JSON format
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+          CoachellerApplication.debug(context, HTTP_SUCCESS);
+
+          BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity()
+              .getContent(), "UTF-8"));
+          StringBuilder builder = new StringBuilder();
+          for (String line = null; (line = reader.readLine()) != null;) {
+            builder.append(line).append("\n");
+          }
+          
+          return builder.toString();
+
+        } else {
+          CoachellerApplication.debug(context, HTTP_FAILURE
+              + response.getStatusLine().getStatusCode());
+          throw new Exception();
+        }
+
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+        throw new Exception();
+      } catch (IllegalStateException e) {
+        e.printStackTrace();
+        throw new Exception();
+      } catch (IOException e) {
+        e.printStackTrace();
+        throw new Exception();
+      }
+  }
 }

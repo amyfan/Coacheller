@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
 import com.coacheller.R.id;
 import com.coacheller.R.layout;
@@ -41,12 +42,16 @@ public class CustomSetListAdapter implements ListAdapter {
     _context = context;
     setTimeFieldName(timeFieldName);
     setStageFieldName(stageFieldName);
-    updateJAHM(myRatings_JAHM);
+   
+    //setNewJAHM(myRatings_JAHM);
+     _myRatings_JAHM = myRatings_JAHM;
   }
 
-  public void updateJAHM(JSONArrayHashMap myRatings_JAHM) {
-    _myRatings_JAHM = myRatings_JAHM;
+  /*
+  public void setNewJAHM(JSONArrayHashMap myRatings_JAHM) {
+    
   }
+  */
 
   public void setTimeFieldName(String name) {
     _timeFieldName = name;
@@ -114,6 +119,10 @@ public class CustomSetListAdapter implements ListAdapter {
       rowView.setTag(viewHolder);
     }
 
+    if (!haveData()) {
+      return rowView;
+    }
+
     try {
 
       ViewHolder holder = (ViewHolder) rowView.getTag();
@@ -130,7 +139,7 @@ public class CustomSetListAdapter implements ListAdapter {
       String score1 = "*";
       if (ratingsObjWk1 != null) {
         score1 = ratingsObjWk1.get(CoachellerActivity.QUERY_RATINGS__RATING).toString();
-      }
+      } 
 
       String score2 = "*";
       if (ratingsObjWk2 != null) {
@@ -164,6 +173,9 @@ public class CustomSetListAdapter implements ListAdapter {
       } else {
         holder.myRating.setText("");
       }
+      
+      //Gnarly debug thing
+      //CoachellerApplication.debug(_context,"Artist["+ holder.textArtist.getText() +"] Rating["+ score1 +"/"+ score2);
 
     } catch (JSONException e) {
       // TODO Auto-generated catch block
@@ -173,20 +185,15 @@ public class CustomSetListAdapter implements ListAdapter {
     return rowView;
   }
 
-  /*
-   * public String militaryToCivilianTime(int milTime) { String ampm; if
-   * (milTime < 1200 || milTime == 2400) { ampm = "a"; } else { ampm = "p"; }
-   * 
-   * if (milTime < 100) { milTime += 1200; }
-   * 
-   * if (milTime >= 1300) { milTime -= 1200; }
-   * 
-   * String timeStr = milTime + "";
-   * 
-   * int timeStrLen = timeStr.length(); timeStr = timeStr.substring(0,
-   * timeStrLen - 2) + ":" + timeStr.substring(timeStrLen - 2, timeStrLen) +
-   * ampm; return timeStr; }
-   */
+  // If we are ready to draw the view
+  // Needed for concurrency issues
+  private boolean haveData() {
+    if (_data != null) {
+      return true;
+    }
+    return false;
+  }
+
 
   @Override
   public int getViewTypeCount() {
@@ -199,7 +206,7 @@ public class CustomSetListAdapter implements ListAdapter {
     return false;
   }
 
-  //Implemented prior to week 2, hope nothing breaks.
+  // Implemented prior to week 2, hope nothing breaks.
   @Override
   public boolean isEmpty() {
     if (_data.length() == 0) {
