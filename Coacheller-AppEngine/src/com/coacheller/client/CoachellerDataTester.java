@@ -235,7 +235,7 @@ public class CoachellerDataTester implements EntryPoint {
         // Then, we send the input to the server.
         addRatingButton.setEnabled(false);
         serverResponseLabel.setText("");
-        coachellerService.addRatingBySetArtist(email, artist, year, weekend, score,
+        coachellerService.addRatingBySetArtist(email, artist, year, weekend, score, null,
             new AsyncCallback<String>() {
               public void onFailure(Throwable caught) {
                 // Show the RPC error message to the user

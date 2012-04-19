@@ -47,7 +47,7 @@ public class RatingManager {
   }
 
   public String addRatingBySetArtist(String email, String setArtist, Integer year, Integer weekend,
-      Integer score) {
+      Integer score, String notes) {
     String resp = null;
 
     List<Rating> ratings = findRatingsBySetArtistAndUser(setArtist, email, weekend);
@@ -55,7 +55,7 @@ public class RatingManager {
       // add new rating
       Key<Set> setKey = findSetKeyByArtistAndYear(setArtist, year);
       if (setKey != null) {
-        addRating(setKey, email, weekend, score);
+        addRating(setKey, email, weekend, score, notes);
         resp = "rating added";
       } else {
         resp = "invalid artist name";
@@ -63,18 +63,20 @@ public class RatingManager {
       }
     } else {
       // update existing rating
-      updateRating(ratings.get(0), weekend, score);
+      updateRating(ratings.get(0), weekend, score, notes);
       resp = "rating updated";
     }
 
     return resp;
   }
 
-  private Rating addRating(Key<Set> setKey, String email, Integer weekend, Integer score) {
+  private Rating addRating(Key<Set> setKey, String email, Integer weekend, Integer score,
+      String notes) {
     Rating rating = new Rating();
     rating.setSet(setKey);
     rating.setScore(score);
     rating.setWeekend(weekend);
+    rating.setNotes(notes);
 
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     if (userKey == null) {
@@ -127,9 +129,14 @@ public class RatingManager {
     return ratingDao.updateRating(rating);
   }
 
-  private Rating updateRating(Rating rating, Integer weekend, Integer score) {
+  private Rating updateRating(Rating rating, Integer weekend, Integer score, String notes) {
     Integer difference = score - rating.getScore();
     rating.setScore(score);
+    if (notes != null) {
+      // in the case of rating updated from android app that doesn't yet have
+      // notes capability
+      rating.setNotes(notes);
+    }
 
     if (rating.getSet() != null) {
       // update set's avg score

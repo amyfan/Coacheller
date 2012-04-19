@@ -167,7 +167,7 @@ public class ServiceUtils {
   public static String addRating(String email, String artist, String year, String weekend,
       String score, Context context) throws Exception {
     try {
-
+      // TODO: pass in PARAM_NOTES here
       StringBuilder requestString = new StringBuilder();
       requestString.append(HttpConstants.SERVER_URL);
       requestString.append(HttpConstants.PARAM_EMAIL);

@@ -11,6 +11,7 @@ public class HttpConstants {
   public static final String PARAM_ARTIST = "artist";
   public static final String PARAM_SCORE = "score";
   public static final String PARAM_WEEKEND = "weekend";
+  public static final String PARAM_NOTES = "notes";
 
   public static final String ACTION_GET_SETS = "get_sets";
   public static final String ACTION_GET_RATINGS = "get_ratings";

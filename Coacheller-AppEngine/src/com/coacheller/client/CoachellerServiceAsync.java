@@ -23,7 +23,7 @@ public interface CoachellerServiceAsync {
       throws IllegalArgumentException;
 
   void addRatingBySetArtist(String email, String setArtist, String year, String weekend,
-      String score, AsyncCallback<String> callback) throws IllegalArgumentException;
+      String score, String notes, AsyncCallback<String> callback) throws IllegalArgumentException;
 
   void getRatingsByUserEmail(String email, AsyncCallback<List<RatingGwt>> callback)
       throws IllegalArgumentException;
@@ -37,8 +37,7 @@ public interface CoachellerServiceAsync {
   void deleteRatingsByUser(String email, AsyncCallback<String> callback)
       throws IllegalArgumentException;
 
-  void deleteRating(Long ratingId, AsyncCallback<String> callback)
-      throws IllegalArgumentException;
+  void deleteRating(Long ratingId, AsyncCallback<String> callback) throws IllegalArgumentException;
 
   void deleteAllRatings(AsyncCallback<String> callback) throws IllegalArgumentException;
 

@@ -53,7 +53,7 @@ public class CoachellerServlet extends HttpServlet {
       respString = getRatingsJsonByUser(email);
     } else if (action.equals(HttpConstants.ACTION_ADD_RATING)) {
       // TODO: prefer to stick this in doPost()
-      respString = addRatingBySetArtist(email, artist, year, weekend, score);
+      // respString = addRatingBySetArtist(email, artist, year, weekend, score);
     }
 
     resp.getWriter().println(respString);
@@ -74,9 +74,14 @@ public class CoachellerServlet extends HttpServlet {
     String artist = checkNull(req.getParameter(HttpConstants.PARAM_ARTIST));
     String score = checkNull(req.getParameter(HttpConstants.PARAM_SCORE));
     String weekend = checkNull(req.getParameter(HttpConstants.PARAM_WEEKEND));
+    String notes = checkNull(req.getParameter(HttpConstants.PARAM_NOTES));
 
+    if (notes.isEmpty()) {
+      // TODO: this is temp until notes implemented on android
+      notes = null;
+    }
     if (action.equals(HttpConstants.ACTION_ADD_RATING)) {
-      addRatingBySetArtist(email, artist, year, weekend, score);
+      addRatingBySetArtist(email, artist, year, weekend, score, notes);
     }
 
   }
@@ -129,7 +134,7 @@ public class CoachellerServlet extends HttpServlet {
   }
 
   private String addRatingBySetArtist(String email, String setArtist, String year, String weekend,
-      String score) {
+      String score, String notes) {
 
     String resp = null;
 
@@ -143,7 +148,7 @@ public class CoachellerServlet extends HttpServlet {
       resp = FieldVerifier.SCORE_ERROR;
     } else if (setArtist != null) {
       resp = RatingManager.getInstance().addRatingBySetArtist(email, setArtist,
-          Integer.valueOf(year), Integer.valueOf(weekend), Integer.valueOf(score));
+          Integer.valueOf(year), Integer.valueOf(weekend), Integer.valueOf(score), notes);
     } else {
       resp = "null args";
     }

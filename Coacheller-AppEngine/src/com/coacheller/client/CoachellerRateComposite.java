@@ -14,6 +14,8 @@ import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -29,6 +31,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
@@ -74,6 +77,9 @@ public class CoachellerRateComposite extends Composite {
   Label scoreLabel;
 
   @UiField
+  Label notesLabel;
+
+  @UiField
   ListBox artistInput;
 
   @UiField
@@ -96,6 +102,9 @@ public class CoachellerRateComposite extends Composite {
 
   @UiField
   RadioButton scoreFiveRadioButton;
+
+  @UiField
+  TextBox notesInput;
 
   @UiField
   com.google.gwt.user.client.ui.Button addRatingButton;
@@ -155,6 +164,15 @@ public class CoachellerRateComposite extends Composite {
     scoreThreeRadioButton.setText("3");
     scoreFourRadioButton.setText("4");
     scoreFiveRadioButton.setText("5");
+
+    notesLabel.setText("Notes (optional)");
+
+    artistInput.addChangeHandler(new ChangeHandler() {
+      @Override
+      public void onChange(ChangeEvent event) {
+        loadRatingContents();
+      }
+    });
 
     Element androidElement = getElement().getFirstChildElement().getFirstChildElement();
     final Animation androidAnimation = new AndroidAnimation(androidElement);
@@ -337,6 +355,36 @@ public class CoachellerRateComposite extends Composite {
     });
   }
 
+  private void loadRatingContents() {
+    notesInput.setText("");
+    Integer weekend;
+    if (weekendOneRadioButton.getValue()) {
+      weekend = 1;
+    } else {
+      weekend = 2;
+    }
+    String artist = artistInput.getItemText(artistInput.getSelectedIndex());
+    for (RatingGwt rating : ratingsList) {
+      if (artist.equals(rating.getArtistName()) && weekend == rating.getWeekend()) {
+        if (rating.getScore() == 1) {
+          scoreOneRadioButton.setValue(true);
+        } else if (rating.getScore() == 2) {
+          scoreTwoRadioButton.setValue(true);
+        } else if (rating.getScore() == 3) {
+          scoreThreeRadioButton.setValue(true);
+        } else if (rating.getScore() == 4) {
+          scoreFourRadioButton.setValue(true);
+        } else if (rating.getScore() == 5) {
+          scoreFiveRadioButton.setValue(true);
+        }
+        if (rating.getNotes() != null) {
+          notesInput.setText(rating.getNotes());
+        }
+        break;
+      }
+    }
+  }
+
   private void addRating() {
     infoBox.setText("");
     String artist = artistInput.getItemText(artistInput.getSelectedIndex());
@@ -359,6 +407,7 @@ public class CoachellerRateComposite extends Composite {
     } else if (scoreFiveRadioButton.getValue()) {
       score = scoreFiveRadioButton.getText();
     }
+    String notes = notesInput.getText();
     if (!FieldVerifier.isValidEmail(ownerEmail)) {
       infoBox.setText(FieldVerifier.EMAIL_ERROR);
       return;
@@ -373,7 +422,7 @@ public class CoachellerRateComposite extends Composite {
     }
 
     // Then, we send the input to the server.
-    coachellerService.addRatingBySetArtist(ownerEmail, artist, "2012", weekend, score,
+    coachellerService.addRatingBySetArtist(ownerEmail, artist, "2012", weekend, score, notes,
         new AsyncCallback<String>() {
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
@@ -428,6 +477,7 @@ public class CoachellerRateComposite extends Composite {
     public Column<RatingGwt, String> artistNameColumn;
     public Column<RatingGwt, String> weekendColumn;
     public Column<RatingGwt, String> scoreColumn;
+    public Column<RatingGwt, String> notesColumn;
     public Column<RatingGwt, String> deleteColumn;
 
     interface TasksTableResources extends CellTable.Resources {
@@ -487,6 +537,16 @@ public class CoachellerRateComposite extends Composite {
       addColumnStyleName(2, "columnFill");
       addColumnStyleName(2, resources.cellTableStyle().columnScore());
 
+      notesColumn = new Column<RatingGwt, String>(new TextCell()) {
+        @Override
+        public String getValue(RatingGwt object) {
+          return object.getNotes();
+        }
+      };
+      addColumn(notesColumn, "Notes");
+      addColumnStyleName(3, "columnFill");
+      addColumnStyleName(3, resources.cellTableStyle().columnName());
+
       ButtonCell buttonCell = new ButtonCell(new SafeHtmlRenderer<String>() {
         public SafeHtml render(String object) {
           return SafeHtmlUtils.fromTrustedString("<img src=\"delete.png\"></img>");
@@ -504,8 +564,8 @@ public class CoachellerRateComposite extends Composite {
         }
       };
       addColumn(deleteColumn, "\u2717");
-      addColumnStyleName(3, "columnFill");
-      addColumnStyleName(3, resources.cellTableStyle().columnTrash());
+      addColumnStyleName(4, "columnFill");
+      addColumnStyleName(4, resources.cellTableStyle().columnTrash());
     }
   }
 

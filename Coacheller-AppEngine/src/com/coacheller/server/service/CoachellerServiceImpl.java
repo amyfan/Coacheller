@@ -83,7 +83,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
   }
 
   public String addRatingBySetArtist(String email, String setArtist, String year, String weekend,
-      String score) {
+      String score, String notes) {
 
     String resp = null;
 
@@ -97,7 +97,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
       resp = FieldVerifier.SCORE_ERROR;
     } else if (setArtist != null) {
       resp = RatingManager.getInstance().addRatingBySetArtist(email, setArtist,
-          Integer.valueOf(year), Integer.valueOf(weekend), Integer.valueOf(score));
+          Integer.valueOf(year), Integer.valueOf(weekend), Integer.valueOf(score), notes);
     } else {
       log.log(Level.WARNING, "addRatingBySetArtist: null args");
       resp = "null args";
