@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.coacheller.server.domain.Rating;
+import com.coacheller.shared.MathUtils;
 import com.coacheller.shared.Set;
 
 /**
@@ -119,7 +120,7 @@ public class SetDataLoader {
         average = average / wkndOneCount;
         set.setNumRatingsOne(wkndOneCount);
         set.setScoreSumOne(wkndOneTotal);
-        set.setAvgScoreOne(average);
+        set.setAvgScoreOne(MathUtils.roundTwoDecimals(average));
         RatingManager.getInstance().updateSet(set);
       }
       if (wkndTwoCount > 0) {
@@ -127,7 +128,7 @@ public class SetDataLoader {
         average = average / wkndTwoCount;
         set.setNumRatingsTwo(wkndTwoCount);
         set.setScoreSumTwo(wkndTwoTotal);
-        set.setAvgScoreTwo(average);
+        set.setAvgScoreTwo(MathUtils.roundTwoDecimals(average));
         RatingManager.getInstance().updateSet(set);
       }
     }

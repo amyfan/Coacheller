@@ -100,6 +100,10 @@ public class CoachellerRateComposite extends Composite {
   @UiField
   com.google.gwt.user.client.ui.Button addRatingButton;
 
+  @UiField
+  com.google.gwt.user.client.ui.Button backButton;
+
+  // ADMIN PANEL:
   // @UiField
   // com.google.gwt.user.client.ui.Button reloadButton;
   //
@@ -114,9 +118,6 @@ public class CoachellerRateComposite extends Composite {
   //
   // @UiField
   // com.google.gwt.user.client.ui.Button clearUserButton;
-
-  @UiField
-  com.google.gwt.user.client.ui.Button backButton;;
 
   @UiField
   RatingsTable ratingsTable;
