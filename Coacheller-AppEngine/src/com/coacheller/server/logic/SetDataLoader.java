@@ -107,12 +107,14 @@ public class SetDataLoader {
       int wkndOneTotal = 0;
       int wkndTwoTotal = 0;
       for (Rating rating : ratings) {
-        if (rating.getWeekend() == 1) {
-          wkndOneTotal += rating.getScore();
-          ++wkndOneCount;
-        } else {
-          wkndTwoTotal += rating.getScore();
-          ++wkndTwoCount;
+        if (rating.getScore() != null) {
+          if (rating.getWeekend() == 1) {
+            wkndOneTotal += rating.getScore();
+            ++wkndOneCount;
+          } else if (rating.getWeekend() == 2) {
+            wkndTwoTotal += rating.getScore();
+            ++wkndTwoCount;
+          }
         }
       }
       if (wkndOneCount > 0) {
