@@ -21,6 +21,7 @@
 				<div class="inputcell">
 					<g:Label ui:field="weekendLabel" addStyleNames="{style.label}" />
 					<g:RadioButton ui:name="weekend" ui:field="weekendOneRadioButton" />
+					<g:RadioButton ui:name="weekend" ui:field="weekendTwoRadioButton" />
 				</div>
 				<div class="inputcell">
 					<g:Label ui:field="scoreLabel" addStyleNames="{style.label}" />
@@ -45,7 +46,7 @@
 					text="Reload Sets" /> <g:Button ui:field="recalculateButton" text="Recalculate 
 					Scores" /> <g:Button ui:field="clearMyRatingButton" text="Clear My Ratings" 
 					/> <g:Button ui:field="clearRatingButton" text="Clear Ratings" /> <g:Button 
-					ui:field="clearUserButton" text="Clear Users" /> </div -->
+					ui:field="clearUserButton" text="Clear Users" /> </div-->
 				<div class="infocell">
 					<g:Label ui:field="infoBox" addStyleNames="{style.info}" />
 				</div>

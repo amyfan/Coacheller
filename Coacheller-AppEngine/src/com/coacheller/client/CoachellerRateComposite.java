@@ -85,8 +85,8 @@ public class CoachellerRateComposite extends Composite {
   @UiField
   RadioButton weekendOneRadioButton;
 
-  // @UiField
-  // RadioButton weekendTwoRadioButton;
+  @UiField
+  RadioButton weekendTwoRadioButton;
 
   @UiField
   RadioButton scoreOneRadioButton;
@@ -156,7 +156,7 @@ public class CoachellerRateComposite extends Composite {
     weekendLabel.setText("Weekend");
     weekendOneRadioButton.setText("1");
     weekendOneRadioButton.setValue(true);
-    // weekendTwoRadioButton.setText("2");
+    weekendTwoRadioButton.setText("2");
 
     scoreLabel.setText("Score");
     scoreOneRadioButton.setText("1");
@@ -391,10 +391,9 @@ public class CoachellerRateComposite extends Composite {
     String weekend = null;
     if (weekendOneRadioButton.getValue()) {
       weekend = weekendOneRadioButton.getText();
+    } else if (weekendTwoRadioButton.getValue()) {
+      weekend = weekendTwoRadioButton.getText();
     }
-    // else if (weekendtwoRadioButton.getValue()) {
-    // weekend = weekendtwoRadioButton.getText();
-    // }
     String score = null;
     if (scoreOneRadioButton.getValue()) {
       score = scoreOneRadioButton.getText();
