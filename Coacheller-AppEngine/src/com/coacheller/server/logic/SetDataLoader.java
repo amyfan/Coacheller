@@ -117,7 +117,7 @@ public class SetDataLoader {
           }
         }
       }
-      if (wkndOneCount > 0) {
+      if (wkndOneCount > 0 || (set.getAvgScoreOne() != null && set.getAvgScoreOne() > 0)) {
         double average = wkndOneTotal;
         average = average / wkndOneCount;
         set.setNumRatingsOne(wkndOneCount);
@@ -125,7 +125,7 @@ public class SetDataLoader {
         set.setAvgScoreOne(MathUtils.roundTwoDecimals(average));
         RatingManager.getInstance().updateSet(set);
       }
-      if (wkndTwoCount > 0) {
+      if (wkndTwoCount > 0 || (set.getAvgScoreTwo() != null && set.getAvgScoreTwo() > 0)) {
         double average = wkndTwoTotal;
         average = average / wkndTwoCount;
         set.setNumRatingsTwo(wkndTwoCount);

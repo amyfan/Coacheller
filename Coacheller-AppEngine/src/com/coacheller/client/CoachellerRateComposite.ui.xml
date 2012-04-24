@@ -21,6 +21,7 @@
 				<div class="inputcell">
 					<g:Label ui:field="weekendLabel" addStyleNames="{style.label}" />
 					<g:RadioButton ui:name="weekend" ui:field="weekendOneRadioButton" />
+					<g:RadioButton ui:name="weekend" ui:field="weekendTwoRadioButton" />
 				</div>
 				<div class="inputcell">
 					<g:Label ui:field="scoreLabel" addStyleNames="{style.label}" />
