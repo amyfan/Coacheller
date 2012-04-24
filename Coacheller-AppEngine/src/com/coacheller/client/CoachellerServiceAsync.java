@@ -12,7 +12,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface CoachellerServiceAsync {
   void greetServer(String input, AsyncCallback<String> callback) throws IllegalArgumentException;
 
-  void loadSetData(AsyncCallback<String> callback) throws IllegalArgumentException;
+  void reloadSetData(AsyncCallback<String> callback) throws IllegalArgumentException;
 
   void recalculateSetRatingAverages(AsyncCallback<String> callback) throws IllegalArgumentException;
 
@@ -38,9 +38,5 @@ public interface CoachellerServiceAsync {
       throws IllegalArgumentException;
 
   void deleteRating(Long ratingId, AsyncCallback<String> callback) throws IllegalArgumentException;
-
-  void deleteAllRatings(AsyncCallback<String> callback) throws IllegalArgumentException;
-
-  void deleteAllUsers(AsyncCallback<String> callback) throws IllegalArgumentException;
 
 }

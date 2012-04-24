@@ -14,7 +14,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface CoachellerService extends RemoteService {
   String greetServer(String name) throws IllegalArgumentException;
 
-  String loadSetData() throws IllegalArgumentException;
+  String reloadSetData() throws IllegalArgumentException;
 
   String recalculateSetRatingAverages() throws IllegalArgumentException;
 
@@ -36,7 +36,4 @@ public interface CoachellerService extends RemoteService {
 
   String deleteRating(Long ratingId) throws IllegalArgumentException;
 
-  String deleteAllRatings() throws IllegalArgumentException;
-
-  String deleteAllUsers() throws IllegalArgumentException;
 }

@@ -85,6 +85,58 @@ public class SetDataLoader {
     }
   }
 
+  /**
+   * Updates set information based on matching artist name & year, as well as
+   * adding any new sets
+   * 
+   * @param setFile
+   */
+  public void updateSets(BufferedReader setFile) {
+    String line;
+    try {
+      line = setFile.readLine();
+      while (line != null) {
+        try {
+          String[] fields = line.split(",");
+
+          Set set = RatingManager.getInstance().findSetByArtistAndYear(fields[ARTIST_NAME_INDEX],
+              Integer.valueOf(fields[YEAR_INDEX]));
+
+          if (set == null) {
+            // add new set to the database
+            set = new Set();
+            set.setYear(Integer.valueOf(fields[YEAR_INDEX]));
+            set.setArtistName(fields[ARTIST_NAME_INDEX]);
+            set.setNumRatingsOne(0);
+            set.setNumRatingsTwo(0);
+            set.setScoreSumOne(0);
+            set.setScoreSumTwo(0);
+            set.setAvgScoreOne(0.0);
+            set.setAvgScoreTwo(0.0);
+            set.setDateCreated(new Date());
+          }
+          set.setDay(fields[DAY_INDEX]);
+          set.setTimeOne(Integer.valueOf(fields[TIME_ONE_INDEX]));
+          set.setTimeTwo(Integer.valueOf(fields[TIME_TWO_INDEX]));
+          set.setStageOne(fields[STAGE_ONE_INDEX]);
+          set.setStageTwo(fields[STAGE_TWO_INDEX]);
+
+          RatingManager.getInstance().updateSet(set);
+
+          line = setFile.readLine();
+        } catch (Exception e) {
+          e.printStackTrace();
+          log.log(Level.SEVERE, "updateSets: " + e.getMessage());
+          break;
+          // continue;
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+      log.log(Level.SEVERE, "updateSets: " + e.getMessage());
+    }
+  }
+
   public void clearSetRatingAverages() {
     List<Set> sets = RatingManager.getInstance().findAllSets();
     for (Set set : sets) {

@@ -85,45 +85,8 @@ public class RatingManager {
     }
     rating.setRater(userKey);
 
-    // update set's avg score
-    Set set = setDao.findSet(rating.getSet().getId());
-    if (weekend == 1) {
-      Integer numRatings;
-      Integer sum;
-      if (set.getNumRatingsOne() == null) {
-        numRatings = 0;
-        sum = 0;
-      } else {
-        numRatings = set.getNumRatingsOne();
-        sum = set.getScoreSumOne();
-      }
-      numRatings++;
-      sum += score;
-      double average = sum;
-      average = average / numRatings;
-      set.setNumRatingsOne(numRatings);
-      set.setScoreSumOne(sum);
-      set.setAvgScoreOne(MathUtils.roundTwoDecimals(average));
-      updateSet(set);
-    } else {
-      Integer numRatings;
-      Integer sum;
-      if (set.getNumRatingsTwo() == null) {
-        numRatings = 0;
-        sum = 0;
-      } else {
-        numRatings = set.getNumRatingsTwo();
-        sum = set.getScoreSumTwo();
-      }
-      numRatings++;
-      sum += score;
-      double average = sum;
-      average = average / numRatings;
-      set.setNumRatingsTwo(numRatings);
-      set.setScoreSumTwo(sum);
-      set.setAvgScoreTwo(MathUtils.roundTwoDecimals(average));
-      updateSet(set);
-    }
+    updateScoreAverageAfterAdd(rating);
+
     rating.setDateCreated(new Date());
 
     return ratingDao.updateRating(rating);
@@ -138,28 +101,7 @@ public class RatingManager {
       rating.setNotes(notes);
     }
 
-    if (rating.getSet() != null) {
-      // update set's avg score
-      Set set = setDao.findSetByKey(rating.getSet());
-      if (weekend == 1) {
-        Integer sum = set.getScoreSumOne();
-        sum += difference;
-        double average = sum;
-        average = average / set.getNumRatingsOne();
-        set.setScoreSumOne(sum);
-        set.setAvgScoreOne(MathUtils.roundTwoDecimals(average));
-        updateSet(set);
-      } else {
-        Integer sum = set.getScoreSumTwo();
-        sum += difference;
-        double average = sum;
-        average = average / set.getNumRatingsTwo();
-        set.setScoreSumTwo(sum);
-        set.setAvgScoreTwo(MathUtils.roundTwoDecimals(average));
-        updateSet(set);
-      }
-      rating.setSet(setDao.findSetKeyById(rating.getSet().getId()));
-    }
+    updateScoreAverageAfterUpdate(rating, difference);
 
     return ratingDao.updateRating(rating);
   }
@@ -214,14 +156,17 @@ public class RatingManager {
   }
 
   public void deleteRatingById(Long id) {
+    updateScoreAverageAfterDelete(findRating(id));
     ratingDao.deleteRating(id);
   }
 
   public void deleteRating(Rating rating) {
+    updateScoreAverageAfterDelete(rating);
     ratingDao.deleteRating(rating.getId());
   }
 
   public void deleteRatingsByUser(String email) {
+    // TODO: maybe recalc score avgs, but i'll leave that up to be done manually
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     if (userKey != null) {
       ratingDao.deleteRatingsByUser(userKey);
@@ -230,6 +175,112 @@ public class RatingManager {
 
   public void deleteAllRatings() {
     ratingDao.deleteAllRatings();
+  }
+
+  private void updateScoreAverageAfterAdd(Rating rating) {
+    // update set's avg score
+    Set set = setDao.findSet(rating.getSet().getId());
+    Integer numRatings;
+    Integer sum;
+    if (rating.getWeekend() == 1) {
+      if (set.getNumRatingsOne() == null) {
+        numRatings = 0;
+        sum = 0;
+      } else {
+        numRatings = set.getNumRatingsOne();
+        sum = set.getScoreSumOne();
+      }
+      numRatings++;
+      sum += rating.getScore();
+      double average = sum;
+      average = average / numRatings;
+      set.setNumRatingsOne(numRatings);
+      set.setScoreSumOne(sum);
+      set.setAvgScoreOne(MathUtils.roundTwoDecimals(average));
+      updateSet(set);
+    } else {
+      if (set.getNumRatingsTwo() == null) {
+        numRatings = 0;
+        sum = 0;
+      } else {
+        numRatings = set.getNumRatingsTwo();
+        sum = set.getScoreSumTwo();
+      }
+      numRatings++;
+      sum += rating.getScore();
+      double average = sum;
+      average = average / numRatings;
+      set.setNumRatingsTwo(numRatings);
+      set.setScoreSumTwo(sum);
+      set.setAvgScoreTwo(MathUtils.roundTwoDecimals(average));
+      updateSet(set);
+    }
+  }
+
+  private void updateScoreAverageAfterUpdate(Rating rating, Integer difference) {
+    // update set's avg score
+    if (rating.getSet() != null) {
+      Set set = setDao.findSetByKey(rating.getSet());
+      if (rating.getWeekend() == 1) {
+        Integer sum = set.getScoreSumOne();
+        sum += difference;
+        double average = sum;
+        average = average / set.getNumRatingsOne();
+        set.setScoreSumOne(sum);
+        set.setAvgScoreOne(MathUtils.roundTwoDecimals(average));
+        updateSet(set);
+      } else {
+        Integer sum = set.getScoreSumTwo();
+        sum += difference;
+        double average = sum;
+        average = average / set.getNumRatingsTwo();
+        set.setScoreSumTwo(sum);
+        set.setAvgScoreTwo(MathUtils.roundTwoDecimals(average));
+        updateSet(set);
+      }
+      // is this even necessary?:
+      // rating.setSet(setDao.findSetKeyById(rating.getSet().getId()));
+    }
+  }
+
+  private void updateScoreAverageAfterDelete(Rating rating) {
+    // update set's avg score
+    Set set = setDao.findSet(rating.getSet().getId());
+    Integer numRatings;
+    Integer sum;
+    if (rating.getWeekend() == 1) {
+      if (set.getNumRatingsOne() == null) {
+        numRatings = 0;
+        sum = 0;
+      } else {
+        numRatings = set.getNumRatingsOne();
+        sum = set.getScoreSumOne();
+      }
+      numRatings--;
+      sum -= rating.getScore();
+      double average = sum;
+      average = average / numRatings;
+      set.setNumRatingsOne(numRatings);
+      set.setScoreSumOne(sum);
+      set.setAvgScoreOne(MathUtils.roundTwoDecimals(average));
+      updateSet(set);
+    } else {
+      if (set.getNumRatingsTwo() == null) {
+        numRatings = 0;
+        sum = 0;
+      } else {
+        numRatings = set.getNumRatingsTwo();
+        sum = set.getScoreSumTwo();
+      }
+      numRatings--;
+      sum -= rating.getScore();
+      double average = sum;
+      average = average / numRatings;
+      set.setNumRatingsTwo(numRatings);
+      set.setScoreSumTwo(sum);
+      set.setAvgScoreTwo(MathUtils.roundTwoDecimals(average));
+      updateSet(set);
+    }
   }
 
   public Set updateSet(Set set) {

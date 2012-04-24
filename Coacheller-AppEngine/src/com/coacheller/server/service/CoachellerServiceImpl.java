@@ -196,34 +196,17 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
       RatingManager.getInstance().deleteRatingById(ratingId);
       resp = "ratings deleted";
     }
-    // TODO: maybe recalc score avgs, but i'll leave that up to be done manually
     return resp;
   }
 
   public String deleteRatingsByUser(String email) {
     String resp = "fail";
     RatingManager.getInstance().deleteRatingsByUser(email);
-    // TODO: maybe recalc score avgs, but i'll leave that up to be done manually
     resp = "ratings deleted";
     return resp;
   }
 
-  public String deleteAllRatings() {
-    String resp = "fail";
-    RatingManager.getInstance().deleteAllRatings();
-    SetDataLoader.getInstance().clearSetRatingAverages();
-    resp = "ratings deleted";
-    return resp;
-  }
-
-  public String deleteAllUsers() {
-    String resp = "fail";
-    UserAccountManager.getInstance().deleteAllAppUsers();
-    resp = "users deleted";
-    return resp;
-  }
-
-  public String loadSetData() {
+  public String reloadSetData() {
     String success;
     String url;
     // TODO: move this to res file
@@ -250,10 +233,8 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
       URLConnection urlConn = inputData.openConnection();
       InputStreamReader is = new InputStreamReader(urlConn.getInputStream(), "UTF8");
       BufferedReader in = new BufferedReader(is);
-      SetDataLoader dataLoader = SetDataLoader.getInstance();
-      RatingManager ratingMgr = RatingManager.getInstance();
-      ratingMgr.deleteAllSets();
-      dataLoader.insertSets(in);
+      // RatingManager.getInstance().deleteAllSets();
+      SetDataLoader.getInstance().updateSets(in);
       success = "success i believe";
     } catch (Exception e) {
       success = "something happened";
