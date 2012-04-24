@@ -9,14 +9,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.json.JSONArray;
-
 import com.coacheller.client.CoachellerService;
 import com.coacheller.server.domain.Rating;
 import com.coacheller.server.logic.JSONUtils;
 import com.coacheller.server.logic.RatingManager;
 import com.coacheller.server.logic.SetDataLoader;
-import com.coacheller.server.logic.UserAccountManager;
 import com.coacheller.shared.DayEnum;
 import com.coacheller.shared.FieldVerifier;
 import com.coacheller.shared.RatingGwt;
@@ -106,43 +103,6 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     return resp;
   }
 
-  public List<RatingGwt> getRatingsBySetArtist(String email, String setArtist) {
-
-    List<RatingGwt> ratingGwts = null;
-
-    if (setArtist != null) {
-      List<Rating> ratings = RatingManager.getInstance().findRatingsBySetArtist(setArtist);
-      if (ratings != null) {
-        ratingGwts = JSONUtils.convertRatingsToRatingGwts(ratings);
-      }
-    }
-
-    return ratingGwts;
-  }
-
-  public String getRatingsJsonBySetArtist(String email, String setArtist) {
-    String resp = "null args";
-
-    if (!FieldVerifier.isValidEmail(email)) {
-      resp = FieldVerifier.EMAIL_ERROR;
-    } else {
-      List<Rating> ratings = null;
-
-      if (setArtist != null) {
-        ratings = RatingManager.getInstance().findRatingsBySetArtist(setArtist);
-      }
-
-      if (ratings != null) {
-        JSONArray jsonArray = JSONUtils.convertRatingsToJSONArray(ratings);
-        if (jsonArray != null) {
-          resp = jsonArray.toString();
-        }
-      }
-    }
-
-    return resp;
-  }
-
   public List<RatingGwt> getRatingsByUserEmail(String email) {
 
     List<RatingGwt> ratingGwts = null;
@@ -155,39 +115,6 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     }
 
     return ratingGwts;
-  }
-
-  public List<RatingGwt> getRatingsBySet(String email, String setIdString) {
-
-    List<RatingGwt> ratingGwts = null;
-
-    if (setIdString != null) {
-      Long setId = Long.valueOf(setIdString);
-      List<Rating> ratings = RatingManager.getInstance().findRatingsBySetId(setId);
-      if (ratings != null) {
-        ratingGwts = JSONUtils.convertRatingsToRatingGwts(ratings);
-      }
-    }
-
-    return ratingGwts;
-  }
-
-  public String getRatingsJsonBySet(String email, String setIdString) {
-    String resp = null;
-
-    List<Rating> ratings = null;
-
-    if (setIdString != null) {
-      Long setId = Long.valueOf(setIdString);
-      ratings = RatingManager.getInstance().findRatingsBySetId(setId);
-    }
-
-    JSONArray jsonArray = JSONUtils.convertRatingsToJSONArray(ratings);
-    if (jsonArray != null) {
-      resp = jsonArray.toString();
-    }
-
-    return resp;
   }
 
   public String deleteRating(Long ratingId) {

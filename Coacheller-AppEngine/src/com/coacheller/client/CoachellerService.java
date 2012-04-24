@@ -27,11 +27,6 @@ public interface CoachellerService extends RemoteService {
 
   List<RatingGwt> getRatingsByUserEmail(String email) throws IllegalArgumentException;
 
-  List<RatingGwt> getRatingsBySetArtist(String email, String setArtist)
-      throws IllegalArgumentException;
-
-  List<RatingGwt> getRatingsBySet(String email, String setIdString) throws IllegalArgumentException;
-
   String deleteRatingsByUser(String email) throws IllegalArgumentException;
 
   String deleteRating(Long ratingId) throws IllegalArgumentException;

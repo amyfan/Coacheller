@@ -160,11 +160,6 @@ public class RatingManager {
     ratingDao.deleteRating(id);
   }
 
-  public void deleteRating(Rating rating) {
-    updateScoreAverageAfterDelete(rating);
-    ratingDao.deleteRating(rating.getId());
-  }
-
   public void deleteRatingsByUser(String email) {
     // TODO: maybe recalc score avgs, but i'll leave that up to be done manually
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
@@ -257,12 +252,18 @@ public class RatingManager {
         sum = set.getScoreSumOne();
       }
       numRatings--;
-      sum -= rating.getScore();
-      double average = sum;
-      average = average / numRatings;
-      set.setNumRatingsOne(numRatings);
-      set.setScoreSumOne(sum);
-      set.setAvgScoreOne(MathUtils.roundTwoDecimals(average));
+      if (numRatings < 1) {
+        set.setNumRatingsOne(0);
+        set.setScoreSumOne(0);
+        set.setAvgScoreOne(0.0);
+      } else {
+        sum -= rating.getScore();
+        double average = sum;
+        average = average / numRatings;
+        set.setNumRatingsOne(numRatings);
+        set.setScoreSumOne(sum);
+        set.setAvgScoreOne(MathUtils.roundTwoDecimals(average));
+      }
       updateSet(set);
     } else {
       if (set.getNumRatingsTwo() == null) {
@@ -272,13 +273,19 @@ public class RatingManager {
         numRatings = set.getNumRatingsTwo();
         sum = set.getScoreSumTwo();
       }
-      numRatings--;
-      sum -= rating.getScore();
-      double average = sum;
-      average = average / numRatings;
-      set.setNumRatingsTwo(numRatings);
-      set.setScoreSumTwo(sum);
-      set.setAvgScoreTwo(MathUtils.roundTwoDecimals(average));
+      if (numRatings < 1) {
+        set.setNumRatingsTwo(0);
+        set.setScoreSumTwo(0);
+        set.setAvgScoreTwo(0.0);
+      } else {
+        numRatings--;
+        sum -= rating.getScore();
+        double average = sum;
+        average = average / numRatings;
+        set.setNumRatingsTwo(numRatings);
+        set.setScoreSumTwo(sum);
+        set.setAvgScoreTwo(MathUtils.roundTwoDecimals(average));
+      }
       updateSet(set);
     }
   }
