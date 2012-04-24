@@ -33,7 +33,7 @@
 				</div>
 				<div class="inputcell">
 					<g:Label ui:field="notesLabel" addStyleNames="{style.label}" />
-					<g:TextBox ui:field="notesInput" addStyleNames="{style.text}" />
+					<g:TextBox ui:field="notesInput" addStyleNames="{style.textLarge}" />
 				</div>
 				<div class="buttoncell">
 					<g:Button ui:field="addRatingButton" text="Add Rating"
@@ -42,12 +42,12 @@
 				<div class="buttoncell">
 					<g:Button ui:field="backButton" text="Back" addStyleNames="{style.button}" />
 				</div>
-				<div class="buttoncell">
+				<!--div class="buttoncell">
 					Temporary Test Buttons:
 					<g:Button ui:field="recalculateButton" text="Recalculate 
 					Scores" />
 					<g:Button ui:field="clearMyRatingButton" text="Clear My Ratings" />
-				</div>
+				</div-->
 				<div class="infocell">
 					<g:Label ui:field="infoBox" addStyleNames="{style.info}" />
 				</div>

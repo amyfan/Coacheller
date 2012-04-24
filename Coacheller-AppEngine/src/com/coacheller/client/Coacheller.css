@@ -44,6 +44,12 @@
 	margin-bottom: 6px;
 }
 
+.textLarge {
+	font-size: 14px;
+	width: 300px;
+	margin-bottom: 6px;
+}
+
 .button {
 	font-size: 14px;
 	margin-top: 10px;
