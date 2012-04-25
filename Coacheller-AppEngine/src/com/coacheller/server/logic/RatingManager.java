@@ -273,12 +273,12 @@ public class RatingManager {
         numRatings = set.getNumRatingsTwo();
         sum = set.getScoreSumTwo();
       }
+      numRatings--;
       if (numRatings < 1) {
         set.setNumRatingsTwo(0);
         set.setScoreSumTwo(0);
         set.setAvgScoreTwo(0.0);
       } else {
-        numRatings--;
         sum -= rating.getScore();
         double average = sum;
         average = average / numRatings;

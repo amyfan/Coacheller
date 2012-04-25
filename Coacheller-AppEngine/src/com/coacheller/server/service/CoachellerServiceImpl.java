@@ -121,7 +121,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     String resp = "fail";
     if (ratingId != null) {
       RatingManager.getInstance().deleteRatingById(ratingId);
-      resp = "ratings deleted";
+      resp = "rating deleted";
     }
     return resp;
   }
