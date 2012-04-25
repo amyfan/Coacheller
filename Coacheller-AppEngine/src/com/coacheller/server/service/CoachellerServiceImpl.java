@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import com.coacheller.client.CoachellerService;
 import com.coacheller.server.domain.Rating;
+import com.coacheller.server.logic.EmailSender;
 import com.coacheller.server.logic.JSONUtils;
 import com.coacheller.server.logic.RatingManager;
 import com.coacheller.server.logic.SetDataLoader;
@@ -130,6 +131,11 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     String resp = "fail";
     RatingManager.getInstance().deleteRatingsByUser(email);
     resp = "ratings deleted";
+    return resp;
+  }
+
+  public String emailRatingsToUser(String email) {
+    String resp = EmailSender.emailRatings(email);
     return resp;
   }
 

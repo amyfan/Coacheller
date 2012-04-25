@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 
 import com.coacheller.server.domain.Rating;
+import com.coacheller.server.logic.EmailSender;
 import com.coacheller.server.logic.JSONUtils;
 import com.coacheller.server.logic.RatingManager;
 import com.coacheller.shared.DayEnum;
@@ -82,6 +83,8 @@ public class CoachellerServlet extends HttpServlet {
     }
     if (action.equals(HttpConstants.ACTION_ADD_RATING)) {
       addRatingBySetArtist(email, artist, year, weekend, score, notes);
+    } else if (action.equals(HttpConstants.ACTION_EMAIL_RATINGS)) {
+      EmailSender.emailRatings(email);
     }
 
   }

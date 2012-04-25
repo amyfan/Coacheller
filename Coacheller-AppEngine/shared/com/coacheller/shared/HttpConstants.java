@@ -16,4 +16,5 @@ public class HttpConstants {
   public static final String ACTION_GET_SETS = "get_sets";
   public static final String ACTION_GET_RATINGS = "get_ratings";
   public static final String ACTION_ADD_RATING = "add_rating";
+  public static final String ACTION_EMAIL_RATINGS = "email_ratings";
 }

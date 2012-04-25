@@ -33,4 +33,6 @@ public interface CoachellerServiceAsync {
 
   void deleteRating(Long ratingId, AsyncCallback<String> callback) throws IllegalArgumentException;
 
+  void emailRatingsToUser(String email, AsyncCallback<String> callback) throws IllegalArgumentException;
+
 }

@@ -18,6 +18,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -110,6 +112,9 @@ public class CoachellerRateComposite extends Composite {
   com.google.gwt.user.client.ui.Button addRatingButton;
 
   @UiField
+  com.google.gwt.user.client.ui.Button emailButton;
+
+  @UiField
   com.google.gwt.user.client.ui.Button backButton;
 
   // ADMIN PANEL:
@@ -168,12 +173,39 @@ public class CoachellerRateComposite extends Composite {
     Element androidElement = getElement().getFirstChildElement().getFirstChildElement();
     final Animation androidAnimation = new AndroidAnimation(androidElement);
 
+    notesInput.addKeyPressHandler(new KeyPressHandler() {
+      public void onKeyPress(KeyPressEvent event) {
+        if (((int) event.getCharCode()) == 13) {
+          addRating();
+
+          androidAnimation.run(400);
+        }
+      }
+    });
+
     addRatingButton.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
         addRating();
 
         androidAnimation.run(400);
+      }
+    });
+
+    emailButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        infoBox.setText("");
+        coachellerService.emailRatingsToUser(ownerEmail, new AsyncCallback<String>() {
+          public void onFailure(Throwable caught) {
+            // Show the RPC error message to the user
+            infoBox.setText(SERVER_ERROR);
+          }
+
+          public void onSuccess(String result) {
+            infoBox.setText(result);
+          }
+        });
       }
     });
 
@@ -250,11 +282,11 @@ public class CoachellerRateComposite extends Composite {
       }
 
       public void onSuccess(List<String> result) {
-        ArrayList<String> sortedTasks = new ArrayList<String>(result);
-        Collections.sort(sortedTasks, SET_NAME_COMPARATOR);
+        ArrayList<String> sortedItems = new ArrayList<String>(result);
+        Collections.sort(sortedItems, SET_NAME_COMPARATOR);
 
         artistInput.clear();
-        for (String artist : sortedTasks) {
+        for (String artist : sortedItems) {
           artistInput.addItem(artist);
         }
       }
@@ -375,7 +407,7 @@ public class CoachellerRateComposite extends Composite {
 
   public static final Comparator<? super String> SET_NAME_COMPARATOR = new Comparator<String>() {
     public int compare(String t0, String t1) {
-      return t0.compareTo(t1);
+      return t0.compareToIgnoreCase(t1);
     }
   };
 
@@ -388,7 +420,7 @@ public class CoachellerRateComposite extends Composite {
         return -1;
       } else {
         // Sort items alphabetically within each group
-        return t0.getArtistName().compareTo(t1.getArtistName());
+        return t0.getArtistName().compareToIgnoreCase(t1.getArtistName());
       }
     }
   };

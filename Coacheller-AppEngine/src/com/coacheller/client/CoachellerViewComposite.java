@@ -339,7 +339,7 @@ public class CoachellerViewComposite extends Composite {
 
   public static final Comparator<? super Set> SET_NAME_COMPARATOR = new Comparator<Set>() {
     public int compare(Set t0, Set t1) {
-      return t0.getArtistName().compareTo(t1.getArtistName());
+      return t0.getArtistName().compareToIgnoreCase(t1.getArtistName());
     }
   };
 
@@ -352,7 +352,7 @@ public class CoachellerViewComposite extends Composite {
         return -1;
       } else {
         // Sort items alphabetically within each group
-        return t0.getArtistName().compareTo(t1.getArtistName());
+        return t0.getArtistName().compareToIgnoreCase(t1.getArtistName());
       }
     }
 
@@ -375,7 +375,7 @@ public class CoachellerViewComposite extends Composite {
         return -1;
       } else {
         // Sort items alphabetically within each group
-        return t0.getArtistName().compareTo(t1.getArtistName());
+        return t0.getArtistName().compareToIgnoreCase(t1.getArtistName());
       }
     }
   };
