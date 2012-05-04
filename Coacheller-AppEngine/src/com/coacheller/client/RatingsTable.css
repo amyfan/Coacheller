@@ -35,7 +35,7 @@
 }
 
 .cellTableWidget {
-	width: 100%;
+	width: 75%;
 }
 
 .cellTableFirstColumn {
@@ -94,7 +94,7 @@
 
 .cellTableEvenRow {
 	border-bottom: 1px solid #ddd;
-	padding: 10px 0 10px 13px;
+	padding: 3px 0px 3px 13px;
 	list-style-type: none;
 	color: navy;
 	font-size: 18px;
@@ -112,7 +112,7 @@
 
 .cellTableOddRow {
 	border-bottom: 1px solid #ddd;
-	padding: 10px 0 10px 13px;
+	padding: 3px 0px 3px 13px;
 	list-style-type: none;
 	color: gray;
 	font-size: 18px;

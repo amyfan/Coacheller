@@ -357,10 +357,11 @@ public class CoachellerViewComposite extends Composite {
     }
 
     private double averageScore(Set set) {
-      double sumOne = set.getAvgScoreOne() + set.getAvgScoreTwo();
-      double average = sumOne;
-      if (set.getAvgScoreOne() != 0 && set.getAvgScoreTwo() != 0) {
-        average = sumOne / 2.0;
+      double sumOne = set.getAvgScoreOne() * set.getNumRatingsOne();
+      double sumTwo = set.getAvgScoreTwo() * set.getNumRatingsTwo();
+      double average = sumOne + sumTwo;
+      if (set.getNumRatingsOne() > 0 || set.getNumRatingsTwo() > 0) {
+        average = average / (set.getNumRatingsOne() + set.getNumRatingsTwo());
       }
       return average;
     }
@@ -388,8 +389,8 @@ public class CoachellerViewComposite extends Composite {
     public Column<Set, String> artistNameColumn;
     public Column<Set, String> avgScoreOneColumn;
     public Column<Set, String> avgScoreTwoColumn;
-    public Column<Set, String> numRatingsOneColumn;
-    public Column<Set, String> numRatingsTwoColumn;
+    // public Column<Set, String> numRatingsOneColumn;
+    // public Column<Set, String> numRatingsTwoColumn;
     public Column<Set, String> stageOneColumn;
 
     // public Column<Set, String> stageTwoColumn;
@@ -462,55 +463,36 @@ public class CoachellerViewComposite extends Composite {
       avgScoreOneColumn = new Column<Set, String>(new TextCell()) {
         @Override
         public String getValue(Set object) {
+          String value = "";
           if (object.getAvgScoreOne() != null) {
-            return object.getAvgScoreOne().toString();
+            value = object.getAvgScoreOne().toString();
           }
-          return "";
+          if (object.getNumRatingsOne() != null) {
+            value += " (" + object.getNumRatingsOne().toString() + ")";
+          }
+          return value;
         }
       };
       addColumn(avgScoreOneColumn, "Week 1 Score");
       addColumnStyleName(4, "columnFill");
       addColumnStyleName(4, resources.cellTableStyle().columnScore());
 
-      numRatingsOneColumn = new Column<Set, String>(new TextCell()) {
-        @Override
-        public String getValue(Set object) {
-          if (object.getNumRatingsOne() != null) {
-            return object.getNumRatingsOne().toString();
-          }
-          return "";
-        }
-      };
-      addColumn(numRatingsOneColumn, "# Ratings");
-      addColumnStyleName(5, "columnFill");
-      addColumnStyleName(5, resources.cellTableStyle().columnCount());
-
       avgScoreTwoColumn = new Column<Set, String>(new TextCell()) {
         @Override
         public String getValue(Set object) {
+          String value = "";
           if (object.getAvgScoreTwo() != null) {
-            return object.getAvgScoreTwo().toString();
+            value = object.getAvgScoreTwo().toString();
           }
-          return "";
+          if (object.getNumRatingsOne() != null) {
+            value += " (" + object.getNumRatingsTwo().toString() + ")";
+          }
+          return value;
         }
       };
       addColumn(avgScoreTwoColumn, "Week 2 Score");
-      addColumnStyleName(6, "columnFill");
-      addColumnStyleName(6, resources.cellTableStyle().columnScore());
-
-      numRatingsTwoColumn = new Column<Set, String>(new TextCell()) {
-        @Override
-        public String getValue(Set object) {
-          if (object.getNumRatingsTwo() != null) {
-            return object.getNumRatingsTwo().toString();
-          }
-          return "";
-        }
-      };
-      addColumn(numRatingsTwoColumn, "# Ratings");
-      addColumnStyleName(7, "columnFill");
-      addColumnStyleName(7, resources.cellTableStyle().columnCount());
-
+      addColumnStyleName(5, "columnFill");
+      addColumnStyleName(5, resources.cellTableStyle().columnScore());
     }
   }
 
