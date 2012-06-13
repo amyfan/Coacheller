@@ -33,15 +33,11 @@ import com.coacheller.CoachellerApplication;
 import com.coacheller.CoachellerStorageManager;
 import com.coacheller.R;
 import com.coacheller.ServiceUtils;
-import com.coacheller.R.array;
-import com.coacheller.R.id;
-import com.coacheller.R.layout;
-import com.coacheller.R.string;
 import com.coacheller.data.CustomPair;
 import com.coacheller.data.CustomSetListAdapter;
 import com.coacheller.data.JSONArrayHashMap;
 import com.coacheller.data.JSONArraySortMap;
-import com.coacheller.shared.FieldVerifier;
+import com.ratethisfest.shared.FieldVerifier;
 
 public class CoachellerActivity extends Activity implements View.OnClickListener,
     OnItemSelectedListener, OnItemClickListener, OnCheckedChangeListener {

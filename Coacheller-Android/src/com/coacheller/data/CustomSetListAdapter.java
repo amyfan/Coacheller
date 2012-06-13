@@ -4,13 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.coacheller.CoachellerApplication;
-import com.coacheller.R;
-import com.coacheller.R.id;
-import com.coacheller.R.layout;
-import com.coacheller.shared.DateTimeUtils;
-import com.coacheller.ui.CoachellerActivity;
-
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.view.LayoutInflater;
@@ -18,6 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+
+import com.coacheller.R;
+import com.coacheller.ui.CoachellerActivity;
+import com.ratethisfest.shared.DateTimeUtils;
 
 public class CustomSetListAdapter implements ListAdapter {
 

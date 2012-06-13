@@ -8,7 +8,7 @@
   <!-- Servlets -->
   <servlet>
     <servlet-name>coachellerServlet</servlet-name>
-    <servlet-class>com.coacheller.server.service.CoachellerServlet</servlet-class>
+    <servlet-class>com.ratethisfest.server.service.CoachellerServlet</servlet-class>
   </servlet>
   
   <servlet-mapping>
@@ -18,7 +18,7 @@
   
   <servlet>
     <servlet-name>gwtCoachellerServlet</servlet-name>
-    <servlet-class>com.coacheller.server.service.CoachellerServiceImpl</servlet-class>
+    <servlet-class>com.ratethisfest.server.service.CoachellerServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
