@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Coacheller</string>
+    <string name="currLocation">Address</string>
+    <string name="defaultLocation">Current Location</string>
+    <string name="distance">Distance</string>
+    <string name="dateBackTo">Dating Back To</string>
+
+    <string-array name="dateArray">
+        <item>2011</item>
+    </string-array>
+        <string name="title_sets_search">Choose Day to Load</string>
+        <string name="week_search_sets">Week</string>
+        <string name="day_search_sets">Day</string>
+        <string name="buttonlabel_search_sets">Go!</string>
+        <string-array name="names_week">
+            <item >1 - April 13-15</item>
+            <item >2 - April 20-22</item>
+        </string-array>
+        <string-array name="names_day">
+            <item >Friday</item>
+            <item >Saturday</item>
+            <item >Sunday</item>
+        </string-array>
+        <string name="set_rate">Rate</string>
+        <string-array name="search_types">
+            <item >Time</item>
+            <item >Artist</item>
+        </string-array>
+        <string name="name_week1_short">April 13-15</string>
+        <string name="name_week2_short">April 20-22</string>
+        <string name="save_file_path">/Coacheller/</string>
+        <string name="save_file_name">CoachellerData.dat</string>
+
+</resources>

@@ -1,4 +1,4 @@
-package com.coacheller;
+package com.lollapaloozer;
 
 import android.content.Context;
 import android.os.Handler;
@@ -6,14 +6,14 @@ import android.os.Handler;
 
 //This class was a bad idea
 
-public class CoachellerUIWorker extends Thread {
+public class LollapaloozerUIWorker extends Thread {
   
   private Handler _handler;
   private Runnable _runnable;
   private Context _context;
 
   
-  public CoachellerUIWorker(Handler handler, Runnable runnable, Context context) {
+  public LollapaloozerUIWorker(Handler handler, Runnable runnable, Context context) {
     _runnable = runnable;
     _handler = handler;
     _context = context;
@@ -21,7 +21,7 @@ public class CoachellerUIWorker extends Thread {
   }
   /*
   public void run() {
-    CoachellerApplication.debug(this, "rebuildJAHM()");
+    LollapaloozerApplication.debug(this, "rebuildJAHM()");
     if (_obtained_email != null) { // Get my ratings
 
       JSONArray myRatings = null;
@@ -30,13 +30,13 @@ public class CoachellerUIWorker extends Thread {
         _storageManager.putJSONArray(DATA_RATINGS, myRatings);
       } catch (Exception e1) {
         _networkErrors = true;
-        CoachellerApplication.debug(this,
+        LollapaloozerApplication.debug(this,
             "Exception getting Ratings data, loading from storage if available");
         try {
           myRatings = _storageManager.getJSONArray(DATA_RATINGS);
         } catch (JSONException e) {
           e.printStackTrace();
-          CoachellerApplication.debug(this, "JSONException loading ratings from storage");
+          LollapaloozerApplication.debug(this, "JSONException loading ratings from storage");
         }
       }
 
@@ -46,7 +46,7 @@ public class CoachellerUIWorker extends Thread {
         // QUERY_RATINGS__SET_ID, QUERY_RATINGS__WEEK);
 
         if (myRatings == null) {
-          CoachellerApplication.debug(this, "Had to initialize ratings data JSONArray");
+          LollapaloozerApplication.debug(this, "Had to initialize ratings data JSONArray");
           myRatings = new JSONArray();
         }
 
@@ -74,13 +74,13 @@ public class CoachellerUIWorker extends Thread {
       _storageManager.putJSONArray(DATA_SETS, setData);
     } catch (Exception e) {
       _networkErrors = true;
-      CoachellerApplication.debug(this,
+      LollapaloozerApplication.debug(this,
           "Exception getting Set data, loading from storage if available");
       setData = _storageManager.getJSONArray(DATA_SETS);
     }
 
     if (setData == null) {
-      CoachellerApplication.debug(this, "Had to initialize set data JSONArray");
+      LollapaloozerApplication.debug(this, "Had to initialize set data JSONArray");
       setData = new JSONArray();
     }
     _setListAdapter.setData(setData);

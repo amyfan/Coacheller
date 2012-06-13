@@ -1,4 +1,4 @@
-package com.coacheller;
+package com.lollapaloozer;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,12 +15,12 @@ import org.json.JSONException;
 
 import android.content.Context;
 
-public class CoachellerStorageManager {
+public class LollapaloozerStorageManager {
 
   private HashMap<String, Object> _data;
   private Context _context;
 
-  public CoachellerStorageManager(Context context) {
+  public LollapaloozerStorageManager(Context context) {
     _context = context;
   }
 
@@ -47,7 +47,7 @@ public class CoachellerStorageManager {
   }
 
   // File gets saved here on a good day
-  // /data/data/com.coacheller/files/CoachellerData.dat
+  // /data/data/com.lollapaloozer/files/CoachellerData.dat
   public synchronized void save() {
 
     try {
@@ -67,7 +67,7 @@ public class CoachellerStorageManager {
   }
 
   // File should get loaded from here, if we are all extremely lucky
-  // /data/data/com.coacheller/files/CoachellerData.dat
+  // /data/data/com.lollapaloozer/files/CoachellerData.dat
   public synchronized void load() {
 
     try {

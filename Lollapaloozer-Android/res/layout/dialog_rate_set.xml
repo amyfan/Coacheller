@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_dialog_rate_set"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/text_rateBand_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="Artist"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left" >
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Which Weekend?"
+            android:textStyle="bold"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/radio_pick_week"
+        android:layout_width="fill_parent"
+        android:layout_height="65dp"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/radio_button_week1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/name_week1_short" />
+
+        <RadioButton
+            android:id="@+id/radio_button_week2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/name_week2_short" />
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left" >
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="How Was It?"
+            android:textStyle="bold"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/radio_pick_score"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:checkedButton="-1"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/radio_button_score1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="1" />
+
+        <LinearLayout
+            android:layout_width="10dp"
+            android:layout_height="fill_parent" >
+
+        </LinearLayout>
+
+        <RadioButton
+            android:id="@+id/radio_button_score2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2" />
+
+        <LinearLayout
+            android:layout_width="10dp"
+            android:layout_height="fill_parent" >
+        </LinearLayout>
+
+        <RadioButton
+            android:id="@+id/radio_button_score3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3" />
+
+        <LinearLayout
+            android:layout_width="10dp"
+            android:layout_height="fill_parent" >
+        </LinearLayout>
+
+        <RadioButton
+            android:id="@+id/radio_button_score4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4" />
+
+        <LinearLayout
+            android:layout_width="10dp"
+            android:layout_height="fill_parent" >
+        </LinearLayout>
+
+        <RadioButton
+            android:id="@+id/radio_button_score5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5" />
+
+        <LinearLayout
+            android:layout_width="10dp"
+            android:layout_height="fill_parent" >
+        </LinearLayout>
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/button_rate_okgo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Rate It!" />
+
+        <Button
+            android:id="@+id/button_rate_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Go Back" />
+
+    </LinearLayout>
+
+</LinearLayout>
