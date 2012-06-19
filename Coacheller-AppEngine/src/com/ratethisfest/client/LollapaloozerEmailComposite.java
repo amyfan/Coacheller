@@ -13,9 +13,9 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.ratethisfest.shared.FieldVerifier;
 
-public class CoachellerEmailComposite extends Composite {
+public class LollapaloozerEmailComposite extends Composite {
 
-  interface Binder extends UiBinder<Widget, CoachellerEmailComposite> {
+  interface Binder extends UiBinder<Widget, LollapaloozerEmailComposite> {
   }
 
   private static Binder uiBinder = GWT.create(Binder.class);
@@ -38,14 +38,14 @@ public class CoachellerEmailComposite extends Composite {
   @UiField
   com.google.gwt.user.client.ui.Button backButton;
 
-  public CoachellerEmailComposite() {
+  public LollapaloozerEmailComposite() {
     initWidget(uiBinder.createAndBindUi(this));
 
     initUiElements();
   }
 
   private void initUiElements() {
-    title.setText("COACHELLER 2012");
+    title.setText("LOLLAPALOOZER 2012");
     emailLabel.setText("Email to track your ratings (will NOT be shared or misused)");
 
     userEmailAddressInput.getElement().setPropertyString("placeholder", "Enter email address here");
@@ -68,7 +68,7 @@ public class CoachellerEmailComposite extends Composite {
     backButton.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        FlowControl.go(new CoachellerViewComposite());
+        FlowControl.go(new LollapaloozerViewComposite());
       }
     });
   }
@@ -79,13 +79,13 @@ public class CoachellerEmailComposite extends Composite {
     if (!FieldVerifier.isValidEmail(email)) {
       infoBox.setText(FieldVerifier.EMAIL_ERROR);
     } else {
-      FlowControl.go(new CoachellerRateComposite(email));
+      FlowControl.go(new LollapaloozerRateComposite(email));
     }
   }
 
   @Override
   public String getTitle() {
-    return PageToken.EMAIL_COACHELLA.getValue();
+    return PageToken.EMAIL_LOLLA.getValue();
   }
 
 }

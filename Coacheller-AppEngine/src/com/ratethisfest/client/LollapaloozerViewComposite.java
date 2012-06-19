@@ -33,7 +33,7 @@ import com.google.gwt.visualization.client.visualizations.corechart.Options;
 import com.ratethisfest.shared.DateTimeUtils;
 import com.ratethisfest.shared.Set;
 
-public class CoachellerViewComposite extends Composite {
+public class LollapaloozerViewComposite extends Composite {
 
   /**
    * The message displayed to the user when the server cannot be reached or
@@ -43,16 +43,16 @@ public class CoachellerViewComposite extends Composite {
       + "attempting to contact the server. Please check your network "
       + "connection and try again.";
 
-  interface Binder extends UiBinder<Widget, CoachellerViewComposite> {
+  interface Binder extends UiBinder<Widget, LollapaloozerViewComposite> {
   }
 
   private static Binder uiBinder = GWT.create(Binder.class);
 
   /**
-   * Create a remote service proxy to talk to the server-side Coacheller
+   * Create a remote service proxy to talk to the server-side Lollapaloozer
    * service.
    */
-  private final CoachellerServiceAsync coachellerService = GWT.create(CoachellerService.class);
+  private final LollapaloozerServiceAsync lollapaloozerService = GWT.create(LollapaloozerService.class);
   private List<Set> setsList;
 
   @UiField
@@ -85,7 +85,7 @@ public class CoachellerViewComposite extends Composite {
   // @UiField
   // com.google.gwt.user.client.ui.Button rateButton;
 
-  public CoachellerViewComposite() {
+  public LollapaloozerViewComposite() {
     initWidget(uiBinder.createAndBindUi(this));
 
     initUiElements();
@@ -102,10 +102,10 @@ public class CoachellerViewComposite extends Composite {
   }
 
   private void initUiElements() {
-    title.setText("COACHELLER 2012");
+    title.setText("LOLLAPALOOZER 2012");
     beta.setText("beta");
     android.setHref("http://play.google.com/store/apps/details?id=com.ratethisfest");
-    android.setText("Download Coacheller for Android");
+    android.setText("Download Lollapaloozer for Android");
     android.setTarget("_blank");
 
     ListDataProvider<Set> listDataProvider = new ListDataProvider<Set>();
@@ -138,7 +138,7 @@ public class CoachellerViewComposite extends Composite {
     // usersTable.activeColumn.setFieldUpdater(new FieldUpdater<Set, Boolean>()
     // {
     // public void update(int index, Set appUser, Boolean value) {
-    // FlowControl.go(new CoachellerChartComposite(appUser.getEmail()));
+    // FlowControl.go(new LollapaloozerChartComposite(appUser.getEmail()));
     // }
     // });
     //
@@ -222,20 +222,20 @@ public class CoachellerViewComposite extends Composite {
     // rateButton.addClickHandler(new ClickHandler() {
     // @Override
     // public void onClick(ClickEvent event) {
-    // FlowControl.go(new CoachellerEmailComposite());
+    // FlowControl.go(new LollapaloozerEmailComposite());
     // }
     // });
   }
 
   @Override
   public String getTitle() {
-    return PageToken.VIEW_COACHELLA.getValue();
+    return PageToken.VIEW_LOLLA.getValue();
   }
 
   private void retrieveSets() {
     infoBox.setText("");
     String day = dayInput.getItemText(dayInput.getSelectedIndex());
-    coachellerService.getSets("2012", day, new AsyncCallback<List<Set>>() {
+    lollapaloozerService.getSets("2012", day, new AsyncCallback<List<Set>>() {
 
       public void onFailure(Throwable caught) {
         // Show the RPC error message to the user
@@ -270,7 +270,7 @@ public class CoachellerViewComposite extends Composite {
   private Options createOptions() {
     Options options = Options.create();
     options.setHeight((setsList.size() * 25) + 20);
-    // options.setTitle("Coachella Set Ratings");
+    // options.setTitle("Lollapalooza Set Ratings");
     options.setColors("blue", "green");
     AxisOptions axisOptions = AxisOptions.create();
     axisOptions.setMinValue(0);

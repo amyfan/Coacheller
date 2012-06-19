@@ -10,13 +10,13 @@ import com.ratethisfest.shared.Set;
 /**
  * The client side stub for the RPC service.
  */
-@RemoteServiceRelativePath("greetCoachella")
-public interface CoachellerService extends RemoteService {
+@RemoteServiceRelativePath("greetLolla")
+public interface LollapaloozerService extends RemoteService {
   String greetServer(String name) throws IllegalArgumentException;
 
-  String updateSetData() throws IllegalArgumentException;
+  String insertSetData() throws IllegalArgumentException;
 
-  String updateSetFestivalData() throws IllegalArgumentException;
+  String updateSetData() throws IllegalArgumentException;
 
   String recalculateSetRatingAverages() throws IllegalArgumentException;
 
@@ -24,8 +24,8 @@ public interface CoachellerService extends RemoteService {
 
   List<Set> getSets(String day, String yearString) throws IllegalArgumentException;
 
-  String addRating(String email, String setArtist, String setTime, String day,
-      String year, String weekend, String score, String notes) throws IllegalArgumentException;
+  String addRating(String email, String setArtist, String setTime, String day, String year,
+      String score, String notes) throws IllegalArgumentException;
 
   List<RatingGwt> getRatingsByUserEmail(String email) throws IllegalArgumentException;
 

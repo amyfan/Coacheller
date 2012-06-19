@@ -37,13 +37,7 @@ import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.RatingGwt;
 import com.ratethisfest.shared.Set;
 
-/**
- * TODO: factor in multiple sets per artist in this logic
- * 
- * @author Amy
- * 
- */
-public class CoachellerRateComposite extends Composite {
+public class LollapaloozerRateComposite extends Composite {
 
   /**
    * The message displayed to the user when the server cannot be reached or
@@ -58,12 +52,13 @@ public class CoachellerRateComposite extends Composite {
 
   private String ownerEmail = "";
 
-  interface Binder extends UiBinder<Widget, CoachellerRateComposite> {
+  interface Binder extends UiBinder<Widget, LollapaloozerRateComposite> {
   }
 
   private static Binder uiBinder = GWT.create(Binder.class);
 
-  private final CoachellerServiceAsync coachellerService = GWT.create(CoachellerService.class);
+  private final LollapaloozerServiceAsync lollapaloozerService = GWT
+      .create(LollapaloozerService.class);
   private List<Set> setsList = new ArrayList<Set>();
   private List<RatingGwt> ratingsList;
 
@@ -80,9 +75,6 @@ public class CoachellerRateComposite extends Composite {
   Label emailLabel;
 
   @UiField
-  Label weekendLabel;
-
-  @UiField
   Label scoreLabel;
 
   @UiField
@@ -90,12 +82,6 @@ public class CoachellerRateComposite extends Composite {
 
   @UiField
   ListBox setInput;
-
-  @UiField
-  RadioButton weekendOneRadioButton;
-
-  @UiField
-  RadioButton weekendTwoRadioButton;
 
   @UiField
   RadioButton scoreOneRadioButton;
@@ -129,9 +115,6 @@ public class CoachellerRateComposite extends Composite {
   com.google.gwt.user.client.ui.Button updateSetButton;
 
   @UiField
-  com.google.gwt.user.client.ui.Button updateSetFestivalButton;
-
-  @UiField
   com.google.gwt.user.client.ui.Button recalculateButton;
 
   @UiField
@@ -140,13 +123,13 @@ public class CoachellerRateComposite extends Composite {
   @UiField
   RatingsTable ratingsTable;
 
-  public CoachellerRateComposite() {
+  public LollapaloozerRateComposite() {
     initWidget(uiBinder.createAndBindUi(this));
 
     initUiElements();
   }
 
-  public CoachellerRateComposite(String ownerEmail) {
+  public LollapaloozerRateComposite(String ownerEmail) {
     this();
     this.ownerEmail = ownerEmail;
     retrieveSets();
@@ -155,17 +138,12 @@ public class CoachellerRateComposite extends Composite {
   }
 
   private void initUiElements() {
-    title.setText("COACHELLER 2012");
+    title.setText("LOLLAPALOOZER 2012");
     subtitle.setText("Rate This Set");
 
     ListDataProvider<RatingGwt> listDataProvider = new ListDataProvider<RatingGwt>();
     listDataProvider.addDataDisplay(ratingsTable);
     ratingsList = listDataProvider.getList();
-
-    weekendLabel.setText("Weekend");
-    weekendOneRadioButton.setText("1");
-    weekendOneRadioButton.setValue(true);
-    weekendTwoRadioButton.setText("2");
 
     scoreLabel.setText("Score");
     scoreOneRadioButton.setText("1");
@@ -209,7 +187,7 @@ public class CoachellerRateComposite extends Composite {
       @Override
       public void onClick(ClickEvent event) {
         infoBox.setText("");
-        coachellerService.emailRatingsToUser(ownerEmail, new AsyncCallback<String>() {
+        lollapaloozerService.emailRatingsToUser(ownerEmail, new AsyncCallback<String>() {
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             infoBox.setText(SERVER_ERROR);
@@ -225,7 +203,7 @@ public class CoachellerRateComposite extends Composite {
     backButton.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        FlowControl.go(new CoachellerViewComposite());
+        FlowControl.go(new LollapaloozerViewComposite());
       }
     });
 
@@ -234,31 +212,7 @@ public class CoachellerRateComposite extends Composite {
       public void onClick(ClickEvent event) {
         if (ownerEmail.equals(ADMIN_EMAIL)) {
           infoBox.setText("");
-          coachellerService.updateSetData(new AsyncCallback<String>() {
-
-            public void onFailure(Throwable caught) {
-              // Show the RPC error message to the user
-              infoBox.setText(SERVER_ERROR);
-            }
-
-            public void onSuccess(String result) {
-              infoBox.setText(result);
-            }
-          });
-
-          androidAnimation.run(400);
-        } else {
-          infoBox.setText(ADMIN_ERROR);
-        }
-      }
-    });
-
-    updateSetFestivalButton.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        if (ownerEmail.equals(ADMIN_EMAIL)) {
-          infoBox.setText("");
-          coachellerService.updateSetFestivalData(new AsyncCallback<String>() {
+          lollapaloozerService.insertSetData(new AsyncCallback<String>() {
 
             public void onFailure(Throwable caught) {
               // Show the RPC error message to the user
@@ -330,12 +284,12 @@ public class CoachellerRateComposite extends Composite {
 
   @Override
   public String getTitle() {
-    return PageToken.RATE_COACHELLA.getValue() + "=" + ownerEmail;
+    return PageToken.RATE_LOLLA.getValue() + "=" + ownerEmail;
   }
 
   private void retrieveSets() {
     infoBox.setText("");
-    coachellerService.getSets("2012", null, new AsyncCallback<List<Set>>() {
+    lollapaloozerService.getSets("2012", null, new AsyncCallback<List<Set>>() {
 
       public void onFailure(Throwable caught) {
         // Show the RPC error message to the user
@@ -357,7 +311,7 @@ public class CoachellerRateComposite extends Composite {
   }
 
   private void retrieveRatings() {
-    coachellerService.getRatingsByUserEmail(ownerEmail, new AsyncCallback<List<RatingGwt>>() {
+    lollapaloozerService.getRatingsByUserEmail(ownerEmail, new AsyncCallback<List<RatingGwt>>() {
 
       public void onFailure(Throwable caught) {
         // Show the RPC error message to the user
@@ -374,15 +328,9 @@ public class CoachellerRateComposite extends Composite {
 
   private void loadRatingContents() {
     notesInput.setText("");
-    Integer weekend;
-    if (weekendOneRadioButton.getValue()) {
-      weekend = 1;
-    } else {
-      weekend = 2;
-    }
     String artist = setInput.getItemText(setInput.getSelectedIndex());
     for (RatingGwt rating : ratingsList) {
-      if (artist.equals(rating.getArtistName()) && weekend == rating.getWeekend()) {
+      if (artist.equals(rating.getArtistName())) {
         if (rating.getScore() == 1) {
           scoreOneRadioButton.setValue(true);
         } else if (rating.getScore() == 2) {
@@ -405,12 +353,6 @@ public class CoachellerRateComposite extends Composite {
   private void addRating() {
     infoBox.setText("");
     Set set = setsList.get(setInput.getSelectedIndex());
-    String weekend = null;
-    if (weekendOneRadioButton.getValue()) {
-      weekend = weekendOneRadioButton.getText();
-    } else if (weekendTwoRadioButton.getValue()) {
-      weekend = weekendTwoRadioButton.getText();
-    }
     String score = null;
     if (scoreOneRadioButton.getValue()) {
       score = scoreOneRadioButton.getText();
@@ -428,18 +370,14 @@ public class CoachellerRateComposite extends Composite {
       infoBox.setText(FieldVerifier.EMAIL_ERROR);
       return;
     }
-    if (!FieldVerifier.isValidWeekend(weekend)) {
-      infoBox.setText(FieldVerifier.WEEKEND_ERROR);
-      return;
-    }
     if (!FieldVerifier.isValidScore(score)) {
       infoBox.setText(FieldVerifier.SCORE_ERROR);
       return;
     }
 
     // Then, we send the input to the server.
-    coachellerService.addRating(ownerEmail, set.getArtistName(), set.getTimeOne().toString(),
-        set.getDay(), set.getYear().toString(), weekend, score, notes, new AsyncCallback<String>() {
+    lollapaloozerService.addRating(ownerEmail, set.getArtistName(), set.getTimeOne().toString(),
+        set.getDay(), set.getYear().toString(), score, notes, new AsyncCallback<String>() {
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             infoBox.setText(SERVER_ERROR);
@@ -454,7 +392,7 @@ public class CoachellerRateComposite extends Composite {
 
   private void deleteRating(RatingGwt rating) {
     infoBox.setText("");
-    coachellerService.deleteRating(rating.getId(), new AsyncCallback<String>() {
+    lollapaloozerService.deleteRating(rating.getId(), new AsyncCallback<String>() {
       public void onFailure(Throwable caught) {
         // Show the RPC error message to the user
         infoBox.setText(SERVER_ERROR);
