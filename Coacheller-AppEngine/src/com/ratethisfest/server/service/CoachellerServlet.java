@@ -125,9 +125,11 @@ public class CoachellerServlet extends HttpServlet {
       ratings = CoachellaRatingManager.getInstance().findRatingsByUser(email);
     }
 
-    JSONArray jsonArray = JSONUtils.convertRatingsToJSONArray(ratings);
-    if (jsonArray != null) {
-      resp = jsonArray.toString();
+    if (ratings != null) {
+      JSONArray jsonArray = JSONUtils.convertRatingsToJSONArray(ratings);
+      if (jsonArray != null) {
+        resp = jsonArray.toString();
+      }
     }
 
     return resp;

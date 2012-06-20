@@ -16,6 +16,20 @@ public class ComparatorUtils {
   public static final Comparator<? super Set> SET_SCORE_COMPARATOR = new Comparator<Set>() {
     public int compare(Set t0, Set t1) {
       // Sort by cumulative scores first
+      if (t0.getAvgScoreOne() < t1.getAvgScoreOne()) {
+        return 1;
+      } else if (t0.getAvgScoreOne() > t1.getAvgScoreOne()) {
+        return -1;
+      } else {
+        // Sort items alphabetically within each group
+        return t0.getArtistName().compareToIgnoreCase(t1.getArtistName());
+      }
+    }
+  };
+
+  public static final Comparator<? super Set> DOUBLE_SET_SCORE_COMPARATOR = new Comparator<Set>() {
+    public int compare(Set t0, Set t1) {
+      // Sort by cumulative scores first
       if (averageScore(t0) < averageScore(t1)) {
         return 1;
       } else if (averageScore(t0) > averageScore(t1)) {

@@ -52,7 +52,8 @@ public class LollapaloozerViewComposite extends Composite {
    * Create a remote service proxy to talk to the server-side Lollapaloozer
    * service.
    */
-  private final LollapaloozerServiceAsync lollapaloozerService = GWT.create(LollapaloozerService.class);
+  private final LollapaloozerServiceAsync lollapaloozerService = GWT
+      .create(LollapaloozerService.class);
   private List<Set> setsList;
 
   @UiField
@@ -287,12 +288,10 @@ public class LollapaloozerViewComposite extends Composite {
     DataTable data = DataTable.create();
     if (setsList == null) {
       data.addColumn(ColumnType.STRING, "Artist Name");
-      data.addColumn(ColumnType.NUMBER, "Week 1 Average Score");
-      data.addColumn(ColumnType.NUMBER, "Week 2 Average Score");
+      data.addColumn(ColumnType.NUMBER, "Average Score");
     } else {
       data.addColumn(ColumnType.STRING, "Artist Name");
-      data.addColumn(ColumnType.NUMBER, "Week 1 Average Score");
-      data.addColumn(ColumnType.NUMBER, "Week 2 Average Score");
+      data.addColumn(ColumnType.NUMBER, "Average Score");
       data.addRows(setsList.size());
       if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Artist Name")) {
         // sort first
@@ -302,7 +301,6 @@ public class LollapaloozerViewComposite extends Composite {
         for (Set set : setsList) {
           data.setValue(setNum, 0, set.getArtistName());
           data.setValue(setNum, 1, set.getAvgScoreOne());
-          data.setValue(setNum, 2, set.getAvgScoreTwo());
           setNum++;
         }
       } else if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Score")) {
@@ -313,7 +311,6 @@ public class LollapaloozerViewComposite extends Composite {
         for (Set set : setsList) {
           data.setValue(setNum, 0, set.getArtistName());
           data.setValue(setNum, 1, set.getAvgScoreOne());
-          data.setValue(setNum, 2, set.getAvgScoreTwo());
           setNum++;
         }
       } else {
@@ -326,7 +323,6 @@ public class LollapaloozerViewComposite extends Composite {
           String nameCombo = timeString + ": " + set.getArtistName();
           data.setValue(setNum, 0, nameCombo);
           data.setValue(setNum, 1, set.getAvgScoreOne());
-          data.setValue(setNum, 2, set.getAvgScoreTwo());
           setNum++;
         }
       }
@@ -338,15 +334,9 @@ public class LollapaloozerViewComposite extends Composite {
 
     public Column<Set, String> dayColumn;
     public Column<Set, String> timeOneColumn;
-    // public Column<Set, String> timeTwoColumn;
     public Column<Set, String> artistNameColumn;
     public Column<Set, String> avgScoreOneColumn;
-    public Column<Set, String> avgScoreTwoColumn;
-    // public Column<Set, String> numRatingsOneColumn;
-    // public Column<Set, String> numRatingsTwoColumn;
     public Column<Set, String> stageOneColumn;
-
-    // public Column<Set, String> stageTwoColumn;
 
     interface TasksTableResources extends CellTable.Resources {
       @Source("SetsTable.css")
@@ -426,26 +416,10 @@ public class LollapaloozerViewComposite extends Composite {
           return value;
         }
       };
-      addColumn(avgScoreOneColumn, "Week 1 Score");
+      addColumn(avgScoreOneColumn, "Average Score");
       addColumnStyleName(4, "columnFill");
       addColumnStyleName(4, resources.cellTableStyle().columnScore());
 
-      avgScoreTwoColumn = new Column<Set, String>(new TextCell()) {
-        @Override
-        public String getValue(Set object) {
-          String value = "";
-          if (object.getAvgScoreTwo() != null) {
-            value = object.getAvgScoreTwo().toString();
-          }
-          if (object.getNumRatingsOne() != null) {
-            value += " (" + object.getNumRatingsTwo().toString() + ")";
-          }
-          return value;
-        }
-      };
-      addColumn(avgScoreTwoColumn, "Week 2 Score");
-      addColumnStyleName(5, "columnFill");
-      addColumnStyleName(5, resources.cellTableStyle().columnScore());
     }
   }
 

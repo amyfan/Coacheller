@@ -57,8 +57,8 @@ public class CoachellaRatingManager extends RatingManager {
    * @param notes
    * @return
    */
-  public String addRatingBySetArtist(String email, String setArtist, Integer setTime, DayEnum day, Integer year,
-      Integer weekend, Integer score, String notes) {
+  public String addRatingBySetArtist(String email, String setArtist, Integer setTime, DayEnum day,
+      Integer year, Integer weekend, Integer score, String notes) {
     String resp = null;
 
     List<Rating> ratings = findRatingsBySetArtistAndUser(setArtist, email, weekend);
@@ -129,8 +129,10 @@ public class CoachellaRatingManager extends RatingManager {
 
   public List<Rating> findRatingsByUser(String email) {
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
-    List<Rating> ratings = new ArrayList<Rating>();
-    ratings = ratingDao.findRatingsByUserKey(FestivalEnum.COACHELLA, userKey);
+    List<Rating> ratings = null;
+    if (userKey != null) {
+      ratings = ratingDao.findRatingsByUserKey(FestivalEnum.COACHELLA, userKey);
+    }
     return ratings;
   }
 

@@ -104,7 +104,7 @@ public class CoachellerViewComposite extends Composite {
   private void initUiElements() {
     title.setText("COACHELLER 2012");
     beta.setText("beta");
-    android.setHref("http://play.google.com/store/apps/details?id=com.ratethisfest");
+    android.setHref("http://play.google.com/store/apps/details?id=com.coacheller");
     android.setText("Download Coacheller for Android");
     android.setTarget("_blank");
 
@@ -307,7 +307,7 @@ public class CoachellerViewComposite extends Composite {
         }
       } else if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Score")) {
         // sort first
-        Collections.sort(setsList, ComparatorUtils.SET_SCORE_COMPARATOR);
+        Collections.sort(setsList, ComparatorUtils.DOUBLE_SET_SCORE_COMPARATOR);
 
         int setNum = 0;
         for (Set set : setsList) {

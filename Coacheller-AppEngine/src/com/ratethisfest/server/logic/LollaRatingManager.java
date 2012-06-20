@@ -123,8 +123,10 @@ public class LollaRatingManager extends RatingManager {
 
   public List<Rating> findRatingsByUser(String email) {
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
-    List<Rating> ratings = new ArrayList<Rating>();
-    ratings = ratingDao.findRatingsByUserKey(FestivalEnum.LOLLAPALOOZA, userKey);
+    List<Rating> ratings = null;
+    if (userKey != null) {
+      ratings = ratingDao.findRatingsByUserKey(FestivalEnum.LOLLAPALOOZA, userKey);
+    }
     return ratings;
   }
 
