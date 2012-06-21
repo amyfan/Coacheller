@@ -105,7 +105,7 @@ public class LollapaloozerViewComposite extends Composite {
   private void initUiElements() {
     title.setText("LOLLAPALOOZER 2012");
     beta.setText("beta");
-    android.setHref("http://play.google.com/store/apps/details?id=com.ratethisfest");
+    android.setHref("http://play.google.com/store/apps/details?id=com.lollapaloozer");
     android.setText("Download Lollapaloozer for Android");
     android.setTarget("_blank");
 
