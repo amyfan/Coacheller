@@ -128,9 +128,10 @@ public class SetDAO {
     dao.getObjectify().delete(Set.class, id);
   }
 
-  public void deleteAllSets() {
-    System.out.println("Deleting all Sets from datastore: ");
-    dao.getObjectify().delete(dao.getObjectify().query(Set.class).fetchKeys());
+  public void deleteAllSetsByFestival(FestivalEnum festival) {
+    System.out.println("Deleting all " + festival.getValue() + " Sets from datastore: ");
+    dao.getObjectify().delete(
+        dao.getObjectify().query(Set.class).filter("festival", festival.getValue()).fetchKeys());
   }
 
   public int getSetCount() {

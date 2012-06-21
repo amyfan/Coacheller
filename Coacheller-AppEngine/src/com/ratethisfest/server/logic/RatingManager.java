@@ -38,7 +38,8 @@ public abstract class RatingManager {
     return ratings;
   }
 
-  public Set findSetByArtistAndTime(FestivalEnum festival, String artist, Integer year, DayEnum day, Integer time) {
+  public Set findSetByArtistAndTime(FestivalEnum festival, String artist, Integer year,
+      DayEnum day, Integer time) {
     Set set = setDao.findSetByArtistAndYear(festival, artist, year);
     return set;
   }
@@ -59,8 +60,8 @@ public abstract class RatingManager {
     }
   }
 
-  public void deleteAllRatings() {
-    ratingDao.deleteAllRatings();
+  protected void deleteAllRatings(FestivalEnum festival) {
+    ratingDao.deleteAllRatingsByFestival(festival);
   }
 
   public Set updateSet(Set set) {
@@ -77,8 +78,8 @@ public abstract class RatingManager {
     return set;
   }
 
-  public void deleteAllSets() {
-    setDao.deleteAllSets();
+  protected void deleteAllSets(FestivalEnum festival) {
+    setDao.deleteAllSetsByFestival(festival);
   }
 
   public void deleteSet(Set set) {

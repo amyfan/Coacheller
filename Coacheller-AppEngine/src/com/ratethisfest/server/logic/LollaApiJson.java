@@ -29,8 +29,8 @@ public class LollaApiJson {
     List<Set> sets = new ArrayList<Set>();
     try {
       JSONObject jsonObject = new JSONObject(json);
-      JSONObject jsonObject2 = jsonObject.getJSONObject("events");
-      JSONArray array = jsonObject2.getJSONArray("event");
+      JSONObject jsonObjectEvents = jsonObject.getJSONObject("events");
+      JSONArray array = jsonObjectEvents.getJSONArray("event");
       for (int i = 0; i < array.length(); i++) {
         JSONObject obj;
         try {
@@ -66,6 +66,10 @@ public class LollaApiJson {
               time += 1200;
             }
             set.setTimeOne(time);
+          }
+          if (obj.get("venue") != null) {
+            JSONObject jsonObjectVenue = obj.getJSONObject("venue");
+            set.setStageOne((String) jsonObjectVenue.get("title"));
           }
           set.setNumRatingsOne(0);
           set.setNumRatingsTwo(0);

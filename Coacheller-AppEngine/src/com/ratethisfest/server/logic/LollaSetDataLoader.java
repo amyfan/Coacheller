@@ -42,67 +42,6 @@ public class LollaSetDataLoader extends SetDataLoader {
     return SingletonHolder.instance;
   }
 
-  @Deprecated
-  public void insertSetsFromApiOld(Integer year) {
-    // String bandsQuery = ApiStrings.LOLLAPALOOZA_URL_BANDS;
-    String eventsQuery = ApiStrings.LOLLAPALOOZA_URL_EVENTS;
-    if (year == 2012) {
-      // bandsQuery += ApiStrings.LOLLAPALOOZA_KEY_2012;
-      eventsQuery += ApiStrings.LOLLAPALOOZA_KEY_2012;
-    } else if (year == 2011) {
-      // bandsQuery += ApiStrings.LOLLAPALOOZA_KEY_2011;
-      eventsQuery += ApiStrings.LOLLAPALOOZA_KEY_2011;
-    }
-
-    Integer eventsPageNum = 1;
-
-    List<Set> sets = new ArrayList<Set>();
-
-    // try {
-    // String requestString = eventsQuery + "&page=" + eventsPageNum;
-    //
-    // HttpGet get = new HttpGet(requestString.toString());
-    // HttpClient hc = new DefaultHttpClient();
-    // HttpResponse response = hc.execute(get);
-    //
-    // // get the response from GAE server, should be in JSON format
-    // while (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-    //
-    // BufferedReader reader = new BufferedReader(new
-    // InputStreamReader(response.getEntity()
-    // .getContent(), "UTF-8"));
-    // StringBuilder builder = new StringBuilder();
-    // for (String line = null; (line = reader.readLine()) != null;) {
-    // builder.append(line).append("\n");
-    // }
-    // List<Set> newSets = LollaApiJson.convertJsonToSets(builder.toString());
-    // if (newSets == null || newSets.isEmpty()) {
-    // break;
-    // }
-    //
-    // sets.addAll(newSets);
-    //
-    // eventsPageNum++;
-    // requestString = eventsQuery + "&page=" + eventsPageNum;
-    //
-    // get = new HttpGet(requestString.toString());
-    // hc = new DefaultHttpClient();
-    // response = hc.execute(get);
-    // }
-    // } catch (ClientProtocolException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // } catch (IOException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-
-    for (Set set : sets) {
-      set.setYear(year);
-      ratingMgr.updateSet(set);
-    }
-  }
-
   public void insertSetsFromApi(Integer year) {
     // String bandsQuery = ApiStrings.LOLLAPALOOZA_URL_BANDS;
     String eventsQuery = ApiStrings.LOLLAPALOOZA_URL_EVENTS;
@@ -156,6 +95,7 @@ public class LollaSetDataLoader extends SetDataLoader {
       e.printStackTrace();
       log.log(Level.SEVERE, "insertSetsFromApi: " + e.getMessage());
     }
+    ratingMgr.deleteAllSets(FestivalEnum.LOLLAPALOOZA);
     for (Set set : sets) {
       set.setYear(year);
       set.setDateCreated(new Date());

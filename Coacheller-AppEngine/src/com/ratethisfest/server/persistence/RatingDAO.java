@@ -98,9 +98,10 @@ public class RatingDAO {
     dao.getObjectify().delete(ratings);
   }
 
-  public void deleteAllRatings() {
+  public void deleteAllRatingsByFestival(FestivalEnum festival) {
     System.out.println("Deleting all Ratings from datastore: ");
-    dao.getObjectify().delete(dao.getObjectify().query(Rating.class).fetchKeys());
+    dao.getObjectify().delete(
+        dao.getObjectify().query(Rating.class).filter("festival", festival.getValue()).fetchKeys());
   }
 
   public int getRatingCount() {
