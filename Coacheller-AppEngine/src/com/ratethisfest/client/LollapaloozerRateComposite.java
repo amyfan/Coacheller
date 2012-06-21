@@ -111,14 +111,14 @@ public class LollapaloozerRateComposite extends Composite {
   com.google.gwt.user.client.ui.Button backButton;
 
   // ADMIN PANEL:
-  @UiField
-  com.google.gwt.user.client.ui.Button updateSetButton;
-
-  @UiField
-  com.google.gwt.user.client.ui.Button recalculateButton;
-
-  @UiField
-  com.google.gwt.user.client.ui.Button clearMyRatingButton;
+  // @UiField
+  // com.google.gwt.user.client.ui.Button updateSetButton;
+  //
+  // @UiField
+  // com.google.gwt.user.client.ui.Button recalculateButton;
+  //
+  // @UiField
+  // com.google.gwt.user.client.ui.Button clearMyRatingButton;
 
   @UiField
   RatingsTable ratingsTable;
@@ -207,29 +207,29 @@ public class LollapaloozerRateComposite extends Composite {
       }
     });
 
-    updateSetButton.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        if (ownerEmail.equals(ADMIN_EMAIL)) {
-          infoBox.setText("");
-          lollapaloozerService.insertSetData(new AsyncCallback<String>() {
-
-            public void onFailure(Throwable caught) {
-              // Show the RPC error message to the user
-              infoBox.setText(SERVER_ERROR);
-            }
-
-            public void onSuccess(String result) {
-              infoBox.setText(result);
-            }
-          });
-
-          androidAnimation.run(400);
-        } else {
-          infoBox.setText(ADMIN_ERROR);
-        }
-      }
-    });
+    // updateSetButton.addClickHandler(new ClickHandler() {
+    // @Override
+    // public void onClick(ClickEvent event) {
+    // if (ownerEmail.equals(ADMIN_EMAIL)) {
+    // infoBox.setText("");
+    // lollapaloozerService.insertSetData(new AsyncCallback<String>() {
+    //
+    // public void onFailure(Throwable caught) {
+    // // Show the RPC error message to the user
+    // infoBox.setText(SERVER_ERROR);
+    // }
+    //
+    // public void onSuccess(String result) {
+    // infoBox.setText(result);
+    // }
+    // });
+    //
+    // androidAnimation.run(400);
+    // } else {
+    // infoBox.setText(ADMIN_ERROR);
+    // }
+    // }
+    // });
 
     // recalculateButton.addClickHandler(new ClickHandler() {
     // @Override

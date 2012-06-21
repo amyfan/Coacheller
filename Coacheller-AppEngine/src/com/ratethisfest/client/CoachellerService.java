@@ -16,8 +16,6 @@ public interface CoachellerService extends RemoteService {
 
   String updateSetData() throws IllegalArgumentException;
 
-  String updateSetFestivalData() throws IllegalArgumentException;
-
   String recalculateSetRatingAverages() throws IllegalArgumentException;
 
   List<String> getSetArtists(String day, String yearString) throws IllegalArgumentException;

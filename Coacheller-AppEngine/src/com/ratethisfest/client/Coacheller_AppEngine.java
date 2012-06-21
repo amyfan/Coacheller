@@ -24,8 +24,10 @@ public class Coacheller_AppEngine implements EntryPoint, ValueChangeHandler<Stri
     }
     Composite c = new FestivalIndexComposite();
     if (Window.Location.getHostName().contains("coacheller")) {
+      Window.setTitle("Coacheller");
       c = new CoachellerViewComposite();
     } else if (Window.Location.getHostName().contains("lollapaloozer")) {
+      Window.setTitle("Lollapaloozer");
       c = new LollapaloozerViewComposite();
     }
     // else if (Window.Location.getHostName().contains("127.0.0.1")) {

@@ -14,8 +14,6 @@ public interface CoachellerServiceAsync {
 
   void updateSetData(AsyncCallback<String> callback) throws IllegalArgumentException;
 
-  void updateSetFestivalData(AsyncCallback<String> callback) throws IllegalArgumentException;
-
   void recalculateSetRatingAverages(AsyncCallback<String> callback) throws IllegalArgumentException;
 
   void getSetArtists(String yearString, String day, AsyncCallback<List<String>> callback)
