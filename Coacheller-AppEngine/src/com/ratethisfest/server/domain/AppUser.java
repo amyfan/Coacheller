@@ -13,9 +13,11 @@ public class AppUser {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id; // internal PK
-  private String email;
+  private String email; // populate automatically from fb/goog authId, ask separately for twitter users
   private Boolean active;
-  private String name;
+  private String name; // alias/handle
+  private String authType; // facebook, google, or twitter
+  private String authId; // unique id for the auth account; if fb/goog, then looks like email; otherwise, #
   private Date dateCreated;
   private Date dateModified;
 
@@ -40,6 +42,22 @@ public class AppUser {
 
   public String getName() {
     return name;
+  }
+
+  public String getAuthType() {
+    return authType;
+  }
+
+  public void setAuthType(String authType) {
+    this.authType = authType;
+  }
+
+  public String getAuthId() {
+    return authId;
+  }
+
+  public void setAuthId(String authId) {
+    this.authId = authId;
   }
 
   public Boolean isActive() {
