@@ -60,8 +60,14 @@ public class FlowControl {
     if (token == null) {
       go(new CoachellerViewComposite());
     } else {
+      String hostName = Window.Location.getHostName();
+      if (hostName == null
+          || (!hostName.contains("coacheller") && !hostName.contains("lollapaloozer"))) {
+        // for now, localhost/ratethisfest will default to lollapaloozer
+        hostName = "lollapaloozer";
+      }
 
-      if (Window.Location.getHostName().contains("coacheller")) {
+      if (hostName.contains("coacheller")) {
         if (PageToken.VIEW.equals(token)) {
           go(new CoachellerViewComposite());
         } else if (PageToken.EMAIL.equals(token)) {
@@ -69,13 +75,13 @@ public class FlowControl {
         } else if (PageToken.RATE.equals(token)) {
           go(new CoachellerRateComposite(param));
         } // End if host is coacheller
-      } else if (Window.Location.getHostName().contains("lollapaloozer")) {
+      } else if (hostName.contains("lollapaloozer")) {
         if (PageToken.VIEW.equals(token)) {
-          go(new CoachellerViewComposite());
+          go(new LollapaloozerViewComposite());
         } else if (PageToken.EMAIL.equals(token)) {
-          go(new CoachellerEmailComposite());
+          go(new LollapaloozerEmailComposite());
         } else if (PageToken.RATE.equals(token)) {
-          go(new CoachellerRateComposite(param));
+          go(new LollapaloozerRateComposite(param));
         }
       } // End if host is lollapaloozer
     } // End if email is provided

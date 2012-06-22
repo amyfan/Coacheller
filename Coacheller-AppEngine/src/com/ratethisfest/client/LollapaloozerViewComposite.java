@@ -90,7 +90,6 @@ public class LollapaloozerViewComposite extends Composite {
     initWidget(uiBinder.createAndBindUi(this));
 
     initUiElements();
-    this.setTitle("Lollapaloozer");
 
     retrieveSets();
 
