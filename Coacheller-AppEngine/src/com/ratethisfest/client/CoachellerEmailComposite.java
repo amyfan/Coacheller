@@ -85,7 +85,7 @@ public class CoachellerEmailComposite extends Composite {
 
   @Override
   public String getTitle() {
-    return PageToken.EMAIL_COACHELLA.getValue();
+    return PageToken.EMAIL.getValue();
   }
 
 }

@@ -6,12 +6,9 @@ public enum PageToken {
 
   INDEX("index"),
   FESTIVAL_INDEX("festival_index"),
-  VIEW_COACHELLA("view_coachella"),
-  RATE_COACHELLA("rate_coachella"),
-  EMAIL_COACHELLA("email_coachella"),
-  VIEW_LOLLA("view_lolla"),
-  RATE_LOLLA("rate_lolla"),
-  EMAIL_LOLLA("email_lolla");
+  VIEW("view"),
+  RATE("rate"),
+  EMAIL("email");
 
   private String value;
 

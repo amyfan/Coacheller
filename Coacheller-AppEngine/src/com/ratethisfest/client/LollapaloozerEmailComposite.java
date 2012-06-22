@@ -85,7 +85,7 @@ public class LollapaloozerEmailComposite extends Composite {
 
   @Override
   public String getTitle() {
-    return PageToken.EMAIL_LOLLA.getValue();
+    return PageToken.EMAIL.getValue();
   }
 
 }

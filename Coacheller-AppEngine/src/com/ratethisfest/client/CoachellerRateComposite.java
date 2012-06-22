@@ -303,7 +303,7 @@ public class CoachellerRateComposite extends Composite {
 
   @Override
   public String getTitle() {
-    return PageToken.RATE_COACHELLA.getValue() + "=" + ownerEmail;
+    return PageToken.RATE.getValue() + "=" + ownerEmail;
   }
 
   private void retrieveSets() {

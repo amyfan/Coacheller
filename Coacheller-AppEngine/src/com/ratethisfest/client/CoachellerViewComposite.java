@@ -229,7 +229,7 @@ public class CoachellerViewComposite extends Composite {
 
   @Override
   public String getTitle() {
-    return PageToken.VIEW_COACHELLA.getValue();
+    return PageToken.VIEW.getValue();
   }
 
   private void retrieveSets() {

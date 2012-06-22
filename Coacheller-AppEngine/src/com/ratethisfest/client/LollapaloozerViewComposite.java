@@ -231,7 +231,7 @@ public class LollapaloozerViewComposite extends Composite {
 
   @Override
   public String getTitle() {
-    return PageToken.VIEW_LOLLA.getValue();
+    return PageToken.VIEW.getValue();
   }
 
   private void retrieveSets() {

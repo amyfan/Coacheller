@@ -284,7 +284,7 @@ public class LollapaloozerRateComposite extends Composite {
 
   @Override
   public String getTitle() {
-    return PageToken.RATE_LOLLA.getValue() + "=" + ownerEmail;
+    return PageToken.RATE.getValue() + "=" + ownerEmail;
   }
 
   private void retrieveSets() {
