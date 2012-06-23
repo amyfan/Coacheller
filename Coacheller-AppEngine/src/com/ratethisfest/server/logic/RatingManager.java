@@ -1,5 +1,6 @@
 package com.ratethisfest.server.logic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.googlecode.objectify.Key;
@@ -27,14 +28,23 @@ public abstract class RatingManager {
     this.setDao = new SetDAO();
   }
 
-  public Rating findRating(Long id) {
+  protected Rating findRating(Long id) {
     Rating rating = ratingDao.findRating(id);
     return rating;
   }
 
-  public List<Rating> findRatingsBySetId(Long setId) {
+  protected List<Rating> findRatingsBySetId(Long setId) {
     Key<Set> setKey = setDao.findSetKeyById(setId);
     List<Rating> ratings = ratingDao.findRatingsBySetKey(setKey);
+    return ratings;
+  }
+
+  protected List<Rating> findRatingsBySetKeyAndUser(Key<Set> setKey, String email) {
+    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
+    List<Rating> ratings = new ArrayList<Rating>();
+    if (setKey != null) {
+      ratings = ratingDao.findRatingsBySetKeyAndUserKey(setKey, userKey, 1);
+    }
     return ratings;
   }
 

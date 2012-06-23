@@ -30,7 +30,6 @@ public class CustomSetListAdapter implements ListAdapter {
     public TextView textArtist;
     public TextView textStage;
     public TextView ratingWk1;
-    public TextView ratingWk2;
     public TextView myRating;
   }
 
@@ -39,16 +38,16 @@ public class CustomSetListAdapter implements ListAdapter {
     _context = context;
     setTimeFieldName(timeFieldName);
     setStageFieldName(stageFieldName);
-   
-    //setNewJAHM(myRatings_JAHM);
-     _myRatings_JAHM = myRatings_JAHM;
+
+    // setNewJAHM(myRatings_JAHM);
+    _myRatings_JAHM = myRatings_JAHM;
   }
 
   /*
-  public void setNewJAHM(JSONArrayHashMap myRatings_JAHM) {
-    
-  }
-  */
+   * public void setNewJAHM(JSONArrayHashMap myRatings_JAHM) {
+   * 
+   * }
+   */
 
   public void setTimeFieldName(String name) {
     _timeFieldName = name;
@@ -111,7 +110,6 @@ public class CustomSetListAdapter implements ListAdapter {
       viewHolder.textArtist = (TextView) rowView.findViewById(R.id.text_artist_name);
       viewHolder.textStage = (TextView) rowView.findViewById(R.id.text_stage);
       viewHolder.ratingWk1 = (TextView) rowView.findViewById(R.id.text_wk1_rating);
-      viewHolder.ratingWk2 = (TextView) rowView.findViewById(R.id.text_wk2_rating);
       viewHolder.myRating = (TextView) rowView.findViewById(R.id.text_my_rating);
       rowView.setTag(viewHolder);
     }
@@ -125,22 +123,16 @@ public class CustomSetListAdapter implements ListAdapter {
       ViewHolder holder = (ViewHolder) rowView.getTag();
       JSONObject setObj = _sortMap.getSortedJSONObj(position);
       String setId = setObj.getString(LollapaloozerActivity.QUERY_SETS__SET_ID); // Get
-                                                                              // the
-                                                                              // set
-                                                                              // Id
+      // the
+      // set
+      // Id
 
       // Get Ratings for this set Id
       JSONObject ratingsObjWk1 = _myRatings_JAHM.getJSONObject(setId, "1");
-      JSONObject ratingsObjWk2 = _myRatings_JAHM.getJSONObject(setId, "2");
 
       String score1 = "*";
       if (ratingsObjWk1 != null) {
         score1 = ratingsObjWk1.get(LollapaloozerActivity.QUERY_RATINGS__RATING).toString();
-      } 
-
-      String score2 = "*";
-      if (ratingsObjWk2 != null) {
-        score2 = ratingsObjWk2.get(LollapaloozerActivity.QUERY_RATINGS__RATING).toString();
       }
 
       int milTime = setObj.getInt(_timeFieldName);
@@ -148,31 +140,24 @@ public class CustomSetListAdapter implements ListAdapter {
       holder.textArtist.setText(setObj.getString("artist"));
       holder.textStage.setText(setObj.getString(_stageFieldName).toUpperCase());
       String week1Avg = setObj.getString("avg_score_one");
-      String week2Avg = setObj.getString("avg_score_two");
 
       if (week1Avg.equals("0")) {
         week1Avg = "";
       } else {
-        week1Avg = "Wk1: " + week1Avg;
-      }
-
-      if (week2Avg.equals("0")) {
-        week2Avg = "";
-      } else {
-        week2Avg = "Wk2: " + week2Avg;
+        week1Avg = "Avg Score: " + week1Avg;
       }
 
       holder.ratingWk1.setText(week1Avg);
-      holder.ratingWk2.setText(week2Avg);
 
-      if (!score1.equals("*") || !score2.equals("*")) {
-        holder.myRating.setText("My Rtg: " + score1 + "/" + score2);
+      if (!score1.equals("*")) {
+        holder.myRating.setText("My Rating: " + score1);
       } else {
         holder.myRating.setText("");
       }
-      
-      //Gnarly debug thing
-      //LollapaloozerApplication.debug(_context,"Artist["+ holder.textArtist.getText() +"] Rating["+ score1 +"/"+ score2);
+
+      // Gnarly debug thing
+      // LollapaloozerApplication.debug(_context,"Artist["+
+      // holder.textArtist.getText() +"] Rating["+ score1 +"/"+ score2);
 
     } catch (JSONException e) {
       // TODO Auto-generated catch block
@@ -190,7 +175,6 @@ public class CustomSetListAdapter implements ListAdapter {
     }
     return false;
   }
-
 
   @Override
   public int getViewTypeCount() {

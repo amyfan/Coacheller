@@ -26,7 +26,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Coacheller has a reputation to worry about and will NEVER disappoint the fans by misusing your email address"
+        android:text="Lollapaloozer has a reputation to worry about and will NEVER disappoint the fans by misusing your email address"
         android:textAppearance="?android:attr/textAppearanceSmall" android:textColor="#FF5050"/>
 
     <LinearLayout

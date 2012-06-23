@@ -9,13 +9,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 public class LollapaloozerApplication extends Application {
-  
+
   private static Calendar _cal;
 
   public static void debug(Context context, String out) {
     Log.d(context.getString(R.string.app_name), out);
   }
-  
+
   /**
    * populateSpinnerWithArray Populates dropdown boxes with options, based on
    * string arrays.
@@ -30,23 +30,20 @@ public class LollapaloozerApplication extends Application {
     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     spinner.setAdapter(adapter);
   }
-  
+
   public static void initCalendar() {
     if (_cal == null) {
       _cal = Calendar.getInstance();
     }
   }
-  
-  public static int whichWeekIsToday() {
+
+  public static int whatYearIsToday() {
     initCalendar();
-    if (_cal.get(Calendar.DAY_OF_MONTH) < 19) {
-      return 1;
-    } else {
-      return 2;
-    }
+    return _cal.get(Calendar.YEAR);
   }
-  
-  //App and Database use strings in English so this time it is better to do it this way:
+
+  // App and Database use strings in English so this time it is better to do it
+  // this way:
   public static String whatDayIsToday() {
     initCalendar();
     if (_cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
@@ -62,7 +59,7 @@ public class LollapaloozerApplication extends Application {
     } else if (_cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
       return "Friday";
     } else if (_cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
-      return "Saturday";      
+      return "Saturday";
     }
     return "";
   }

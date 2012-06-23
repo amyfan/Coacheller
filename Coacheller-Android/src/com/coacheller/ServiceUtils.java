@@ -41,7 +41,7 @@ public class ServiceUtils {
       // }
 
       StringBuilder requestString = new StringBuilder();
-      requestString.append(HttpConstants.SERVER_URL);
+      requestString.append(HttpConstants.SERVER_URL_COACHELLER);
       requestString.append(HttpConstants.PARAM_YEAR);
       requestString.append("=");
       requestString.append(year);
@@ -105,7 +105,7 @@ public class ServiceUtils {
 
     try {
       StringBuilder requestString = new StringBuilder();
-      requestString.append(HttpConstants.SERVER_URL);
+      requestString.append(HttpConstants.SERVER_URL_COACHELLER);
       requestString.append(HttpConstants.PARAM_EMAIL);
       requestString.append("=");
       requestString.append(email);
@@ -169,7 +169,7 @@ public class ServiceUtils {
     try {
       // TODO: pass in PARAM_NOTES here
       StringBuilder requestString = new StringBuilder();
-      requestString.append(HttpConstants.SERVER_URL);
+      requestString.append(HttpConstants.SERVER_URL_COACHELLER);
       requestString.append(HttpConstants.PARAM_EMAIL);
       requestString.append("=");
       requestString.append(email);
@@ -237,7 +237,7 @@ public class ServiceUtils {
   public static String sendMyRatings(Context context, String email) throws Exception {
       try {
         StringBuilder requestString = new StringBuilder();
-        requestString.append(HttpConstants.SERVER_URL);
+        requestString.append(HttpConstants.SERVER_URL_COACHELLER);
         requestString.append(HttpConstants.PARAM_EMAIL);
         requestString.append("=");
         requestString.append(email);

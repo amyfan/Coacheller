@@ -52,20 +52,19 @@ public class LollaRatingManager extends RatingManager {
    * @param notes
    * @return
    */
-  public String addRatingBySetArtist(String email, String setArtist, Integer setTime, DayEnum day,
-      Integer year, Integer score, String notes) {
+  public String addRatingBySetId(String email, Long setId, Integer score, String notes) {
     String resp = null;
 
-    List<Rating> ratings = findRatingsBySetArtistAndUser(setArtist, email);
+    Key<Set> setKey = setDao.findSetKeyById(setId);
+    List<Rating> ratings = findRatingsBySetKeyAndUser(setKey, email);
     if (ratings == null || ratings.size() == 0) {
       // add new rating
-      Key<Set> setKey = findSetKeyByArtistAndYear(setArtist, year);
       if (setKey != null) {
         addRating(setKey, email, score, notes);
         resp = "rating added";
       } else {
         resp = "invalid artist name";
-        log.log(Level.WARNING, "invalid artist name: " + setArtist);
+        log.log(Level.WARNING, "invalid set id: " + setId);
       }
     } else {
       // update existing rating
@@ -126,17 +125,6 @@ public class LollaRatingManager extends RatingManager {
     List<Rating> ratings = null;
     if (userKey != null) {
       ratings = ratingDao.findRatingsByUserKey(FestivalEnum.LOLLAPALOOZA, userKey);
-    }
-    return ratings;
-  }
-
-  private List<Rating> findRatingsBySetArtistAndUser(String setArtist, String email) {
-    // TODO: figure out whether to keep this method & query year properly
-    Key<Set> setKey = findSetKeyByArtistAndYear(setArtist, null);
-    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
-    List<Rating> ratings = new ArrayList<Rating>();
-    if (setKey != null) {
-      ratings = ratingDao.findRatingsBySetKeyAndUserKey(setKey, userKey, 1);
     }
     return ratings;
   }

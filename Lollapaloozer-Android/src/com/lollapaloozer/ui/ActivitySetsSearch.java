@@ -17,7 +17,6 @@ import com.lollapaloozer.R;
 
 public class ActivitySetsSearch extends Activity implements OnClickListener {
   
-  private String _weekSelected;
   private String _daySelected;
 
   /** Called when the activity is first created. */
@@ -33,33 +32,6 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
   public void initializeApp() {
     setContentView(R.layout.sets_search);
     
-
-    // Setup Week Spinner
-    Spinner weekendSpinner = (Spinner) this.findViewById(R.id.search_spinner_week);
-    LollapaloozerApplication.populateSpinnerWithArray(weekendSpinner, R.array.names_week);
-    weekendSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-      @Override
-      public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        LollapaloozerApplication.debug(parent.getContext(), "Week Selected: " + parent.getSelectedItem());
-        _weekSelected = parent.getSelectedItem().toString().substring(0, 1);
-      }
-
-      @Override
-      public void onNothingSelected(AdapterView<?> parent) {
-        LollapaloozerApplication.debug(parent.getContext(), "No Week Selected - Unexpected condition");
-      }
-    });
-
-    if (LollapaloozerApplication.whichWeekIsToday() == 1) {
-      LollapaloozerApplication.debug(this, "Date suggests week 1");
-      weekendSpinner.setSelection(0);
-      
-    } else if (LollapaloozerApplication.whichWeekIsToday() == 2) {
-      LollapaloozerApplication.debug(this, "Date suggests week 2");
-      weekendSpinner.setSelection(1);
-    }
-
     // Setup day spinner
     Spinner daySpinner = (Spinner) this.findViewById(R.id.search_spinner_day);
     LollapaloozerApplication.populateSpinnerWithArray(daySpinner, R.array.names_day);
@@ -112,7 +84,6 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
         Intent intent = new Intent();
         Bundle bun = new Bundle();
 
-        bun.putString("WEEK", _weekSelected);
         bun.putString("DAY", _daySelected);
 
         intent.setClass(this, LollapaloozerActivity.class);

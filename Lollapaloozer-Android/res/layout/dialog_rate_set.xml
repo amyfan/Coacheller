@@ -18,43 +18,8 @@
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left" >
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Which Weekend?"
-            android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-    </LinearLayout>
-
-    <RadioGroup
-        android:id="@+id/radio_pick_week"
-        android:layout_width="fill_parent"
-        android:layout_height="65dp"
-        android:orientation="horizontal" >
-
-        <RadioButton
-            android:id="@+id/radio_button_week1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/name_week1_short" />
-
-        <RadioButton
-            android:id="@+id/radio_button_week2"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/name_week2_short" />
 
-    </RadioGroup>
-
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

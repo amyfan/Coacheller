@@ -49,26 +49,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Wk1"
+            android:text="Average Score"
             android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <TextView
-            android:id="@+id/text_wk2_rating"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Wk2"
-            android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
+            android:textAppearance="?android:attr/textAppearanceSmall" />
         <TextView
             android:id="@+id/text_my_rating"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_weight="1"
-            android:text="My Rtg"
+            android:text="My Rating"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </LinearLayout>

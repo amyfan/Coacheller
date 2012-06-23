@@ -98,9 +98,12 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     } else if (!FieldVerifier.isValidScore(score)) {
       resp = FieldVerifier.SCORE_ERROR;
     } else if (setArtist != null) {
-      resp = LollaRatingManager.getInstance().addRatingBySetArtist(email, setArtist,
-          Integer.valueOf(setTime), DayEnum.fromValue(day), Integer.valueOf(year),
-          Integer.valueOf(score), notes);
+      // TODO: impl!
+      // resp = LollaRatingManager.getInstance().addRatingBySetArtist(email,
+      // setArtist,
+      // Integer.valueOf(setTime), DayEnum.fromValue(day),
+      // Integer.valueOf(year),
+      // Integer.valueOf(score), notes);
     } else {
       log.log(Level.WARNING, "addRatingBySetArtist: null args");
       resp = "null args";

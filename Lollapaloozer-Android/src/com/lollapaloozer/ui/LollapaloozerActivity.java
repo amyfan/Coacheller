@@ -22,7 +22,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Spinner;
@@ -45,7 +44,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   private static final int DIALOG_RATE = 1;
   private static final int DIALOG_GETEMAIL = 2;
   private static final int DIALOG_NETWORK_ERROR = 3;
-  
+
   private static final int THREAD_UPDATE_UI = 1;
   private static final int THREAD_SUBMIT_RATING = 2;
 
@@ -61,15 +60,14 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   public static final String QUERY_RATINGS__SET_ID = "set_id";
   public static final String QUERY_RATINGS__WEEK = "weekend";
   public static final String QUERY_SETS__SET_ID = "id";
+  public static final String QUERY_SETS__DAY = "day";
   public static final String QUERY_SETS__TIME_ONE = "time_one";
-  public static final String QUERY_SETS__TIME_TWO = "time_two";
   public static final String QUERY_SETS__STAGE_ONE = "stage_one";
-  public static final String QUERY_SETS__STAGE_TWO = "stage_two";
   public static final String QUERY_RATINGS__RATING = "score";
 
   private static final int REFRESH_INTERVAL__SECONDS = 15;
 
-  private int _weekToQuery;
+  private int _yearToQuery;
   private String _dayToExamine;
   private int _sortMode;
   private long _lastRefresh = 0;
@@ -87,9 +85,8 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   private CustomPair<String, String> _lastRatings = new CustomPair<String, String>(null, null);
   private HashMap<Integer, Integer> _ratingSelectedIdToValue = new HashMap<Integer, Integer>();
   private HashMap<String, Integer> _ratingSelectedScoreToId = new HashMap<String, Integer>();
-  
+
   private LollapaloozerStorageManager _storageManager;
-  private int _ratingSelectedWeek;
   private int _ratingSelectedScore;
 
   private JSONArrayHashMap _myRatings_JAHM = new JSONArrayHashMap(QUERY_RATINGS__SET_ID,
@@ -106,21 +103,17 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
     LollapaloozerApplication.debug(this, "LollapaloozerActivity Launched");
 
-    _ratingSelectedIdToValue.put(R.id.radio_button_week1, 1);
-    _ratingSelectedIdToValue.put(R.id.radio_button_week2, 2);
-    
     _ratingSelectedIdToValue.put(R.id.radio_button_score1, 1);
     _ratingSelectedIdToValue.put(R.id.radio_button_score2, 2);
     _ratingSelectedIdToValue.put(R.id.radio_button_score3, 3);
     _ratingSelectedIdToValue.put(R.id.radio_button_score4, 4);
     _ratingSelectedIdToValue.put(R.id.radio_button_score5, 5);
-    
+
     _ratingSelectedScoreToId.put("1", R.id.radio_button_score1);
     _ratingSelectedScoreToId.put("2", R.id.radio_button_score2);
     _ratingSelectedScoreToId.put("3", R.id.radio_button_score3);
     _ratingSelectedScoreToId.put("4", R.id.radio_button_score4);
     _ratingSelectedScoreToId.put("5", R.id.radio_button_score5);
-
 
     _storageManager = new LollapaloozerStorageManager(this);
     _storageManager.load();
@@ -143,7 +136,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     LollapaloozerApplication.populateSpinnerWithArray(spinnerSortType, R.array.search_types);
     spinnerSortType.setOnItemSelectedListener(this);
 
-    _weekToQuery = LollapaloozerApplication.whichWeekIsToday();
+    _yearToQuery = LollapaloozerApplication.whatYearIsToday();
     _dayToExamine = LollapaloozerApplication.whatDayIsToday();
     _sortMode = SORT_TIME;
 
@@ -152,23 +145,22 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     _networkIOHandler = new Handler() {
       @Override
       public void handleMessage(Message msg) {
-        
+
         super.handleMessage(msg);
-        
+
         if (msg.what == THREAD_UPDATE_UI) {
           System.out.println("Executing update UI thread callback ");
           redrawUI();
         }
-        
+
         if (msg.what == THREAD_SUBMIT_RATING) {
           System.out.println("Executing submit rating thread callback ");
-          doSubmitRating(_ratingSelectedWeek+"", _ratingSelectedScore+"");
+          doSubmitRating(_ratingSelectedScore + "");
         }
-      }  
-      
-      
+      }
+
     };
-    
+
     processExtraData();
 
   }
@@ -223,42 +215,32 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
   // Only called once, so commented out.
   /*
-   * private void initJAHM() { LollapaloozerApplication.debug(this, "initJAHM()");
-   * _myRatings_JAHM = new JSONArrayHashMap(QUERY_RATINGS__SET_ID,
-   * QUERY_RATINGS__WEEK); }
+   * private void initJAHM() { LollapaloozerApplication.debug(this,
+   * "initJAHM()"); _myRatings_JAHM = new
+   * JSONArrayHashMap(QUERY_RATINGS__SET_ID, QUERY_RATINGS__WEEK); }
    */
 
   private void refreshData() {
     // Below here is stuff to be done each refresh
     _networkErrors = false;
 
-    
+    if (!_dayToExamine.equals("Friday") && !_dayToExamine.equals("Saturday")
+        && !_dayToExamine.equals("Sunday")) {
+      _dayToExamine = "Friday";
+    }
 
-      if (!_dayToExamine.equals("Friday") && !_dayToExamine.equals("Saturday")
-          && !_dayToExamine.equals("Sunday")) {
-        _dayToExamine = "Friday";
-      }
+    _timeFieldName = QUERY_SETS__TIME_ONE;
+    _stageFieldName = QUERY_SETS__STAGE_ONE;
 
-      String weekString = "";
-      if (_weekToQuery == 1) {
-        _timeFieldName = QUERY_SETS__TIME_ONE;
-        _stageFieldName = QUERY_SETS__STAGE_ONE;
-        weekString = getString(R.string.name_week1_short);
-      } else if (_weekToQuery == 2) {
-        _timeFieldName = QUERY_SETS__TIME_TWO;
-        _stageFieldName = QUERY_SETS__STAGE_TWO;
-        weekString = getString(R.string.name_week2_short);
-      }
+    TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
+    titleView.setText(_dayToExamine + ", Year " + _yearToQuery);
+    // +" "+ weekString);
+    _setListAdapter.setTimeFieldName(_timeFieldName);
+    _setListAdapter.setStageFieldName(_stageFieldName);
 
-      TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
-      titleView.setText(_dayToExamine + ", Weekend " + _weekToQuery);
-      // +" "+ weekString);
-      _setListAdapter.setTimeFieldName(_timeFieldName);
-      _setListAdapter.setStageFieldName(_stageFieldName);
+    obtainEmailFromStorage();
 
-      obtainEmailFromStorage();
-
-      launchGetDataThread(); // TODO multithread this
+    launchGetDataThread(); // TODO multithread this
   }
 
   private void launchGetDataThread() {
@@ -277,9 +259,9 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     }.start();
     LollapaloozerApplication.debug(this, "getData thread launched");
   }
-  
+
   private void launchSubmitRatingThread() {
-       LollapaloozerApplication.debug(this, "Launching Rating thread");
+    LollapaloozerApplication.debug(this, "Launching Rating thread");
 
     new Thread() {
       public void run() {
@@ -294,7 +276,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
       }
     }.start();
     LollapaloozerApplication.debug(this, "Rating thread launched");
-    
+
   }
 
   public void doNetworkOperations() throws JSONException {
@@ -341,14 +323,14 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
       // TODO the reference to the JAHM may have been passed to the adapter
       // already
       // initJAHM(); //Commented in hope of addressing crash issue
-      
-      
-      //Need to wipe out ratings if email was just deleted
+
+      // Need to wipe out ratings if email was just deleted
       _myRatings_JAHM.wipeData();
     }
 
-    //New strategy does not re-instantiate this object, this line should not be needed
-    //_setListAdapter.setNewJAHM(_myRatings_JAHM);
+    // New strategy does not re-instantiate this object, this line should not be
+    // needed
+    // _setListAdapter.setNewJAHM(_myRatings_JAHM);
 
     JSONArray setData = null;
     try {
@@ -368,22 +350,23 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     }
     _setListAdapter.setData(setData);
   }
-  
-  public void doSubmitRating(String weekNumber, String scoreSelectedValue) {
+
+  public void doSubmitRating(String scoreSelectedValue) {
     // submit rating
     // If Exception is thrown, do not store rating locally
     try {
-      ServiceUtils.addRating(_storageManager.getString(DATA_USER_EMAIL), ((TextView) _lastRateDialog
-          .findViewById(R.id.text_rateBand_subtitle)).getText().toString(), "2012", weekNumber,
+      String set_id = _lastItemSelected.get(QUERY_SETS__SET_ID) + "";
+
+      ServiceUtils.addRating(_storageManager.getString(DATA_USER_EMAIL), set_id,
           scoreSelectedValue, this);
 
       // Need this in order to make the new rating appear in real time
 
       try {
         JSONObject newObj = new JSONObject();
-        String set_id = _lastItemSelected.get(QUERY_SETS__SET_ID) + "";
         newObj.put(QUERY_RATINGS__SET_ID, set_id);
-        newObj.put(QUERY_RATINGS__WEEK, weekNumber);
+        newObj.put(QUERY_RATINGS__WEEK, "1"); // TODO leave in hard-coded for
+                                              // now
         newObj.put(QUERY_RATINGS__RATING, scoreSelectedValue);
 
         // CRITICAL that the keys are listed in this order
@@ -489,34 +472,23 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
       startActivity(intent);
     }
 
-    //Submit rating for a set
-    if (viewClicked.getId() == R.id.button_rate_okgo) {  //Selections incomplete
-      RadioGroup weekGroup = (RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_week);
-      int weekSelectedId = weekGroup.getCheckedRadioButtonId();
-
+    // Submit rating for a set
+    if (viewClicked.getId() == R.id.button_rate_okgo) { // Selections incomplete
       RadioGroup scoreGroup = (RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_score);
       int scoreSelectedId = scoreGroup.getCheckedRadioButtonId();
 
-      if (weekSelectedId == -1 || scoreSelectedId == -1) {
-        Toast selectEverything = Toast.makeText(this,
-            "Please select a rating and week of this Set", 25);
+      if (scoreSelectedId == -1) {
+        Toast selectEverything = Toast.makeText(this, "Please select a rating for this Set", 25);
         selectEverything.show();
 
-      } else { //Selections are valid
-        _ratingSelectedWeek = _ratingSelectedIdToValue.get(weekSelectedId);
+      } else { // Selections are valid
         _ratingSelectedScore = _ratingSelectedIdToValue.get(scoreSelectedId);
 
-        LollapaloozerApplication.debug(this, "Selected Week[" + _ratingSelectedWeek + "] Score["
-            + _ratingSelectedScore + "] WeekId[" + weekSelectedId + "] ScoreId[" + scoreSelectedId
-            + "]");
+        LollapaloozerApplication.debug(this, "Score[" + _ratingSelectedScore + "] ScoreId["
+            + scoreSelectedId + "]");
 
-        //scoreGroup.clearCheck();
+        // scoreGroup.clearCheck();
         _lastRateDialog.dismiss();
-
-        int checkedRadioId = ((RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_week))
-            .getCheckedRadioButtonId();
-        String weekNumber = _ratingSelectedIdToValue.get(checkedRadioId) + "";
-        
 
         launchSubmitRatingThread();
       }
@@ -525,7 +497,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     if (viewClicked.getId() == R.id.button_rate_cancel) {
       // Dialog dialog = (Dialog) viewClicked.getParent();
       RadioGroup scoreGroup = (RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_score);
-      //scoreGroup.clearCheck();
+      // scoreGroup.clearCheck();
       _lastRateDialog.dismiss();
     }
 
@@ -540,30 +512,23 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
     JSONObject obj = (JSONObject) _setListAdapter.getItem(position);
     _lastItemSelected = obj;
-    
-    try {//TODO Hard coded strings means you are going to hell
+
+    try {// TODO Hard coded strings means you are going to hell
       String setId = _lastItemSelected.getString(QUERY_SETS__SET_ID);
       JSONObject lastRatingWeek1 = _myRatings_JAHM.getJSONObject(setId, "1");
-      JSONObject lastRatingWeek2 = _myRatings_JAHM.getJSONObject(setId, "2");
-      
+
       if (lastRatingWeek1 != null) {
         _lastRatings.first = lastRatingWeek1.getString(QUERY_RATINGS__RATING);
       } else {
         _lastRatings.first = null;
       }
-      
-      if (lastRatingWeek2 != null) {
-        _lastRatings.second = lastRatingWeek2.getString(QUERY_RATINGS__RATING);
-      } else {
-        _lastRatings.second = null;
-      }
-      
-      
+
     } catch (JSONException e) {
       LollapaloozerApplication.debug(this, "JSONException retrieving user's last rating");
       e.printStackTrace();
     }
-    LollapaloozerApplication.debug(this, "You Clicked On: "+ obj +" previous ratings "+ _lastRatings.first +"/"+ _lastRatings.second);
+    LollapaloozerApplication.debug(this, "You Clicked On: " + obj + " previous ratings "
+        + _lastRatings.first + "/" + _lastRatings.second);
 
     if (_obtained_email == null) {
       showDialog(DIALOG_GETEMAIL);
@@ -588,46 +553,12 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
         TextView subtitleText = (TextView) _lastRateDialog
             .findViewById(R.id.text_rateBand_subtitle);
         subtitleText.setText(_lastItemSelected.getString("artist"));
-        
-        
 
       } catch (JSONException e) {
-        LollapaloozerApplication.debug(this, "JSONException assigning Artist name to Rating dialog");
+        LollapaloozerApplication
+            .debug(this, "JSONException assigning Artist name to Rating dialog");
         e.printStackTrace();
       }
-
-      int week = LollapaloozerApplication.whichWeekIsToday();
-      RadioGroup weekGroup = (RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_week);
-      RadioButton buttonWeek1 = (RadioButton) _lastRateDialog.findViewById(R.id.radio_button_week1);
-      RadioButton buttonWeek2 = (RadioButton) _lastRateDialog.findViewById(R.id.radio_button_week2);
-      
-      int idChanged = -1;
-      
-      if (week == 1) {
-
-        buttonWeek1.setClickable(true);
-        buttonWeek2.setClickable(false);
-        buttonWeek1.setChecked(true);
-        idChanged = buttonWeek1.getId();
-
-      } else if (week == 2) {
-
-        buttonWeek1.setClickable(true);
-        buttonWeek2.setClickable(true);
-        buttonWeek2.setChecked(true);
-        idChanged = buttonWeek2.getId();
-
-      } else {
-        // Don't suggest a week
-        weekGroup.clearCheck();
-      }
-
-      //TODO pick user's last rating
-      onCheckedChanged(weekGroup, idChanged);
-      
-      
-      //RadioGroup scoreGroup = (RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_score);
-      //scoreGroup.clearCheck();
 
     }
 
@@ -658,9 +589,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
       _lastRateDialog = new Dialog(this);
       _lastRateDialog.setContentView(R.layout.dialog_rate_set);
       _lastRateDialog.setTitle("Rate This Set!");
-      
-      RadioGroup weekGroup = (RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_week);
-      weekGroup.setOnCheckedChangeListener(this);
 
       Button buttonOK = (Button) _lastRateDialog.findViewById(R.id.button_rate_okgo);
       buttonOK.setOnClickListener(this);
@@ -691,6 +619,9 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     processExtraData();
   }
 
+  /**
+   * TODO: potentially make year a searchable field here
+   */
   private void processExtraData() {
     Intent intent = getIntent();
     Bundle bundle = intent.getExtras();
@@ -699,85 +630,88 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
       return;
     }
 
-    String week = intent.getExtras().getString("WEEK");
     String day = intent.getExtras().getString("DAY");
 
-    LollapaloozerApplication.debug(this, "Searching week[" + week + "] day[" + day + "]");
-    _weekToQuery = Integer.valueOf(week);
+    LollapaloozerApplication.debug(this, "Searching day[" + day + "]");
     _dayToExamine = day;
     refreshData();
   }
-  
+
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-      MenuInflater inflater = getMenuInflater();
-      inflater.inflate(R.menu.menu_global_options, menu);
-      return true;
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.menu_global_options, menu);
+    return true;
   }
-  
+
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-      switch (item.getItemId()) {
-          case R.id.menu_item_email_me:
-              LollapaloozerApplication.debug(this, "Menu button 'email me' pressed");
-              
-              if (_obtained_email == null) {
-                Toast.makeText(this, "Try rating at least one set first", 15).show();
-              } else {
-                try {
-                  
-                  Toast.makeText(this, "This feature coming soon!", 15).show();
-                  //ServiceUtils.sendMyRatings(this, _obtained_email);
-                } catch (Exception e) {
-                  LollapaloozerApplication.debug(this, "Error requesting ratings email");
-                  e.printStackTrace();
-                }
-              }
-              return true;
-              
-          case R.id.menu_item_delete_email:
-              LollapaloozerApplication.debug(this, "Menu button 'delete email' pressed");
-              _obtained_email = null;
-              _storageManager.putString(DATA_USER_EMAIL, null);
-              _storageManager.save();
-              refreshData();
-              return true;
-              
-          default:
-              return super.onOptionsItemSelected(item);
+    switch (item.getItemId()) {
+    case R.id.menu_item_email_me:
+      LollapaloozerApplication.debug(this, "Menu button 'email me' pressed");
+
+      if (_obtained_email == null) {
+        Toast.makeText(this, "Try rating at least one set first", 15).show();
+      } else {
+        try {
+
+          Toast.makeText(this, "This feature coming soon!", 15).show();
+          // ServiceUtils.sendMyRatings(this, _obtained_email);
+        } catch (Exception e) {
+          LollapaloozerApplication.debug(this, "Error requesting ratings email");
+          e.printStackTrace();
+        }
       }
+      return true;
+
+    case R.id.menu_item_delete_email:
+      LollapaloozerApplication.debug(this, "Menu button 'delete email' pressed");
+      _obtained_email = null;
+      _storageManager.putString(DATA_USER_EMAIL, null);
+      _storageManager.save();
+      refreshData();
+      return true;
+
+    default:
+      return super.onOptionsItemSelected(item);
+    }
   }
 
   @Override
   public void onCheckedChanged(RadioGroup clickedGroup, int checkedId) {
-    //todo should use switch
-    RadioGroup scoreGroup = (RadioGroup) _lastRateDialog.findViewById(R.id.radio_pick_score);
-    if (clickedGroup == _lastRateDialog.findViewById(R.id.radio_pick_week)) {
-     
-      
-      if (checkedId == R.id.radio_button_week1  && _lastRatings.first != null) {
-        int buttonIdToCheck = _ratingSelectedScoreToId.get(_lastRatings.first);
-        RadioButton buttonToCheck = (RadioButton) _lastRateDialog.findViewById(buttonIdToCheck);
-        buttonToCheck.setChecked(true);
+    // TODO should use switch
+    // RadioGroup scoreGroup = (RadioGroup)
+    // _lastRateDialog.findViewById(R.id.radio_pick_score);
+    // if (clickedGroup == _lastRateDialog.findViewById(R.id.radio_pick_week)) {
+    //
+    // if (checkedId == R.id.radio_button_week1 && _lastRatings.first != null) {
+    // int buttonIdToCheck = _ratingSelectedScoreToId.get(_lastRatings.first);
+    // RadioButton buttonToCheck = (RadioButton)
+    // _lastRateDialog.findViewById(buttonIdToCheck);
+    // buttonToCheck.setChecked(true);
+    //
+    // } else if (checkedId == R.id.radio_button_week2 && _lastRatings.second !=
+    // null) {
+    // LollapaloozerApplication.debug(this, "Last Rating " +
+    // _lastRatings.second);
+    // int buttonIdToCheck = _ratingSelectedScoreToId.get(_lastRatings.second);
+    // LollapaloozerApplication.debug(this, "Button id to check " +
+    // buttonIdToCheck);
+    // RadioButton buttonToCheck = (RadioButton)
+    // _lastRateDialog.findViewById(buttonIdToCheck); // TODO
+    // // duplicate
+    // // code
+    // buttonToCheck.setChecked(true);
+    //
+    // } else { // Not sure what is selected, clear rating check
+    //
+    // scoreGroup.clearCheck();
+    // }
+    //
+    // scoreGroup.invalidate();
+    //
+    // }
 
-      } else if (checkedId == R.id.radio_button_week2  && _lastRatings.second != null) {
-        LollapaloozerApplication.debug(this, "Last Rating "+ _lastRatings.second);
-        int buttonIdToCheck = _ratingSelectedScoreToId.get(_lastRatings.second); 
-        LollapaloozerApplication.debug(this, "Button id to check "+ buttonIdToCheck);
-        RadioButton buttonToCheck = (RadioButton) _lastRateDialog.findViewById(buttonIdToCheck);  //TODO duplicate code
-        buttonToCheck.setChecked(true);
-        
-        
-        
-      } else { //Not sure what is selected, clear rating check
-        
-        scoreGroup.clearCheck();
-      }
-      
-      scoreGroup.invalidate();
-      
-    }
-    
   }
 
 }

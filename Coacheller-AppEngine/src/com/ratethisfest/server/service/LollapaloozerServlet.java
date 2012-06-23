@@ -65,10 +65,7 @@ public class LollapaloozerServlet extends HttpServlet {
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     String action = checkNull(req.getParameter(HttpConstants.PARAM_ACTION));
     String email = checkNull(req.getParameter(HttpConstants.PARAM_EMAIL));
-    String day = checkNull(req.getParameter(HttpConstants.PARAM_DAY));
-    String year = checkNull(req.getParameter(HttpConstants.PARAM_YEAR));
-    String artist = checkNull(req.getParameter(HttpConstants.PARAM_ARTIST));
-    String setTime = checkNull(req.getParameter(HttpConstants.PARAM_TIME));
+    String setId = checkNull(req.getParameter(HttpConstants.PARAM_SET_ID));
     String score = checkNull(req.getParameter(HttpConstants.PARAM_SCORE));
     String notes = checkNull(req.getParameter(HttpConstants.PARAM_NOTES));
 
@@ -77,7 +74,7 @@ public class LollapaloozerServlet extends HttpServlet {
       notes = null;
     }
     if (action.equals(HttpConstants.ACTION_ADD_RATING)) {
-      addRating(email, artist, setTime, day, year, score, notes);
+      addRating(email, setId, score, notes);
     } else if (action.equals(HttpConstants.ACTION_EMAIL_RATINGS)) {
       EmailSender.emailRatings(email);
     }
@@ -131,24 +128,16 @@ public class LollapaloozerServlet extends HttpServlet {
     return resp;
   }
 
-  private String addRating(String email, String setArtist, String setTime, String day, String year,
-      String score, String notes) {
+  private String addRating(String email, String setId, String score, String notes) {
 
     String resp = null;
 
     if (!FieldVerifier.isValidEmail(email)) {
       resp = FieldVerifier.EMAIL_ERROR;
-    } else if (!FieldVerifier.isValidYear(year)) {
-      resp = FieldVerifier.YEAR_ERROR;
-    } else if (!FieldVerifier.isValidDay(day)) {
-      resp = FieldVerifier.DAY_ERROR;
-    } else if (!FieldVerifier.isValidTime(setTime)) {
-      resp = FieldVerifier.TIME_ERROR;
     } else if (!FieldVerifier.isValidScore(score)) {
       resp = FieldVerifier.SCORE_ERROR;
-    } else if (setArtist != null) {
-      resp = LollaRatingManager.getInstance().addRatingBySetArtist(email, setArtist,
-          Integer.valueOf(setTime), DayEnum.fromValue(day), Integer.valueOf(year),
+    } else if (setId != null) {
+      resp = LollaRatingManager.getInstance().addRatingBySetId(email, Long.valueOf(setId),
           Integer.valueOf(score), notes);
     } else {
       resp = "null args";

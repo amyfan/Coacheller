@@ -2,10 +2,12 @@ package com.ratethisfest.shared;
 
 public class HttpConstants {
   // TODO ideally placed in resource file
-  public static final String SERVER_URL = "http://ratethisfest.appspot.com/coachellerServlet?";
+  public static final String SERVER_URL_COACHELLER = "http://ratethisfest.appspot.com/coachellerServlet?";
+  public static final String SERVER_URL_LOLLAPALOOZER = "http://ratethisfest.appspot.com/lollapaloozerServlet?";
 
   public static final String PARAM_ACTION = "action";
   public static final String PARAM_EMAIL = "email";
+  public static final String PARAM_SET_ID = "set_id";
   public static final String PARAM_DAY = "day";
   public static final String PARAM_TIME = "time";
   public static final String PARAM_YEAR = "year";
