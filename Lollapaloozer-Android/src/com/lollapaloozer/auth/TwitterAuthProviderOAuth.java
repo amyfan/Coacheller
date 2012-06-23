@@ -23,8 +23,9 @@ public class TwitterAuthProviderOAuth {
 	private String _consumerKey;
 	private String _consumerSecret;
 	private String _callbackUrl;
-	
-	public TwitterAuthProviderOAuth(String consumerKey, String consumerSecret, String callbackUrl) {
+
+	public TwitterAuthProviderOAuth(String consumerKey, String consumerSecret,
+			String callbackUrl) {
 		_consumerKey = consumerKey;
 		_consumerSecret = consumerSecret;
 		_callbackUrl = callbackUrl;
@@ -32,8 +33,7 @@ public class TwitterAuthProviderOAuth {
 
 	public String getRequestTokenUrl() {
 		_service = new ServiceBuilder().provider(TwitterApi.class)
-				.apiKey(_consumerKey)
-				.apiSecret(_consumerSecret)
+				.apiKey(_consumerKey).apiSecret(_consumerSecret)
 				.callback(_callbackUrl).build();
 		_requestToken = _service.getRequestToken();
 
@@ -43,17 +43,27 @@ public class TwitterAuthProviderOAuth {
 	}
 
 	public void requestTokenResult(String token, String tokenVerify) {
-		  Verifier verifier = new Verifier(tokenVerify);
-		  _accessToken = _service.getAccessToken(_requestToken, verifier); //the requestToken you had from step 2 OAuthRequest request
-		  
+		Verifier verifier = new Verifier(tokenVerify);
+		_accessToken = _service.getAccessToken(_requestToken, verifier); // the
+																			// requestToken
+																			// you
+																			// had
+																			// from
+																			// step
+																			// 2
+																			// OAuthRequest
+																			// request
+
 	}
-	
+
 	public Response accessResource(Verb httpVerb, String resourceUrl) {
-		OAuthRequest request = new OAuthRequest(httpVerb, resourceUrl); 
-		_service.signRequest(_accessToken, request); // the access // token from // step 4 Response response =
+		OAuthRequest request = new OAuthRequest(httpVerb, resourceUrl);
+		_service.signRequest(_accessToken, request); // the access // token from
+														// // step 4 Response
+														// response =
 		return request.send();
 	}
-	
+
 	public String getAccessToken() {
 		return _accessToken.getToken();
 	}

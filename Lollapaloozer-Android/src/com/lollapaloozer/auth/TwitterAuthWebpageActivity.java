@@ -1,6 +1,5 @@
 package com.lollapaloozer.auth;
 
-
 import com.lollapaloozer.Constants;
 import com.lollapaloozer.R;
 
@@ -22,31 +21,32 @@ public class TwitterAuthWebpageActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.twitter_auth_dialog);
-		
+
 		Intent callingIntent = getIntent();
-		String authUrl = callingIntent.getStringExtra(Constants.INTENT_EXTRA_ALIAS_TWITTER_AUTH);
-		
-		
-		
+		String authUrl = callingIntent
+				.getStringExtra(Constants.INTENT_EXTRA_ALIAS_TWITTER_AUTH);
+
 		ImageView close_dialog = (ImageView) findViewById(R.id.imageView_custom_dialog_close);
-		
+
 		close_dialog.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				setResult(Activity.RESULT_CANCELED);
 				finish();
 			}
 		});
-		
+
 		WebView webview = (WebView) findViewById(R.id.webView1);
 		// webview = new WebView(this);
 		webview.getSettings().setJavaScriptEnabled(true);
 		webview.setVerticalScrollBarEnabled(false);
 		webview.setHorizontalScrollBarEnabled(false);
 		webview.setVisibility(View.VISIBLE);
-		
-		//System.out.println("webview requesting focus ("+ webview.hasFocus()+")");
-		//webview.requestFocusFromTouch();
-		//System.out.println("webview requested focus ("+ webview.hasFocus()+")");
+
+		// System.out.println("webview requesting focus ("+
+		// webview.hasFocus()+")");
+		// webview.requestFocusFromTouch();
+		// System.out.println("webview requested focus ("+
+		// webview.hasFocus()+")");
 
 		webview.setWebViewClient(new WebViewClient() {
 
@@ -56,15 +56,15 @@ public class TwitterAuthWebpageActivity extends Activity {
 
 			@Override
 			public void onPageFinished(WebView view, String url) {
-				//if (!shown) {
-					System.out.println("onPageFinished showing dialog: " + url);
-					// _alertDialog.getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT); //todo try commenting this
+				// if (!shown) {
+				System.out.println("onPageFinished showing dialog: " + url);
+				// _alertDialog.getWindow().setLayout(LayoutParams.FILL_PARENT,
+				// LayoutParams.FILL_PARENT); //todo try commenting this
 
-
-					//_alertDialog.show();
-					//shown = true;
-					//_activity.setContentView(layout);
-				//}
+				// _alertDialog.show();
+				// shown = true;
+				// _activity.setContentView(layout);
+				// }
 			}
 
 			@Override
@@ -79,14 +79,18 @@ public class TwitterAuthWebpageActivity extends Activity {
 					_requestTokenVerifierString = uri
 							.getQueryParameter(Constants.OAUTH_CALLBACK_PARAM_VERIFIER);
 
-					System.out.println("OAuth token: "+ _requestTokenString);
-					System.out.println("OAuth verifier: "+ _requestTokenVerifierString);
+					System.out.println("OAuth token: " + _requestTokenString);
+					System.out.println("OAuth verifier: "
+							+ _requestTokenVerifierString);
 					// webview.setVisibility(View.GONE);
 					// webview.destroy();
-					
+
 					Intent resultIntent = new Intent();
-					resultIntent.putExtra(Constants.INTENT_EXTRA_OAUTH1_TOKEN, _requestTokenString);
-					resultIntent.putExtra(Constants.INTENT_EXTRA_OAUTH1_VERIFIER, _requestTokenVerifierString);
+					resultIntent.putExtra(Constants.INTENT_EXTRA_OAUTH1_TOKEN,
+							_requestTokenString);
+					resultIntent.putExtra(
+							Constants.INTENT_EXTRA_OAUTH1_VERIFIER,
+							_requestTokenVerifierString);
 					setResult(RESULT_OK, resultIntent);
 					finish();
 
@@ -94,8 +98,8 @@ public class TwitterAuthWebpageActivity extends Activity {
 			}
 
 		});
-		 //webview.requestFocus(View.FOCUS_DOWN);
-		//_alertDialog.show();
+		// webview.requestFocus(View.FOCUS_DOWN);
+		// _alertDialog.show();
 		webview.loadUrl(authUrl);
 	}
 
