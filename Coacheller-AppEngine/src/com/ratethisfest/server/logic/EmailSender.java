@@ -58,7 +58,7 @@ public class EmailSender {
   }
 
   private static String generateMessageBody(String email) {
-    List<Rating> ratings = CoachellaRatingManager.getInstance().findRatingsByUser(email);
+    List<Rating> ratings = CoachellaRatingManager.getInstance().findAllRatingsByUser(email);
     if (ratings == null) {
       return null;
     }

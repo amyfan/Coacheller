@@ -20,12 +20,10 @@ public interface LollapaloozerService extends RemoteService {
 
   String recalculateSetRatingAverages() throws IllegalArgumentException;
 
-  List<String> getSetArtists(String day, String yearString) throws IllegalArgumentException;
-
   List<Set> getSets(String day, String yearString) throws IllegalArgumentException;
 
-  String addRating(String email, String setArtist, String setTime, String day, String year,
-      String score, String notes) throws IllegalArgumentException;
+  String addRating(String email, Long setId, String score, String notes)
+      throws IllegalArgumentException;
 
   List<RatingGwt> getRatingsByUserEmail(String email) throws IllegalArgumentException;
 

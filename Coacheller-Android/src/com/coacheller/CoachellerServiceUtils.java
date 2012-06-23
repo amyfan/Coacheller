@@ -21,7 +21,7 @@ import android.content.Context;
 
 import com.ratethisfest.shared.HttpConstants;
 
-public class ServiceUtils {
+public class CoachellerServiceUtils {
   private final static String HTTP_SUCCESS = "Received HTTP Response";
   private final static String HTTP_FAILURE = "HTTP Response was not OK: ";
 
@@ -31,7 +31,7 @@ public class ServiceUtils {
    * @param day
    * @param context
    * @return
-   * @throws Exception 
+   * @throws Exception
    */
   public static JSONArray getSets(String year, String day, Context context) throws Exception {
     try {
@@ -79,7 +79,8 @@ public class ServiceUtils {
         throw new Exception();
       }
 
-    } catch (ClientProtocolException e) {  //TODO: Could have created a custom Exception class
+    } catch (ClientProtocolException e) { // TODO: Could have created a custom
+                                          // Exception class
       e.printStackTrace();
       throw new Exception();
     } catch (IOException e) {
@@ -91,17 +92,16 @@ public class ServiceUtils {
     }
   }
 
+  // Sample of working URL
+  // http://ratethisfest.appspot.com/coachellerServlet?email=testing@this.com&action=get_sets&year=2012&day=Friday
+  public static JSONArray getRatings(String email, String year, String day, Context context) throws Exception {
 
-  //Sample of working URL
-  //  http://ratethisfest.appspot.com/coachellerServlet?email=testing@this.com&action=get_sets&year=2012&day=Friday
-  public static JSONArray getRatings(String email, String day, Context context) throws Exception {
-
-  /**
-   * 
-   * @param email
-   * @param context
-   * @return
-   */
+    /**
+     * 
+     * @param email
+     * @param context
+     * @return
+     */
 
     try {
       StringBuilder requestString = new StringBuilder();
@@ -110,7 +110,14 @@ public class ServiceUtils {
       requestString.append("=");
       requestString.append(email);
       requestString.append("&");
-      requestString.append("year=2012&day="+ day +"&");
+      requestString.append(HttpConstants.PARAM_YEAR);
+      requestString.append("=");
+      requestString.append(year);
+      requestString.append("&");
+      requestString.append(HttpConstants.PARAM_DAY);
+      requestString.append("=");
+      requestString.append(day);
+      requestString.append("&");
       requestString.append(HttpConstants.PARAM_ACTION);
       requestString.append("=");
       requestString.append(HttpConstants.ACTION_GET_RATINGS);
@@ -140,7 +147,8 @@ public class ServiceUtils {
         throw new Exception();
       }
 
-    } catch (ClientProtocolException e) {  //TODO: Could have created a custom Exception class
+    } catch (ClientProtocolException e) { // TODO: Could have created a custom
+                                          // Exception class
       e.printStackTrace();
       throw new Exception();
     } catch (IOException e) {
@@ -160,10 +168,11 @@ public class ServiceUtils {
    * @param score
    * @param context
    * @return
-   * @throws Exception 
+   * @throws Exception
    */
-  
-  //TODO returns JSONArray which is probably null - is this correct?
+
+  // TODO returns JSONArray which is probably null - is this correct?
+  @Deprecated
   public static String addRating(String email, String artist, String year, String weekend,
       String score, Context context) throws Exception {
     try {
@@ -209,8 +218,7 @@ public class ServiceUtils {
         for (String line = null; (line = reader.readLine()) != null;) {
           builder.append(line).append("\n");
         }
-        
-        
+
         return builder.toString();
 
       } else {
@@ -231,56 +239,54 @@ public class ServiceUtils {
     }
   }
 
-
-  
-  //This may have a bug or 3, I was getting tired
+  // This may have a bug or 3, I was getting tired
   public static String sendMyRatings(Context context, String email) throws Exception {
-      try {
-        StringBuilder requestString = new StringBuilder();
-        requestString.append(HttpConstants.SERVER_URL_COACHELLER);
-        requestString.append(HttpConstants.PARAM_EMAIL);
-        requestString.append("=");
-        requestString.append(email);
-        requestString.append("&");
-        requestString.append(HttpConstants.PARAM_ACTION);
-        requestString.append("=");
-        
-        //TODO fix this for email feature
-        requestString.append(HttpConstants.ACTION_ADD_RATING);
+    try {
+      StringBuilder requestString = new StringBuilder();
+      requestString.append(HttpConstants.SERVER_URL_COACHELLER);
+      requestString.append(HttpConstants.PARAM_EMAIL);
+      requestString.append("=");
+      requestString.append(email);
+      requestString.append("&");
+      requestString.append(HttpConstants.PARAM_ACTION);
+      requestString.append("=");
 
-        CoachellerApplication.debug(context, "HTTPPost = " + requestString.toString());
-        HttpPost post = new HttpPost(requestString.toString());
-        HttpClient hc = new DefaultHttpClient();
-        HttpResponse response = hc.execute(post);
+      // TODO fix this for email feature
+      requestString.append(HttpConstants.ACTION_ADD_RATING);
 
-        // get the response from GAE server, should be in JSON format
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-          CoachellerApplication.debug(context, HTTP_SUCCESS);
+      CoachellerApplication.debug(context, "HTTPPost = " + requestString.toString());
+      HttpPost post = new HttpPost(requestString.toString());
+      HttpClient hc = new DefaultHttpClient();
+      HttpResponse response = hc.execute(post);
 
-          BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity()
-              .getContent(), "UTF-8"));
-          StringBuilder builder = new StringBuilder();
-          for (String line = null; (line = reader.readLine()) != null;) {
-            builder.append(line).append("\n");
-          }
-          
-          return builder.toString();
+      // get the response from GAE server, should be in JSON format
+      if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+        CoachellerApplication.debug(context, HTTP_SUCCESS);
 
-        } else {
-          CoachellerApplication.debug(context, HTTP_FAILURE
-              + response.getStatusLine().getStatusCode());
-          throw new Exception();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity()
+            .getContent(), "UTF-8"));
+        StringBuilder builder = new StringBuilder();
+        for (String line = null; (line = reader.readLine()) != null;) {
+          builder.append(line).append("\n");
         }
 
-      } catch (UnsupportedEncodingException e) {
-        e.printStackTrace();
-        throw new Exception();
-      } catch (IllegalStateException e) {
-        e.printStackTrace();
-        throw new Exception();
-      } catch (IOException e) {
-        e.printStackTrace();
+        return builder.toString();
+
+      } else {
+        CoachellerApplication.debug(context, HTTP_FAILURE
+            + response.getStatusLine().getStatusCode());
         throw new Exception();
       }
+
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+      throw new Exception();
+    } catch (IllegalStateException e) {
+      e.printStackTrace();
+      throw new Exception();
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new Exception();
+    }
   }
 }

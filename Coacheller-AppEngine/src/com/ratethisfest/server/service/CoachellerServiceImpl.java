@@ -48,28 +48,6 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
         + ".<br><br>It looks like you are using:<br>" + userAgent;
   }
 
-  public List<String> getSetArtists(String yearString, String day) {
-    List<Set> sets = null;
-
-    Integer year = Integer.valueOf(yearString);
-    if (day != null && !day.isEmpty()) {
-      sets = CoachellaRatingManager.getInstance()
-          .findSetsByYearAndDay(year, DayEnum.fromValue(day));
-    } else {
-      sets = CoachellaRatingManager.getInstance().findSetsByYear(year);
-    }
-
-    List<String> artistNames = new ArrayList<String>();
-
-    for (Set set : sets) {
-      if (!artistNames.contains(set.getArtistName())) {
-        artistNames.add(set.getArtistName());
-      }
-    }
-
-    return artistNames;
-  }
-
   public List<Set> getSets(String yearString, String day) {
     List<Set> sets = null;
 
@@ -84,26 +62,18 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     return sets;
   }
 
-  public String addRating(String email, String setArtist, String setTime, String day, String year,
-      String weekend, String score, String notes) {
+  public String addRating(String email, Long setId, String weekend, String score, String notes) {
 
     String resp = null;
 
     if (!FieldVerifier.isValidEmail(email)) {
       resp = FieldVerifier.EMAIL_ERROR;
-    } else if (!FieldVerifier.isValidYear(year)) {
-      resp = FieldVerifier.YEAR_ERROR;
-    } else if (!FieldVerifier.isValidDay(day)) {
-      resp = FieldVerifier.DAY_ERROR;
-    } else if (!FieldVerifier.isValidTime(setTime)) {
-      resp = FieldVerifier.TIME_ERROR;
     } else if (!FieldVerifier.isValidWeekend(weekend)) {
       resp = FieldVerifier.WEEKEND_ERROR;
     } else if (!FieldVerifier.isValidScore(score)) {
       resp = FieldVerifier.SCORE_ERROR;
-    } else if (setArtist != null) {
-      resp = CoachellaRatingManager.getInstance().addRatingBySetArtist(email, setArtist,
-          Integer.valueOf(setTime), DayEnum.fromValue(day), Integer.valueOf(year),
+    } else if (setId != null) {
+      resp = CoachellaRatingManager.getInstance().addRatingBySetId(email, setId,
           Integer.valueOf(weekend), Integer.valueOf(score), notes);
     } else {
       log.log(Level.WARNING, "addRatingBySetArtist: null args");
@@ -113,12 +83,15 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     return resp;
   }
 
+  /**
+   * TODO: pass in year
+   */
   public List<RatingGwt> getRatingsByUserEmail(String email) {
 
     List<RatingGwt> ratingGwts = null;
 
     if (email != null) {
-      List<Rating> ratings = CoachellaRatingManager.getInstance().findRatingsByUser(email);
+      List<Rating> ratings = CoachellaRatingManager.getInstance().findAllRatingsByUser(email);
       if (ratings != null) {
         ratingGwts = JSONUtils.convertRatingsToRatingGwts(ratings);
       }

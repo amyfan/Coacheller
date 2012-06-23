@@ -304,7 +304,8 @@ public class LollapaloozerRateComposite extends Composite {
 
         setInput.clear();
         for (Set set : sortedItems) {
-          setInput.addItem(set.getArtistName(), set.getId().toString());
+          setInput.addItem(set.getDay() + " " + set.getTimeOne() + " - " + set.getArtistName(), set
+              .getId().toString());
         }
       }
     });
@@ -376,8 +377,8 @@ public class LollapaloozerRateComposite extends Composite {
     }
 
     // Then, we send the input to the server.
-    lollapaloozerService.addRating(ownerEmail, set.getArtistName(), set.getTimeOne().toString(),
-        set.getDay(), set.getYear().toString(), score, notes, new AsyncCallback<String>() {
+    lollapaloozerService.addRating(ownerEmail, set.getId(), score, notes,
+        new AsyncCallback<String>() {
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             infoBox.setText(SERVER_ERROR);

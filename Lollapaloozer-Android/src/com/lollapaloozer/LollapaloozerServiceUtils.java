@@ -20,7 +20,7 @@ import android.content.Context;
 
 import com.ratethisfest.shared.HttpConstants;
 
-public class ServiceUtils {
+public class LollapaloozerServiceUtils {
   private final static String HTTP_SUCCESS = "Received HTTP Response";
   private final static String HTTP_FAILURE = "HTTP Response was not OK: ";
 
@@ -93,7 +93,7 @@ public class ServiceUtils {
 
   // Sample of working URL
   // http://ratethisfest.appspot.com/coachellerServlet?email=testing@this.com&action=get_sets&year=2012&day=Friday
-  public static JSONArray getRatings(String email, String day, Context context) throws Exception {
+  public static JSONArray getRatings(String email, String year, String day, Context context) throws Exception {
 
     /**
      * 
@@ -109,7 +109,14 @@ public class ServiceUtils {
       requestString.append("=");
       requestString.append(email);
       requestString.append("&");
-      requestString.append("year=2012&day=" + day + "&");
+      requestString.append(HttpConstants.PARAM_YEAR);
+      requestString.append("=");
+      requestString.append(year);
+      requestString.append("&");
+      requestString.append(HttpConstants.PARAM_DAY);
+      requestString.append("=");
+      requestString.append(day);
+      requestString.append("&");
       requestString.append(HttpConstants.PARAM_ACTION);
       requestString.append("=");
       requestString.append(HttpConstants.ACTION_GET_RATINGS);

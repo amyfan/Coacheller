@@ -226,29 +226,29 @@ public class CoachellerRateComposite extends Composite {
       }
     });
 
-//    updateSetButton.addClickHandler(new ClickHandler() {
-//      @Override
-//      public void onClick(ClickEvent event) {
-//        if (ownerEmail.equals(ADMIN_EMAIL)) {
-//          infoBox.setText("");
-//          coachellerService.updateSetData(new AsyncCallback<String>() {
-//
-//            public void onFailure(Throwable caught) {
-//              // Show the RPC error message to the user
-//              infoBox.setText(SERVER_ERROR);
-//            }
-//
-//            public void onSuccess(String result) {
-//              infoBox.setText(result);
-//            }
-//          });
-//
-//          androidAnimation.run(400);
-//        } else {
-//          infoBox.setText(ADMIN_ERROR);
-//        }
-//      }
-//    });
+    // updateSetButton.addClickHandler(new ClickHandler() {
+    // @Override
+    // public void onClick(ClickEvent event) {
+    // if (ownerEmail.equals(ADMIN_EMAIL)) {
+    // infoBox.setText("");
+    // coachellerService.updateSetData(new AsyncCallback<String>() {
+    //
+    // public void onFailure(Throwable caught) {
+    // // Show the RPC error message to the user
+    // infoBox.setText(SERVER_ERROR);
+    // }
+    //
+    // public void onSuccess(String result) {
+    // infoBox.setText(result);
+    // }
+    // });
+    //
+    // androidAnimation.run(400);
+    // } else {
+    // infoBox.setText(ADMIN_ERROR);
+    // }
+    // }
+    // });
 
     // recalculateButton.addClickHandler(new ClickHandler() {
     // @Override
@@ -323,7 +323,8 @@ public class CoachellerRateComposite extends Composite {
 
         setInput.clear();
         for (Set set : sortedItems) {
-          setInput.addItem(set.getArtistName(), set.getId().toString());
+          setInput.addItem(set.getDay() + " " + set.getTimeOne() + " - " + set.getArtistName(), set
+              .getId().toString());
         }
       }
     });
@@ -411,8 +412,8 @@ public class CoachellerRateComposite extends Composite {
     }
 
     // Then, we send the input to the server.
-    coachellerService.addRating(ownerEmail, set.getArtistName(), set.getTimeOne().toString(),
-        set.getDay(), set.getYear().toString(), weekend, score, notes, new AsyncCallback<String>() {
+    coachellerService.addRating(ownerEmail, set.getId(), weekend, score, notes,
+        new AsyncCallback<String>() {
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             infoBox.setText(SERVER_ERROR);

@@ -18,14 +18,11 @@ public interface LollapaloozerServiceAsync {
 
   void recalculateSetRatingAverages(AsyncCallback<String> callback) throws IllegalArgumentException;
 
-  void getSetArtists(String yearString, String day, AsyncCallback<List<String>> callback)
-      throws IllegalArgumentException;
-
   void getSets(String yearString, String day, AsyncCallback<List<Set>> callback)
       throws IllegalArgumentException;
 
-  void addRating(String email, String setArtist, String setTime, String day, String year,
-      String score, String notes, AsyncCallback<String> callback) throws IllegalArgumentException;
+  void addRating(String email, Long setId, String score, String notes,
+      AsyncCallback<String> callback) throws IllegalArgumentException;
 
   void getRatingsByUserEmail(String email, AsyncCallback<List<RatingGwt>> callback)
       throws IllegalArgumentException;

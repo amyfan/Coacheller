@@ -48,7 +48,7 @@ public class CoachellerServlet extends HttpServlet {
     if (action.equals(HttpConstants.ACTION_GET_SETS)) {
       respString = getSetsJson(year, day);
     } else if (action.equals(HttpConstants.ACTION_GET_RATINGS)) {
-      respString = getRatingsJsonByUser(email);
+      respString = getRatingsJsonByUser(email, year, day);
     }
 
     resp.getWriter().println(respString);
@@ -116,13 +116,21 @@ public class CoachellerServlet extends HttpServlet {
     return resp;
   }
 
-  private String getRatingsJsonByUser(String email) {
+  /**
+   * TODO: filter by year & day
+   * 
+   * @param email
+   * @param year
+   * @param day
+   * @return
+   */
+  private String getRatingsJsonByUser(String email, String year, String day) {
     String resp = null;
 
     List<Rating> ratings = null;
 
     if (email != null) {
-      ratings = CoachellaRatingManager.getInstance().findRatingsByUser(email);
+      ratings = CoachellaRatingManager.getInstance().findAllRatingsByUser(email);
     }
 
     if (ratings != null) {

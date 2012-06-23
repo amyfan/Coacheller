@@ -46,17 +46,18 @@ public class CoachellaRatingManager extends RatingManager {
   }
 
   /**
-   * TODO
    * 
    * @param email
    * @param setArtist
    * @param setTime
+   * @param day
    * @param year
    * @param weekend
    * @param score
    * @param notes
    * @return
    */
+  @Deprecated
   public String addRatingBySetArtist(String email, String setArtist, Integer setTime, DayEnum day,
       Integer year, Integer weekend, Integer score, String notes) {
     String resp = null;
@@ -71,6 +72,38 @@ public class CoachellaRatingManager extends RatingManager {
       } else {
         resp = "invalid artist name";
         log.log(Level.WARNING, "invalid artist name: " + setArtist);
+      }
+    } else {
+      // update existing rating
+      updateRating(ratings.get(0), weekend, score, notes);
+      resp = "rating updated";
+    }
+
+    return resp;
+  }
+
+  /**
+   * 
+   * @param email
+   * @param setId
+   * @param score
+   * @param notes
+   * @return
+   */
+  public String addRatingBySetId(String email, Long setId, Integer weekend, Integer score,
+      String notes) {
+    String resp = null;
+
+    Key<Set> setKey = setDao.findSetKeyById(setId);
+    List<Rating> ratings = findRatingsBySetKeyAndUser(setKey, email);
+    if (ratings == null || ratings.size() == 0) {
+      // add new rating
+      if (setKey != null) {
+        addRating(setKey, email, weekend, score, notes);
+        resp = "rating added";
+      } else {
+        resp = "invalid artist name";
+        log.log(Level.WARNING, "invalid set id: " + setId);
       }
     } else {
       // update existing rating
@@ -117,17 +150,7 @@ public class CoachellaRatingManager extends RatingManager {
     return ratingDao.updateRating(rating);
   }
 
-  public List<Rating> findRatingsBySetArtist(String setArtist) {
-    // TODO: figure out whether to keep this method & query year properly
-    Key<Set> setKey = findSetKeyByArtistAndYear(setArtist, null);
-    List<Rating> ratings = new ArrayList<Rating>();
-    if (setKey != null) {
-      ratings = ratingDao.findRatingsBySetKey(setKey);
-    }
-    return ratings;
-  }
-
-  public List<Rating> findRatingsByUser(String email) {
+  public List<Rating> findAllRatingsByUser(String email) {
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     List<Rating> ratings = null;
     if (userKey != null) {
@@ -271,6 +294,7 @@ public class CoachellaRatingManager extends RatingManager {
     }
   }
 
+  @Deprecated
   private Key<Set> findSetKeyByArtistAndYear(String artist, Integer year) {
     Key<Set> set = setDao.findSetKeyByArtistAndYear(FestivalEnum.COACHELLA, artist, year);
     return set;

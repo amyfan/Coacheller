@@ -1,6 +1,5 @@
 package com.ratethisfest.server.logic;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -42,12 +41,9 @@ public class LollaRatingManager extends RatingManager {
   }
 
   /**
-   * TODO
    * 
    * @param email
-   * @param setArtist
-   * @param setTime
-   * @param year
+   * @param setId
    * @param score
    * @param notes
    * @return
@@ -110,17 +106,7 @@ public class LollaRatingManager extends RatingManager {
     return ratingDao.updateRating(rating);
   }
 
-  public List<Rating> findRatingsBySetArtist(String setArtist) {
-    // TODO: figure out whether to keep this method & query year properly
-    Key<Set> setKey = findSetKeyByArtistAndYear(setArtist, null);
-    List<Rating> ratings = new ArrayList<Rating>();
-    if (setKey != null) {
-      ratings = ratingDao.findRatingsBySetKey(setKey);
-    }
-    return ratings;
-  }
-
-  public List<Rating> findRatingsByUser(String email) {
+  public List<Rating> findAllRatingsByUser(String email) {
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     List<Rating> ratings = null;
     if (userKey != null) {
@@ -246,11 +232,6 @@ public class LollaRatingManager extends RatingManager {
       }
       updateSet(set);
     }
-  }
-
-  private Key<Set> findSetKeyByArtistAndYear(String artist, Integer year) {
-    Key<Set> set = setDao.findSetKeyByArtistAndYear(FestivalEnum.LOLLAPALOOZA, artist, year);
-    return set;
   }
 
   public List<Set> findSetsByYear(Integer year) {

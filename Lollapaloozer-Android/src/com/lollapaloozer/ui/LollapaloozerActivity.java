@@ -31,7 +31,7 @@ import android.widget.Toast;
 import com.lollapaloozer.LollapaloozerApplication;
 import com.lollapaloozer.LollapaloozerStorageManager;
 import com.lollapaloozer.R;
-import com.lollapaloozer.ServiceUtils;
+import com.lollapaloozer.LollapaloozerServiceUtils;
 import com.lollapaloozer.data.CustomPair;
 import com.lollapaloozer.data.CustomSetListAdapter;
 import com.lollapaloozer.data.JSONArrayHashMap;
@@ -286,7 +286,9 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
       JSONArray myRatings = null;
       try {
-        myRatings = ServiceUtils.getRatings(_obtained_email, _dayToExamine, this);
+        // TODO: year can remain hardcoded for now (to force users to update app
+        // in future)
+        myRatings = LollapaloozerServiceUtils.getRatings(_obtained_email, "2012", _dayToExamine, this);
         _storageManager.putJSONArray(DATA_RATINGS, myRatings);
       } catch (Exception e1) {
         _networkErrors = true;
@@ -335,7 +337,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     JSONArray setData = null;
     try {
       // TODO: pass proper values (year can remain hard-coded for now)
-      setData = ServiceUtils.getSets("2012", _dayToExamine, this);
+      setData = LollapaloozerServiceUtils.getSets("2012", _dayToExamine, this);
       _storageManager.putJSONArray(DATA_SETS, setData);
     } catch (Exception e) {
       _networkErrors = true;
@@ -357,7 +359,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     try {
       String set_id = _lastItemSelected.get(QUERY_SETS__SET_ID) + "";
 
-      ServiceUtils.addRating(_storageManager.getString(DATA_USER_EMAIL), set_id,
+      LollapaloozerServiceUtils.addRating(_storageManager.getString(DATA_USER_EMAIL), set_id,
           scoreSelectedValue, this);
 
       // Need this in order to make the new rating appear in real time

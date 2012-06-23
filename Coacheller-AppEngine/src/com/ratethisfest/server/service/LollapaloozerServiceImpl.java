@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,9 +11,9 @@ import java.util.logging.Logger;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ratethisfest.client.LollapaloozerService;
 import com.ratethisfest.server.domain.Rating;
-import com.ratethisfest.server.logic.LollaRatingManager;
 import com.ratethisfest.server.logic.EmailSender;
 import com.ratethisfest.server.logic.JSONUtils;
+import com.ratethisfest.server.logic.LollaRatingManager;
 import com.ratethisfest.server.logic.LollaSetDataLoader;
 import com.ratethisfest.shared.DayEnum;
 import com.ratethisfest.shared.FieldVerifier;
@@ -48,27 +47,6 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
         + ".<br><br>It looks like you are using:<br>" + userAgent;
   }
 
-  public List<String> getSetArtists(String yearString, String day) {
-    List<Set> sets = null;
-
-    Integer year = Integer.valueOf(yearString);
-    if (day != null && !day.isEmpty()) {
-      sets = LollaRatingManager.getInstance().findSetsByYearAndDay(year, DayEnum.fromValue(day));
-    } else {
-      sets = LollaRatingManager.getInstance().findSetsByYear(year);
-    }
-
-    List<String> artistNames = new ArrayList<String>();
-
-    for (Set set : sets) {
-      if (!artistNames.contains(set.getArtistName())) {
-        artistNames.add(set.getArtistName());
-      }
-    }
-
-    return artistNames;
-  }
-
   public List<Set> getSets(String yearString, String day) {
     List<Set> sets = null;
 
@@ -82,28 +60,17 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     return sets;
   }
 
-  public String addRating(String email, String setArtist, String setTime, String day, String year,
-      String score, String notes) {
+  public String addRating(String email, Long setId, String score, String notes) {
 
     String resp = null;
 
     if (!FieldVerifier.isValidEmail(email)) {
       resp = FieldVerifier.EMAIL_ERROR;
-    } else if (!FieldVerifier.isValidYear(year)) {
-      resp = FieldVerifier.YEAR_ERROR;
-    } else if (!FieldVerifier.isValidDay(day)) {
-      resp = FieldVerifier.DAY_ERROR;
-    } else if (!FieldVerifier.isValidTime(setTime)) {
-      resp = FieldVerifier.TIME_ERROR;
     } else if (!FieldVerifier.isValidScore(score)) {
       resp = FieldVerifier.SCORE_ERROR;
-    } else if (setArtist != null) {
-      // TODO: impl!
-      // resp = LollaRatingManager.getInstance().addRatingBySetArtist(email,
-      // setArtist,
-      // Integer.valueOf(setTime), DayEnum.fromValue(day),
-      // Integer.valueOf(year),
-      // Integer.valueOf(score), notes);
+    } else if (setId != null) {
+      resp = LollaRatingManager.getInstance().addRatingBySetId(email, setId,
+          Integer.valueOf(score), notes);
     } else {
       log.log(Level.WARNING, "addRatingBySetArtist: null args");
       resp = "null args";
@@ -112,12 +79,15 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     return resp;
   }
 
+  /**
+   * TODO: pass in year
+   */
   public List<RatingGwt> getRatingsByUserEmail(String email) {
 
     List<RatingGwt> ratingGwts = null;
 
     if (email != null) {
-      List<Rating> ratings = LollaRatingManager.getInstance().findRatingsByUser(email);
+      List<Rating> ratings = LollaRatingManager.getInstance().findAllRatingsByUser(email);
       if (ratings != null) {
         ratingGwts = JSONUtils.convertRatingsToRatingGwts(ratings);
       }

@@ -3,7 +3,6 @@ package com.ratethisfest.server.logic;
 import java.util.List;
 
 import com.ratethisfest.server.domain.Rating;
-import com.ratethisfest.shared.FestivalEnum;
 import com.ratethisfest.shared.MathUtils;
 import com.ratethisfest.shared.Set;
 
