@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.lollapaloozer.R;
 import com.lollapaloozer.ui.LollapaloozerActivity;
+import com.lollapaloozer.util.Constants;
+import com.lollapaloozer.util.LollapaloozerHelper;
 import com.ratethisfest.shared.DateTimeUtils;
 
 public class CustomSetListAdapter implements ListAdapter {
@@ -31,6 +33,7 @@ public class CustomSetListAdapter implements ListAdapter {
     public TextView textStage;
     public TextView ratingWk1;
     public TextView myRating;
+    public TextView myComment;
   }
 
   public CustomSetListAdapter(Context context, String timeFieldName, String stageFieldName,
@@ -111,10 +114,12 @@ public class CustomSetListAdapter implements ListAdapter {
       viewHolder.textStage = (TextView) rowView.findViewById(R.id.text_stage);
       viewHolder.ratingWk1 = (TextView) rowView.findViewById(R.id.text_wk1_rating);
       viewHolder.myRating = (TextView) rowView.findViewById(R.id.text_my_rating);
+      viewHolder.myComment = (TextView) rowView.findViewById(R.id.text_noteGoesHere);
       rowView.setTag(viewHolder);
     }
 
     if (!haveData()) {
+    	//Important to avoid crashes
       return rowView;
     }
 
@@ -154,9 +159,24 @@ public class CustomSetListAdapter implements ListAdapter {
       } else {
         holder.myRating.setText("");
       }
+      
+      String myNote = ratingsObjWk1.get(LollapaloozerActivity.QUERY_RATINGS__NOTES).toString();
+      LollapaloozerHelper.debug(_context, "Found note: "+ myNote);
+      
+      if (myNote.equals("")) {
+    	  holder.myComment.setVisibility(View.GONE);
+      } else {
+    	  
+    	  if (myNote.length() > Constants.DATA_NOTE_MAX_LENGTH) {
+    		  
+    	  }
+    	  holder.myComment.setText(myNote);
+    	  holder.myComment.setVisibility(View.VISIBLE);
+    	  
+      }
 
       // Gnarly debug thing
-      // LollapaloozerApplication.debug(_context,"Artist["+
+      // LollapaloozerHelper.debug(_context,"Artist["+
       // holder.textArtist.getText() +"] Rating["+ score1 +"/"+ score2);
 
     } catch (JSONException e) {

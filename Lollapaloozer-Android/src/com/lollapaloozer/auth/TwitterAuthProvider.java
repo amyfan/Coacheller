@@ -9,7 +9,8 @@ import org.scribe.model.Verb;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.lollapaloozer.Constants;
+import com.lollapaloozer.util.Constants;
+import com.lollapaloozer.util.Helper;
 
 public class TwitterAuthProvider implements AuthProvider {
 	private AuthDemoActivity _activity;

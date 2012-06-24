@@ -1,4 +1,4 @@
-package com.lollapaloozer.auth;
+package com.lollapaloozer.util;
 
 public class Helper {
 	public static String readXmlProperty(String propertyName, String xmlData) {

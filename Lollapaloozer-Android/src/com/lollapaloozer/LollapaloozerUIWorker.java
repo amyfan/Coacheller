@@ -21,7 +21,7 @@ public class LollapaloozerUIWorker extends Thread {
   }
   /*
   public void run() {
-    LollapaloozerApplication.debug(this, "rebuildJAHM()");
+    LollapaloozerHelper.debug(this, "rebuildJAHM()");
     if (_obtained_email != null) { // Get my ratings
 
       JSONArray myRatings = null;
@@ -30,13 +30,13 @@ public class LollapaloozerUIWorker extends Thread {
         _storageManager.putJSONArray(DATA_RATINGS, myRatings);
       } catch (Exception e1) {
         _networkErrors = true;
-        LollapaloozerApplication.debug(this,
+        LollapaloozerHelper.debug(this,
             "Exception getting Ratings data, loading from storage if available");
         try {
           myRatings = _storageManager.getJSONArray(DATA_RATINGS);
         } catch (JSONException e) {
           e.printStackTrace();
-          LollapaloozerApplication.debug(this, "JSONException loading ratings from storage");
+          LollapaloozerHelper.debug(this, "JSONException loading ratings from storage");
         }
       }
 
@@ -46,7 +46,7 @@ public class LollapaloozerUIWorker extends Thread {
         // QUERY_RATINGS__SET_ID, QUERY_RATINGS__WEEK);
 
         if (myRatings == null) {
-          LollapaloozerApplication.debug(this, "Had to initialize ratings data JSONArray");
+          LollapaloozerHelper.debug(this, "Had to initialize ratings data JSONArray");
           myRatings = new JSONArray();
         }
 
@@ -74,13 +74,13 @@ public class LollapaloozerUIWorker extends Thread {
       _storageManager.putJSONArray(DATA_SETS, setData);
     } catch (Exception e) {
       _networkErrors = true;
-      LollapaloozerApplication.debug(this,
+      LollapaloozerHelper.debug(this,
           "Exception getting Set data, loading from storage if available");
       setData = _storageManager.getJSONArray(DATA_SETS);
     }
 
     if (setData == null) {
-      LollapaloozerApplication.debug(this, "Had to initialize set data JSONArray");
+      LollapaloozerHelper.debug(this, "Had to initialize set data JSONArray");
       setData = new JSONArray();
     }
     _setListAdapter.setData(setData);

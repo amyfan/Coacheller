@@ -1,6 +1,9 @@
-package com.lollapaloozer;
+package com.lollapaloozer.util;
 
 import java.util.Calendar;
+
+import com.lollapaloozer.R;
+import com.lollapaloozer.R.string;
 
 import android.app.Application;
 import android.content.Context;
@@ -8,7 +11,7 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-public class LollapaloozerApplication extends Application {
+public class LollapaloozerHelper extends Application {
 
   private static Calendar _cal;
 

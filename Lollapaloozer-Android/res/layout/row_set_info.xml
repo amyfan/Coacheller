@@ -62,6 +62,13 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_noteGoesHere"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Note goes here"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <LinearLayout
         android:id="@+id/set_layout_spacer"

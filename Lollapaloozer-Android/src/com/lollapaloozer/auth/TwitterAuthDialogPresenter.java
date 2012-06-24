@@ -1,6 +1,6 @@
 package com.lollapaloozer.auth;
 
-import com.lollapaloozer.Constants;
+import com.lollapaloozer.util.Constants;
 
 import android.app.Activity;
 import android.app.AlertDialog;

@@ -12,8 +12,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.lollapaloozer.LollapaloozerApplication;
 import com.lollapaloozer.R;
+import com.lollapaloozer.util.LollapaloozerHelper;
 
 public class ActivitySetsSearch extends Activity implements OnClickListener {
   
@@ -24,7 +24,7 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
   
-      LollapaloozerApplication.debug(this, "Search Sets Activity Launched");
+      LollapaloozerHelper.debug(this, "Search Sets Activity Launched");
       this.initializeApp();
   }
   
@@ -34,12 +34,12 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
     
     // Setup day spinner
     Spinner daySpinner = (Spinner) this.findViewById(R.id.search_spinner_day);
-    LollapaloozerApplication.populateSpinnerWithArray(daySpinner, R.array.names_day);
+    LollapaloozerHelper.populateSpinnerWithArray(daySpinner, R.array.names_day);
     daySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        LollapaloozerApplication.debug(parent.getContext(),
+        LollapaloozerHelper.debug(parent.getContext(),
             "Day Selected: " + parent.getSelectedItem());
         _daySelected = parent.getSelectedItem().toString();
         
@@ -47,7 +47,7 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
 
       @Override
       public void onNothingSelected(AdapterView<?> parent) {
-        LollapaloozerApplication.debug(parent.getContext(), "No Day Selected - Unexpected condition");
+        LollapaloozerHelper.debug(parent.getContext(), "No Day Selected - Unexpected condition");
       }
     });
 
@@ -78,7 +78,7 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
 
   public void onClick(View v) {
     if (v.getId() == R.id.sets_search_button_search) {
-      LollapaloozerApplication.debug(this, "Search button pressed");
+      LollapaloozerHelper.debug(this, "Search button pressed");
 
       try {
         Intent intent = new Intent();
@@ -96,7 +96,7 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
         exceptionText.show();
       }
     } else {
-      LollapaloozerApplication.debug(this, "An unknown button was pressed - Unexpected");
+      LollapaloozerHelper.debug(this, "An unknown button was pressed - Unexpected");
     }
 
   }

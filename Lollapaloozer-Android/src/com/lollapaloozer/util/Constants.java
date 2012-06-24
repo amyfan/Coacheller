@@ -1,12 +1,18 @@
-package com.lollapaloozer;
+package com.lollapaloozer.util;
 
 public class Constants {
+	
+	//Data
+	public static final int DATA_NOTE_VISIBLE_MAX_LENGTH = 140;
 
 	// UI String
 	public static final String UI_STR_LOGIN_STATUS = "Login Status: ";
 
 	public static final String MSG_EMAIL_FORMAT = "Please enter your real email address.";
 	public static final String MSG_SIGNIN_REQUIRED = "Sign in so we can remember this for you.";
+	
+	public static final String DIALOG_TITLE_GET_EMAIL = "Keep Track of Everything";
+	public static final String DIALOG_TITLE_FIRST_USE = "Welcome, Fellow Lollapaloozer";
 
 	// User Authentication
 
@@ -36,5 +42,6 @@ public class Constants {
 	public static final String INTENT_EXTRA_ALIAS_TWITTER_AUTH = "intent.extra.twitter.auth";
 	public static final String INTENT_EXTRA_OAUTH1_TOKEN = "intent.extra.oauth1.token";
 	public static final String INTENT_EXTRA_OAUTH1_VERIFIER = "intent.extra.oauth1.verifier";
+
 
 }
