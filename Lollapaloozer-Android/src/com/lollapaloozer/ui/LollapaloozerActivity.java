@@ -170,7 +170,17 @@ public class LollapaloozerActivity extends Activity implements
 				if (msg.what == THREAD_SUBMIT_RATING) {
 					System.out
 							.println("Executing submit rating thread callback ");
-					doSubmitRating(_ratingSelectedScore + "");
+					String lastNote = "";
+					
+					try {
+						if (_lastRatings.has(QUERY_RATINGS__NOTES)) {
+							lastNote = _lastRatings.getString(QUERY_RATINGS__NOTES);
+						}
+							doSubmitRating(_lastRatings.get(QUERY_RATINGS__RATING)+"", lastNote);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 
@@ -393,29 +403,23 @@ public class LollapaloozerActivity extends Activity implements
 		_setListAdapter.setData(setData);
 	}
 
-	public void doSubmitRating(String scoreSelectedValue) {
+	public void doSubmitRating(String scoreSelectedValue, String notes) {
 		// submit rating
 		// If Exception is thrown, do not store rating locally
 		try {
-			String set_id = _lastItemSelected.get(QUERY_SETS__SET_ID) + "";
+			String set_id = _lastItemSelected.get(QUERY_SETS__SET_ID) +"";
+			
 
 			LollapaloozerServiceUtils.addRating(
 					_storageManager.getString(DATA_USER_EMAIL), set_id,
-					scoreSelectedValue, this);
+					scoreSelectedValue, notes, this);
 
 			// Need this in order to make the new rating appear in real time
 
 			try {
-				JSONObject newObj = new JSONObject();
-				newObj.put(QUERY_RATINGS__SET_ID, set_id);
-				newObj.put(QUERY_RATINGS__WEEK, "1"); // TODO leave in
-														// hard-coded for
-														// now
-				newObj.put(QUERY_RATINGS__RATING, scoreSelectedValue);
-
 				// CRITICAL that the keys are listed in this order
 				_myRatings_JAHM.addValues(QUERY_RATINGS__SET_ID,
-						QUERY_RATINGS__WEEK, newObj);
+						QUERY_RATINGS__WEEK, _lastRatings);
 
 				// Don't need since we are refreshing
 				// ListView viewSetsList = (ListView)
@@ -541,26 +545,50 @@ public class LollapaloozerActivity extends Activity implements
 		// Submit rating for a set
 		if (viewClicked.getId() == R.id.button_rate_okgo) { // Selections
 															// incomplete
-			RadioGroup scoreGroup = (RadioGroup) _rateDialog
-					.findViewById(R.id.radio_pick_score);
+			RadioGroup scoreGroup = (RadioGroup) _rateDialog.findViewById(R.id.radio_pick_score);
 			int scoreSelectedId = scoreGroup.getCheckedRadioButtonId();
 
 			if (scoreSelectedId == -1) {
-				Toast selectEverything = Toast.makeText(this,
-						"Please select a rating for this Set", 25);
+				Toast selectEverything = Toast.makeText(this, "Please select a rating for this Set", 25);
 				selectEverything.show();
 
 			} else { // Selections are valid
-				_ratingSelectedScore = _ratingSelectedIdToValue
-						.get(scoreSelectedId);
+				
+				//_ratingSelectedScore = _ratingSelectedIdToValue.get(scoreSelectedId);
 
-				LollapaloozerHelper.debug(this, "Score[" + _ratingSelectedScore
-						+ "] ScoreId[" + scoreSelectedId + "]");
+				//LollapaloozerHelper.debug(this, "Score[" + _ratingSelectedScore + "] ScoreId[" + scoreSelectedId + "]");
 
 				// scoreGroup.clearCheck();
-				_rateDialog.dismiss();
-
-				launchSubmitRatingThread();
+				
+							String submittedRating = _ratingSelectedIdToValue.get(scoreGroup.getCheckedRadioButtonId()).toString();
+				
+				EditText noteWidget = (EditText) _rateDialog.findViewById(R.id.editText_commentsForSet);
+				String submittedNote =  noteWidget.getText().toString();
+				
+				
+				try {
+					if (_lastRatings == null) {
+						JSONObject newObj = new JSONObject();
+						newObj.put(QUERY_RATINGS__SET_ID, _lastItemSelected.get(QUERY_SETS__SET_ID));
+						newObj.put(QUERY_RATINGS__WEEK, "1"); // TODO leave in
+						// hard-coded for
+						// now
+						//newObj.put(QUERY_RATINGS__RATING, submittedRating);
+						//newObj.put(QUERY_RATINGS__NOTES, notes);
+						_lastRatings = newObj;
+					}
+		
+					_lastRatings.put(QUERY_RATINGS__RATING, submittedRating);
+					_lastRatings.put(QUERY_RATINGS__NOTES, submittedNote);
+					launchSubmitRatingThread();
+					_rateDialog.dismiss();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+						
 			}
 		} // End rating dialog submitted
 

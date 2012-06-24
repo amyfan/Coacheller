@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -173,39 +175,33 @@ public class LollapaloozerServiceUtils {
    */
 
   // TODO returns JSONArray which is probably null - is this correct?
-  public static String addRating(String email, String setId, String score, Context context)
+  public static String addRating(String email, String setId, String score, String comments, Context context)
       throws Exception {
     try {
       // TODO: pass in PARAM_NOTES here
-      StringBuilder requestString = new StringBuilder();
-      requestString.append(HttpConstants.SERVER_URL_LOLLAPALOOZER);
-       requestString.append(HttpConstants.PARAM_EMAIL);
-       requestString.append("=");
-       requestString.append(email);
-       requestString.append("&");
-       requestString.append(HttpConstants.PARAM_SET_ID);
-       requestString.append("=");
-       requestString.append(setId);
-       requestString.append("&");
-       requestString.append(HttpConstants.PARAM_SCORE);
-       requestString.append("=");
-       requestString.append(score);
-       requestString.append("&");
-      requestString.append(HttpConstants.PARAM_ACTION);
-      requestString.append("=");
-      requestString.append(HttpConstants.ACTION_ADD_RATING);
-
-      LollapaloozerHelper.debug(context, "HTTPPost = " + requestString.toString());
-      HttpPost post = new HttpPost(requestString.toString());
+      StringBuilder requestStringb = new StringBuilder();
+      requestStringb.append(HttpConstants.SERVER_URL_LOLLAPALOOZER);
+       requestStringb.append(HttpConstants.PARAM_EMAIL).append("=").append(email);
+       requestStringb.append("&").append(HttpConstants.PARAM_SET_ID).append("=").append(URLEncoder.encode(setId));
+       requestStringb.append("&").append(HttpConstants.PARAM_SCORE).append("=").append(URLEncoder.encode(score));
+       requestStringb.append("&").append(HttpConstants.PARAM_NOTES).append("=").append(URLEncoder.encode(comments));
+       requestStringb.append("&").append(HttpConstants.PARAM_ACTION).append("=").append(URLEncoder.encode(HttpConstants.ACTION_ADD_RATING));
+       
+       String requestString =  requestStringb.toString();
+      
+      LollapaloozerHelper.debug(context, "HTTPPost = " + requestString);
+       
+      HttpPost post = new HttpPost(requestString);
       HttpParams params = post.getParams();
       params.setParameter(HttpConstants.PARAM_EMAIL, email);
       params.setParameter(HttpConstants.PARAM_SET_ID, setId);
       params.setParameter(HttpConstants.PARAM_SCORE, score);
       params.setParameter(HttpConstants.PARAM_ACTION, HttpConstants.ACTION_ADD_RATING);
-      // params.setParameter(HttpConstants.PARAM_NOTES, notes);
+      params.setParameter(HttpConstants.PARAM_NOTES, comments);
       post.setParams(params);
 
       HttpClient hc = new DefaultHttpClient();
+      
       HttpResponse response = hc.execute(post);
 
       // get the response from GAE server, should be in JSON format
