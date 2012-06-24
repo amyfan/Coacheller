@@ -68,7 +68,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Note goes here"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textStyle="italic"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <LinearLayout
         android:id="@+id/set_layout_spacer"
