@@ -22,6 +22,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Spinner;
@@ -88,8 +89,12 @@ public class LollapaloozerActivity extends Activity implements
 	private String _obtained_email = null;
 	private CustomSetListAdapter _setListAdapter;
 	private JSONObject _lastItemSelected;
-	private CustomPair<String, String> _lastRatings = new CustomPair<String, String>(
-			null, null);
+	// private CustomPair<String, String> _lastRatings = new CustomPair<String,
+	// String>(
+	// null, null);
+
+	private JSONObject _lastRatings;
+
 	private HashMap<Integer, Integer> _ratingSelectedIdToValue = new HashMap<Integer, Integer>();
 	private HashMap<String, Integer> _ratingSelectedScoreToId = new HashMap<String, Integer>();
 
@@ -209,7 +214,6 @@ public class LollapaloozerActivity extends Activity implements
 		} else {
 			_showClickToRate();
 		}
-		
 
 		if ((System.currentTimeMillis() - _lastRefresh) / 1000 > REFRESH_INTERVAL__SECONDS) {
 			refreshData(); // TODO multi-thread this
@@ -393,7 +397,7 @@ public class LollapaloozerActivity extends Activity implements
 		// submit rating
 		// If Exception is thrown, do not store rating locally
 		try {
-			String set_id = _lastItemSelected.get(QUERY_SETS__SET_ID) +"";
+			String set_id = _lastItemSelected.get(QUERY_SETS__SET_ID) + "";
 
 			LollapaloozerServiceUtils.addRating(
 					_storageManager.getString(DATA_USER_EMAIL), set_id,
@@ -487,15 +491,15 @@ public class LollapaloozerActivity extends Activity implements
 	// Any button in any view or dialog was clicked
 	@Override
 	public void onClick(View viewClicked) {
-		
+
 		// OK clicked on first use dialog
 		if (viewClicked.getId() == R.id.button_firstuse_ok) {
-			_storageManager.putString(DATA_FIRST_USE, false+"");
+			_storageManager.putString(DATA_FIRST_USE, false + "");
 			_storageManager.save();
 			_firstUseDialog.dismiss();
-			_showClickToRate();  //display 'tap set to rate it' toast
+			_showClickToRate(); // display 'tap set to rate it' toast
 		}
-		
+
 		// "OK" clicked to submit email address
 		if (viewClicked.getId() == R.id.button_provideEmail) {
 			EditText emailField = (EditText) _getEmailDialog
@@ -578,29 +582,21 @@ public class LollapaloozerActivity extends Activity implements
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		JSONObject obj = (JSONObject) _setListAdapter.getItem(position);
-		_lastItemSelected = obj;
 
 		try {// TODO Hard coded strings means you are going to hell
+			JSONObject obj = (JSONObject) _setListAdapter.getItem(position);
+			_lastItemSelected = obj;
+
 			String setId = _lastItemSelected.getString(QUERY_SETS__SET_ID);
-			JSONObject lastRatingWeek1 = _myRatings_JAHM.getJSONObject(setId,
-					"1");
+			_lastRatings = _myRatings_JAHM.getJSONObject(setId, "1");
 
-			if (lastRatingWeek1 != null) {
-				_lastRatings.first = lastRatingWeek1
-						.getString(QUERY_RATINGS__RATING);
-			} else {
-				_lastRatings.first = null;
-			}
-
+			LollapaloozerHelper.debug(this, "You Clicked On: " + obj
+					+ " previous ratings " + _lastRatings);
 		} catch (JSONException e) {
 			LollapaloozerHelper.debug(this,
 					"JSONException retrieving user's last rating");
 			e.printStackTrace();
 		}
-		LollapaloozerHelper.debug(this, "You Clicked On: " + obj
-				+ " previous ratings " + _lastRatings.first + "/"
-				+ _lastRatings.second);
 
 		if (_obtained_email == null) {
 			_beginSigninProcess();
@@ -641,7 +637,55 @@ public class LollapaloozerActivity extends Activity implements
 				e.printStackTrace();
 			}
 
-		}
+			// This checks the appropriate radio button based on the score set
+			// in _lastRatings
+			// _lastRatings is set by onItemClick not to be confused with
+			// onClick
+
+			RadioGroup scoreGroup = (RadioGroup) _rateDialog
+					.findViewById(R.id.radio_pick_score);
+			EditText noteWidget = (EditText) _rateDialog
+					.findViewById(R.id.editText_commentsForSet);
+			if (_lastRatings == null) {
+
+				scoreGroup.clearCheck();
+				noteWidget.setText("");
+
+				return; // Abandon if there is no previous data
+			}
+			try {
+				int selectedItemScore = _lastRatings
+						.getInt(QUERY_RATINGS__RATING);
+				int buttonIdToCheck;
+				buttonIdToCheck = _ratingSelectedScoreToId
+						.get(selectedItemScore + "");
+				scoreGroup.check(buttonIdToCheck);
+				// RadioButton buttonToCheck = (RadioButton) _rateDialog
+				// .findViewById(buttonIdToCheck);
+				// buttonToCheck.setChecked(true);
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			try {
+				// Ratings might not include notes
+				if (_lastRatings.has(QUERY_RATINGS__NOTES)) {
+					String selectedItemNote = _lastRatings
+							.getString(QUERY_RATINGS__NOTES);
+					noteWidget = (EditText) _rateDialog
+							.findViewById(R.id.editText_commentsForSet);
+					noteWidget.setText(selectedItemNote);
+				} else {
+					noteWidget.setText("");
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		} // end if rating dialog
 
 	}
 
@@ -781,43 +825,14 @@ public class LollapaloozerActivity extends Activity implements
 
 	@Override
 	public void onCheckedChanged(RadioGroup clickedGroup, int checkedId) {
-		// TODO should use switch
-		// RadioGroup scoreGroup = (RadioGroup)
-		// _rateDialog.findViewById(R.id.radio_pick_score);
-		// if (clickedGroup ==
-		// _rateDialog.findViewById(R.id.radio_pick_week)) {
-		//
-		// if (checkedId == R.id.radio_button_week1 && _lastRatings.first !=
-		// null) {
-		// int buttonIdToCheck =
-		// _ratingSelectedScoreToId.get(_lastRatings.first);
-		// RadioButton buttonToCheck = (RadioButton)
-		// _rateDialog.findViewById(buttonIdToCheck);
-		// buttonToCheck.setChecked(true);
-		//
-		// } else if (checkedId == R.id.radio_button_week2 &&
-		// _lastRatings.second !=
-		// null) {
-		// LollapaloozerHelper.debug(this, "Last Rating " +
-		// _lastRatings.second);
-		// int buttonIdToCheck =
-		// _ratingSelectedScoreToId.get(_lastRatings.second);
-		// LollapaloozerHelper.debug(this, "Button id to check " +
-		// buttonIdToCheck);
-		// RadioButton buttonToCheck = (RadioButton)
-		// _rateDialog.findViewById(buttonIdToCheck); // TODO
-		// // duplicate
-		// // code
-		// buttonToCheck.setChecked(true);
-		//
-		// } else { // Not sure what is selected, clear rating check
-		//
-		// scoreGroup.clearCheck();
-		// }
-		//
-		// scoreGroup.invalidate();
-		//
-		// }
+		// This is only useful when we want to act based on a user changing
+		// radio selection i.e. week1/week2.
+		RadioGroup scoreGroup = (RadioGroup) _rateDialog
+				.findViewById(R.id.radio_pick_score);
+
+		// Formerly used to select week, now always true
+		// if (clickedGroup == _rateDialog.findViewById(R.id.radio_pick_score))
+		// {
 
 	}
 
