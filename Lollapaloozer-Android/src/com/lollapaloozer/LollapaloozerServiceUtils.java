@@ -12,6 +12,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONTokener;
@@ -94,7 +95,8 @@ public class LollapaloozerServiceUtils {
 
   // Sample of working URL
   // http://ratethisfest.appspot.com/coachellerServlet?email=testing@this.com&action=get_sets&year=2012&day=Friday
-  public static JSONArray getRatings(String email, String year, String day, Context context) throws Exception {
+  public static JSONArray getRatings(String email, String year, String day, Context context)
+      throws Exception {
 
     /**
      * 
@@ -171,30 +173,38 @@ public class LollapaloozerServiceUtils {
    */
 
   // TODO returns JSONArray which is probably null - is this correct?
-  public static String addRating(String email, String setId, String score,
-      Context context) throws Exception {
+  public static String addRating(String email, String setId, String score, Context context)
+      throws Exception {
     try {
       // TODO: pass in PARAM_NOTES here
       StringBuilder requestString = new StringBuilder();
       requestString.append(HttpConstants.SERVER_URL_LOLLAPALOOZER);
-      requestString.append(HttpConstants.PARAM_EMAIL);
-      requestString.append("=");
-      requestString.append(email);
-      requestString.append("&");
-      requestString.append(HttpConstants.PARAM_SET_ID);
-      requestString.append("=");
-      requestString.append(setId);
-      requestString.append("&");
-      requestString.append(HttpConstants.PARAM_SCORE);
-      requestString.append("=");
-      requestString.append(score);
-      requestString.append("&");
+      // requestString.append(HttpConstants.PARAM_EMAIL);
+      // requestString.append("=");
+      // requestString.append(email);
+      // requestString.append("&");
+      // requestString.append(HttpConstants.PARAM_SET_ID);
+      // requestString.append("=");
+      // requestString.append(setId);
+      // requestString.append("&");
+      // requestString.append(HttpConstants.PARAM_SCORE);
+      // requestString.append("=");
+      // requestString.append(score);
+      // requestString.append("&");
       requestString.append(HttpConstants.PARAM_ACTION);
       requestString.append("=");
       requestString.append(HttpConstants.ACTION_ADD_RATING);
 
       LollapaloozerHelper.debug(context, "HTTPPost = " + requestString.toString());
       HttpPost post = new HttpPost(requestString.toString());
+      HttpParams params = post.getParams();
+      params.setParameter(HttpConstants.PARAM_EMAIL, email);
+      params.setParameter(HttpConstants.PARAM_SET_ID, setId);
+      params.setParameter(HttpConstants.PARAM_SCORE, score);
+      params.setParameter(HttpConstants.PARAM_ACTION, HttpConstants.ACTION_ADD_RATING);
+      // params.setParameter(HttpConstants.PARAM_NOTES, notes);
+      post.setParams(params);
+
       HttpClient hc = new DefaultHttpClient();
       HttpResponse response = hc.execute(post);
 

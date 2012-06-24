@@ -43,7 +43,16 @@ public abstract class RatingManager {
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     List<Rating> ratings = new ArrayList<Rating>();
     if (setKey != null) {
-      ratings = ratingDao.findRatingsBySetKeyAndUserKey(setKey, userKey, 1);
+      ratings = ratingDao.findRatingsByUserKeyAndSetKey(userKey, setKey, 1);
+    }
+    return ratings;
+  }
+
+  public List<Rating> findAllRatingsByUser(String email) {
+    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
+    List<Rating> ratings = null;
+    if (userKey != null) {
+      ratings = ratingDao.findAllRatingsByUserKey(userKey);
     }
     return ratings;
   }

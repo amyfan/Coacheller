@@ -25,7 +25,7 @@ public interface LollapaloozerService extends RemoteService {
   String addRating(String email, Long setId, String score, String notes)
       throws IllegalArgumentException;
 
-  List<RatingGwt> getRatingsByUserEmail(String email) throws IllegalArgumentException;
+  List<RatingGwt> getRatingsByUserEmail(String email, Integer year) throws IllegalArgumentException;
 
   String deleteRatingsByUser(String email) throws IllegalArgumentException;
 

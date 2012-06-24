@@ -7,7 +7,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.googlecode.objectify.annotation.Cached;
+
 @Entity
+@Cached(expirationSeconds = 7200)
 public class AppUser {
 
   @Id

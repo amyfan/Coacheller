@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.google.appengine.api.datastore.QueryResultIterable;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Query;
 import com.ratethisfest.shared.DayEnum;
@@ -114,6 +115,21 @@ public class SetDAO {
     Query<Set> q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue())
         .filter("year", year).filter("day", day.getValue());
     return q.list();
+  }
+
+  public QueryResultIterable<Key<Set>> findSetKeysByYear(FestivalEnum festival, Integer year) {
+    QueryResultIterable<Key<Set>> q = dao.getObjectify().query(Set.class)
+        .filter("festival", festival.getValue()).filter("year", year).fetchKeys();
+    return q;
+  }
+
+  @Deprecated
+  public QueryResultIterable<Key<Set>> findSetKeysByYearAndDay(FestivalEnum festival, Integer year,
+      DayEnum day) {
+    QueryResultIterable<Key<Set>> q = dao.getObjectify().query(Set.class)
+        .filter("festival", festival.getValue()).filter("year", year).filter("day", day.getValue())
+        .fetchKeys();
+    return q;
   }
 
   public Set updateSet(Set set) {

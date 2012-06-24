@@ -319,7 +319,7 @@ public class CoachellerRateComposite extends Composite {
         ArrayList<Set> sortedItems = new ArrayList<Set>(result);
         Collections.sort(sortedItems, ComparatorUtils.SET_NAME_COMPARATOR);
         setsList.clear();
-        setsList.addAll(result);
+        setsList.addAll(sortedItems);
 
         setInput.clear();
         for (Set set : sortedItems) {
@@ -331,7 +331,7 @@ public class CoachellerRateComposite extends Composite {
   }
 
   private void retrieveRatings() {
-    coachellerService.getRatingsByUserEmail(ownerEmail, new AsyncCallback<List<RatingGwt>>() {
+    coachellerService.getRatingsByUserEmail(ownerEmail, 2012, new AsyncCallback<List<RatingGwt>>() {
 
       public void onFailure(Throwable caught) {
         // Show the RPC error message to the user
@@ -354,9 +354,9 @@ public class CoachellerRateComposite extends Composite {
     } else {
       weekend = 2;
     }
-    String artist = setInput.getItemText(setInput.getSelectedIndex());
+    Set set = setsList.get(setInput.getSelectedIndex());
     for (RatingGwt rating : ratingsList) {
-      if (artist.equals(rating.getArtistName()) && weekend == rating.getWeekend()) {
+      if (set.getId().equals(rating.getSetId()) && weekend == rating.getWeekend()) {
         if (rating.getScore() == 1) {
           scoreOneRadioButton.setValue(true);
         } else if (rating.getScore() == 2) {

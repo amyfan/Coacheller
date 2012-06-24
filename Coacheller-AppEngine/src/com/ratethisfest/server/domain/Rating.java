@@ -8,9 +8,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import com.googlecode.objectify.Key;
+import com.googlecode.objectify.annotation.Cached;
 import com.ratethisfest.shared.Set;
 
 @Entity
+@Cached(expirationSeconds = 7200)
 public class Rating {
 
   @Id

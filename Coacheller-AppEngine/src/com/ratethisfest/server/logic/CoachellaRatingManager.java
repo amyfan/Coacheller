@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.appengine.api.datastore.QueryResultIterable;
 import com.googlecode.objectify.Key;
 import com.ratethisfest.server.domain.AppUser;
 import com.ratethisfest.server.domain.Rating;
@@ -150,11 +151,26 @@ public class CoachellaRatingManager extends RatingManager {
     return ratingDao.updateRating(rating);
   }
 
-  public List<Rating> findAllRatingsByUser(String email) {
+  public List<Rating> findRatingsByUserAndYear(String email, Integer year) {
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     List<Rating> ratings = null;
     if (userKey != null) {
-      ratings = ratingDao.findRatingsByUserKey(FestivalEnum.COACHELLA, userKey);
+      QueryResultIterable<Key<Set>> setKeys = setDao
+          .findSetKeysByYear(FestivalEnum.COACHELLA, year);
+      List<Key<Set>> setKeyList = CollectionUtils.iterableToList(setKeys);
+      ratings = ratingDao.findRatingsByUserKeyAndSetKeys(userKey, setKeyList);
+    }
+    return ratings;
+  }
+
+  public List<Rating> findRatingsByUserYearAndDay(String email, Integer year, DayEnum day) {
+    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
+    List<Rating> ratings = null;
+    if (userKey != null) {
+      QueryResultIterable<Key<Set>> setKeys = setDao.findSetKeysByYearAndDay(
+          FestivalEnum.COACHELLA, year, day);
+      List<Key<Set>> setKeyList = CollectionUtils.iterableToList(setKeys);
+      ratings = ratingDao.findRatingsByUserKeyAndSetKeys(userKey, setKeyList);
     }
     return ratings;
   }
@@ -165,7 +181,7 @@ public class CoachellaRatingManager extends RatingManager {
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     List<Rating> ratings = new ArrayList<Rating>();
     if (setKey != null) {
-      ratings = ratingDao.findRatingsBySetKeyAndUserKey(setKey, userKey, weekend);
+      ratings = ratingDao.findRatingsByUserKeyAndSetKey(userKey, setKey, weekend);
     }
     return ratings;
   }
