@@ -8,8 +8,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import com.googlecode.objectify.annotation.Cached;
 
 @Entity
+@Cached(expirationSeconds = 7200)
 public class Set implements IsSerializable {
 
   @Id
