@@ -1,10 +1,13 @@
 package com.ratethisfest.server.service;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,20 +42,8 @@ public class LollapaloozerServlet extends HttpServlet {
    */
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    req.setCharacterEncoding("UTF-8");
-   
+    String methodName = "doGet";
 
-    // Helpful in debugging
-    // String queryString = req.getQueryString();
-    //
-    // ArrayList<String> parameters = new ArrayList<String>();
-    // for (Enumeration<String> e = req.getParameterNames();
-    // e.hasMoreElements();) {
-    // String value = e.nextElement();
-    // parameters.add(value);
-    // }
-    
-    
     resp.setContentType("text/plain");
 
     String action = checkNull(req.getParameter(HttpConstants.PARAM_ACTION));
@@ -61,8 +52,6 @@ public class LollapaloozerServlet extends HttpServlet {
     String year = checkNull(req.getParameter(HttpConstants.PARAM_YEAR));
 
     String respString = "";
-    
-
 
     if (action.equals(HttpConstants.ACTION_GET_SETS)) {
       respString = getSetsJson(year, day);
@@ -82,9 +71,18 @@ public class LollapaloozerServlet extends HttpServlet {
    */
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    
-    
-    
+    String methodName = "doPost";
+    PrintWriter out = resp.getWriter();
+
+    out.println(methodName + " handling request for the following parameters:");
+
+    Map<String, String[]> parameterMap = req.getParameterMap();
+    Iterator<String> it = parameterMap.keySet().iterator();
+
+    for (String s : parameterMap.keySet()) {
+      out.println(s + " = " + parameterMap.get(s));
+    }
+
     String action = checkNull(req.getParameter(HttpConstants.PARAM_ACTION));
     String email = checkNull(req.getParameter(HttpConstants.PARAM_EMAIL));
     String setId = checkNull(req.getParameter(HttpConstants.PARAM_SET_ID));
@@ -96,11 +94,14 @@ public class LollapaloozerServlet extends HttpServlet {
       notes = null;
     }
     if (action.equals(HttpConstants.ACTION_ADD_RATING)) {
+      out.println("Calling addRating()");
       addRating(email, setId, score, notes);
     } else if (action.equals(HttpConstants.ACTION_EMAIL_RATINGS)) {
+      out.println("Calling emailRatings()");
       EmailSender.emailRatings(email);
     }
-
+    out.println("Done!");
+    out.close();
   }
 
   private String getSetsJson(String yearString, String day) {

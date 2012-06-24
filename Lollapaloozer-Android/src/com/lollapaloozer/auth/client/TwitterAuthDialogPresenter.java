@@ -1,4 +1,4 @@
-package com.lollapaloozer.auth;
+package com.lollapaloozer.auth.client;
 
 import com.lollapaloozer.util.Constants;
 
