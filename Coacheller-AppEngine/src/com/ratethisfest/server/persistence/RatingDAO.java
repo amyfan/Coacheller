@@ -61,22 +61,22 @@ public class RatingDAO {
     return q.list();
   }
 
-  /**
-   * TODO: figure out how to filter ratings by festival! as well as year & day!!
-   * 
-   * @param festival
-   * @param userKey
-   * @return
-   */
-  public List<Rating> findRatingsByUserKey(FestivalEnum festival, Key<AppUser> userKey) {
+  public List<Rating> findAllRatingsByUserKey(Key<AppUser> userKey) {
     Query<Rating> q = dao.getObjectify().query(Rating.class).filter("rater", userKey);
     return q.list();
   }
 
-  public List<Rating> findRatingsBySetKeyAndUserKey(Key<Set> setKey, Key<AppUser> userKey,
+  public List<Rating> findRatingsByUserKeyAndSetKey(Key<AppUser> userKey, Key<Set> setKey,
       Integer weekend) {
     Query<Rating> q = dao.getObjectify().query(Rating.class).filter("set", setKey)
         .filter("rater", userKey).filter("weekend", weekend);
+    return q.list();
+  }
+
+  public List<Rating> findRatingsByUserKeyAndSetKeys(Key<AppUser> userKey,
+      List<Key<Set>> setKeys) {
+    Query<Rating> q = dao.getObjectify().query(Rating.class).filter("rater", userKey)
+        .filter("set in", setKeys);
     return q.list();
   }
 

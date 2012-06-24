@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.appengine.api.datastore.QueryResultIterable;
 import com.googlecode.objectify.Key;
 import com.ratethisfest.server.domain.AppUser;
 import com.ratethisfest.server.domain.Rating;
@@ -38,6 +39,31 @@ public class LollaRatingManager extends RatingManager {
 
   public static LollaRatingManager getInstance() {
     return SingletonHolder.instance;
+  }
+
+  public List<Rating> findRatingsByUserAndYear(String email, Integer year) {
+    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
+    List<Rating> ratings = null;
+    if (userKey != null) {
+      QueryResultIterable<Key<Set>> setKeys = setDao.findSetKeysByYear(FestivalEnum.LOLLAPALOOZA,
+          year);
+      List<Key<Set>> setKeyList = CollectionUtils.iterableToList(setKeys);
+      ratings = ratingDao.findRatingsByUserKeyAndSetKeys(userKey, setKeyList);
+    }
+    return ratings;
+  }
+
+  @Deprecated
+  public List<Rating> findRatingsByUserYearAndDay(String email, Integer year, DayEnum day) {
+    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
+    List<Rating> ratings = null;
+    if (userKey != null) {
+      QueryResultIterable<Key<Set>> setKeys = setDao.findSetKeysByYearAndDay(
+          FestivalEnum.LOLLAPALOOZA, year, day);
+      List<Key<Set>> setKeyList = CollectionUtils.iterableToList(setKeys);
+      ratings = ratingDao.findRatingsByUserKeyAndSetKeys(userKey, setKeyList);
+    }
+    return ratings;
   }
 
   /**
@@ -104,15 +130,6 @@ public class LollaRatingManager extends RatingManager {
     updateScoreAverageAfterUpdate(rating, difference);
 
     return ratingDao.updateRating(rating);
-  }
-
-  public List<Rating> findAllRatingsByUser(String email) {
-    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
-    List<Rating> ratings = null;
-    if (userKey != null) {
-      ratings = ratingDao.findRatingsByUserKey(FestivalEnum.LOLLAPALOOZA, userKey);
-    }
-    return ratings;
   }
 
   private void updateScoreAverageAfterAdd(Rating rating) {

@@ -300,7 +300,7 @@ public class LollapaloozerRateComposite extends Composite {
         ArrayList<Set> sortedItems = new ArrayList<Set>(result);
         Collections.sort(sortedItems, ComparatorUtils.SET_NAME_COMPARATOR);
         setsList.clear();
-        setsList.addAll(result);
+        setsList.addAll(sortedItems);
 
         setInput.clear();
         for (Set set : sortedItems) {
@@ -312,26 +312,28 @@ public class LollapaloozerRateComposite extends Composite {
   }
 
   private void retrieveRatings() {
-    lollapaloozerService.getRatingsByUserEmail(ownerEmail, new AsyncCallback<List<RatingGwt>>() {
+    // TODO: year input eventually
+    lollapaloozerService.getRatingsByUserEmail(ownerEmail, 2012,
+        new AsyncCallback<List<RatingGwt>>() {
 
-      public void onFailure(Throwable caught) {
-        // Show the RPC error message to the user
-        infoBox.setText(SERVER_ERROR);
-      }
+          public void onFailure(Throwable caught) {
+            // Show the RPC error message to the user
+            infoBox.setText(SERVER_ERROR);
+          }
 
-      public void onSuccess(List<RatingGwt> result) {
-        ratingsList.clear();
-        ratingsList.addAll(result);
-        Collections.sort(ratingsList, ComparatorUtils.RATING_NAME_COMPARATOR);
-      }
-    });
+          public void onSuccess(List<RatingGwt> result) {
+            ratingsList.clear();
+            ratingsList.addAll(result);
+            Collections.sort(ratingsList, ComparatorUtils.RATING_NAME_COMPARATOR);
+          }
+        });
   }
 
   private void loadRatingContents() {
     notesInput.setText("");
-    String artist = setInput.getItemText(setInput.getSelectedIndex());
+    Set set = setsList.get(setInput.getSelectedIndex());
     for (RatingGwt rating : ratingsList) {
-      if (artist.equals(rating.getArtistName())) {
+      if (set.getId().equals(rating.getSetId())) {
         if (rating.getScore() == 1) {
           scoreOneRadioButton.setValue(true);
         } else if (rating.getScore() == 2) {

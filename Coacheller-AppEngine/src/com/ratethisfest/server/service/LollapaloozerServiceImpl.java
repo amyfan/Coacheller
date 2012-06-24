@@ -79,15 +79,12 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     return resp;
   }
 
-  /**
-   * TODO: pass in year
-   */
-  public List<RatingGwt> getRatingsByUserEmail(String email) {
+  public List<RatingGwt> getRatingsByUserEmail(String email, Integer year) {
 
     List<RatingGwt> ratingGwts = null;
 
     if (email != null) {
-      List<Rating> ratings = LollaRatingManager.getInstance().findAllRatingsByUser(email);
+      List<Rating> ratings = LollaRatingManager.getInstance().findRatingsByUserAndYear(email, year);
       if (ratings != null) {
         ratingGwts = JSONUtils.convertRatingsToRatingGwts(ratings);
       }

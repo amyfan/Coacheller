@@ -22,7 +22,7 @@ public interface CoachellerServiceAsync {
   void addRating(String email, Long setId, String weekend, String score, String notes,
       AsyncCallback<String> callback) throws IllegalArgumentException;
 
-  void getRatingsByUserEmail(String email, AsyncCallback<List<RatingGwt>> callback)
+  void getRatingsByUserEmail(String email, Integer year, AsyncCallback<List<RatingGwt>> callback)
       throws IllegalArgumentException;
 
   void deleteRatingsByUser(String email, AsyncCallback<String> callback)
