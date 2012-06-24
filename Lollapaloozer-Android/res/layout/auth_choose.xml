@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/layout_text_banner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/text_banner_line1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Signing in lets you..."
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/text_banner_line2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text_banner_line1"
+            android:text="Rate Sets, save/email your comments"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/text_banner_line3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/text_banner_line2" android:text="Use Reminder Alerts- Don't miss your favorite set"/>
+
+        <TextView
+            android:id="@+id/text_banner_line4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Share with your friends using Facebook and Twitter"
+            android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/text_banner_line3"/>
+
+        <TextView
+            android:id="@+id/text_banner_line5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Move things using only your mind"
+            android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/text_banner_line4"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_signin_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical" android:layout_below="@+id/layout_text_banner">
+
+        <Button
+            android:id="@+id/btn_login_google"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="Login with Google acct" />
+
+        <Button
+            android:id="@+id/btn_invalidate_tokens"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_login_twitter"
+            android:layout_centerHorizontal="true"
+            android:text="Invalidate access Tokens" />
+
+        <Button
+            android:id="@+id/btn_login_twitter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_login_facebook"
+            android:layout_centerHorizontal="true"
+            android:text="Login with Twitter acct" />
+
+        <Button
+            android:id="@+id/btn_login_facebook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_login_google"
+            android:layout_centerHorizontal="true"
+            android:text="Login with Facebook acct" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/layout_signin_buttons"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/text_login_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/btn_invalidate_tokens"
+            android:text="Login Status: " />
+
+        <TextView
+            android:id="@+id/text_account_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/text_login_status"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/text_token_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/text_account_name"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/text_intentionally_blank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</RelativeLayout>
