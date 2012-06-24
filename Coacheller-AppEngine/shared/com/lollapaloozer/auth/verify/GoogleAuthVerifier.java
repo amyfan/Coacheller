@@ -5,9 +5,7 @@ import java.net.MalformedURLException;
 
 import org.json.JSONException;
 
-import android.accounts.AccountManager;
-
-import com.lollapaloozer.auth.client.OAuthHTTP;
+import com.lollapaloozer.auth.OAuthHTTP;
 
 public class GoogleAuthVerifier implements AuthVerifier {
 

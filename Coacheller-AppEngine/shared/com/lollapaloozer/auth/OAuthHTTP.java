@@ -1,4 +1,4 @@
-package com.lollapaloozer.auth.client;
+package com.lollapaloozer.auth;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import android.accounts.AccountManager;
+
 
 public class OAuthHTTP {
 

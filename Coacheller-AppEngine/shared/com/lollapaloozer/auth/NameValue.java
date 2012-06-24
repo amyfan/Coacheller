@@ -1,4 +1,4 @@
-package com.lollapaloozer.auth.client;
+package com.lollapaloozer.auth;
 
 public class NameValue {
 	public String _name;

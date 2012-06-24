@@ -320,7 +320,7 @@ public class LollapaloozerActivity extends Activity implements
 	public void doNetworkOperations() throws JSONException {
 
 		LollapaloozerHelper.debug(this, "rebuildJAHM()");
-		if (_obtained_email != null) { // Get my ratings
+		if (_isLoggedIn()) { // Get my ratings
 
 			JSONArray myRatings = null;
 			try {
@@ -626,21 +626,29 @@ public class LollapaloozerActivity extends Activity implements
 			e.printStackTrace();
 		}
 
-		if (_obtained_email == null) {
+		if (!_isLoggedIn()) {
 			_beginSigninProcess();
 		} else {
-
 			showDialog(DIALOG_RATE);
 		}
 	}
 
+	private boolean _isLoggedIn() {
+		if (_obtained_email == null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 	private void _beginSigninProcess() {
 		Toast featureRequiresSignin = Toast.makeText(this,
 				Constants.MSG_SIGNIN_REQUIRED, 25);
 		featureRequiresSignin.show();
+		
+		
 
 		// This shows the 'enter email' dialog, no longer needed
-		showDialog(DIALOG_GETEMAIL);
+		//showDialog(DIALOG_GETEMAIL);
 
 	}
 
