@@ -93,9 +93,8 @@ public class TwitterAuthProvider implements AuthProvider {
       return false;
     }
 
-    TwitterVerifier verifier = new TwitterVerifier(_oAuthProvider.getAccessToken(),
-        _oAuthProvider.getTokenSecret());
-    return verifier.verify("",
+    TwitterVerifier verifier = new TwitterVerifier();
+    return verifier.verify(_oAuthProvider.getAccessToken(),
         _twitterAccountProperties.get(TwitterVerifier.ACCOUNT_PROPERTY_HANDLE));
 
   }
@@ -143,8 +142,8 @@ public class TwitterAuthProvider implements AuthProvider {
 
   public void requestTokenCallback(int requestCode, int resultCode, Intent data) {
     if (resultCode == Activity.RESULT_OK) {
-      String token = data.getStringExtra(Constants.INTENT_EXTRA_OAUTH1_TOKEN);
-      String verifier = data.getStringExtra(Constants.INTENT_EXTRA_OAUTH1_VERIFIER);
+      String token = data.getStringExtra(Constants.INTENT_EXTRA_OAUTH1_RETURN_TOKEN);
+      String verifier = data.getStringExtra(Constants.INTENT_EXTRA_OAUTH1_RETURN_VERIFIER);
       _oAuthProvider.requestTokenResult(token, verifier);
     }
 

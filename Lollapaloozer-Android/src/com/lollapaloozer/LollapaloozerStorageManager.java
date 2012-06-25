@@ -117,4 +117,12 @@ public class LollapaloozerStorageManager {
     }
   }
 
+  public synchronized void putObject(String objectName, Object obj) {
+    _data.put(objectName, obj);
+  }
+
+  public synchronized Object getObject(String objectName) {
+    return (Object) _data.get(objectName);
+  }
+
 }

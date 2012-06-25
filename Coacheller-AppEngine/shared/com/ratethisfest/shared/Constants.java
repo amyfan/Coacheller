@@ -41,8 +41,15 @@ public class Constants {
   public static final int INTENT_REQ_CHOOSE_LOGIN_TYPE = 2;
   public static final int INTENT_REQ_TWITTER_LOGIN = 1;
 
-  public static final String INTENT_EXTRA_ALIAS_TWITTER_AUTH = "intent.extra.twitter.auth";
-  public static final String INTENT_EXTRA_OAUTH1_TOKEN = "intent.extra.oauth1.token";
-  public static final String INTENT_EXTRA_OAUTH1_VERIFIER = "intent.extra.oauth1.verifier";
+  public static final String INTENT_EXTRA_TWITTER_AUTHURL = "intent.extra.twitter.auth";
+  public static final String INTENT_EXTRA_OAUTH1_RETURN_TOKEN = "intent.extra.oauth1.token";
+  public static final String INTENT_EXTRA_OAUTH1_RETURN_VERIFIER = "intent.extra.oauth1.verifier";
+  public static final String INTENT_EXTRA_LOGIN_TYPE = "intent.extra.login.type";
+  public static final String INTENT_EXTRA_ACCOUNT_IDENTIFIER = "intent.extra.account.identifier";
+  public static final String INTENT_EXTRA_LOGIN_TOKEN = "intent.extra.login.token";
+
+  public static final int LOGIN_TYPE_GOOGLE = 1;
+  public static final int LOGIN_TYPE_FACEBOOK = 2;
+  public static final int LOGIN_TYPE_TWITTER = 3;
 
 }

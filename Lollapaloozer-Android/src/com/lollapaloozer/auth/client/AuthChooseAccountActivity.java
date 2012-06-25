@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.lollapaloozer.R;
@@ -18,6 +19,8 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
   private TextView _loginStatusText;
   private TextView _accountNameText;
   private TextView _tokenIdText;
+  private Button _buttonInvalidateTokens;
+  private Button _buttonDismissActivity;
 
   // App
   private AuthDemoModel _model;
@@ -37,7 +40,11 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
     this.findViewById(R.id.btn_login_facebook).setOnClickListener(this);
     this.findViewById(R.id.btn_login_twitter).setOnClickListener(this);
     this.findViewById(R.id.btn_login_google).setOnClickListener(this);
-    this.findViewById(R.id.btn_invalidate_tokens).setOnClickListener(this);
+    _buttonInvalidateTokens = (Button) findViewById(R.id.btn_invalidate_tokens);
+    _buttonInvalidateTokens.setOnClickListener(this);
+
+    _buttonDismissActivity = (Button) findViewById(R.id.btn_dismiss_activity);
+    _buttonDismissActivity.setOnClickListener(this);
 
     // App
     _model = new AuthDemoModel(this);
@@ -79,6 +86,7 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
       _model.invalidateTokens();
       _updateUI();
     }
+
     if (buttonClickedName.equals(this.getResources()
         .getResourceEntryName(R.id.btn_dismiss_activity))) {
       _returnToMainActivity();
@@ -87,6 +95,14 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
 
   private void _returnToMainActivity() {
     Intent returnIntent = getIntent();
+
+    returnIntent.putExtra(Constants.INTENT_EXTRA_LOGIN_TYPE, _model.getCurrentAuthProviderType());
+
+    returnIntent.putExtra(Constants.INTENT_EXTRA_ACCOUNT_IDENTIFIER, _model
+        .getCurrentAuthProvider().getVerifiedAccountIdentifier());
+
+    returnIntent.putExtra(Constants.INTENT_EXTRA_LOGIN_TOKEN, _model.getCurrentAuthProvider()
+        .getAuthToken());
 
     int result;
     if (_model.isLoggedIn()) {
@@ -119,8 +135,15 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
         this.findViewById(R.layout.auth_choose).invalidate();
       }
     } else {
-      // Release version, hide debug UI elements
+      _loginStatusText.setVisibility(View.GONE);
+      _accountNameText.setVisibility(View.GONE);
+      _tokenIdText.setVisibility(View.GONE);
+      _buttonInvalidateTokens.setVisibility(View.GONE);
+      _buttonDismissActivity.setVisibility(View.GONE);
 
+      if (_model.isLoggedIn()) {
+        _returnToMainActivity();
+      }
     }
 
   }
@@ -134,8 +157,8 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
 
-    System.out.println("onActivityResult(requestCode=[" + requestCode + "], resultCode=["
-        + resultCode + "] with data: " + data);
+    System.out.println("AuthChooseAccountActivity.onActivityResult(requestCode=[" + requestCode
+        + "], resultCode=[" + resultCode + "] with data: " + data);
 
     switch (requestCode) {
     case Constants.INTENT_REQ_TWITTER_LOGIN:
