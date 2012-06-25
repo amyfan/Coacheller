@@ -69,7 +69,8 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     } else if (!FieldVerifier.isValidScore(score)) {
       resp = FieldVerifier.SCORE_ERROR;
     } else if (setId != null) {
-      resp = LollaRatingManager.getInstance().addRatingBySetId(email, setId,
+      // TODO: implement GWT login auth!
+      resp = LollaRatingManager.getInstance().addRatingBySetId(null, null, email, setId,
           Integer.valueOf(score), notes);
     } else {
       log.log(Level.WARNING, "addRatingBySetArtist: null args");
