@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 
-import com.lollapaloozer.util.Constants;
+import com.ratethisfest.shared.Constants;
 
 public class TwitterAuthDialogPresenter {
 

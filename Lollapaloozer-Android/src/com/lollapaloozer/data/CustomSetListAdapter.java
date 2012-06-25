@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.lollapaloozer.R;
 import com.lollapaloozer.ui.LollapaloozerActivity;
-import com.lollapaloozer.util.Constants;
 import com.lollapaloozer.util.LollapaloozerHelper;
+import com.ratethisfest.shared.Constants;
 import com.ratethisfest.shared.DateTimeUtils;
 
 public class CustomSetListAdapter implements ListAdapter {

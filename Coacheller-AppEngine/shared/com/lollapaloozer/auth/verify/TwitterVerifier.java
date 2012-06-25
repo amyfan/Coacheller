@@ -9,9 +9,9 @@ import org.scribe.model.Response;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 
-import com.lollapaloozer.auth.client.TwitterAuthProviderOAuth;
-import com.lollapaloozer.util.Constants;
-import com.lollapaloozer.util.Helper;
+import com.lollapaloozer.auth.TwitterAuthProviderOAuth;
+import com.ratethisfest.shared.Constants;
+import com.ratethisfest.shared.Helper;
 
 public class TwitterVerifier implements AuthVerifier {
 	

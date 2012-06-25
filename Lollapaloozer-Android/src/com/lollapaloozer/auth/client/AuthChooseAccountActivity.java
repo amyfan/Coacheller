@@ -8,7 +8,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.lollapaloozer.R;
-import com.lollapaloozer.util.Constants;
+import com.ratethisfest.shared.Constants;
 
 public class AuthChooseAccountActivity extends Activity implements OnClickListener {
 	

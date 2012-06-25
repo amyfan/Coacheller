@@ -1,4 +1,4 @@
-package com.lollapaloozer.util;
+package com.ratethisfest.shared;
 
 public class Helper {
 	public static String readXmlProperty(String propertyName, String xmlData) {

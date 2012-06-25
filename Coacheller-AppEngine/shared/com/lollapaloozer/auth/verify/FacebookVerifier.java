@@ -13,10 +13,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.facebook.android.FacebookError;
-import com.facebook.android.Util;
-import com.lollapaloozer.util.LollapaloozerHelper;
-
 public class FacebookVerifier implements AuthVerifier {
 
 	@Override

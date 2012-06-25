@@ -38,8 +38,8 @@ import com.lollapaloozer.data.CustomPair;
 import com.lollapaloozer.data.CustomSetListAdapter;
 import com.lollapaloozer.data.JSONArrayHashMap;
 import com.lollapaloozer.data.JSONArraySortMap;
-import com.lollapaloozer.util.Constants;
 import com.lollapaloozer.util.LollapaloozerHelper;
+import com.ratethisfest.shared.Constants;
 import com.ratethisfest.shared.FieldVerifier;
 
 public class LollapaloozerActivity extends Activity implements

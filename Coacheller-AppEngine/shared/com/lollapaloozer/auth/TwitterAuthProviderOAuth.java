@@ -1,4 +1,4 @@
-package com.lollapaloozer.auth.client;
+package com.lollapaloozer.auth;
 
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;

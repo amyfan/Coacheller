@@ -11,7 +11,7 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
 import com.lollapaloozer.R;
-import com.lollapaloozer.util.Constants;
+import com.ratethisfest.shared.Constants;
 
 public class TwitterAuthWebpageActivity extends Activity {
 
