@@ -123,7 +123,6 @@ public class SetDAO {
     return q;
   }
 
-  @Deprecated
   public QueryResultIterable<Key<Set>> findSetKeysByYearAndDay(FestivalEnum festival, Integer year,
       DayEnum day) {
     QueryResultIterable<Key<Set>> q = dao.getObjectify().query(Set.class)

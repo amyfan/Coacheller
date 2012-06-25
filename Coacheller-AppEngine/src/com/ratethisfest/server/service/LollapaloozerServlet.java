@@ -60,7 +60,7 @@ public class LollapaloozerServlet extends HttpServlet {
       respString = getSetsJson(year, day);
     } else if (action.equals(HttpConstants.ACTION_GET_RATINGS)) {
       if (verifyToken(authType, authId, authToken)) {
-        respString = getRatingsJsonByUser(email, year, day);
+        respString = getRatingsJsonByUser(authType, authId, authToken, email, year, day);
       }
     }
 
@@ -158,13 +158,21 @@ public class LollapaloozerServlet extends HttpServlet {
    * @param day
    * @return
    */
-  private String getRatingsJsonByUser(String email, String year, String day) {
+  private String getRatingsJsonByUser(String authType, String authId, String authToken,
+      String email, String year, String day) {
     String resp = null;
 
     List<Rating> ratings = null;
 
-    if (email != null) {
-      ratings = LollaRatingManager.getInstance().findAllRatingsByUser(email);
+    if (authId != null) {
+      if (!FieldVerifier.isValidYear(year)) {
+        resp = FieldVerifier.YEAR_ERROR;
+      } else if (!FieldVerifier.isValidDay(day)) {
+        resp = FieldVerifier.DAY_ERROR;
+      } else {
+        ratings = LollaRatingManager.getInstance().findRatingsByUserYearAndDay(authType, authId,
+            authToken, email, Integer.valueOf(year), DayEnum.fromValue(day));
+      }
     }
 
     JSONArray jsonArray = JSONUtils.convertRatingsToJSONArray(ratings);
@@ -175,8 +183,8 @@ public class LollapaloozerServlet extends HttpServlet {
     return resp;
   }
 
-  private String addRating(String authType, String authId, String authToken, String email, String setId,
-      String score, String notes) {
+  private String addRating(String authType, String authId, String authToken, String email,
+      String setId, String score, String notes) {
 
     String resp = null;
 

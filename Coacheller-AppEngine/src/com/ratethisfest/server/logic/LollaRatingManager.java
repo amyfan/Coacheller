@@ -41,6 +41,13 @@ public class LollaRatingManager extends RatingManager {
     return SingletonHolder.instance;
   }
 
+  /**
+   * TODO: about to be deprecated once gwt login auth implemented
+   * 
+   * @param email
+   * @param year
+   * @return
+   */
   public List<Rating> findRatingsByUserAndYear(String email, Integer year) {
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     List<Rating> ratings = null;
@@ -50,6 +57,30 @@ public class LollaRatingManager extends RatingManager {
       List<Key<Set>> setKeyList = CollectionUtils.iterableToList(setKeys);
       ratings = ratingDao.findRatingsByUserKeyAndSetKeys(userKey, setKeyList);
     }
+    return ratings;
+  }
+
+  public List<Rating> findRatingsByUserAndYear(String authType, String authId, String authToken,
+      String email, Integer year) {
+    Key<AppUser> userKey = UserAccountManager.getInstance().manageAppUser(authType, authId,
+        authToken, email);
+    List<Rating> ratings = null;
+    QueryResultIterable<Key<Set>> setKeys = setDao.findSetKeysByYear(FestivalEnum.LOLLAPALOOZA,
+        year);
+    List<Key<Set>> setKeyList = CollectionUtils.iterableToList(setKeys);
+    ratings = ratingDao.findRatingsByUserKeyAndSetKeys(userKey, setKeyList);
+    return ratings;
+  }
+
+  public List<Rating> findRatingsByUserYearAndDay(String authType, String authId,
+      String authToken, String email, Integer year, DayEnum day) {
+    Key<AppUser> userKey = UserAccountManager.getInstance().manageAppUser(authType, authId,
+        authToken, email);
+    List<Rating> ratings = null;
+    QueryResultIterable<Key<Set>> setKeys = setDao.findSetKeysByYearAndDay(
+        FestivalEnum.LOLLAPALOOZA, year, day);
+    List<Key<Set>> setKeyList = CollectionUtils.iterableToList(setKeys);
+    ratings = ratingDao.findRatingsByUserKeyAndSetKeys(userKey, setKeyList);
     return ratings;
   }
 
@@ -97,7 +128,8 @@ public class LollaRatingManager extends RatingManager {
       }
     } else {
       // update existing rating
-      // TODO: for now, not going to do extra auth
+      // TODO: for now, not going to do extra auth (cuz presumably this rating
+      // was acquired legally)
       updateRating(ratings.get(0), score, notes);
       resp = "rating updated";
     }
