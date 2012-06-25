@@ -13,7 +13,7 @@ import com.ratethisfest.shared.Constants;
 
 public class AuthChooseAccountActivity extends Activity implements OnClickListener {
 
-  private boolean _DEBUG = true;
+  private boolean _DEBUG = false;
 
   // Framework
   private TextView _loginStatusText;

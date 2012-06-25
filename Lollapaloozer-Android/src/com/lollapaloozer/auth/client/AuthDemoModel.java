@@ -109,14 +109,17 @@ public class AuthDemoModel {
   }
 
   public void loginToGoogle() {
+    invalidateTokens();
     _authProviderGoogle.login();
   }
 
   public void loginToFacebook() {
+    invalidateTokens();
     _authProviderFacebook.login();
   }
 
   public void loginToTwitter() {
+    invalidateTokens();
     _authProviderTwitter.login();
   }
 

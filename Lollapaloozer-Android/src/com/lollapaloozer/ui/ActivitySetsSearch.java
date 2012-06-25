@@ -88,6 +88,7 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
 
         intent.putExtras(bun);
         startActivity(intent);
+        finish();
       } catch (Exception e) {
         e.printStackTrace();
         Toast exceptionText = Toast.makeText(this, "Exception Launching Activity", 5);

@@ -904,4 +904,12 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
   }
 
+  @Override
+  public void onBackPressed() {
+    System.out.println("Back button pressed");
+    // Exit if back button is pressed from this activity.
+    super.onBackPressed();
+    // getApplication().
+  }
+
 }
