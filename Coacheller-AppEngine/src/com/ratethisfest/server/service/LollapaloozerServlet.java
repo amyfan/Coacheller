@@ -47,6 +47,9 @@ public class LollapaloozerServlet extends HttpServlet {
     resp.setContentType("text/plain");
 
     String action = checkNull(req.getParameter(HttpConstants.PARAM_ACTION));
+    String authType = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TYPE));
+    String authId = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_ID));
+    String authToken = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TOKEN));
     String email = checkNull(req.getParameter(HttpConstants.PARAM_EMAIL));
     String day = checkNull(req.getParameter(HttpConstants.PARAM_DAY));
     String year = checkNull(req.getParameter(HttpConstants.PARAM_YEAR));
@@ -83,6 +86,9 @@ public class LollapaloozerServlet extends HttpServlet {
     }
 
     String action = checkNull(req.getParameter(HttpConstants.PARAM_ACTION));
+    String authType = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TYPE));
+    String authId = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_ID));
+    String authToken = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TOKEN));
     String email = checkNull(req.getParameter(HttpConstants.PARAM_EMAIL));
     String setId = checkNull(req.getParameter(HttpConstants.PARAM_SET_ID));
     String score = checkNull(req.getParameter(HttpConstants.PARAM_SCORE));
