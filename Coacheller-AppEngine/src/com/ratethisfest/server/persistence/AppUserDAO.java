@@ -72,6 +72,20 @@ public class AppUserDAO {
     }
   }
 
+  public Key<AppUser> findAppUserKeyByAuthId(String authId) {
+    if (authId == null) {
+      return null;
+    }
+
+    Iterable<Key<AppUser>> q = dao.getObjectify().query(AppUser.class).filter("authId", authId)
+        .fetchKeys();
+    if (q.iterator().hasNext()) {
+      return q.iterator().next();
+    } else {
+      return null;
+    }
+  }
+
   public Key<AppUser> findAppUserKeyByEmail(String email) {
     if (email == null) {
       return null;

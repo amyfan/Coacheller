@@ -23,6 +23,7 @@ public class AppUser {
   private String authType; // facebook, google, or twitter
   private String authId; // unique id for the auth account; if fb/goog, then
                          // looks like email; otherwise, #
+  private String authToken; // storing verified token to save on performance
   private Date dateCreated;
   private Date dateModified;
 
@@ -63,6 +64,14 @@ public class AppUser {
 
   public void setAuthId(String authId) {
     this.authId = authId;
+  }
+
+  public String getAuthToken() {
+    return authToken;
+  }
+
+  public void setAuthToken(String authToken) {
+    this.authToken = authToken;
   }
 
   public Boolean isActive() {

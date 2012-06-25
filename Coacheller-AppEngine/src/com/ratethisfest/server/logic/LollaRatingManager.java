@@ -67,15 +67,19 @@ public class LollaRatingManager extends RatingManager {
   }
 
   /**
+   * Assumption: Service layer had already authenticated the token (if exists)
    * 
+   * @param authType
+   * @param authId
+   * @param authToken
    * @param email
    * @param setId
    * @param score
    * @param notes
    * @return
    */
-  public String addRatingBySetId(String authType, String authId, String email, Long setId,
-      Integer score, String notes) {
+  public String addRatingBySetId(String authType, String authId, String authToken, String email,
+      Long setId, Integer score, String notes) {
     String resp = null;
 
     Key<Set> setKey = setDao.findSetKeyById(setId);
@@ -83,7 +87,9 @@ public class LollaRatingManager extends RatingManager {
     if (ratings == null || ratings.size() == 0) {
       // add new rating
       if (setKey != null) {
-        addRating(authType, authId, email, setKey, score, notes);
+        Key<AppUser> userKey = UserAccountManager.getInstance().manageAppUser(authType, authId,
+            authToken, email);
+        addRating(userKey, setKey, score, notes);
         resp = "rating added";
       } else {
         resp = "invalid artist name";
@@ -91,6 +97,7 @@ public class LollaRatingManager extends RatingManager {
       }
     } else {
       // update existing rating
+      // TODO: for now, not going to do extra auth
       updateRating(ratings.get(0), score, notes);
       resp = "rating updated";
     }
@@ -98,19 +105,13 @@ public class LollaRatingManager extends RatingManager {
     return resp;
   }
 
-  private Rating addRating(String authType, String authId, String email, Key<Set> setKey,
-      Integer score, String notes) {
+  private Rating addRating(Key<AppUser> userKey, Key<Set> setKey, Integer score, String notes) {
     Rating rating = new Rating();
     rating.setSet(setKey);
     rating.setScore(score);
     rating.setWeekend(1);
     rating.setNotes(notes);
 
-    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
-    if (userKey == null) {
-      UserAccountManager.getInstance().createAppUser(authType, authId, email);
-      userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
-    }
     rating.setRater(userKey);
 
     updateScoreAverageAfterAdd(rating);

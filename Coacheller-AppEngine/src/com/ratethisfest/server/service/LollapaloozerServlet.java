@@ -103,7 +103,7 @@ public class LollapaloozerServlet extends HttpServlet {
     if (action.equals(HttpConstants.ACTION_ADD_RATING)) {
       out.println("Calling addRating()");
       if (verifyToken(authType, authId, authToken)) {
-        addRating(authType, authId, email, setId, score, notes);
+        addRating(authType, authId, authToken, email, setId, score, notes);
       }
     } else if (action.equals(HttpConstants.ACTION_EMAIL_RATINGS)) {
       out.println("Calling emailRatings()");
@@ -175,7 +175,7 @@ public class LollapaloozerServlet extends HttpServlet {
     return resp;
   }
 
-  private String addRating(String authType, String authId, String email, String setId,
+  private String addRating(String authType, String authId, String authToken, String email, String setId,
       String score, String notes) {
 
     String resp = null;
@@ -185,7 +185,7 @@ public class LollapaloozerServlet extends HttpServlet {
     } else if (!FieldVerifier.isValidScore(score)) {
       resp = FieldVerifier.SCORE_ERROR;
     } else if (setId != null) {
-      resp = LollaRatingManager.getInstance().addRatingBySetId(authType, authId, email,
+      resp = LollaRatingManager.getInstance().addRatingBySetId(authType, authId, authToken, email,
           Long.valueOf(setId), Integer.valueOf(score), notes);
     } else {
       resp = "null args";
