@@ -38,6 +38,7 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
     this.findViewById(R.id.btn_login_twitter).setOnClickListener(this);
     this.findViewById(R.id.btn_login_google).setOnClickListener(this);
     this.findViewById(R.id.btn_invalidate_tokens).setOnClickListener(this);
+    this.findViewById(R.id.btn_dismiss_activity).setOnClickListener(this);
 
     // App
     _model = new AuthDemoModel(this);

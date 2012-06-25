@@ -1,13 +1,7 @@
 package com.lollapaloozer.auth.verify;
 
-import java.util.HashMap;
-
-import org.scribe.builder.ServiceBuilder;
-import org.scribe.builder.api.TwitterApi;
-import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
-import org.scribe.oauth.OAuthService;
 
 import com.lollapaloozer.auth.TwitterAuthProviderOAuth;
 import com.ratethisfest.shared.Constants;
@@ -21,6 +15,9 @@ public class TwitterVerifier implements AuthVerifier {
 
   private TwitterAuthProviderOAuth _oAuthProvider = new TwitterAuthProviderOAuth(
       Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET, Constants.OAUTH_CALLBACK_URL);
+
+  private TwitterVerifier() {
+  }
 
   public TwitterVerifier(String accessToken, String accessTokenSecret) {
     _oAuthProvider.setAccessTokenObject(accessToken, accessTokenSecret);
@@ -40,7 +37,6 @@ public class TwitterVerifier implements AuthVerifier {
 
     // If data is meaningful, set logged in flag;
     if (id != null && handle.equals(identifier)) {
-
       System.out.println("Twitter Verification Successful using verifier");
       return true;
     } else {
