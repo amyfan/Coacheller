@@ -522,13 +522,19 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
         Toast invalidEmail = Toast.makeText(this, "Please enter your real email address.", 25);
         invalidEmail.show();
 
-      } else { // Email is valid. Save email and let user get on with
-        // rating
+      } else { // Email is valid. Save email and email ratings
 
         _loginData.emailAddress = email;
         _storageManager.save();
         _getEmailDialog.dismiss();
-        showDialog(DIALOG_RATE);
+        try {
+          System.out.println("Requesting ratings email.");
+          String result = LollapaloozerServiceUtils.emailMyRatings(this, _loginData.emailAddress);
+
+        } catch (Exception e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
       }
     }
 
@@ -692,6 +698,17 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     // Always call through to super implementation
     super.onPrepareDialog(id, dialog);
 
+    if (id == DIALOG_GETEMAIL) {
+      EditText emailField = (EditText) _getEmailDialog.findViewById(R.id.textField_enterEmail);
+      if (_loginData.emailAddress == null) {
+        emailField.setText("");
+      } else {
+        emailField.setText(_loginData.emailAddress);
+        emailField.selectAll();
+        emailField.requestFocus();
+      }
+    }
+
     if (id == DIALOG_RATE) {
 
       // _rateDialog.setTitle("Rate this Set!");
@@ -770,8 +787,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
       _getEmailDialog.setContentView(R.layout.get_email_address);
       _getEmailDialog.setTitle(Constants.DIALOG_TITLE_GET_EMAIL);
 
-      EditText emailField = (EditText) _getEmailDialog.findViewById(R.id.textField_enterEmail);
-
       Button buttonOK = (Button) _getEmailDialog.findViewById(R.id.button_provideEmail);
       buttonOK.setOnClickListener(this);
 
@@ -846,15 +861,14 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     case R.id.menu_item_email_me:
       LollapaloozerHelper.debug(this, "Menu button 'email me' pressed");
 
-      if (_loginData.emailAddress == null) {
+      if (!_isLoggedIn()) {
         Toast.makeText(this, "Try rating at least one set first", 15).show();
       } else {
         try {
 
-          Toast.makeText(this, "This feature coming soon!", 15).show();
-          // TODO: launch dialog with email address, allowing them to change it
-          // just for this action
-          // LollapaloozerServiceUtils.emailMyRatings(this, _obtained_email);
+          // Toast.makeText(this, "This feature coming soon!", 15).show();
+          showDialog(DIALOG_GETEMAIL);
+
         } catch (Exception e) {
           LollapaloozerHelper.debug(this, "Error requesting ratings email");
           e.printStackTrace();
