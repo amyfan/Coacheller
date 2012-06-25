@@ -850,7 +850,8 @@ public class LollapaloozerActivity extends Activity implements
 
 					Toast.makeText(this, "This feature coming soon!", 15)
 							.show();
-					// ServiceUtils.sendMyRatings(this, _obtained_email);
+					// TODO: launch dialog with email address, allowing them to change it just for this action
+					// LollapaloozerServiceUtils.emailMyRatings(this, _obtained_email);
 				} catch (Exception e) {
 					LollapaloozerHelper.debug(this,
 							"Error requesting ratings email");

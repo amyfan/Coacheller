@@ -22,20 +22,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_banner_line1"
-            android:text="Rate Sets, save/email your comments"
+            android:text="Rate sets, save comments, and email your ratings"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/text_banner_line3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/text_banner_line2" android:text="Use Reminder Alerts- Don't miss your favorite set"/>
+            android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/text_banner_line2"
+            android:text="Use Reminder Alerts- Don't miss your favorite set (coming soon)"/>
 
         <TextView
             android:id="@+id/text_banner_line4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Share with your friends using Facebook and Twitter"
+            android:text="Share with your friends using Facebook and Twitter (coming soon)"
             android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/text_banner_line3"/>
 
         <TextView

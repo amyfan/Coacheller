@@ -68,27 +68,8 @@ public class LollapaloozerServiceUtils {
 			HttpGet get = new HttpGet(requestString.toString());
 			HttpClient hc = new DefaultHttpClient();
 			HttpResponse response = hc.execute(get);
-
-			// get the response from GAE server, should be in JSON format
-			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-				LollapaloozerHelper.debug(context, HTTP_SUCCESS);
-
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(
-								response.getEntity().getContent(), "UTF-8"));
-				StringBuilder builder = new StringBuilder();
-				for (String line = null; (line = reader.readLine()) != null;) {
-					builder.append(line).append("\n");
-				}
-				JSONTokener tokener = new JSONTokener(builder.toString());
-				JSONArray finalResult = new JSONArray(tokener);
-				return finalResult;
-
-			} else {
-				LollapaloozerHelper.debug(context, HTTP_FAILURE
-						+ response.getStatusLine().getStatusCode());
-				throw new Exception();
-			}
+			
+			return getHttpGetResponse(response, context);
 
 		} catch (ClientProtocolException e) { // TODO: Could have created a
 												// custom
@@ -140,27 +121,8 @@ public class LollapaloozerServiceUtils {
 			HttpGet get = new HttpGet(requestString.toString());
 			HttpClient hc = new DefaultHttpClient();
 			HttpResponse response = hc.execute(get);
-
-			// get the response from GAE server, should be in JSON format
-			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-				LollapaloozerHelper.debug(context, HTTP_SUCCESS);
-
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(
-								response.getEntity().getContent(), "UTF-8"));
-				StringBuilder builder = new StringBuilder();
-				for (String line = null; (line = reader.readLine()) != null;) {
-					builder.append(line).append("\n");
-				}
-				JSONTokener tokener = new JSONTokener(builder.toString());
-				JSONArray finalResult = new JSONArray(tokener);
-				return finalResult;
-
-			} else {
-				LollapaloozerHelper.debug(context, HTTP_FAILURE
-						+ response.getStatusLine().getStatusCode());
-				throw new Exception();
-			}
+			
+			return getHttpGetResponse(response, context);
 
 		} catch (ClientProtocolException e) { // TODO: Could have created a
 												// custom
@@ -234,25 +196,7 @@ public class LollapaloozerServiceUtils {
 			HttpClient hc = new DefaultHttpClient();
 			HttpResponse response = hc.execute(post);
 
-			// get the response from GAE server, should be in JSON format
-			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-				LollapaloozerHelper.debug(context, HTTP_SUCCESS);
-
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(
-								response.getEntity().getContent(), "UTF-8"));
-				StringBuilder builder = new StringBuilder();
-				for (String line = null; (line = reader.readLine()) != null;) {
-					builder.append(line).append("\n");
-				}
-
-				return builder.toString();
-
-			} else {
-				LollapaloozerHelper.debug(context, HTTP_FAILURE
-						+ response.getStatusLine().getStatusCode());
-				throw new Exception();
-			}
+			return getHttpPostResponse(response, context);
 
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -266,47 +210,24 @@ public class LollapaloozerServiceUtils {
 		}
 	}
 
-	// This may have a bug or 3, I was getting tired
-	public static String sendMyRatings(Context context, String email)
+	public static String emailMyRatings(Context context, String email)
 			throws Exception {
 		try {
-			StringBuilder requestString = new StringBuilder();
-			requestString.append(HttpConstants.SERVER_URL_LOLLAPALOOZER);
-			requestString.append(HttpConstants.PARAM_EMAIL);
-			requestString.append("=");
-			requestString.append(email);
-			requestString.append("&");
-			requestString.append(HttpConstants.PARAM_ACTION);
-			requestString.append("=");
+			HttpPost post = new HttpPost(HttpConstants.SERVER_URL_LOLLAPALOOZER);
 
-			// TODO fix this for email feature
-			requestString.append(HttpConstants.ACTION_ADD_RATING);
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 
-			LollapaloozerHelper.debug(context,
-					"HTTPPost = " + requestString.toString());
-			HttpPost post = new HttpPost(requestString.toString());
+			nameValuePairs.add(new BasicNameValuePair(
+					HttpConstants.PARAM_EMAIL, email));
+			nameValuePairs.add(new BasicNameValuePair(
+					HttpConstants.PARAM_ACTION,
+					HttpConstants.ACTION_EMAIL_RATINGS));
+
+			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 			HttpClient hc = new DefaultHttpClient();
 			HttpResponse response = hc.execute(post);
 
-			// get the response from GAE server, should be in JSON format
-			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-				LollapaloozerHelper.debug(context, HTTP_SUCCESS);
-
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(
-								response.getEntity().getContent(), "UTF-8"));
-				StringBuilder builder = new StringBuilder();
-				for (String line = null; (line = reader.readLine()) != null;) {
-					builder.append(line).append("\n");
-				}
-
-				return builder.toString();
-
-			} else {
-				LollapaloozerHelper.debug(context, HTTP_FAILURE
-						+ response.getStatusLine().getStatusCode());
-				throw new Exception();
-			}
+			return getHttpPostResponse(response, context);
 
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -319,4 +240,53 @@ public class LollapaloozerServiceUtils {
 			throw new Exception();
 		}
 	}
+
+	private static JSONArray getHttpGetResponse(HttpResponse response, Context context)
+			throws Exception {
+
+		// get the response from GAE server, should be in JSON format
+		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+			LollapaloozerHelper.debug(context, HTTP_SUCCESS);
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					response.getEntity().getContent(), "UTF-8"));
+			StringBuilder builder = new StringBuilder();
+			for (String line = null; (line = reader.readLine()) != null;) {
+				builder.append(line).append("\n");
+			}
+			JSONTokener tokener = new JSONTokener(builder.toString());
+			JSONArray finalResult = new JSONArray(tokener);
+			return finalResult;
+
+		} else {
+			LollapaloozerHelper.debug(context, HTTP_FAILURE
+					+ response.getStatusLine().getStatusCode());
+			throw new Exception();
+		}
+
+	}
+
+	private static String getHttpPostResponse(HttpResponse response, Context context)
+			throws Exception {
+
+		// get the response from GAE server, should be in JSON format
+		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+			LollapaloozerHelper.debug(context, HTTP_SUCCESS);
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					response.getEntity().getContent(), "UTF-8"));
+			StringBuilder builder = new StringBuilder();
+			for (String line = null; (line = reader.readLine()) != null;) {
+				builder.append(line).append("\n");
+			}
+
+			return builder.toString();
+
+		} else {
+			LollapaloozerHelper.debug(context, HTTP_FAILURE
+					+ response.getStatusLine().getStatusCode());
+			throw new Exception();
+		}
+	}
+
 }
