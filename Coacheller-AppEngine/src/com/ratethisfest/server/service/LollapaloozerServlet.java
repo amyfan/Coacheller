@@ -2,10 +2,6 @@ package com.ratethisfest.server.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +64,6 @@ public class LollapaloozerServlet extends HttpServlet {
   }
 
   /**
-   * TODO: Ideally invoke this when updating a rating
    * 
    * @param req
    * @param resp
@@ -151,7 +146,6 @@ public class LollapaloozerServlet extends HttpServlet {
   }
 
   /**
-   * TODO: filter by year & day
    * 
    * @param email
    * @param year
@@ -187,12 +181,12 @@ public class LollapaloozerServlet extends HttpServlet {
       String setId, String score, String notes) {
 
     String resp = null;
-
-    if (!FieldVerifier.isValidEmail(email)) {
-      resp = FieldVerifier.EMAIL_ERROR;
-    } else if (!FieldVerifier.isValidScore(score)) {
+    // if (!FieldVerifier.isValidEmail(email)) {
+    // resp = FieldVerifier.EMAIL_ERROR;
+    // }
+    if (!FieldVerifier.isValidScore(score)) {
       resp = FieldVerifier.SCORE_ERROR;
-    } else if (setId != null) {
+    } else if (authId != null && setId != null) {
       resp = LollaRatingManager.getInstance().addRatingBySetId(authType, authId, authToken, email,
           Long.valueOf(setId), Integer.valueOf(score), notes);
     } else {
