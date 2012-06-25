@@ -7,23 +7,20 @@ import java.util.*;
  * 
  * @author Pablo Fernandez
  */
-public class TimestampServiceImpl implements TimestampService
-{
+public class TimestampServiceImpl implements TimestampService {
   private Timer timer;
 
   /**
-   * Default constructor. 
+   * Default constructor.
    */
-  public TimestampServiceImpl()
-  {
+  public TimestampServiceImpl() {
     timer = new Timer();
   }
 
   /**
    * {@inheritDoc}
    */
-  public String getNonce()
-  {
+  public String getNonce() {
     Long ts = getTs();
     return String.valueOf(ts + timer.getRandomInteger());
   }
@@ -31,18 +28,15 @@ public class TimestampServiceImpl implements TimestampService
   /**
    * {@inheritDoc}
    */
-  public String getTimestampInSeconds()
-  {
+  public String getTimestampInSeconds() {
     return String.valueOf(getTs());
   }
 
-  private Long getTs()
-  {
+  private Long getTs() {
     return timer.getMilis() / 1000;
   }
 
-  void setTimer(Timer timer)
-  {
+  void setTimer(Timer timer) {
     this.timer = timer;
   }
 
@@ -51,15 +45,12 @@ public class TimestampServiceImpl implements TimestampService
    * 
    * @author Pablo Fernandez
    */
-  static class Timer
-  {
-    Long getMilis()
-    {
+  static class Timer {
+    Long getMilis() {
       return System.currentTimeMillis();
     }
 
-    Integer getRandomInteger()
-    {
+    Integer getRandomInteger() {
       return new Random().nextInt();
     }
   }

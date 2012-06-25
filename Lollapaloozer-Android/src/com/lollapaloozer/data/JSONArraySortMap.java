@@ -8,9 +8,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-
-
 public class JSONArraySortMap {
 
   final public static int VALUE_INTEGER = 0;

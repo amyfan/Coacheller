@@ -16,11 +16,13 @@ public class AppUser {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id; // internal PK
-  private String email; // populate automatically from fb/goog authId, ask separately for twitter users
+  private String email; // populate automatically from fb/goog authId, ask
+                        // separately for twitter users
   private Boolean active;
   private String name; // alias/handle
   private String authType; // facebook, google, or twitter
-  private String authId; // unique id for the auth account; if fb/goog, then looks like email; otherwise, #
+  private String authId; // unique id for the auth account; if fb/goog, then
+                         // looks like email; otherwise, #
   private Date dateCreated;
   private Date dateModified;
 

@@ -7,15 +7,13 @@ import org.apache.commons.codec.binary.Base64;
 import org.scribe.exceptions.*;
 import org.scribe.utils.*;
 
-
 /**
  * HMAC-SHA1 implementation of {@SignatureService}
  * 
  * @author Pablo Fernandez
- *
+ * 
  */
-public class HMACSha1SignatureService implements SignatureService
-{
+public class HMACSha1SignatureService implements SignatureService {
   private static final String EMPTY_STRING = "";
   private static final String CARRIAGE_RETURN = "\r\n";
   private static final String UTF8 = "UTF-8";
@@ -25,22 +23,18 @@ public class HMACSha1SignatureService implements SignatureService
   /**
    * {@inheritDoc}
    */
-  public String getSignature(String baseString, String apiSecret, String tokenSecret)
-  {
-    try
-    {
+  public String getSignature(String baseString, String apiSecret, String tokenSecret) {
+    try {
       Preconditions.checkEmptyString(baseString, "Base string cant be null or empty string");
       Preconditions.checkEmptyString(apiSecret, "Api secret cant be null or empty string");
-      return doSign(baseString, OAuthEncoder.encode(apiSecret) + '&' + OAuthEncoder.encode(tokenSecret));
-    } 
-    catch (Exception e)
-    {
+      return doSign(baseString,
+          OAuthEncoder.encode(apiSecret) + '&' + OAuthEncoder.encode(tokenSecret));
+    } catch (Exception e) {
       throw new OAuthSignatureException(baseString, e);
     }
   }
 
-  private String doSign(String toSign, String keyString) throws Exception
-  {
+  private String doSign(String toSign, String keyString) throws Exception {
     SecretKeySpec key = new SecretKeySpec((keyString).getBytes(UTF8), HMAC_SHA1);
     Mac mac = Mac.getInstance(HMAC_SHA1);
     mac.init(key);
@@ -51,8 +45,7 @@ public class HMACSha1SignatureService implements SignatureService
   /**
    * {@inheritDoc}
    */
-  public String getSignatureMethod()
-  {
+  public String getSignatureMethod() {
     return METHOD;
   }
 }

@@ -12,8 +12,7 @@ public class JSONArrayHashMap {
   private String _key1Name;
   private String _key2Name;
 
-  
-  //TODO: Could be expanded to operate with an arbitrary number of keys
+  // TODO: Could be expanded to operate with an arbitrary number of keys
   private HashMap<String, JSONObject> _hash = new HashMap<String, JSONObject>();
 
   public JSONArrayHashMap(String keyName) {
@@ -30,7 +29,7 @@ public class JSONArrayHashMap {
     _key2Name = key2Name;
 
   }
-  
+
   public void rebuildDataWith(JSONArray data) throws JSONException {
     wipeData();
     for (int i = 0; i < data.length(); i++) {
@@ -42,9 +41,9 @@ public class JSONArrayHashMap {
   public JSONArrayHashMap(String key1Name, String key2Name) {
     setKeyNames(key1Name, key2Name);
   }
-  
+
   public JSONArrayHashMap(JSONArray data, String firstKeyName, String secondKeyName)
-  throws JSONException {
+      throws JSONException {
     setKeyNames(firstKeyName, secondKeyName);
     rebuildDataWith(data);
   }
@@ -54,7 +53,7 @@ public class JSONArrayHashMap {
     _key2Name = "";
     wipeData();
   }
-  
+
   public void wipeData() {
     _hash.clear();
   }
@@ -67,8 +66,6 @@ public class JSONArrayHashMap {
    * for (int i = 0; i < data.length(); i++) { JSONObject obj = (JSONObject)
    * data.get(i); _hash.put(obj.getString(_key1Name), obj); } }
    */
-
-
 
   private void storeTwoKeyObj(String key1Name, String key2Name, JSONObject obj)
       throws JSONException {

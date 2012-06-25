@@ -3,9 +3,7 @@ package com.ratethisfest.shared;
 import java.util.EnumSet;
 
 public enum AuthTypeEnum {
-  FACEBOOK("Facebook"),
-  GOOGLE("Google"),
-  TWITTER("Twitter");
+  FACEBOOK("Facebook"), GOOGLE("Google"), TWITTER("Twitter");
 
   private String value;
 

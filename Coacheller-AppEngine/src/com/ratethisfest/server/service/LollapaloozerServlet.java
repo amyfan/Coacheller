@@ -76,7 +76,7 @@ public class LollapaloozerServlet extends HttpServlet {
 
     out.println(methodName + " handling request for the following parameters:");
 
-    //Value is not a string but rather an array of strings
+    // Value is not a string but rather an array of strings
     Map<String, String[]> parameterMap = req.getParameterMap();
     for (String s : parameterMap.keySet()) {
       out.println(s + " = " + parameterMap.get(s)[0]);

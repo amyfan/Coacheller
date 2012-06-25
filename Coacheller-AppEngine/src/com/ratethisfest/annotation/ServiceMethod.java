@@ -6,8 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation on method specifying that the method is a service method
- * and needs to have the corresponding request factory code 
+ * Annotation on method specifying that the method is a service method and needs
+ * to have the corresponding request factory code
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.CLASS)

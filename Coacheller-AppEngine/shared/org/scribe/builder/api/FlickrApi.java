@@ -8,15 +8,13 @@ import org.scribe.model.*;
  * @author Darren Greaves
  * @see <a href="http://www.flickr.com/services/api/">Flickr API</a>
  */
-public class FlickrApi extends DefaultApi10a
-{
+public class FlickrApi extends DefaultApi10a {
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public String getAccessTokenEndpoint()
-  {
+  public String getAccessTokenEndpoint() {
     return "http://www.flickr.com/services/oauth/access_token";
   }
 
@@ -24,8 +22,7 @@ public class FlickrApi extends DefaultApi10a
    * {@inheritDoc}
    */
   @Override
-  public String getAuthorizationUrl(Token requestToken)
-  {
+  public String getAuthorizationUrl(Token requestToken) {
     return "http://www.flickr.com/services/oauth/authorize?oauth_token=" + requestToken.getToken();
   }
 
@@ -33,8 +30,7 @@ public class FlickrApi extends DefaultApi10a
    * {@inheritDoc}
    */
   @Override
-  public String getRequestTokenEndpoint()
-  {
+  public String getRequestTokenEndpoint() {
     return "http://www.flickr.com/services/oauth/request_token";
   }
 }

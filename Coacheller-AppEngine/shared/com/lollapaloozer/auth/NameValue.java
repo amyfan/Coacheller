@@ -1,12 +1,12 @@
 package com.lollapaloozer.auth;
 
 public class NameValue {
-	public String _name;
-	public String _value;
+  public String _name;
+  public String _value;
 
-	public NameValue(String name, String value) {
-		_name = name;
-		_value = value;
-	}
+  public NameValue(String name, String value) {
+    _name = name;
+    _value = value;
+  }
 
 }

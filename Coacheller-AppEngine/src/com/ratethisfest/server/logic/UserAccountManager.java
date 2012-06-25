@@ -104,7 +104,7 @@ public class UserAccountManager {
   public void deleteAppUser(AppUser appUser) {
     appUserDao.deleteAppUser(appUser.getId());
   }
-  
+
   public void deleteAllAppUsers() {
     appUserDao.deleteAllAppUsers();
   }

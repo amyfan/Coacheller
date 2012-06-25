@@ -7,107 +7,103 @@ import android.content.Intent;
 
 import com.facebook.android.Facebook;
 
-
 public class AuthDemoModel {
 
-	private GoogleAuthProvider _authProviderGoogle;
-	private FacebookAuthProvider _authProviderFacebook;
-	private AuthChooseAccountActivity _activity;
+  private GoogleAuthProvider _authProviderGoogle;
+  private FacebookAuthProvider _authProviderFacebook;
+  private AuthChooseAccountActivity _activity;
 
-	private String _verifiedAccountName = null;
-	private TwitterAuthProvider _authProviderTwitter;
+  private String _verifiedAccountName = null;
+  private TwitterAuthProvider _authProviderTwitter;
 
-	public AuthDemoModel(AuthChooseAccountActivity activity) {
-		_activity = activity;
-		_authProviderGoogle = new GoogleAuthProvider(_activity);
-		_authProviderFacebook = new FacebookAuthProvider(_activity);
-		_authProviderTwitter = new TwitterAuthProvider(_activity);
-	}
+  public AuthDemoModel(AuthChooseAccountActivity activity) {
+    _activity = activity;
+    _authProviderGoogle = new GoogleAuthProvider(_activity);
+    _authProviderFacebook = new FacebookAuthProvider(_activity);
+    _authProviderTwitter = new TwitterAuthProvider(_activity);
+  }
 
-	public boolean isLoggedIn() {
-		int numLogins = 0;
-		if (_authProviderGoogle.isLoggedIn()) {
-			numLogins++;
-		}
+  public boolean isLoggedIn() {
+    int numLogins = 0;
+    if (_authProviderGoogle.isLoggedIn()) {
+      numLogins++;
+    }
 
-		if (_authProviderFacebook.isLoggedIn()) {
-			numLogins++;
-		}
+    if (_authProviderFacebook.isLoggedIn()) {
+      numLogins++;
+    }
 
-		if (_authProviderTwitter.isLoggedIn()) {
-			numLogins++;
-		}
+    if (_authProviderTwitter.isLoggedIn()) {
+      numLogins++;
+    }
 
-		if (numLogins > 1) {
-			System.out
-					.println("WARNING: Multiple concurrent login types detected");
-		}
+    if (numLogins > 1) {
+      System.out.println("WARNING: Multiple concurrent login types detected");
+    }
 
-		if (numLogins > 0) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+    if (numLogins > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-	public AuthProvider getCurrentAuthProvider() {
-		if (_authProviderGoogle.isLoggedIn()) {
-			return _authProviderGoogle;
-		}
+  public AuthProvider getCurrentAuthProvider() {
+    if (_authProviderGoogle.isLoggedIn()) {
+      return _authProviderGoogle;
+    }
 
-		if (_authProviderFacebook.isLoggedIn()) {
-			return _authProviderFacebook;
-		}
+    if (_authProviderFacebook.isLoggedIn()) {
+      return _authProviderFacebook;
+    }
 
-		if (_authProviderTwitter.isLoggedIn()) {
-			return _authProviderTwitter;
-		}
+    if (_authProviderTwitter.isLoggedIn()) {
+      return _authProviderTwitter;
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	public void checkAccounts() {
-		AccountManager aMgr = AccountManager.get(_activity);
+  public void checkAccounts() {
+    AccountManager aMgr = AccountManager.get(_activity);
 
-		System.out
-				.println("Warning: The following requires permission GET_ACCOUNTS");
-		for (Account a : aMgr.getAccounts()) {
-			System.out.println(a.name + " " + a.type + " " + a.toString());
-		}
+    System.out.println("Warning: The following requires permission GET_ACCOUNTS");
+    for (Account a : aMgr.getAccounts()) {
+      System.out.println(a.name + " " + a.type + " " + a.toString());
+    }
 
-		System.out.println("Installed Authenticators: ");
-		for (AuthenticatorDescription d : aMgr.getAuthenticatorTypes()) {
-			System.out.print(d.type);
-			System.out.print("/ ");
-		}
-		System.out.println();
-	}
+    System.out.println("Installed Authenticators: ");
+    for (AuthenticatorDescription d : aMgr.getAuthenticatorTypes()) {
+      System.out.print(d.type);
+      System.out.print("/ ");
+    }
+    System.out.println();
+  }
 
-	public Facebook getFacebookObject() {
-		return _authProviderFacebook.getFacebookObject();
-	}
+  public Facebook getFacebookObject() {
+    return _authProviderFacebook.getFacebookObject();
+  }
 
-	public void invalidateTokens() {
-		_authProviderGoogle.logout();
-		_authProviderFacebook.logout();
-		_authProviderTwitter.logout();
-	}
+  public void invalidateTokens() {
+    _authProviderGoogle.logout();
+    _authProviderFacebook.logout();
+    _authProviderTwitter.logout();
+  }
 
-	public void loginToGoogle() {
-		_authProviderGoogle.login();
-	}
+  public void loginToGoogle() {
+    _authProviderGoogle.login();
+  }
 
-	public void loginToFacebook() {
-		_authProviderFacebook.login();
-	}
+  public void loginToFacebook() {
+    _authProviderFacebook.login();
+  }
 
-	public void loginToTwitter() {
-		_authProviderTwitter.login();
-	}
+  public void loginToTwitter() {
+    _authProviderTwitter.login();
+  }
 
-	public void twitterAuthCallback(int requestCode, int resultCode, Intent data) {
-		_authProviderTwitter
-				.requestTokenCallback(requestCode, resultCode, data);
-	}
+  public void twitterAuthCallback(int requestCode, int resultCode, Intent data) {
+    _authProviderTwitter.requestTokenCallback(requestCode, resultCode, data);
+  }
 
 }

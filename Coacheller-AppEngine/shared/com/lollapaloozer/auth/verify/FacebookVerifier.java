@@ -17,50 +17,46 @@ import com.facebook.android.Util;
 
 public class FacebookVerifier implements AuthVerifier {
 
-	@Override
-	public boolean verify(String authToken, String identifier) {
-		
-		HttpClient hc = new DefaultHttpClient();
-		HttpGet req = new HttpGet("https://graph.facebook.com/me?access_token="+authToken);
-		
-		try {
-			HttpResponse response = hc.execute(req);
-			
-			
+  @Override
+  public boolean verify(String authToken, String identifier) {
 
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(
-							response.getEntity().getContent(), "UTF-8"));
-			StringBuilder builder = new StringBuilder();
-			for (String line = null; (line = reader.readLine()) != null;) {
-				builder.append(line).append("\n");
-			}
+    HttpClient hc = new DefaultHttpClient();
+    HttpGet req = new HttpGet("https://graph.facebook.com/me?access_token=" + authToken);
 
-			
-			JSONObject json = Util.parseJson(builder.toString());
-			String userID = json.getString("id");
-			String userName = json.getString("name");
-			String email = json.getString("email");
-			
-			if (identifier.equals(email)) {
-				return true;
-			}
-			
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FacebookError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return false;
-	}
+    try {
+      HttpResponse response = hc.execute(req);
+
+      BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity()
+          .getContent(), "UTF-8"));
+      StringBuilder builder = new StringBuilder();
+      for (String line = null; (line = reader.readLine()) != null;) {
+        builder.append(line).append("\n");
+      }
+
+      JSONObject json = Util.parseJson(builder.toString());
+      String userID = json.getString("id");
+      String userName = json.getString("name");
+      String email = json.getString("email");
+
+      if (identifier.equals(email)) {
+        return true;
+      }
+
+    } catch (ClientProtocolException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (FacebookError e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (JSONException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    return false;
+  }
 
 }

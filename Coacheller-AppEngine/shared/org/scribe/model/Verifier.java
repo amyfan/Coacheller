@@ -7,24 +7,22 @@ import org.scribe.utils.*;
  * 
  * @author Pablo Fernandez
  */
-public class Verifier
-{
+public class Verifier {
 
   private final String value;
 
   /**
    * Default constructor.
    * 
-   * @param value verifier value
+   * @param value
+   *          verifier value
    */
-  public Verifier(String value)
-  {
+  public Verifier(String value) {
     Preconditions.checkNotNull(value, "Must provide a valid string as verifier");
     this.value = value;
   }
 
-  public String getValue()
-  {
+  public String getValue() {
     return value;
   }
 }

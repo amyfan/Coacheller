@@ -119,7 +119,7 @@ public class CustomSetListAdapter implements ListAdapter {
     }
 
     if (!haveData()) {
-    	//Important to avoid crashes
+      // Important to avoid crashes
       return rowView;
     }
 
@@ -159,21 +159,21 @@ public class CustomSetListAdapter implements ListAdapter {
       } else {
         holder.myRating.setText("");
       }
-      
+
       String myNote = "";
       if (ratingsObjWk1 != null && ratingsObjWk1.has(LollapaloozerActivity.QUERY_RATINGS__NOTES)) {
-    	  myNote = ratingsObjWk1.get(LollapaloozerActivity.QUERY_RATINGS__NOTES).toString();
-    	  LollapaloozerHelper.debug(_context, "Found note: "+ myNote);
+        myNote = ratingsObjWk1.get(LollapaloozerActivity.QUERY_RATINGS__NOTES).toString();
+        LollapaloozerHelper.debug(_context, "Found note: " + myNote);
       }
-       
+
       if (myNote.equals("")) {
-    	  holder.myComment.setVisibility(View.GONE);
-      } else {	  
-    	  if (myNote.length() > Constants.DATA_NOTE_VISIBLE_MAX_LENGTH) {
-    		  myNote = myNote.substring(0, Constants.DATA_NOTE_VISIBLE_MAX_LENGTH) + "...";
-    	  }
-    	  holder.myComment.setText(myNote);
-    	  holder.myComment.setVisibility(View.VISIBLE);
+        holder.myComment.setVisibility(View.GONE);
+      } else {
+        if (myNote.length() > Constants.DATA_NOTE_VISIBLE_MAX_LENGTH) {
+          myNote = myNote.substring(0, Constants.DATA_NOTE_VISIBLE_MAX_LENGTH) + "...";
+        }
+        holder.myComment.setText(myNote);
+        holder.myComment.setVisibility(View.VISIBLE);
       }
 
       // Gnarly debug thing

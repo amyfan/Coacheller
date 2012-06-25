@@ -91,7 +91,8 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     List<RatingGwt> ratingGwts = null;
 
     if (email != null) {
-      List<Rating> ratings = CoachellaRatingManager.getInstance().findRatingsByUserAndYear(email, year);
+      List<Rating> ratings = CoachellaRatingManager.getInstance().findRatingsByUserAndYear(email,
+          year);
       if (ratings != null) {
         ratingGwts = JSONUtils.convertRatingsToRatingGwts(ratings);
       }

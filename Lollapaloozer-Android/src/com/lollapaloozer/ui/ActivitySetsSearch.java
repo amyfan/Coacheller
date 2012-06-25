@@ -16,22 +16,21 @@ import com.lollapaloozer.R;
 import com.lollapaloozer.util.LollapaloozerHelper;
 
 public class ActivitySetsSearch extends Activity implements OnClickListener {
-  
+
   private String _daySelected;
 
   /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-  
-      LollapaloozerHelper.debug(this, "Search Sets Activity Launched");
-      this.initializeApp();
+    super.onCreate(savedInstanceState);
+
+    LollapaloozerHelper.debug(this, "Search Sets Activity Launched");
+    this.initializeApp();
   }
-  
-  
+
   public void initializeApp() {
     setContentView(R.layout.sets_search);
-    
+
     // Setup day spinner
     Spinner daySpinner = (Spinner) this.findViewById(R.id.search_spinner_day);
     LollapaloozerHelper.populateSpinnerWithArray(daySpinner, R.array.names_day);
@@ -39,10 +38,9 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
 
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        LollapaloozerHelper.debug(parent.getContext(),
-            "Day Selected: " + parent.getSelectedItem());
+        LollapaloozerHelper.debug(parent.getContext(), "Day Selected: " + parent.getSelectedItem());
         _daySelected = parent.getSelectedItem().toString();
-        
+
       }
 
       @Override
@@ -68,7 +66,7 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
     Button searchButton = (Button) this.findViewById(R.id.sets_search_button_search);
     searchButton.setOnClickListener(this);
   }
-  
+
   /**
    * Fires when the Search ("Go!") button is pressed, this object is the OnClick
    * listener.
@@ -87,7 +85,7 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
         bun.putString("DAY", _daySelected);
 
         intent.setClass(this, LollapaloozerActivity.class);
-        
+
         intent.putExtras(bun);
         startActivity(intent);
       } catch (Exception e) {
@@ -100,8 +98,5 @@ public class ActivitySetsSearch extends Activity implements OnClickListener {
     }
 
   }
-  
-  
-  
 
 }

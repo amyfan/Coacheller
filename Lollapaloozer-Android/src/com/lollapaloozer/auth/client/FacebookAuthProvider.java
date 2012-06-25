@@ -22,179 +22,167 @@ import com.lollapaloozer.auth.verify.FacebookVerifier;
 
 public class FacebookAuthProvider implements AuthProvider {
 
-	private AuthChooseAccountActivity _activity;
-	private Facebook _facebook = new Facebook("186287061500005");
-	private AsyncFacebookRunner mAsyncRunner = new AsyncFacebookRunner(
-			_facebook);
+  private AuthChooseAccountActivity _activity;
+  private Facebook _facebook = new Facebook("186287061500005");
+  private AsyncFacebookRunner mAsyncRunner = new AsyncFacebookRunner(_facebook);
 
-	private JSONObject _userInfo;
+  private JSONObject _userInfo;
 
-	private FacebookAuthProvider() {
-	}
+  private FacebookAuthProvider() {
+  }
 
-	public FacebookAuthProvider(AuthChooseAccountActivity activity) {
-		_activity = activity;
-	}
+  public FacebookAuthProvider(AuthChooseAccountActivity activity) {
+    _activity = activity;
+  }
 
-	private void setLastInfoResponse(JSONObject json) {
-		_userInfo = json;
-	}
+  private void setLastInfoResponse(JSONObject json) {
+    _userInfo = json;
+  }
 
-	@Override
-	public boolean isLoggedIn() {
-		if (_userInfo == null) {
-			return false;
-			}
-		
-		FacebookVerifier verifier = new FacebookVerifier();
-		return verifier.verify(getAuthToken(), getVerifiedAccountIdentifier());
-		
-		
-		
-		//return _facebook.isSessionValid();
-	}
+  @Override
+  public boolean isLoggedIn() {
+    if (_userInfo == null) {
+      return false;
+    }
 
+    FacebookVerifier verifier = new FacebookVerifier();
+    return verifier.verify(getAuthToken(), getVerifiedAccountIdentifier());
 
-	@Override
-	public void login() {
-		
-		_facebook.authorize(_activity, new String[] { "email" },
-				new DialogListener() {
-					@Override
-					public void onComplete(Bundle values) {
-						System.out
-								.println("Facebook authorization completed, token: "
-										+ _facebook.getAccessToken()
-										+ " valid until "
-										+ _facebook.getAccessExpires());
-						mAsyncRunner.request("me", new IDRequestListener()); //get user info from facebook
-						_activity.modelChanged();
-						// TODO should lock UI here
-					}
+    // return _facebook.isSessionValid();
+  }
 
-					@Override
-					public void onFacebookError(FacebookError error) {
-						System.out
-								.println("Facebook platform error during authorization");
-					}
+  @Override
+  public void login() {
 
-					@Override
-					public void onError(DialogError e) {
-						System.out
-								.println("Error with facebook authorization dialog");
-					}
+    _facebook.authorize(_activity, new String[] { "email" }, new DialogListener() {
+      @Override
+      public void onComplete(Bundle values) {
+        System.out.println("Facebook authorization completed, token: " + _facebook.getAccessToken()
+            + " valid until " + _facebook.getAccessExpires());
+        mAsyncRunner.request("me", new IDRequestListener()); // get user info
+                                                             // from facebook
+        _activity.modelChanged();
+        // TODO should lock UI here
+      }
 
-					@Override
-					public void onCancel() {
-						System.out
-								.println("Facebook authorization dialog cancelled by user");
-					}
-				});
+      @Override
+      public void onFacebookError(FacebookError error) {
+        System.out.println("Facebook platform error during authorization");
+      }
 
-	}
+      @Override
+      public void onError(DialogError e) {
+        System.out.println("Error with facebook authorization dialog");
+      }
 
-	public Facebook getFacebookObject() {
-		return _facebook;
-	}
+      @Override
+      public void onCancel() {
+        System.out.println("Facebook authorization dialog cancelled by user");
+      }
+    });
 
-	@Override
-	public void logout() {
-		try {
-			_facebook.logout(_activity);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+  }
 
-	@Override
-	public String getAccountType() {
-		return _facebook.getClass().toString();
-	}
+  public Facebook getFacebookObject() {
+    return _facebook;
+  }
 
-	@Override
-	public String getLocalAccountName() {
-		try {
-			return _userInfo.getString("name");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
+  @Override
+  public void logout() {
+    try {
+      _facebook.logout(_activity);
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 
-	@Override
-	public String getVerifiedAccountIdentifier() {
-		try {
-			return _userInfo.getString("email");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
+  @Override
+  public String getAccountType() {
+    return _facebook.getClass().toString();
+  }
 
-	@Override
-	public String getAuthToken() {
-		return _facebook.getAccessToken();
-	}
+  @Override
+  public String getLocalAccountName() {
+    try {
+      return _userInfo.getString("name");
+    } catch (JSONException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return null;
+  }
 
-	@Override
-	public void extendAccess() {
-		_facebook.extendAccessTokenIfNeeded(_activity, null);
-	}
+  @Override
+  public String getVerifiedAccountIdentifier() {
+    try {
+      return _userInfo.getString("email");
+    } catch (JSONException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return null;
+  }
 
-	private class IDRequestListener implements RequestListener {
+  @Override
+  public String getAuthToken() {
+    return _facebook.getAccessToken();
+  }
 
-		private String TAG = "fbDemo";
+  @Override
+  public void extendAccess() {
+    _facebook.extendAccessTokenIfNeeded(_activity, null);
+  }
 
-		@Override
-		public void onComplete(String response, Object state) {
-			try {
+  private class IDRequestListener implements RequestListener {
 
-				Log.d(TAG, "IDRequestONComplete");
-				Log.d(TAG, "Response: " + response.toString());
-				JSONObject json = Util.parseJson(response);
-				String userID = json.getString("id");
-				String userName = json.getString("name");
-				// fbEmail = json.getString("email");
+    private String TAG = "fbDemo";
 
-				System.out.println("Retrieved from Facebook userID[" + userID
-						+ "] username [" + userName + "]");
-				setLastInfoResponse(json);
-				_activity.modelChanged();
+    @Override
+    public void onComplete(String response, Object state) {
+      try {
 
-			} catch (JSONException e) {
-				Log.d(TAG, "JSONException: " + e.getMessage());
-			} catch (FacebookError e) {
-				Log.d(TAG, "FacebookError: " + e.getMessage());
-			}
-			// TODO Unlock UI here
-		}
+        Log.d(TAG, "IDRequestONComplete");
+        Log.d(TAG, "Response: " + response.toString());
+        JSONObject json = Util.parseJson(response);
+        String userID = json.getString("id");
+        String userName = json.getString("name");
+        // fbEmail = json.getString("email");
 
-		@Override
-		public void onIOException(IOException e, Object state) {
-			Log.d(TAG, "IOException: " + e.getMessage());
-		}
+        System.out.println("Retrieved from Facebook userID[" + userID + "] username [" + userName
+            + "]");
+        setLastInfoResponse(json);
+        _activity.modelChanged();
 
-		@Override
-		public void onFileNotFoundException(FileNotFoundException e,
-				Object state) {
-			Log.d(TAG, "FileNotFoundException: " + e.getMessage());
-		}
+      } catch (JSONException e) {
+        Log.d(TAG, "JSONException: " + e.getMessage());
+      } catch (FacebookError e) {
+        Log.d(TAG, "FacebookError: " + e.getMessage());
+      }
+      // TODO Unlock UI here
+    }
 
-		@Override
-		public void onMalformedURLException(MalformedURLException e,
-				Object state) {
-			Log.d(TAG, "MalformedURLException: " + e.getMessage());
-		}
+    @Override
+    public void onIOException(IOException e, Object state) {
+      Log.d(TAG, "IOException: " + e.getMessage());
+    }
 
-		@Override
-		public void onFacebookError(FacebookError e, Object state) {
-			Log.d(TAG, "FacebookError: " + e.getMessage());
-		}
+    @Override
+    public void onFileNotFoundException(FileNotFoundException e, Object state) {
+      Log.d(TAG, "FileNotFoundException: " + e.getMessage());
+    }
 
-	}
+    @Override
+    public void onMalformedURLException(MalformedURLException e, Object state) {
+      Log.d(TAG, "MalformedURLException: " + e.getMessage());
+    }
+
+    @Override
+    public void onFacebookError(FacebookError e, Object state) {
+      Log.d(TAG, "FacebookError: " + e.getMessage());
+    }
+
+  }
 
 }

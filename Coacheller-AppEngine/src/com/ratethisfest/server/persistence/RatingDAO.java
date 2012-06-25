@@ -73,8 +73,7 @@ public class RatingDAO {
     return q.list();
   }
 
-  public List<Rating> findRatingsByUserKeyAndSetKeys(Key<AppUser> userKey,
-      List<Key<Set>> setKeys) {
+  public List<Rating> findRatingsByUserKeyAndSetKeys(Key<AppUser> userKey, List<Key<Set>> setKeys) {
     Query<Rating> q = dao.getObjectify().query(Rating.class).filter("rater", userKey)
         .filter("set in", setKeys);
     return q.list();

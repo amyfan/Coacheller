@@ -3,12 +3,11 @@ package org.scribe.services;
 /**
  * Unix epoch timestamp generator.
  * 
- * This class is useful for stubbing in tests. 
+ * This class is useful for stubbing in tests.
  * 
  * @author Pablo Fernandez
  */
-public interface TimestampService
-{
+public interface TimestampService {
   /**
    * Returns the unix epoch timestamp in seconds
    * 

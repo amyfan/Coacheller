@@ -7,10 +7,9 @@ import java.io.Serializable;
  * 
  * @author Pablo Fernandez
  */
-public class Token implements Serializable
-{
+public class Token implements Serializable {
   private static final long serialVersionUID = 715000866082812683L;
-	
+
   private final String token;
   private final String secret;
   private final String rawResponse;
@@ -18,43 +17,39 @@ public class Token implements Serializable
   /**
    * Default constructor
    * 
-   * @param token token value
-   * @param secret token secret
+   * @param token
+   *          token value
+   * @param secret
+   *          token secret
    */
-  public Token(String token, String secret)
-  {
+  public Token(String token, String secret) {
     this(token, secret, null);
   }
 
-  public Token(String token, String secret, String rawResponse)
-  {
+  public Token(String token, String secret, String rawResponse) {
     this.token = token;
     this.secret = secret;
     this.rawResponse = rawResponse;
   }
 
-  public String getToken()
-  {
+  public String getToken() {
     return token;
   }
 
-  public String getSecret()
-  {
+  public String getSecret() {
     return secret;
   }
 
-  public String getRawResponse()
-  {
-    if (rawResponse == null)
-    {
-      throw new IllegalStateException("This token object was not constructed by scribe and does not have a rawResponse");
+  public String getRawResponse() {
+    if (rawResponse == null) {
+      throw new IllegalStateException(
+          "This token object was not constructed by scribe and does not have a rawResponse");
     }
     return rawResponse;
   }
 
   @Override
-  public String toString()
-  {
+  public String toString() {
     return String.format("Token[%s , %s]", token, secret);
   }
 }
