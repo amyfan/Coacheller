@@ -1,7 +1,11 @@
 package com.lollapaloozer.ui;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +43,7 @@ import com.lollapaloozer.data.JSONArraySortMap;
 import com.lollapaloozer.util.LollapaloozerHelper;
 import com.ratethisfest.shared.Constants;
 import com.ratethisfest.shared.FieldVerifier;
+import com.ratethisfest.shared.HttpConstants;
 
 public class LollapaloozerActivity extends Activity implements View.OnClickListener,
     OnItemSelectedListener, OnItemClickListener, OnCheckedChangeListener {
@@ -328,8 +333,15 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
         // TODO: year can remain hardcoded for now (to force users to
         // update app
         // in future)
-        myRatings = LollapaloozerServiceUtils.getRatings(_obtained_email, "2012", _dayToExamine,
-            this);
+
+        HashMap<String, String> parameterMap = new HashMap<String, String>();
+        parameterMap.put(HttpConstants.PARAM_YEAR, "2012");
+        parameterMap.put(HttpConstants.PARAM_DAY, _dayToExamine);
+        parameterMap.put(HttpConstants.PARAM_AUTH_TYPE, _loginData.loginType + "");
+        parameterMap.put(HttpConstants.PARAM_AUTH_ID, _loginData.accountIdentifier);
+        parameterMap.put(HttpConstants.PARAM_AUTH_TOKEN, _loginData.accountToken);
+        myRatings = LollapaloozerServiceUtils.getRatings(parameterMap, this);
+
         _storageManager.putJSONArray(DATA_RATINGS, myRatings);
       } catch (Exception e1) {
         _networkErrors = true;
@@ -382,7 +394,11 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     JSONArray setData = null;
     try {
       // TODO: pass proper values (year can remain hard-coded for now)
-      setData = LollapaloozerServiceUtils.getSets("2012", _dayToExamine, this);
+      HashMap<String, String> parameterMap = new HashMap<String, String>();
+      parameterMap.put(HttpConstants.PARAM_YEAR, "2012");
+      parameterMap.put(HttpConstants.PARAM_DAY, _dayToExamine);
+      setData = LollapaloozerServiceUtils.getSets(parameterMap, this);
+
       _storageManager.putJSONArray(DATA_SETS, setData);
     } catch (Exception e) {
       _networkErrors = true;
@@ -404,8 +420,18 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     try {
       String set_id = _lastItemSelected.get(QUERY_SETS__SET_ID) + "";
 
-      LollapaloozerServiceUtils.addRating(_storageManager.getString(DATA_USER_EMAIL), set_id,
-          scoreSelectedValue, notes, this);
+      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_SET_ID, set_id));
+      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_SCORE, scoreSelectedValue));
+      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_NOTES, notes));
+      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TYPE, _loginData.loginType
+          + ""));
+      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_ID,
+          _loginData.accountIdentifier));
+      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TOKEN,
+          _loginData.accountToken));
+
+      LollapaloozerServiceUtils.addRating(nameValuePairs, this);
 
       // Need this in order to make the new rating appear in real time
 
@@ -833,8 +859,10 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     case R.id.menu_item_delete_email:
       LollapaloozerHelper.debug(this, "Menu button 'delete email' pressed");
       _obtained_email = null;
-      _storageManager.putString(DATA_USER_EMAIL, null);
+      _storageManager.putString(DATA_USER_EMAIL, _obtained_email);
       _loginData = null;
+      _storageManager.putObject(DATA_LOGIN_INFO, _loginData);
+
       _storageManager.save();
       refreshData();
       return true;
