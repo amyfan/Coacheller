@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -181,17 +180,15 @@ public class LollapaloozerServiceUtils {
     }
   }
 
-  public static String emailMyRatings(Context context, String email) throws Exception {
+  public static String emailMyRatings(List<NameValuePair> parameterList, Context context)
+      throws Exception {
     try {
       HttpPost post = new HttpPost(HttpConstants.SERVER_URL_LOLLAPALOOZER);
 
-      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-
-      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_EMAIL, email));
-      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_ACTION,
+      parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_ACTION,
           HttpConstants.ACTION_EMAIL_RATINGS));
 
-      post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+      post.setEntity(new UrlEncodedFormEntity(parameterList));
       HttpClient hc = new DefaultHttpClient();
       HttpResponse response = hc.execute(post);
 

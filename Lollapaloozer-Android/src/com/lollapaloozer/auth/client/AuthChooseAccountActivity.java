@@ -49,6 +49,7 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
     // App
     _model = new AuthDemoModel(this);
     _model.checkAccounts();
+    _model.invalidateTokens();
     System.out.println("OnCreate complete");
   }
 
@@ -140,10 +141,10 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
       _tokenIdText.setVisibility(View.GONE);
       _buttonInvalidateTokens.setVisibility(View.GONE);
       _buttonDismissActivity.setVisibility(View.GONE);
-
       if (_model.isLoggedIn()) {
         _returnToMainActivity();
       }
+
     }
 
   }

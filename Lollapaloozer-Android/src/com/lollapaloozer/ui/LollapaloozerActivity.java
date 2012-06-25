@@ -531,7 +531,21 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
         _getEmailDialog.dismiss();
         try {
           System.out.println("Requesting ratings email.");
-          String result = LollapaloozerServiceUtils.emailMyRatings(this, _loginData.emailAddress);
+
+          List<NameValuePair> parameterList = new ArrayList<NameValuePair>();
+
+          parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_EMAIL, email));
+          parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TYPE,
+              _loginData.loginType + ""));
+          parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_ID,
+              _loginData.accountIdentifier));
+          parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TOKEN,
+              _loginData.accountToken));
+          if (_loginData.emailAddress != null) {
+            parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_EMAIL,
+                _loginData.emailAddress));
+          }
+          String result = LollapaloozerServiceUtils.emailMyRatings(parameterList, this);
 
         } catch (Exception e) {
           // TODO Auto-generated catch block
