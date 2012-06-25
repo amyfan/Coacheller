@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -38,32 +39,22 @@ public class LollapaloozerServiceUtils {
    * @return
    * @throws Exception
    */
-  public static JSONArray getSets(String year, String day, Context context) throws Exception {
+  public static JSONArray getSets(HashMap<String, String> parameterMap, Context context)
+      throws Exception {
     try {
       // Returning FAKE DATA
       // if (1 < 3) {
       // return FakeDataSource.getData();
       // }
 
-      StringBuilder requestString = new StringBuilder();
-      requestString.append(HttpConstants.SERVER_URL_LOLLAPALOOZER);
-      requestString.append(HttpConstants.PARAM_YEAR);
-      requestString.append("=");
-      requestString.append(year);
-      requestString.append("&");
-      requestString.append(HttpConstants.PARAM_DAY);
-      requestString.append("=");
-      requestString.append(day);
-      requestString.append("&");
-      requestString.append(HttpConstants.PARAM_ACTION);
-      requestString.append("=");
-      requestString.append(HttpConstants.ACTION_GET_SETS);
+      HttpGet get = new HttpGet(HttpConstants.SERVER_URL_LOLLAPALOOZER);
+      for (String s : parameterMap.keySet()) {
+        get.getParams().setParameter(s, parameterMap.get(s));
+      }
+      get.getParams().setParameter(HttpConstants.PARAM_ACTION, HttpConstants.ACTION_GET_SETS);
 
-      LollapaloozerHelper.debug(context, "HTTPGet = " + requestString.toString());
-      HttpGet get = new HttpGet(requestString.toString());
       HttpClient hc = new DefaultHttpClient();
       HttpResponse response = hc.execute(get);
-
       return getHttpGetResponse(response, context);
 
     } catch (ClientProtocolException e) { // TODO: Could have created a
@@ -82,7 +73,7 @@ public class LollapaloozerServiceUtils {
 
   // Sample of working URL
   // http://ratethisfest.appspot.com/coachellerServlet?email=testing@this.com&action=get_sets&year=2012&day=Friday
-  public static JSONArray getRatings(String email, String year, String day, Context context)
+  public static JSONArray getRatings(HashMap<String, String> parameterMap, Context context)
       throws Exception {
 
     /**
@@ -93,29 +84,14 @@ public class LollapaloozerServiceUtils {
      */
 
     try {
-      StringBuilder requestString = new StringBuilder();
-      requestString.append(HttpConstants.SERVER_URL_LOLLAPALOOZER);
-      requestString.append(HttpConstants.PARAM_EMAIL);
-      requestString.append("=");
-      requestString.append(email);
-      requestString.append("&");
-      requestString.append(HttpConstants.PARAM_YEAR);
-      requestString.append("=");
-      requestString.append(year);
-      requestString.append("&");
-      requestString.append(HttpConstants.PARAM_DAY);
-      requestString.append("=");
-      requestString.append(day);
-      requestString.append("&");
-      requestString.append(HttpConstants.PARAM_ACTION);
-      requestString.append("=");
-      requestString.append(HttpConstants.ACTION_GET_RATINGS);
+      HttpGet get = new HttpGet(HttpConstants.SERVER_URL_LOLLAPALOOZER);
+      for (String s : parameterMap.keySet()) {
+        get.getParams().setParameter(s, parameterMap.get(s));
+      }
+      get.getParams().setParameter(HttpConstants.PARAM_ACTION, HttpConstants.ACTION_GET_RATINGS);
 
-      LollapaloozerHelper.debug(context, "HTTPGet = " + requestString.toString());
-      HttpGet get = new HttpGet(requestString.toString());
       HttpClient hc = new DefaultHttpClient();
       HttpResponse response = hc.execute(get);
-
       return getHttpGetResponse(response, context);
 
     } catch (ClientProtocolException e) { // TODO: Could have created a
@@ -143,8 +119,8 @@ public class LollapaloozerServiceUtils {
    */
 
   // TODO returns JSONArray which is probably null - is this correct?
-  public static String addRating(String email, String setId, String score, String comments,
-      Context context) throws Exception {
+  public static String addRating(List<NameValuePair> parameterList, Context context)
+      throws Exception {
     try {
       // // TODO: pass in PARAM_NOTES here
       // StringBuilder requestStringb = new StringBuilder();
@@ -170,21 +146,14 @@ public class LollapaloozerServiceUtils {
       // params.setParameter(HttpConstants.PARAM_NOTES, comments);
       // post.setParams(params);
 
-      HttpPost post = new HttpPost(HttpConstants.SERVER_URL_LOLLAPALOOZER);
-
-      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-
-      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_EMAIL, email));
-      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_SET_ID, setId));
-      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_SCORE, score));
-      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_NOTES, comments));
-      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_ACTION,
+      parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_ACTION,
           HttpConstants.ACTION_ADD_RATING));
 
-      post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+      HttpPost post = new HttpPost(HttpConstants.SERVER_URL_LOLLAPALOOZER);
+      post.setEntity(new UrlEncodedFormEntity(parameterList));
+
       HttpClient hc = new DefaultHttpClient();
       HttpResponse response = hc.execute(post);
-
       return getHttpPostResponse(response, context);
 
     } catch (UnsupportedEncodingException e) {
