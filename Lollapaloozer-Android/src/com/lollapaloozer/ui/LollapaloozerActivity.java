@@ -220,11 +220,13 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     super.onResume();
 
     String firstUse = _storageManager.getString("DATA_FIRST_USE");
-    if (firstUse == null || firstUse.equals("true")) {
-      showDialog(DIALOG_FIRST_USE);
-    } else {
-      _showClickToRate();
-    }
+    // TODO: We'll reenable this if we have something significant to say in the
+    // beginning
+    // if (firstUse == null || firstUse.equals("true")) {
+    // showDialog(DIALOG_FIRST_USE);
+    // } else {
+    _showClickToRate();
+    // }
 
     if ((System.currentTimeMillis() - _lastRefresh) / 1000 > REFRESH_INTERVAL__SECONDS) {
       refreshData(); // TODO multi-thread this

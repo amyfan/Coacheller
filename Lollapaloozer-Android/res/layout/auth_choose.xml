@@ -3,6 +3,7 @@
     android:id="@+id/RelativeLayout1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="#335066"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -14,7 +15,8 @@
             android:id="@+id/text_banner_line1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Signing in lets you..."
+            android:text="Signing in lets you:"
+            android:textStyle="bold"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
@@ -22,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_banner_line1"
-            android:text="Rate sets, save comments, and email your ratings"
+            android:text="*Rate sets, save comments, and email your ratings"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
@@ -30,21 +32,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/text_banner_line2"
-            android:text="Use Reminder Alerts- Don't miss your favorite set (coming soon)"/>
+            android:text="*Use reminder alerts- Don't miss your favorite sets (coming soon)"/>
 
         <TextView
             android:id="@+id/text_banner_line4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Share with your friends using Facebook and Twitter (coming soon)"
+            android:text="*Share with your friends using Facebook or Twitter (coming soon)"
             android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/text_banner_line3"/>
-
-        <TextView
-            android:id="@+id/text_banner_line5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Move things using only your mind"
-            android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/text_banner_line4"/>
 
     </RelativeLayout>
 
@@ -60,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="Login with Google acct" />
+            android:text="Log in with Google" />
 
         <Button
             android:id="@+id/btn_login_twitter"
@@ -68,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/btn_login_facebook"
             android:layout_centerHorizontal="true"
-            android:text="Login with Twitter acct" />
+            android:text="Log in with Twitter" />
 
         <Button
             android:id="@+id/btn_login_facebook"
@@ -76,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/btn_login_google"
             android:layout_centerHorizontal="true"
-            android:text="Login with Facebook acct" />
+            android:text="Log in with Facebook" />
 
         <Button
             android:id="@+id/btn_invalidate_tokens"

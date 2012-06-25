@@ -8,7 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Vector;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +39,10 @@ public class OAuthHTTP {
       _JSONResult = _parseJSONResponse(_urlConnection.getInputStream());
       return true; // success
     } catch (IOException e) {
-      // TODO Auto-generated catch block
+      _JSONResult = _parseJSONResponse(_urlConnection.getErrorStream());
+      e.printStackTrace();
+      return false; // request completed without success
+    } catch (Exception e) {
       _JSONResult = _parseJSONResponse(_urlConnection.getErrorStream());
       e.printStackTrace();
       return false; // request completed without success
@@ -66,6 +68,10 @@ public class OAuthHTTP {
       _readStream(_urlConnection.getErrorStream(), true);
       e.printStackTrace();
       return false; // request completed without success
+    } catch (Exception e) {
+      _readStream(_urlConnection.getErrorStream(), true);
+      e.printStackTrace();
+      return false; // request completed without success
     }
   }
 
@@ -84,6 +90,9 @@ public class OAuthHTTP {
   private JSONObject _parseJSONResponse(InputStream inputStream) throws IOException, JSONException {
     StringBuilder builder = _readStream(inputStream, true);
 
+    if (builder == null) {
+      return null;
+    }
     JSONTokener tokener = new JSONTokener(builder.toString());
 
     // JSONArray finalResult = new JSONArray(tokener);
@@ -91,6 +100,9 @@ public class OAuthHTTP {
   }
 
   private StringBuilder _readStream(InputStream inStream, boolean output) throws IOException {
+    if (inStream == null) {
+      return null;
+    }
     BufferedReader reader = new BufferedReader(new InputStreamReader(inStream));
     StringBuilder builder = new StringBuilder();
 
@@ -103,7 +115,5 @@ public class OAuthHTTP {
     }
     reader.close();
     return builder;
-
   }
-
 }
