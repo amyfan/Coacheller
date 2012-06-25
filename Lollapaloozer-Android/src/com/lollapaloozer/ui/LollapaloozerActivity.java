@@ -318,16 +318,19 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
         // update app
         // in future)
 
-        HashMap<String, String> parameterMap = new HashMap<String, String>();
-        parameterMap.put(HttpConstants.PARAM_YEAR, "2012");
-        parameterMap.put(HttpConstants.PARAM_DAY, _dayToExamine);
-        parameterMap.put(HttpConstants.PARAM_AUTH_TYPE, _loginData.loginType + "");
-        parameterMap.put(HttpConstants.PARAM_AUTH_ID, _loginData.accountIdentifier);
-        parameterMap.put(HttpConstants.PARAM_AUTH_TOKEN, _loginData.accountToken);
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair(HttpConstants.PARAM_YEAR, "2012"));
+        params.add(new BasicNameValuePair(HttpConstants.PARAM_YEAR, "2012"));
+        params.add(new BasicNameValuePair(HttpConstants.PARAM_DAY, _dayToExamine));
+        params
+            .add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TYPE, _loginData.loginType + ""));
+        params
+            .add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_ID, _loginData.accountIdentifier));
+        params.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TOKEN, _loginData.accountToken));
         if (_loginData.emailAddress != null) {
-          parameterMap.put(HttpConstants.PARAM_EMAIL, _loginData.emailAddress);
+          params.add(new BasicNameValuePair(HttpConstants.PARAM_EMAIL, _loginData.emailAddress));
         }
-        myRatings = LollapaloozerServiceUtils.getRatings(parameterMap, this);
+        myRatings = LollapaloozerServiceUtils.getRatings(params, this);
 
         _storageManager.putJSONArray(DATA_RATINGS, myRatings);
       } catch (Exception e1) {
@@ -381,10 +384,10 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     JSONArray setData = null;
     try {
       // TODO: pass proper values (year can remain hard-coded for now)
-      HashMap<String, String> parameterMap = new HashMap<String, String>();
-      parameterMap.put(HttpConstants.PARAM_YEAR, "2012");
-      parameterMap.put(HttpConstants.PARAM_DAY, _dayToExamine);
-      setData = LollapaloozerServiceUtils.getSets(parameterMap, this);
+      List<NameValuePair> params = new ArrayList<NameValuePair>();
+      params.add(new BasicNameValuePair(HttpConstants.PARAM_YEAR, "2012"));
+      params.add(new BasicNameValuePair(HttpConstants.PARAM_DAY, _dayToExamine));
+      setData = LollapaloozerServiceUtils.getSets(params, this);
 
       _storageManager.putJSONArray(DATA_SETS, setData);
     } catch (Exception e) {

@@ -2,8 +2,8 @@ package com.ratethisfest.shared;
 
 public class HttpConstants {
   // TODO ideally placed in resource file
-  public static final String SERVER_URL_COACHELLER = "https://ratethisfest.appspot.com/coachellerServlet?";
-  public static final String SERVER_URL_LOLLAPALOOZER = "https://ratethisfest.appspot.com/lollapaloozerServlet?";
+  public static final String SERVER_URL_COACHELLER = "https://ratethisfest.appspot.com/coachellerServlet";
+  public static final String SERVER_URL_LOLLAPALOOZER = "https://ratethisfest.appspot.com/lollapaloozerServlet";
 
   public static final String PARAM_ACTION = "action";
   public static final String PARAM_AUTH_TYPE = "auth_type";

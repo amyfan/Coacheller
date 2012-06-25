@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -16,6 +15,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -39,22 +39,28 @@ public class LollapaloozerServiceUtils {
    * @return
    * @throws Exception
    */
-  public static JSONArray getSets(HashMap<String, String> parameterMap, Context context)
-      throws Exception {
+  public static JSONArray getSets(List<NameValuePair> params, Context context) throws Exception {
     try {
       // Returning FAKE DATA
       // if (1 < 3) {
       // return FakeDataSource.getData();
       // }
 
-      HttpGet get = new HttpGet(HttpConstants.SERVER_URL_LOLLAPALOOZER);
-      for (String s : parameterMap.keySet()) {
-        get.getParams().setParameter(s, parameterMap.get(s));
-      }
-      get.getParams().setParameter(HttpConstants.PARAM_ACTION, HttpConstants.ACTION_GET_SETS);
+      String url = HttpConstants.SERVER_URL_LOLLAPALOOZER;
+      params.add(new BasicNameValuePair(HttpConstants.PARAM_ACTION, HttpConstants.ACTION_GET_SETS));
 
+      if (!url.endsWith("?")) {
+        url += "?";
+      }
+
+      String paramString = URLEncodedUtils.format(params, "utf-8");
+
+      url += paramString;
+
+      HttpGet get = new HttpGet(url);
       HttpClient hc = new DefaultHttpClient();
       HttpResponse response = hc.execute(get);
+
       return getHttpGetResponse(response, context);
 
     } catch (ClientProtocolException e) { // TODO: Could have created a
@@ -73,8 +79,7 @@ public class LollapaloozerServiceUtils {
 
   // Sample of working URL
   // http://ratethisfest.appspot.com/coachellerServlet?email=testing@this.com&action=get_sets&year=2012&day=Friday
-  public static JSONArray getRatings(HashMap<String, String> parameterMap, Context context)
-      throws Exception {
+  public static JSONArray getRatings(List<NameValuePair> params, Context context) throws Exception {
 
     /**
      * 
@@ -84,11 +89,19 @@ public class LollapaloozerServiceUtils {
      */
 
     try {
-      HttpGet get = new HttpGet(HttpConstants.SERVER_URL_LOLLAPALOOZER);
-      for (String s : parameterMap.keySet()) {
-        get.getParams().setParameter(s, parameterMap.get(s));
+
+      String url = HttpConstants.SERVER_URL_LOLLAPALOOZER;
+      params.add(new BasicNameValuePair(HttpConstants.PARAM_ACTION,
+          HttpConstants.ACTION_GET_RATINGS));
+
+      if (!url.endsWith("?")) {
+        url += "?";
       }
-      get.getParams().setParameter(HttpConstants.PARAM_ACTION, HttpConstants.ACTION_GET_RATINGS);
+
+      String paramString = URLEncodedUtils.format(params, "utf-8");
+
+      url += paramString;
+      HttpGet get = new HttpGet(url);
 
       HttpClient hc = new DefaultHttpClient();
       HttpResponse response = hc.execute(get);
@@ -209,6 +222,7 @@ public class LollapaloozerServiceUtils {
       for (String line = null; (line = reader.readLine()) != null;) {
         builder.append(line).append("\n");
       }
+      LollapaloozerHelper.debug(context, "getHttpGetResponse: " + builder.toString());
       if (builder.toString() == null || builder.toString().equals("null")) {
         return new JSONArray();
       } else {
@@ -236,6 +250,7 @@ public class LollapaloozerServiceUtils {
       for (String line = null; (line = reader.readLine()) != null;) {
         builder.append(line).append("\n");
       }
+      LollapaloozerHelper.debug(context, "getHttpPostResponse: " + builder.toString());
 
       return builder.toString();
 

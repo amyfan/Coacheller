@@ -78,6 +78,9 @@ public class GoogleAuthProvider implements AuthProvider {
                 _confirmedAuthorizedGoogle = googleVerifier.verify(
                     _currentGoogleLoginTokenBundle.getString(AccountManager.KEY_AUTHTOKEN),
                     getLocalAccountName());
+                if (_confirmedAuthorizedGoogle) {
+                  _verifiedAccountName = getLocalAccountName();
+                }
                 _activity.modelChanged();
               }
             }, null);
