@@ -14,7 +14,7 @@ import com.ratethisfest.client.CoachellerService;
 import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.server.logic.CoachellaRatingManager;
 import com.ratethisfest.server.logic.CoachellaSetDataLoader;
-import com.ratethisfest.server.logic.EmailSender;
+import com.ratethisfest.server.logic.CoachellaEmailSender;
 import com.ratethisfest.server.logic.JSONUtils;
 import com.ratethisfest.shared.DayEnum;
 import com.ratethisfest.shared.FieldVerifier;
@@ -118,7 +118,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
   }
 
   public String emailRatingsToUser(String email) {
-    String resp = EmailSender.emailRatings(email);
+    String resp = CoachellaEmailSender.emailRatings(email);
     return resp;
   }
 

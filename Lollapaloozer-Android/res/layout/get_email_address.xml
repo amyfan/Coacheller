@@ -8,7 +8,7 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Entering your email address will allow you to view all your ratings, and later share them with your friends!"
+        android:text="Enter the email address to receive all your ratings"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText

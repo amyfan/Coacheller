@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 
 import com.ratethisfest.server.domain.Rating;
-import com.ratethisfest.server.logic.EmailSender;
+import com.ratethisfest.server.logic.CoachellaEmailSender;
 import com.ratethisfest.server.logic.JSONUtils;
 import com.ratethisfest.server.logic.CoachellaRatingManager;
 import com.ratethisfest.server.logic.LollaRatingManager;
@@ -81,7 +81,7 @@ public class CoachellerServlet extends HttpServlet {
     if (action.equals(HttpConstants.ACTION_ADD_RATING)) {
       addRating(email, artist, setTime, day, year, weekend, score, notes);
     } else if (action.equals(HttpConstants.ACTION_EMAIL_RATINGS)) {
-      EmailSender.emailRatings(email);
+      CoachellaEmailSender.emailRatings(email);
     }
 
   }
