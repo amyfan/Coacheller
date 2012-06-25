@@ -74,7 +74,8 @@ public class LollaRatingManager extends RatingManager {
    * @param notes
    * @return
    */
-  public String addRatingBySetId(String email, Long setId, Integer score, String notes) {
+  public String addRatingBySetId(String authType, String authId, String email, Long setId,
+      Integer score, String notes) {
     String resp = null;
 
     Key<Set> setKey = setDao.findSetKeyById(setId);
@@ -82,7 +83,7 @@ public class LollaRatingManager extends RatingManager {
     if (ratings == null || ratings.size() == 0) {
       // add new rating
       if (setKey != null) {
-        addRating(setKey, email, score, notes);
+        addRating(authType, authId, email, setKey, score, notes);
         resp = "rating added";
       } else {
         resp = "invalid artist name";
@@ -97,7 +98,8 @@ public class LollaRatingManager extends RatingManager {
     return resp;
   }
 
-  private Rating addRating(Key<Set> setKey, String email, Integer score, String notes) {
+  private Rating addRating(String authType, String authId, String email, Key<Set> setKey,
+      Integer score, String notes) {
     Rating rating = new Rating();
     rating.setSet(setKey);
     rating.setScore(score);
@@ -106,7 +108,7 @@ public class LollaRatingManager extends RatingManager {
 
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     if (userKey == null) {
-      UserAccountManager.getInstance().createAppUser(email);
+      UserAccountManager.getInstance().createAppUser(authType, authId, email);
       userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     }
     rating.setRater(userKey);

@@ -270,7 +270,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     _stageFieldName = QUERY_SETS__STAGE_ONE;
 
     TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
-    titleView.setText(_dayToExamine + ", Lollapalooza " + _yearToQuery);
+    titleView.setText(_dayToExamine + " - Lollapalooza " + _yearToQuery);
     // +" "+ weekString);
     _setListAdapter.setTimeFieldName(_timeFieldName);
     _setListAdapter.setStageFieldName(_stageFieldName);

@@ -6,6 +6,9 @@ public class HttpConstants {
   public static final String SERVER_URL_LOLLAPALOOZER = "https://ratethisfest.appspot.com/lollapaloozerServlet?";
 
   public static final String PARAM_ACTION = "action";
+  public static final String PARAM_AUTH_TYPE = "auth_type";
+  public static final String PARAM_AUTH_ID = "auth_id";
+  public static final String PARAM_AUTH_TOKEN = "auth_token";
   public static final String PARAM_EMAIL = "email";
   public static final String PARAM_SET_ID = "set_id";
   public static final String PARAM_DAY = "day";

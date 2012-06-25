@@ -47,6 +47,9 @@ public class LollapaloozerServlet extends HttpServlet {
     resp.setContentType("text/plain");
 
     String action = checkNull(req.getParameter(HttpConstants.PARAM_ACTION));
+    String authType = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TYPE));
+    String authId = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_ID));
+    String authToken = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TOKEN));
     String email = checkNull(req.getParameter(HttpConstants.PARAM_EMAIL));
     String day = checkNull(req.getParameter(HttpConstants.PARAM_DAY));
     String year = checkNull(req.getParameter(HttpConstants.PARAM_YEAR));
@@ -56,7 +59,9 @@ public class LollapaloozerServlet extends HttpServlet {
     if (action.equals(HttpConstants.ACTION_GET_SETS)) {
       respString = getSetsJson(year, day);
     } else if (action.equals(HttpConstants.ACTION_GET_RATINGS)) {
-      respString = getRatingsJsonByUser(email, year, day);
+      if (verifyToken(authType, authId, authToken)) {
+        respString = getRatingsJsonByUser(email, year, day);
+      }
     }
 
     resp.getWriter().println(respString);
@@ -83,6 +88,9 @@ public class LollapaloozerServlet extends HttpServlet {
     }
 
     String action = checkNull(req.getParameter(HttpConstants.PARAM_ACTION));
+    String authType = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TYPE));
+    String authId = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_ID));
+    String authToken = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TOKEN));
     String email = checkNull(req.getParameter(HttpConstants.PARAM_EMAIL));
     String setId = checkNull(req.getParameter(HttpConstants.PARAM_SET_ID));
     String score = checkNull(req.getParameter(HttpConstants.PARAM_SCORE));
@@ -94,13 +102,22 @@ public class LollapaloozerServlet extends HttpServlet {
     }
     if (action.equals(HttpConstants.ACTION_ADD_RATING)) {
       out.println("Calling addRating()");
-      addRating(email, setId, score, notes);
+      if (verifyToken(authType, authId, authToken)) {
+        addRating(authType, authId, email, setId, score, notes);
+      }
     } else if (action.equals(HttpConstants.ACTION_EMAIL_RATINGS)) {
       out.println("Calling emailRatings()");
-      EmailSender.emailRatings(email);
+      if (verifyToken(authType, authId, authToken)) {
+        EmailSender.emailRatings(email);
+      }
     }
     out.println("Done!");
     out.close();
+  }
+
+  private boolean verifyToken(String authType, String authId, String authToken) {
+    // TODO: you may put the verification code here
+    return true;
   }
 
   private String getSetsJson(String yearString, String day) {
@@ -158,7 +175,8 @@ public class LollapaloozerServlet extends HttpServlet {
     return resp;
   }
 
-  private String addRating(String email, String setId, String score, String notes) {
+  private String addRating(String authType, String authId, String email, String setId,
+      String score, String notes) {
 
     String resp = null;
 
@@ -167,8 +185,8 @@ public class LollapaloozerServlet extends HttpServlet {
     } else if (!FieldVerifier.isValidScore(score)) {
       resp = FieldVerifier.SCORE_ERROR;
     } else if (setId != null) {
-      resp = LollaRatingManager.getInstance().addRatingBySetId(email, Long.valueOf(setId),
-          Integer.valueOf(score), notes);
+      resp = LollaRatingManager.getInstance().addRatingBySetId(authType, authId, email,
+          Long.valueOf(setId), Integer.valueOf(score), notes);
     } else {
       resp = "null args";
     }
