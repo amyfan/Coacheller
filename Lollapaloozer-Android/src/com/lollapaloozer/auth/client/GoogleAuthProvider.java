@@ -1,27 +1,24 @@
 package com.lollapaloozer.auth.client;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.lollapaloozer.auth.verify.GoogleAuthVerifier;
 
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.lollapaloozer.auth.verify.GoogleAuthVerifier;
 
 public class GoogleAuthProvider implements AuthProvider {
 
 	private final String ACCOUNT_TYPE_REQUESTED = "com.google";
 
-	private AuthDemoActivity _activity;
+	private AuthChooseAccountActivity _activity;
 	private Bundle _currentGoogleLoginTokenBundle = null;
 	private JSONObject _currentAuthResult;
 	private boolean _confirmedAuthorizedGoogle;
@@ -30,7 +27,7 @@ public class GoogleAuthProvider implements AuthProvider {
 	private GoogleAuthProvider() {
 	}
 
-	public GoogleAuthProvider(AuthDemoActivity activity) {
+	public GoogleAuthProvider(AuthChooseAccountActivity activity) {
 		_activity = activity;
 	}
 
@@ -56,7 +53,7 @@ public class GoogleAuthProvider implements AuthProvider {
 				new AccountManagerCallback<Bundle>() {
 
 					public void run(AccountManagerFuture<Bundle> future) {
-
+						System.out.println("AccountManagerCallback executing");
 						try {
 							_currentGoogleLoginTokenBundle = future.getResult();
 							System.out
@@ -86,15 +83,14 @@ public class GoogleAuthProvider implements AuthProvider {
 						}
 
 						GoogleAuthVerifier googleVerifier = new GoogleAuthVerifier();
-						_confirmedAuthorizedGoogle = googleVerifier.verify(
-								_currentGoogleLoginTokenBundle
-										.getString(AccountManager.KEY_AUTHTOKEN),
-								getLocalAccountName());
+						_confirmedAuthorizedGoogle = 
+							googleVerifier.verify(_currentGoogleLoginTokenBundle.getString(AccountManager.KEY_AUTHTOKEN), getLocalAccountName());
 						_activity.modelChanged();
 					}
 				}, null);
 		System.out.println("Done with AccountManager call");
 	}
+	
 
 	@Override
 	public void logout() {

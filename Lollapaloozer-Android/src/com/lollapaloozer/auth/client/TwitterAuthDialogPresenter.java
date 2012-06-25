@@ -1,10 +1,10 @@
 package com.lollapaloozer.auth.client;
 
-import com.lollapaloozer.util.Constants;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+
+import com.lollapaloozer.util.Constants;
 
 public class TwitterAuthDialogPresenter {
 
@@ -27,6 +27,7 @@ public class TwitterAuthDialogPresenter {
 	}
 
 	// Dialog implementation has been abandoned due to bugs in Android framework
+	// This class contributes nothing useful now.
 
 	// AlertDialog.Builder builder;
 	// builder = new AlertDialog.Builder(_activity);

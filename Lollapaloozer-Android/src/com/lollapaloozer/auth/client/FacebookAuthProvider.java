@@ -9,19 +9,20 @@ import org.json.JSONObject;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ProgressBar;
 
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
+
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
+import com.lollapaloozer.auth.verify.FacebookVerifier;
 
 public class FacebookAuthProvider implements AuthProvider {
 
-	private AuthDemoActivity _activity;
+	private AuthChooseAccountActivity _activity;
 	private Facebook _facebook = new Facebook("186287061500005");
 	private AsyncFacebookRunner mAsyncRunner = new AsyncFacebookRunner(
 			_facebook);
@@ -31,7 +32,7 @@ public class FacebookAuthProvider implements AuthProvider {
 	private FacebookAuthProvider() {
 	}
 
-	public FacebookAuthProvider(AuthDemoActivity activity) {
+	public FacebookAuthProvider(AuthChooseAccountActivity activity) {
 		_activity = activity;
 	}
 
@@ -41,15 +42,22 @@ public class FacebookAuthProvider implements AuthProvider {
 
 	@Override
 	public boolean isLoggedIn() {
-		return _facebook.isSessionValid();
+		if (_userInfo == null) {
+			return false;
+			}
+		
+		FacebookVerifier verifier = new FacebookVerifier();
+		return verifier.verify(getAuthToken(), getVerifiedAccountIdentifier());
+		
+		
+		
+		//return _facebook.isSessionValid();
 	}
 
-	private void _getUserData() {
-		mAsyncRunner.request("me", new IDRequestListener());
-	}
 
 	@Override
 	public void login() {
+		
 		_facebook.authorize(_activity, new String[] { "email" },
 				new DialogListener() {
 					@Override
@@ -59,7 +67,8 @@ public class FacebookAuthProvider implements AuthProvider {
 										+ _facebook.getAccessToken()
 										+ " valid until "
 										+ _facebook.getAccessExpires());
-						_getUserData();
+						mAsyncRunner.request("me", new IDRequestListener()); //get user info from facebook
+						_activity.modelChanged();
 						// TODO should lock UI here
 					}
 

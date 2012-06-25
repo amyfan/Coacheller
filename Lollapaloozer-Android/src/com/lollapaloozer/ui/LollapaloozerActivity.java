@@ -32,6 +32,8 @@ import android.widget.Toast;
 import com.lollapaloozer.LollapaloozerStorageManager;
 import com.lollapaloozer.R;
 import com.lollapaloozer.LollapaloozerServiceUtils;
+import com.lollapaloozer.auth.client.AuthChooseAccountActivity;
+import com.lollapaloozer.auth.client.TwitterAuthWebpageActivity;
 import com.lollapaloozer.data.CustomPair;
 import com.lollapaloozer.data.CustomSetListAdapter;
 import com.lollapaloozer.data.JSONArrayHashMap;
@@ -640,17 +642,29 @@ public class LollapaloozerActivity extends Activity implements
 			return true;
 		}
 	}
+	
 	private void _beginSigninProcess() {
 		Toast featureRequiresSignin = Toast.makeText(this,
 				Constants.MSG_SIGNIN_REQUIRED, 25);
 		featureRequiresSignin.show();
 		
-		
-
-		// This shows the 'enter email' dialog, no longer needed
+				// This shows the 'enter email' dialog, no longer needed
 		//showDialog(DIALOG_GETEMAIL);
+		
+		Intent lollapaloozerAuthIntent = new Intent(this, AuthChooseAccountActivity.class);
+		//no extras needed here
+		//lollapaloozerAuthIntent.putExtra(Constants.INTENT_EXTRA_ALIAS_TWITTER_AUTH, "String");
+		startActivityForResult(lollapaloozerAuthIntent,
+				Constants.INTENT_REQ_CHOOSE_LOGIN_TYPE);
 
 	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
 
 	// Dialog handling, called before any dialog is shown
 	@Override
@@ -871,5 +885,6 @@ public class LollapaloozerActivity extends Activity implements
 		// {
 
 	}
+
 
 }

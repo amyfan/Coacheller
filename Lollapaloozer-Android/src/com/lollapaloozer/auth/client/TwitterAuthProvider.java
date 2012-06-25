@@ -9,35 +9,32 @@ import org.scribe.model.Verb;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.lollapaloozer.auth.verify.TwitterVerifier;
 import com.lollapaloozer.util.Constants;
 import com.lollapaloozer.util.Helper;
 
 public class TwitterAuthProvider implements AuthProvider {
-	private AuthDemoActivity _activity;
+	private AuthChooseAccountActivity _activity;
 
 	private TwitterAuthProviderOAuth _oAuthProvider;
-	private HashMap<String, String> _twitterAccountProperties;
+	private HashMap<String, String> _twitterAccountProperties  = new HashMap<String, String>();
 	private ArrayList<String> _twitterAccountPropertyNames;
-	private boolean _isLoggedIn;
 
-	private final String ACCOUNT_PROPERTY_ID = "id";
-	private final String ACCOUNT_PROPERTY_NAME = "name";
-	private final String ACCOUNT_PROPERTY_HANDLE = "screen_name";
+
 
 	// private String _key;
 	// private String _secret;
 	// Consumer key yit4Mu71Mj93eNILUo3uCw
 	// Consumer secret rdYvdK4g3ckWVdnvzmAj6JXmj9RoI05rIb4nVYQsoI
 
-	public TwitterAuthProvider(AuthDemoActivity activity) {
+	public TwitterAuthProvider(AuthChooseAccountActivity activity) {
 		_activity = activity;
 		_oAuthProvider = new TwitterAuthProviderOAuth(Constants.CONSUMER_KEY,
 				Constants.CONSUMER_SECRET, Constants.OAUTH_CALLBACK_URL);
 		_twitterAccountPropertyNames = new ArrayList<String>();
-		_twitterAccountPropertyNames.add(ACCOUNT_PROPERTY_ID);
-		_twitterAccountPropertyNames.add(ACCOUNT_PROPERTY_NAME);
-		_twitterAccountPropertyNames.add(ACCOUNT_PROPERTY_HANDLE);
-		_isLoggedIn = false;
+		_twitterAccountPropertyNames.add(TwitterVerifier.ACCOUNT_PROPERTY_ID);
+		_twitterAccountPropertyNames.add(TwitterVerifier.ACCOUNT_PROPERTY_NAME);
+		_twitterAccountPropertyNames.add(TwitterVerifier.ACCOUNT_PROPERTY_HANDLE);
 	}
 
 	// //This does work, although it launches the device browser directly
@@ -92,21 +89,27 @@ public class TwitterAuthProvider implements AuthProvider {
 
 	@Override
 	public boolean isLoggedIn() {
-		return _isLoggedIn;
+		
+		if (_twitterAccountProperties.get(TwitterVerifier.ACCOUNT_PROPERTY_HANDLE) == null) {
+			return false;
+		}
+		
+		TwitterVerifier verifier = new TwitterVerifier(_oAuthProvider.getAccessToken(), _oAuthProvider.getTokenSecret());
+		return verifier.verify("", _twitterAccountProperties.get(TwitterVerifier.ACCOUNT_PROPERTY_HANDLE));
+		
 	}
 
 	@Override
 	public void login() {
 		String authReqTokenUrl = _oAuthProvider.getRequestTokenUrl();
-		TwitterAuthDialogPresenter twitterAuthDialog = new TwitterAuthDialogPresenter(
-				_activity);
+		TwitterAuthDialogPresenter twitterAuthDialog = new TwitterAuthDialogPresenter(_activity);
 		twitterAuthDialog.showDialog(authReqTokenUrl);
 
 	}
 
 	@Override
 	public void logout() {
-		_isLoggedIn = false;
+		_twitterAccountProperties.clear();
 	}
 
 	@Override
@@ -116,14 +119,14 @@ public class TwitterAuthProvider implements AuthProvider {
 
 	@Override
 	public String getLocalAccountName() {
-		return _twitterAccountProperties.get(ACCOUNT_PROPERTY_HANDLE) + "("
-				+ _twitterAccountProperties.get(ACCOUNT_PROPERTY_NAME) + ")";
+		return _twitterAccountProperties.get(TwitterVerifier.ACCOUNT_PROPERTY_HANDLE) + "("
+				+ _twitterAccountProperties.get(TwitterVerifier.ACCOUNT_PROPERTY_NAME) + ")";
 	}
 
 	@Override
 	public String getVerifiedAccountIdentifier() {
 		// Not available through twitter
-		return _twitterAccountProperties.get(ACCOUNT_PROPERTY_ID);
+		return _twitterAccountProperties.get(TwitterVerifier.ACCOUNT_PROPERTY_ID);
 	}
 
 	@Override
@@ -147,12 +150,13 @@ public class TwitterAuthProvider implements AuthProvider {
 			_oAuthProvider.requestTokenResult(token, verifier);
 		}
 
+		
 		Response response = _oAuthProvider.accessResource(Verb.GET,
 				"http://api.twitter.com/1/account/verify_credentials.xml");
 		String responseBody = response.getBody();
 		// System.out.println(response.getBody());
 
-		_twitterAccountProperties = new HashMap<String, String>();
+		_twitterAccountProperties.clear();
 
 		for (String s : _twitterAccountPropertyNames) {
 			_twitterAccountProperties.put(s,
@@ -162,7 +166,7 @@ public class TwitterAuthProvider implements AuthProvider {
 		// If data is meaningful, set logged in flag;
 		if (getLocalAccountName() != null
 				&& getVerifiedAccountIdentifier() != null) {
-			_isLoggedIn = true;
+		
 			System.out.println("Twitter Authentication Successful");
 			_activity.modelChanged();
 		} else {

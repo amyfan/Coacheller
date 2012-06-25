@@ -1,8 +1,5 @@
 package com.lollapaloozer.auth.client;
 
-import com.lollapaloozer.R;
-import com.lollapaloozer.util.Constants;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +7,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-public class AuthDemoActivity extends Activity implements OnClickListener {
+import com.lollapaloozer.R;
+import com.lollapaloozer.util.Constants;
+
+public class AuthChooseAccountActivity extends Activity implements OnClickListener {
+	
+	private boolean _DEBUG = true;
 
 	// Framework
 	private TextView _loginStatusText;
@@ -81,27 +83,49 @@ public class AuthDemoActivity extends Activity implements OnClickListener {
 			_model.invalidateTokens();
 			_updateUI();
 		}
+		if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_dismiss_activity))) {
+			_returnToMainActivity();
+		}
+	}
+
+	private void _returnToMainActivity() {
+		Intent returnIntent = getIntent();
+		
+		int result;
+		if (_model.isLoggedIn()) {
+			result = RESULT_OK;
+		} else {
+			result = RESULT_CANCELED;
+		}
+		
+		setResult(result, returnIntent);
+		finish();
 	}
 
 	private void _updateUI() {
+		if (_DEBUG) {
 
-		if (_model.isLoggedIn()) {
-			AuthProvider currentProvider = _model.getCurrentAuthProvider();
-			_setLoginStatus(currentProvider.getAccountType());
-			_accountNameText.setText("Account: "
-					+ currentProvider.getLocalAccountName() + "\r\n"
-					+ currentProvider.getAccountType()
-					+ " confirms you are the owner of "
-					+ currentProvider.getVerifiedAccountIdentifier());
-			_tokenIdText.setText("Token ID: " + currentProvider.getAuthToken());
+			if (_model.isLoggedIn()) {
+				AuthProvider currentProvider = _model.getCurrentAuthProvider();
+				_setLoginStatus(currentProvider.getAccountType());
+				_accountNameText.setText("Account: "
+						+ currentProvider.getLocalAccountName() + "\r\n"
+						+ currentProvider.getAccountType()
+						+ " confirms you are the owner of "
+						+ currentProvider.getVerifiedAccountIdentifier());
+				_tokenIdText.setText("Token ID: " + currentProvider.getAuthToken());
+			} else {
+				_setLoginStatus("Not Logged In");
+				_accountNameText.setText("");
+				_tokenIdText.setText("");
+			}
+
+			if (this.findViewById(R.layout.auth_choose) != null) {
+				this.findViewById(R.layout.auth_choose).invalidate();
+			}
 		} else {
-			_setLoginStatus("Not Logged In");
-			_accountNameText.setText("");
-			_tokenIdText.setText("");
-		}
+			//Release version, hide debug UI elements
 
-		if (this.findViewById(R.layout.auth_choose) != null) {
-			this.findViewById(R.layout.auth_choose).invalidate();
 		}
 
 	}
@@ -116,7 +140,8 @@ public class AuthDemoActivity extends Activity implements OnClickListener {
 		super.onActivityResult(requestCode, resultCode, data);
 
 		System.out.println("onActivityResult(requestCode=[" + requestCode
-				+ "], resultCode=[" + resultCode + "]");
+				+ "], resultCode=[" + resultCode + "] with data: "+ data);
+
 
 		switch (requestCode) {
 		case Constants.INTENT_REQ_TWITTER_LOGIN:

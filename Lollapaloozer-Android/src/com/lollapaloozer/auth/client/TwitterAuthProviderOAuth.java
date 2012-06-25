@@ -9,12 +9,6 @@ import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-
 public class TwitterAuthProviderOAuth {
 
 	private OAuthService _service;
@@ -29,17 +23,23 @@ public class TwitterAuthProviderOAuth {
 		_consumerKey = consumerKey;
 		_consumerSecret = consumerSecret;
 		_callbackUrl = callbackUrl;
+		
+		_service = getService();
 	}
 
 	public String getRequestTokenUrl() {
-		_service = new ServiceBuilder().provider(TwitterApi.class)
-				.apiKey(_consumerKey).apiSecret(_consumerSecret)
-				.callback(_callbackUrl).build();
+		
 		_requestToken = _service.getRequestToken();
 
 		String authUrl = _service.getAuthorizationUrl(_requestToken);
 		System.out.println("Twitter OAuth request token URL:" + authUrl);
 		return authUrl;
+	}
+	
+	public OAuthService getService() {
+		return new ServiceBuilder().provider(TwitterApi.class)
+		.apiKey(_consumerKey).apiSecret(_consumerSecret)
+		.callback(_callbackUrl).build();
 	}
 
 	public void requestTokenResult(String token, String tokenVerify) {
@@ -57,7 +57,9 @@ public class TwitterAuthProviderOAuth {
 	}
 
 	public Response accessResource(Verb httpVerb, String resourceUrl) {
+		
 		OAuthRequest request = new OAuthRequest(httpVerb, resourceUrl);
+		
 		_service.signRequest(_accessToken, request); // the access // token from
 														// // step 4 Response
 														// response =
@@ -66,5 +68,13 @@ public class TwitterAuthProviderOAuth {
 
 	public String getAccessToken() {
 		return _accessToken.getToken();
+	}
+	
+	public String getTokenSecret() {
+		return _accessToken.getSecret();
+	}
+	
+	public void setAccessTokenObject(String token, String secret) {
+		_accessToken = new Token(token, secret);
 	}
 }

@@ -62,14 +62,6 @@
             android:text="Login with Google acct" />
 
         <Button
-            android:id="@+id/btn_invalidate_tokens"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btn_login_twitter"
-            android:layout_centerHorizontal="true"
-            android:text="Invalidate access Tokens" />
-
-        <Button
             android:id="@+id/btn_login_twitter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,6 +76,23 @@
             android:layout_below="@+id/btn_login_google"
             android:layout_centerHorizontal="true"
             android:text="Login with Facebook acct" />
+
+        <Button
+            android:id="@+id/btn_invalidate_tokens"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/btn_login_twitter"
+            android:text="Invalidate Tokens" />
+
+        <Button
+            android:id="@+id/btn_dismiss_activity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_login_twitter"
+            android:layout_toRightOf="@+id/btn_invalidate_tokens"
+            android:text="Dismiss Activity" />
+
     </RelativeLayout>
 
     <LinearLayout

@@ -76,11 +76,10 @@ public class LollapaloozerServlet extends HttpServlet {
 
     out.println(methodName + " handling request for the following parameters:");
 
+    //Value is not a string but rather an array of strings
     Map<String, String[]> parameterMap = req.getParameterMap();
-    Iterator<String> it = parameterMap.keySet().iterator();
-
     for (String s : parameterMap.keySet()) {
-      out.println(s + " = " + parameterMap.get(s));
+      out.println(s + " = " + parameterMap.get(s)[0]);
     }
 
     String action = checkNull(req.getParameter(HttpConstants.PARAM_ACTION));

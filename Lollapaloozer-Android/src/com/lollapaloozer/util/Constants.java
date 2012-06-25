@@ -38,10 +38,15 @@ public class Constants {
 	public static final int DEFAULT_PORT_HTTPS = 443;
 	public static final String OAUTH_REQUEST_CONTENT_TYPE = "application/x-www-form-urlencoded";
 
+	
+	
+	public static final int INTENT_REQ_CHOOSE_LOGIN_TYPE = 2;
 	public static final int INTENT_REQ_TWITTER_LOGIN = 1;
+	
 	public static final String INTENT_EXTRA_ALIAS_TWITTER_AUTH = "intent.extra.twitter.auth";
 	public static final String INTENT_EXTRA_OAUTH1_TOKEN = "intent.extra.oauth1.token";
 	public static final String INTENT_EXTRA_OAUTH1_VERIFIER = "intent.extra.oauth1.verifier";
+	
 
 
 }
