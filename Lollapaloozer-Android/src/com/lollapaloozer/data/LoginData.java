@@ -1,4 +1,4 @@
-package com.lollapaloozer;
+package com.lollapaloozer.data;
 
 import java.io.Serializable;
 import java.util.StringTokenizer;
@@ -9,6 +9,7 @@ public class LoginData implements Serializable {
   public int loginType;
   public String accountIdentifier;
   public String accountToken;
+  public String emailAddress;
 
   public String getTwitterToken() {
     StringTokenizer tokenizer = new StringTokenizer(accountToken, "|");

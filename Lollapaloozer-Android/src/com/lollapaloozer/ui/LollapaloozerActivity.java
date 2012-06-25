@@ -32,7 +32,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lollapaloozer.LoginData;
 import com.lollapaloozer.LollapaloozerServiceUtils;
 import com.lollapaloozer.LollapaloozerStorageManager;
 import com.lollapaloozer.R;
@@ -40,6 +39,7 @@ import com.lollapaloozer.auth.client.AuthChooseAccountActivity;
 import com.lollapaloozer.data.CustomSetListAdapter;
 import com.lollapaloozer.data.JSONArrayHashMap;
 import com.lollapaloozer.data.JSONArraySortMap;
+import com.lollapaloozer.data.LoginData;
 import com.lollapaloozer.util.LollapaloozerHelper;
 import com.ratethisfest.shared.Constants;
 import com.ratethisfest.shared.FieldVerifier;
@@ -60,7 +60,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   private static final int SORT_ARTIST = 2;
 
   // Local Storage
-  private static final String DATA_USER_EMAIL = "DATA_USER_EMAIL";
   private static final String DATA_SETS = "DATA_SETS";
   private static final String DATA_RATINGS = "DATA_RATINGS";
   private static final String DATA_FIRST_USE = "DATA_FIRST_USE";
@@ -91,7 +90,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   private Dialog _networkErrorDialog;
   private Dialog _firstUseDialog;
 
-  private String _obtained_email = null;
   private CustomSetListAdapter _setListAdapter;
   private JSONObject _lastItemSelected;
   // private CustomPair<String, String> _lastRatings = new CustomPair<String,
@@ -239,18 +237,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     clickToRate.show();
   }
 
-  private void _obtainEmailFromStorage() {
-    String loadedEmail = _storageManager.getString(DATA_USER_EMAIL);
-
-    if ((loadedEmail != null) && FieldVerifier.isValidEmail(loadedEmail)) {
-      _obtained_email = loadedEmail;
-    }
-
-    LollapaloozerHelper.debug(this, "Using email: " + _obtained_email + ", on disk:[" + loadedEmail
-        + "]");
-
-  }
-
   private void _obtainLoginDataFromStorage() {
     _loginData = (LoginData) _storageManager.getObject(DATA_LOGIN_INFO);
   }
@@ -279,8 +265,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     // +" "+ weekString);
     _setListAdapter.setTimeFieldName(_timeFieldName);
     _setListAdapter.setStageFieldName(_stageFieldName);
-
-    _obtainEmailFromStorage();
 
     _obtainLoginDataFromStorage();
 
@@ -340,6 +324,9 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
         parameterMap.put(HttpConstants.PARAM_AUTH_TYPE, _loginData.loginType + "");
         parameterMap.put(HttpConstants.PARAM_AUTH_ID, _loginData.accountIdentifier);
         parameterMap.put(HttpConstants.PARAM_AUTH_TOKEN, _loginData.accountToken);
+        if (_loginData.emailAddress != null) {
+          parameterMap.put(HttpConstants.PARAM_EMAIL, _loginData.emailAddress);
+        }
         myRatings = LollapaloozerServiceUtils.getRatings(parameterMap, this);
 
         _storageManager.putJSONArray(DATA_RATINGS, myRatings);
@@ -430,6 +417,10 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
           _loginData.accountIdentifier));
       nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TOKEN,
           _loginData.accountToken));
+      if (_loginData.emailAddress != null) {
+        nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_EMAIL,
+            _loginData.emailAddress));
+      }
 
       LollapaloozerServiceUtils.addRating(nameValuePairs, this);
 
@@ -530,9 +521,9 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
       } else { // Email is valid. Save email and let user get on with
         // rating
-        _storageManager.putString(DATA_USER_EMAIL, email);
+
+        _loginData.emailAddress = email;
         _storageManager.save();
-        _obtained_email = email;
         _getEmailDialog.dismiss();
         showDialog(DIALOG_RATE);
       }
@@ -670,10 +661,22 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
       Bundle results = data.getExtras();
       _loginData = new LoginData();
       _loginData.timeLoginIssued = System.currentTimeMillis();
-
       _loginData.loginType = results.getInt(Constants.INTENT_EXTRA_LOGIN_TYPE);
       _loginData.accountIdentifier = results.getString(Constants.INTENT_EXTRA_ACCOUNT_IDENTIFIER);
       _loginData.accountToken = results.getString(Constants.INTENT_EXTRA_LOGIN_TOKEN);
+
+      if (_loginData.loginType == Constants.LOGIN_TYPE_GOOGLE
+          || _loginData.loginType == Constants.LOGIN_TYPE_FACEBOOK) {
+        _loginData.emailAddress = _loginData.accountIdentifier;
+      } else {
+        _loginData.emailAddress = null;
+      }
+
+      System.out.println("Saving login data timeIssued=" + _loginData.timeLoginIssued
+          + " loginType=" + _loginData.loginType + " accountIdentifier="
+          + _loginData.accountIdentifier + " accountToken=" + _loginData.accountToken
+          + " emailAddress=" + _loginData.emailAddress);
+
       _storageManager.putObject(DATA_LOGIN_INFO, _loginData);
       _storageManager.save();
     }
@@ -840,7 +843,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     case R.id.menu_item_email_me:
       LollapaloozerHelper.debug(this, "Menu button 'email me' pressed");
 
-      if (_obtained_email == null) {
+      if (_loginData.emailAddress == null) {
         Toast.makeText(this, "Try rating at least one set first", 15).show();
       } else {
         try {
@@ -858,8 +861,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
     case R.id.menu_item_delete_email:
       LollapaloozerHelper.debug(this, "Menu button 'delete email' pressed");
-      _obtained_email = null;
-      _storageManager.putString(DATA_USER_EMAIL, _obtained_email);
       _loginData = null;
       _storageManager.putObject(DATA_LOGIN_INFO, _loginData);
 
