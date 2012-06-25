@@ -6,6 +6,7 @@ import android.accounts.AuthenticatorDescription;
 import android.content.Intent;
 
 import com.facebook.android.Facebook;
+import com.ratethisfest.shared.Constants;
 
 public class AuthDemoModel {
 
@@ -62,6 +63,23 @@ public class AuthDemoModel {
     }
 
     return null;
+  }
+
+  public int getCurrentAuthProviderType() {
+    if (_authProviderGoogle.isLoggedIn()) {
+      return Constants.LOGIN_TYPE_GOOGLE;
+    }
+
+    if (_authProviderFacebook.isLoggedIn()) {
+      return Constants.LOGIN_TYPE_FACEBOOK;
+    }
+
+    if (_authProviderTwitter.isLoggedIn()) {
+      return Constants.LOGIN_TYPE_TWITTER;
+    }
+
+    return 0;
+
   }
 
   public void checkAccounts() {

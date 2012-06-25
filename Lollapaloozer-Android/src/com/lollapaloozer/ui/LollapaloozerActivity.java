@@ -22,19 +22,17 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lollapaloozer.LoginData;
+import com.lollapaloozer.LollapaloozerServiceUtils;
 import com.lollapaloozer.LollapaloozerStorageManager;
 import com.lollapaloozer.R;
-import com.lollapaloozer.LollapaloozerServiceUtils;
 import com.lollapaloozer.auth.client.AuthChooseAccountActivity;
-import com.lollapaloozer.auth.client.TwitterAuthWebpageActivity;
-import com.lollapaloozer.data.CustomPair;
 import com.lollapaloozer.data.CustomSetListAdapter;
 import com.lollapaloozer.data.JSONArrayHashMap;
 import com.lollapaloozer.data.JSONArraySortMap;
@@ -61,6 +59,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   private static final String DATA_SETS = "DATA_SETS";
   private static final String DATA_RATINGS = "DATA_RATINGS";
   private static final String DATA_FIRST_USE = "DATA_FIRST_USE";
+  private static final String DATA_LOGIN_INFO = "DATA_LOGIN_INFO";
 
   // Database
   public static final String QUERY_RATINGS__SET_ID = "set_id";
@@ -107,6 +106,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   private boolean _networkErrors;
 
   private Handler _networkIOHandler;
+  private LoginData _loginData;
 
   /** Called by Android Framework when the activity is first created. */
 
@@ -234,7 +234,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     clickToRate.show();
   }
 
-  private void obtainEmailFromStorage() {
+  private void _obtainEmailFromStorage() {
     String loadedEmail = _storageManager.getString(DATA_USER_EMAIL);
 
     if ((loadedEmail != null) && FieldVerifier.isValidEmail(loadedEmail)) {
@@ -244,6 +244,10 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     LollapaloozerHelper.debug(this, "Using email: " + _obtained_email + ", on disk:[" + loadedEmail
         + "]");
 
+  }
+
+  private void _obtainLoginDataFromStorage() {
+    _loginData = (LoginData) _storageManager.getObject(DATA_LOGIN_INFO);
   }
 
   // Only called once, so commented out.
@@ -271,7 +275,9 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     _setListAdapter.setTimeFieldName(_timeFieldName);
     _setListAdapter.setStageFieldName(_stageFieldName);
 
-    obtainEmailFromStorage();
+    _obtainEmailFromStorage();
+
+    _obtainLoginDataFromStorage();
 
     launchGetDataThread(); // TODO multithread this
   }
@@ -606,7 +612,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   }
 
   private boolean _isLoggedIn() {
-    if (_obtained_email == null) {
+    if (_loginData == null) {
       return false;
     } else {
       return true;
@@ -622,7 +628,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
     Intent lollapaloozerAuthIntent = new Intent(this, AuthChooseAccountActivity.class);
     // no extras needed here
-    // lollapaloozerAuthIntent.putExtra(Constants.INTENT_EXTRA_ALIAS_TWITTER_AUTH,
+    // lollapaloozerAuthIntent.putExtra(Constants.INTENT_EXTRA_TWITTER_AUTHURL,
     // "String");
     startActivityForResult(lollapaloozerAuthIntent, Constants.INTENT_REQ_CHOOSE_LOGIN_TYPE);
 
@@ -630,8 +636,21 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    // TODO Auto-generated method stub
     super.onActivityResult(requestCode, resultCode, data);
+    System.out.println("LollapaloozerActivity.onActivityResult req=" + requestCode + " result="
+        + resultCode);
+
+    if (resultCode == Activity.RESULT_OK) { // Login success
+      Bundle results = data.getExtras();
+      _loginData = new LoginData();
+      _loginData.timeLoginIssued = System.currentTimeMillis();
+
+      _loginData.loginType = results.getInt(Constants.INTENT_EXTRA_LOGIN_TYPE);
+      _loginData.accountIdentifier = results.getString(Constants.INTENT_EXTRA_ACCOUNT_IDENTIFIER);
+      _loginData.accountToken = results.getString(Constants.INTENT_EXTRA_LOGIN_TOKEN);
+      _storageManager.putObject(DATA_LOGIN_INFO, _loginData);
+      _storageManager.save();
+    }
   }
 
   // Dialog handling, called before any dialog is shown
@@ -815,6 +834,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
       LollapaloozerHelper.debug(this, "Menu button 'delete email' pressed");
       _obtained_email = null;
       _storageManager.putString(DATA_USER_EMAIL, null);
+      _loginData = null;
       _storageManager.save();
       refreshData();
       return true;

@@ -65,11 +65,7 @@ public class TwitterAuthProviderOAuth {
   }
 
   public String getAccessToken() {
-    return _accessToken.getToken();
-  }
-
-  public String getTokenSecret() {
-    return _accessToken.getSecret();
+    return _accessToken.getToken() + "|" + _accessToken.getSecret();
   }
 
   public void setAccessTokenObject(String token, String secret) {

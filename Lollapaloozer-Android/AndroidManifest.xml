@@ -18,14 +18,14 @@
         <uses-library android:name="com.google.android.maps" />
         <activity
             android:name=".ui.LollapaloozerActivity"
-            android:label="@string/app_name" android:launchMode="singleInstance">
+            android:label="@string/app_name" android:launchMode="standard">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.ActivitySetsSearch" android:launchMode="singleInstance"></activity>
+        <activity android:name=".ui.ActivitySetsSearch" android:launchMode="standard"></activity>
         <activity android:name=".auth.client.AuthChooseAccountActivity" android:launchMode="standard"></activity>
         <activity android:launchMode="standard" android:name=".auth.client.TwitterAuthWebpageActivity"></activity>
     </application>

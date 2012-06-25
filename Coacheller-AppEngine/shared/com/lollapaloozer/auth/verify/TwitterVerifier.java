@@ -1,5 +1,7 @@
 package com.lollapaloozer.auth.verify;
 
+import java.util.StringTokenizer;
+
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
 
@@ -16,16 +18,15 @@ public class TwitterVerifier implements AuthVerifier {
   private TwitterAuthProviderOAuth _oAuthProvider = new TwitterAuthProviderOAuth(
       Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET, Constants.OAUTH_CALLBACK_URL);
 
-  private TwitterVerifier() {
-  }
-
-  public TwitterVerifier(String accessToken, String accessTokenSecret) {
-    _oAuthProvider.setAccessTokenObject(accessToken, accessTokenSecret);
-  }
-
   @Override
   public boolean verify(String authToken, String identifier) {
-    // authToken is not used!!! value set in constructor
+    StringTokenizer tokenizer = new StringTokenizer(authToken, "|");
+
+    String accessToken = tokenizer.nextToken();
+    String accessTokenSecret = tokenizer.nextToken();
+
+    _oAuthProvider.setAccessTokenObject(accessToken, accessTokenSecret);
+
     Response response = _oAuthProvider.accessResource(Verb.GET,
         "http://api.twitter.com/1/account/verify_credentials.xml");
     String responseBody = response.getBody();

@@ -21,7 +21,7 @@ public class TwitterAuthWebpageActivity extends Activity {
     setContentView(R.layout.twitter_auth_dialog);
 
     Intent callingIntent = getIntent();
-    String authUrl = callingIntent.getStringExtra(Constants.INTENT_EXTRA_ALIAS_TWITTER_AUTH);
+    String authUrl = callingIntent.getStringExtra(Constants.INTENT_EXTRA_TWITTER_AUTHURL);
 
     ImageView close_dialog = (ImageView) findViewById(R.id.imageView_custom_dialog_close);
 
@@ -81,9 +81,9 @@ public class TwitterAuthWebpageActivity extends Activity {
           // webview.destroy();
 
           Intent resultIntent = new Intent();
-          resultIntent.putExtra(Constants.INTENT_EXTRA_OAUTH1_TOKEN, _requestTokenString);
+          resultIntent.putExtra(Constants.INTENT_EXTRA_OAUTH1_RETURN_TOKEN, _requestTokenString);
           resultIntent
-              .putExtra(Constants.INTENT_EXTRA_OAUTH1_VERIFIER, _requestTokenVerifierString);
+              .putExtra(Constants.INTENT_EXTRA_OAUTH1_RETURN_VERIFIER, _requestTokenVerifierString);
           setResult(RESULT_OK, resultIntent);
           finish();
 

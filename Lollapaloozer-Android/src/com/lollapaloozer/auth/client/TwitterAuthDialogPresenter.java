@@ -19,7 +19,7 @@ public class TwitterAuthDialogPresenter {
 
   public void showDialog(String authUrl) {
     Intent twitterAuthIntent = new Intent(_activity, TwitterAuthWebpageActivity.class);
-    twitterAuthIntent.putExtra(Constants.INTENT_EXTRA_ALIAS_TWITTER_AUTH, authUrl);
+    twitterAuthIntent.putExtra(Constants.INTENT_EXTRA_TWITTER_AUTHURL, authUrl);
     _activity.startActivityForResult(twitterAuthIntent, Constants.INTENT_REQ_TWITTER_LOGIN);
   }
 
