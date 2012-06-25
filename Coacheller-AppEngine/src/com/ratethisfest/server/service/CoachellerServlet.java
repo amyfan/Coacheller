@@ -13,6 +13,7 @@ import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.server.logic.EmailSender;
 import com.ratethisfest.server.logic.JSONUtils;
 import com.ratethisfest.server.logic.CoachellaRatingManager;
+import com.ratethisfest.server.logic.LollaRatingManager;
 import com.ratethisfest.shared.DayEnum;
 import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.HttpConstants;
@@ -130,7 +131,14 @@ public class CoachellerServlet extends HttpServlet {
     List<Rating> ratings = null;
 
     if (email != null) {
-      ratings = CoachellaRatingManager.getInstance().findAllRatingsByUser(email);
+      if (!FieldVerifier.isValidYear(year)) {
+        resp = FieldVerifier.YEAR_ERROR;
+      } else if (!FieldVerifier.isValidDay(day)) {
+        resp = FieldVerifier.DAY_ERROR;
+      } else {
+        ratings = CoachellaRatingManager.getInstance().findRatingsByUserYearAndDay(email,
+            Integer.valueOf(year), DayEnum.fromValue(day));
+      }
     }
 
     if (ratings != null) {
