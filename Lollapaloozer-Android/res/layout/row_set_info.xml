@@ -3,7 +3,7 @@
     android:id="@+id/set_layout_vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#FFCC66"
+    android:background="#FFDD99"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -16,18 +16,19 @@
             android:id="@+id/text_set_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="25"
+            android:layout_weight="23"
             android:text="Time"
             android:textStyle="bold"
-            android:textColor="#666666"
+            android:textColor="#333333"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/text_artist_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="75"
+            android:layout_weight="77"
             android:text="Artist Name"
+            android:textStyle="bold"
             android:textColor="#000000"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -75,6 +76,7 @@
         android:layout_height="wrap_content"
         android:text="Note goes here"
         android:textStyle="italic"
+        android:textColor="#666666"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <LinearLayout

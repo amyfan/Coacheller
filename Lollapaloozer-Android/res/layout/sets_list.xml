@@ -2,7 +2,7 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#99CCFF"
+    android:background="#335066"
     android:orientation="horizontal" >
 
     <TextView
@@ -11,8 +11,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4px"
         android:layout_marginBottom="4px"
+        android:gravity="center_horizontal"
         android:text="Date and Day"
-        android:textColor="#000000"
+        android:textColor="#FFDD99"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textStyle="bold" />
 
@@ -28,6 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:textColor="#000000"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Switch Day" />
 
         <LinearLayout
@@ -50,12 +52,12 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:text="Sort By:"
-            	android:textStyle="bold"
-                android:textColor="#666666"
+                android:textColor="#FFDD99"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <Spinner
                 android:id="@+id/spinner_sort_by"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
