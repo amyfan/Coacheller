@@ -47,7 +47,7 @@ public class LollaEmailSender {
     //} catch (UnsupportedEncodingException uee) {
     } catch (Exception e) {
       result = e.getClass().getName();
-      result += e.getMessage();
+      result += ": "+ e.getMessage();
     }
 
     return result;
