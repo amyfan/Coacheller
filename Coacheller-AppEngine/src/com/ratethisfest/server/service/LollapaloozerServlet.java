@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 
 import com.ratethisfest.server.domain.Rating;
-import com.ratethisfest.server.logic.EmailSender;
 import com.ratethisfest.server.logic.JSONUtils;
+import com.ratethisfest.server.logic.LollaEmailSender;
 import com.ratethisfest.server.logic.LollaRatingManager;
 import com.ratethisfest.shared.DayEnum;
 import com.ratethisfest.shared.FieldVerifier;
@@ -91,10 +91,6 @@ public class LollapaloozerServlet extends HttpServlet {
     String score = checkNull(req.getParameter(HttpConstants.PARAM_SCORE));
     String notes = checkNull(req.getParameter(HttpConstants.PARAM_NOTES));
 
-    if (notes.isEmpty()) {
-      // TODO: this is temp until notes implemented on android
-      notes = null;
-    }
     if (action.equals(HttpConstants.ACTION_ADD_RATING)) {
       out.println("Calling addRating()");
       if (verifyToken(authType, authId, authToken)) {
@@ -103,7 +99,7 @@ public class LollapaloozerServlet extends HttpServlet {
     } else if (action.equals(HttpConstants.ACTION_EMAIL_RATINGS)) {
       out.println("Calling emailRatings()");
       if (verifyToken(authType, authId, authToken)) {
-        EmailSender.emailRatings(email);
+        LollaEmailSender.emailRatings(authType, authId, authToken, email);
       }
     }
     out.println("Done!");

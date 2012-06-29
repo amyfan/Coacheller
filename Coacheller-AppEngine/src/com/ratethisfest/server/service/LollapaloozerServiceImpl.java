@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ratethisfest.client.LollapaloozerService;
 import com.ratethisfest.server.domain.Rating;
-import com.ratethisfest.server.logic.EmailSender;
+import com.ratethisfest.server.logic.CoachellaEmailSender;
 import com.ratethisfest.server.logic.JSONUtils;
 import com.ratethisfest.server.logic.LollaRatingManager;
 import com.ratethisfest.server.logic.LollaSetDataLoader;
@@ -111,8 +111,10 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
   }
 
   public String emailRatingsToUser(String email) {
-    String resp = EmailSender.emailRatings(email);
-    return resp;
+    // TODO
+    // String resp = CoachellaEmailSender.emailRatings(email);
+    // return resp;
+    return "";
   }
 
   public String insertSetData() {

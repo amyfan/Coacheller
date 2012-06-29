@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/btn_login_twitter"
             android:layout_toRightOf="@+id/btn_invalidate_tokens"
-            android:text="Dismiss Activity" />
+            android:text="Go back to Lollapaloozer!" />
 
     </RelativeLayout>
 

@@ -18,7 +18,7 @@ import javax.mail.internet.MimeMessage;
 import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.shared.Set;
 
-public class EmailSender {
+public class CoachellaEmailSender {
   // TODO: put this in resource file
   public static final String SENDER_EMAIL = "info@coacheller.com";
   public static final String SENDER_TITLE = "Coacheller";
