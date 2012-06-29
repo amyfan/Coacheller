@@ -97,10 +97,10 @@ public class LollapaloozerServlet extends HttpServlet {
         addRating(authType, authId, authToken, email, setId, score, notes);
       }
     } else if (action.equals(HttpConstants.ACTION_EMAIL_RATINGS)) {
-      out.println("Calling emailRatings(authType="+ authType +" authId="+ authId +" authToken="+ authToken +" email="+ email +")");
+      out.println("Calling emailRatings(authType="+ authType +" authId="+ authId +" email="+ email +" authToken="+ authToken +")");
       if (verifyToken(authType, authId, authToken)) {
         String result = LollaEmailSender.emailRatings(authType, authId, authToken, email);
-        out.println("Result: +result");
+        out.println("Result: "+ result);
       } else {
         out.println("Request is refused because user account did not pass verification");
       }

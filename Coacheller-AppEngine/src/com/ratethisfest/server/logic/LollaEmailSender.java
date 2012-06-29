@@ -38,9 +38,9 @@ public class LollaEmailSender {
       if (messageBody.isEmpty()) {
         result = "no ratings to send";
       } else {
-        result = "Ratings successfully sent to " + email;
         msg.setText(messageBody);
         Transport.send(msg);
+        result = "Ratings successfully sent to " + email;
       }
     } catch (AddressException ae) {
       result = ae.getClass().getCanonicalName();
