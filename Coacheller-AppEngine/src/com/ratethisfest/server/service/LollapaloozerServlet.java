@@ -90,18 +90,21 @@ public class LollapaloozerServlet extends HttpServlet {
     String setId = checkNull(req.getParameter(HttpConstants.PARAM_SET_ID));
     String score = checkNull(req.getParameter(HttpConstants.PARAM_SCORE));
     String notes = checkNull(req.getParameter(HttpConstants.PARAM_NOTES));
-
+    
     if (action.equals(HttpConstants.ACTION_ADD_RATING)) {
       out.println("Calling addRating()");
       if (verifyToken(authType, authId, authToken)) {
         addRating(authType, authId, authToken, email, setId, score, notes);
       }
     } else if (action.equals(HttpConstants.ACTION_EMAIL_RATINGS)) {
-      out.println("Calling emailRatings()");
+      out.println("Calling emailRatings(authType="+ authType +" authId="+ authId +" authToken="+ authToken +" email="+ email +")");
       if (verifyToken(authType, authId, authToken)) {
-        LollaEmailSender.emailRatings(authType, authId, authToken, email);
+        String result = LollaEmailSender.emailRatings(authType, authId, authToken, email);
+        out.println("Result: +result");
+      } else {
+        out.println("Request is refused because user account did not pass verification");
       }
-    }
+    }  //end Email Ratings
     out.println("Done!");
     out.close();
   }
