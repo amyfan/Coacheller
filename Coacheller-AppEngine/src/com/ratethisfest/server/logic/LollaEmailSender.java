@@ -42,12 +42,18 @@ public class LollaEmailSender {
         msg.setText(messageBody);
         Transport.send(msg);
       }
-    //} catch (AddressException ae) {
-    //} catch (MessagingException me) {
-    //} catch (UnsupportedEncodingException uee) {
+    } catch (AddressException ae) {
+      result = ae.getClass().getCanonicalName();
+      result += ": " + ae.getMessage();
+    } catch (MessagingException me) {
+      result = me.getClass().getCanonicalName();
+      result += ": " + me.getMessage();
+    } catch (UnsupportedEncodingException uee) {
+      result = uee.getClass().getCanonicalName();
+      result += ": " + uee.getMessage();
     } catch (Exception e) {
-      result = e.getClass().getName();
-      result += ": "+ e.getMessage();
+      result = e.getClass().getCanonicalName();
+      result += ": " + e.getMessage();
     }
 
     return result;
