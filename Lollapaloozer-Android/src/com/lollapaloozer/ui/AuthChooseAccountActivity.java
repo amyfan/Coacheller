@@ -1,4 +1,4 @@
-package com.lollapaloozer.auth.client;
+package com.lollapaloozer.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,11 +9,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.lollapaloozer.R;
+import com.lollapaloozer.auth.client.AuthDemoModel;
+import com.lollapaloozer.auth.client.AuthProvider;
 import com.ratethisfest.shared.Constants;
 
 public class AuthChooseAccountActivity extends Activity implements OnClickListener {
 
-  private boolean _DEBUG = false;
+  private boolean _DEBUG = true;
 
   // Framework
   private TextView _loginStatusText;
@@ -24,6 +26,7 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
 
   // App
   private AuthDemoModel _model;
+  private boolean _firstStart = true;
 
   /** Called when the activity is first created. */
   @Override
@@ -49,7 +52,6 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
     // App
     _model = new AuthDemoModel(this);
     _model.checkAccounts();
-    _model.invalidateTokens();
     System.out.println("OnCreate complete");
   }
 
@@ -63,6 +65,12 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
     }
 
     _updateUI();
+
+    if (_firstStart) {
+      _model.invalidateTokens();
+      _updateUI();
+      _firstStart = false;
+    }
 
   }
 

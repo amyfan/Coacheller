@@ -11,6 +11,7 @@ import android.content.Intent;
 
 import com.lollapaloozer.auth.TwitterAuthProviderOAuth;
 import com.lollapaloozer.auth.verify.TwitterVerifier;
+import com.lollapaloozer.ui.AuthChooseAccountActivity;
 import com.ratethisfest.shared.Constants;
 import com.ratethisfest.shared.Helper;
 

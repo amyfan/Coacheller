@@ -19,6 +19,7 @@ import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
 import com.lollapaloozer.auth.verify.FacebookVerifier;
+import com.lollapaloozer.ui.AuthChooseAccountActivity;
 
 public class FacebookAuthProvider implements AuthProvider {
 

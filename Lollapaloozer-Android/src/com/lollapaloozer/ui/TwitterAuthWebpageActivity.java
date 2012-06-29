@@ -1,4 +1,4 @@
-package com.lollapaloozer.auth.client;
+package com.lollapaloozer.ui;
 
 import android.app.Activity;
 import android.content.Intent;

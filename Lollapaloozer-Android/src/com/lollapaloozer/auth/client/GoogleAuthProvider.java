@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.lollapaloozer.auth.verify.GoogleAuthVerifier;
+import com.lollapaloozer.ui.AuthChooseAccountActivity;
 
 public class GoogleAuthProvider implements AuthProvider {
 
