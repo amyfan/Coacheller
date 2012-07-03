@@ -67,6 +67,7 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
     _updateUI();
 
     if (_firstStart) {
+      System.out.println("AuthChooseAccountActivity First Launch, invalidating all logins");
       _model.invalidateTokens();
       _updateUI();
       _firstStart = false;
