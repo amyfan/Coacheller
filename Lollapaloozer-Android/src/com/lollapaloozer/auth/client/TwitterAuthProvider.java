@@ -12,6 +12,7 @@ import android.content.Intent;
 import com.lollapaloozer.auth.TwitterAuthProviderOAuth;
 import com.lollapaloozer.auth.verify.TwitterVerifier;
 import com.lollapaloozer.ui.AuthChooseAccountActivity;
+import com.lollapaloozer.ui.TwitterAuthWebpageActivity;
 import com.ratethisfest.shared.Constants;
 import com.ratethisfest.shared.Helper;
 
@@ -21,6 +22,10 @@ public class TwitterAuthProvider implements AuthProvider {
   private TwitterAuthProviderOAuth _oAuthProvider;
   private HashMap<String, String> _twitterAccountProperties = new HashMap<String, String>();
   private ArrayList<String> _twitterAccountPropertyNames;
+
+  private TwitterAuthProvider() {
+    // Default constructor disallowed
+  }
 
   // private String _key;
   // private String _secret;
@@ -103,9 +108,9 @@ public class TwitterAuthProvider implements AuthProvider {
   @Override
   public void login() {
     String authReqTokenUrl = _oAuthProvider.getRequestTokenUrl();
-    TwitterAuthDialogPresenter twitterAuthDialog = new TwitterAuthDialogPresenter(_activity);
-    twitterAuthDialog.showDialog(authReqTokenUrl);
-
+    Intent twitterAuthIntent = new Intent(_activity, TwitterAuthWebpageActivity.class);
+    twitterAuthIntent.putExtra(Constants.INTENT_EXTRA_TWITTER_AUTHURL, authReqTokenUrl);
+    _activity.startActivityForResult(twitterAuthIntent, Constants.INTENT_REQ_TWITTER_LOGIN);
   }
 
   @Override

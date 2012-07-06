@@ -29,10 +29,13 @@ public class GoogleAuthProvider implements AuthProvider {
   private int _tokenRetries;
 
   private GoogleAuthProvider() {
+    // Default constructor disallowed
   }
 
   public GoogleAuthProvider(AuthChooseAccountActivity activity) {
     _activity = activity;
+    GoogleAuthVerifier googleVerifier = new GoogleAuthVerifier();
+    // googleVerifier.simulateFailure(1); // DEBUG ONLY.
   }
 
   @Override
@@ -139,6 +142,7 @@ public class GoogleAuthProvider implements AuthProvider {
       // getLocalAccountName());
 
       if (_confirmedAuthorizedGoogle) {
+
         // MUST BE CALLED HERE AS A CONSEQUENCE OF MULTI-THREADING
         _verifiedAccountName = getLocalAccountName();
         _activity.modelChanged();

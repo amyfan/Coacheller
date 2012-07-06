@@ -8,19 +8,18 @@ import org.json.JSONException;
 import com.lollapaloozer.auth.OAuthHTTP;
 
 public class GoogleAuthVerifier implements AuthVerifier {
+  private static int _failuresToSimulate;
 
   public boolean verify(String authToken, String identifier) {
 
-    // url = new URL("https://www.googleapis.com/oauth2/v2/userinfo");
-
+    System.out.println("Verifying Google token: " + authToken + " identifier: " + identifier);
+    System.out.println(_failuresToSimulate);
     try {
       OAuthHTTP oauthreq;
       oauthreq = new OAuthHTTP("https://www.googleapis.com/oauth2/v1/userinfo?alt=json");
       oauthreq.setRequestProperty("client_id", "253259340939.apps.googleusercontent.com");
       oauthreq.setRequestProperty("client_secret", "3HqdJ51XXYc6Px83sZuJlfmI");
       oauthreq.setRequestProperty("Authorization", "OAuth " + authToken);
-      // conn.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
-      // conn.setRequestProperty("Accept","[star]/[star]");
 
       boolean oauthSuccess = oauthreq.execute();
 
@@ -29,11 +28,19 @@ public class GoogleAuthVerifier implements AuthVerifier {
         String verifiedAccountName = oauthreq.getJSONResultString("email");
 
         if (verifiedAccountName.equals(identifier)) {
-          return true;
-        }
+          if (_failuresToSimulate > 0) {
+            _failuresToSimulate--;
+            System.out.println("Simulated login failure, " + _failuresToSimulate + " remaining");
+
+          } else {
+            System.out.println("Verification passed");
+            return true;
+          }
+        } // End actual success, possible simulated failure
+
       } else {
+        // Actual failure
         System.out.println("OAuth request completed unsuccesfully");
-        // TODO probably need to expire token
       }
 
     } catch (MalformedURLException e) {
@@ -44,7 +51,14 @@ public class GoogleAuthVerifier implements AuthVerifier {
       e.printStackTrace();
     }
 
+    System.out.println("Verification failed");
     return false;
+  }
+
+  @Override
+  public void simulateFailure(int failures) {
+    _failuresToSimulate = failures;
+    System.out.println(_failuresToSimulate);
   }
 
 }

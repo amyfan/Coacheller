@@ -14,12 +14,15 @@ public class TwitterVerifier implements AuthVerifier {
   public final static String ACCOUNT_PROPERTY_ID = "id";
   public final static String ACCOUNT_PROPERTY_NAME = "name";
   public final static String ACCOUNT_PROPERTY_HANDLE = "screen_name";
+  private int _failuresToSimulate;
 
   private TwitterAuthProviderOAuth _oAuthProvider = new TwitterAuthProviderOAuth(
       Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET, Constants.OAUTH_CALLBACK_URL);
 
   @Override
   public boolean verify(String authToken, String identifier) {
+    System.out.println("Verifying twitter token: " + authToken + " identifier: " + identifier);
+
     StringTokenizer tokenizer = new StringTokenizer(authToken, "|");
 
     String accessToken = tokenizer.nextToken();
@@ -40,10 +43,16 @@ public class TwitterVerifier implements AuthVerifier {
     if (id != null && handle.equals(identifier)) {
       System.out.println("Twitter Verification Successful using verifier");
       return true;
-    } else {
-      System.out.println("Twitter Verification was not successful using verifier");
     }
+
+    System.out.println("Twitter Verification was not successful using verifier");
     return false;
+  }
+
+  @Override
+  public void simulateFailure(int failures) {
+    _failuresToSimulate = failures;
+    throw new RuntimeException("Not Implemented for twitter");
   }
 
 }

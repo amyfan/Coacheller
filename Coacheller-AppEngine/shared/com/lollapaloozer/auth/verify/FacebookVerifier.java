@@ -17,8 +17,11 @@ import com.facebook.android.Util;
 
 public class FacebookVerifier implements AuthVerifier {
 
+  private int _failuresToSimulate;
+
   @Override
   public boolean verify(String authToken, String identifier) {
+    System.out.println("Verifying Facebook token: " + authToken + " identifier: " + identifier);
 
     HttpClient hc = new DefaultHttpClient();
     HttpGet req = new HttpGet("https://graph.facebook.com/me?access_token=" + authToken);
@@ -39,6 +42,7 @@ public class FacebookVerifier implements AuthVerifier {
       String email = json.getString("email");
 
       if (identifier.equals(email)) {
+        System.out.println("Verification passed");
         return true;
       }
 
@@ -56,7 +60,14 @@ public class FacebookVerifier implements AuthVerifier {
       e.printStackTrace();
     }
 
+    System.out.println("Verification failed");
     return false;
+  }
+
+  @Override
+  public void simulateFailure(int failures) {
+    _failuresToSimulate = failures;
+    throw new RuntimeException("Not Implemented for facebook");
   }
 
 }

@@ -172,8 +172,10 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
 
     switch (requestCode) {
     case Constants.INTENT_REQ_TWITTER_LOGIN:
-      _model.twitterAuthCallback(requestCode, resultCode, data);
-      break;
+      if (resultCode == Activity.RESULT_OK) {
+        _model.twitterAuthCallback(requestCode, resultCode, data);
+        break;
+      }
     default:
       System.out.println("onACtivityResult called with unknown values: " + requestCode + ","
           + resultCode);
