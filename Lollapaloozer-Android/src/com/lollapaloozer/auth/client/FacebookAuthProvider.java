@@ -15,10 +15,10 @@ import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
-
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
 import com.lollapaloozer.auth.verify.FacebookVerifier;
+import com.lollapaloozer.ui.AuthChooseAccountActivity;
 
 public class FacebookAuthProvider implements AuthProvider {
 
@@ -29,6 +29,7 @@ public class FacebookAuthProvider implements AuthProvider {
   private JSONObject _userInfo;
 
   private FacebookAuthProvider() {
+    // Default constructor disallowed
   }
 
   public FacebookAuthProvider(AuthChooseAccountActivity activity) {

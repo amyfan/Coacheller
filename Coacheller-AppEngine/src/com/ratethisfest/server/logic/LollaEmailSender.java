@@ -25,7 +25,7 @@ public class LollaEmailSender {
   public static final String SUBJECT = "Your Lollapalooza Set Ratings";
 
   public static String emailRatings(String authType, String authId, String authToken, String email) {
-    String success = "Ratings successfully sent to " + email;
+    String result;
     Properties props = new Properties();
     Session session = Session.getDefaultInstance(props, null);
 
@@ -36,25 +36,27 @@ public class LollaEmailSender {
       msg.setSubject(SUBJECT);
       String messageBody = generateMessageBody(authType, authId, authToken, email);
       if (messageBody.isEmpty()) {
-        success = "no ratings to send";
+        result = "no ratings to send";
       } else {
         msg.setText(messageBody);
         Transport.send(msg);
+        result = "Ratings successfully sent to " + email;
       }
     } catch (AddressException ae) {
-      success = "address exception";
-      success = ae.getMessage();
+      result = ae.getClass().getCanonicalName();
+      result += ": " + ae.getMessage();
     } catch (MessagingException me) {
-      success = "messaging exception";
-      success = me.getMessage();
+      result = me.getClass().getCanonicalName();
+      result += ": " + me.getMessage();
     } catch (UnsupportedEncodingException uee) {
-      success = "unsupported encoding exception";
-      success = uee.getMessage();
+      result = uee.getClass().getCanonicalName();
+      result += ": " + uee.getMessage();
     } catch (Exception e) {
-      success = e.getMessage();
+      result = e.getClass().getCanonicalName();
+      result += ": " + e.getMessage();
     }
 
-    return success;
+    return result;
   }
 
   private static String generateMessageBody(String authType, String authId, String authToken,

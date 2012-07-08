@@ -6,6 +6,7 @@ import android.accounts.AuthenticatorDescription;
 import android.content.Intent;
 
 import com.facebook.android.Facebook;
+import com.lollapaloozer.ui.AuthChooseAccountActivity;
 import com.ratethisfest.shared.Constants;
 
 public class AuthDemoModel {

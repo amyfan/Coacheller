@@ -35,7 +35,6 @@ import android.widget.Toast;
 import com.lollapaloozer.LollapaloozerServiceUtils;
 import com.lollapaloozer.LollapaloozerStorageManager;
 import com.lollapaloozer.R;
-import com.lollapaloozer.auth.client.AuthChooseAccountActivity;
 import com.lollapaloozer.data.CustomSetListAdapter;
 import com.lollapaloozer.data.JSONArrayHashMap;
 import com.lollapaloozer.data.JSONArraySortMap;
@@ -530,6 +529,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
         _storageManager.save();
         _getEmailDialog.dismiss();
         try {
+
           System.out.println("Requesting ratings email.");
 
           List<NameValuePair> parameterList = new ArrayList<NameValuePair>();

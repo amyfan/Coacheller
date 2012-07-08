@@ -26,8 +26,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.ActivitySetsSearch" android:launchMode="standard"></activity>
-        <activity android:name=".auth.client.AuthChooseAccountActivity" android:launchMode="standard"></activity>
-        <activity android:launchMode="standard" android:name=".auth.client.TwitterAuthWebpageActivity"></activity>
+        <activity android:name=".ui.AuthChooseAccountActivity" android:launchMode="standard"></activity>
+        <activity android:launchMode="standard" android:name=".ui.TwitterAuthWebpageActivity"></activity>
     </application>
 
 </manifest>
