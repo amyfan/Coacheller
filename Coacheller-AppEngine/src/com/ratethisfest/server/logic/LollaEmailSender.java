@@ -74,8 +74,9 @@ public class LollaEmailSender {
       ratingString.append(": ");
       ratingString.append(rating.getScore());
       if (rating.getNotes() != null && !rating.getNotes().isEmpty()) {
-        ratingString.append("\nNotes: ");
+        ratingString.append("\"");
         ratingString.append(rating.getNotes());
+        ratingString.append("\"");
       }
       ratingString.append("\n");
       ratingString.append("\n");
