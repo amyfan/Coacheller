@@ -13,15 +13,19 @@ public class AuthDemoModel {
 
   private GoogleAuthProvider _authProviderGoogle;
   private FacebookAuthProvider _authProviderFacebook;
+  private TwitterAuthProvider _authProviderTwitter;
+  private FacebookWebAuthProvider _authProviderFacebookWeb;
+
   private AuthChooseAccountActivity _activity;
 
   private String _verifiedAccountName = null;
-  private TwitterAuthProvider _authProviderTwitter;
 
   public AuthDemoModel(AuthChooseAccountActivity activity) {
     _activity = activity;
     _authProviderGoogle = new GoogleAuthProvider(_activity);
     _authProviderFacebook = new FacebookAuthProvider(_activity);
+    _authProviderFacebookWeb = new FacebookWebAuthProvider(_activity);
+
     _authProviderTwitter = new TwitterAuthProvider(_activity);
   }
 
@@ -32,6 +36,10 @@ public class AuthDemoModel {
     }
 
     if (_authProviderFacebook.isLoggedIn()) {
+      numLogins++;
+    }
+
+    if (_authProviderFacebookWeb.isLoggedIn()) {
       numLogins++;
     }
 
@@ -59,6 +67,10 @@ public class AuthDemoModel {
       return _authProviderFacebook;
     }
 
+    if (_authProviderFacebookWeb.isLoggedIn()) {
+      return _authProviderFacebookWeb;
+    }
+
     if (_authProviderTwitter.isLoggedIn()) {
       return _authProviderTwitter;
     }
@@ -73,6 +85,10 @@ public class AuthDemoModel {
 
     if (_authProviderFacebook.isLoggedIn()) {
       return Constants.LOGIN_TYPE_FACEBOOK;
+    }
+
+    if (_authProviderFacebookWeb.isLoggedIn()) {
+      return Constants.LOGIN_TYPE_FACEBOOK_BROWSER;
     }
 
     if (_authProviderTwitter.isLoggedIn()) {
@@ -106,6 +122,7 @@ public class AuthDemoModel {
   public void invalidateTokens() {
     _authProviderGoogle.logout();
     _authProviderFacebook.logout();
+    _authProviderFacebookWeb.logout();
     _authProviderTwitter.logout();
   }
 
@@ -115,6 +132,10 @@ public class AuthDemoModel {
 
   public void loginToFacebook() {
     _authProviderFacebook.login();
+  }
+
+  public void loginToFacebookBrowser() {
+    _authProviderFacebookWeb.login();
   }
 
   public void loginToTwitter() {

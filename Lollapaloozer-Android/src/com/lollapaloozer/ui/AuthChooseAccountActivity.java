@@ -21,6 +21,8 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
   private TextView _loginStatusText;
   private TextView _accountNameText;
   private TextView _tokenIdText;
+
+  private Button _buttonLoginFacebookWeb;
   private Button _buttonInvalidateTokens;
   private Button _buttonDismissActivity;
 
@@ -40,12 +42,17 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
     _accountNameText = (TextView) this.findViewById(R.id.text_account_name);
     _tokenIdText = (TextView) this.findViewById(R.id.text_token_id);
 
-    this.findViewById(R.id.btn_login_facebook).setOnClickListener(this);
-    this.findViewById(R.id.btn_login_twitter).setOnClickListener(this);
-    this.findViewById(R.id.btn_login_google).setOnClickListener(this);
+    findViewById(R.id.btn_login_twitter).setOnClickListener(this);
+    findViewById(R.id.btn_login_google).setOnClickListener(this);
+
+    // Need references to these buttons so they can disappear
+    findViewById(R.id.btn_login_facebook).setOnClickListener(this);
+
+    _buttonLoginFacebookWeb = (Button) findViewById(R.id.btn_login_facebook_browser);
+    _buttonLoginFacebookWeb.setOnClickListener(this);
+
     _buttonInvalidateTokens = (Button) findViewById(R.id.btn_invalidate_tokens);
     _buttonInvalidateTokens.setOnClickListener(this);
-
     _buttonDismissActivity = (Button) findViewById(R.id.btn_dismiss_activity);
     _buttonDismissActivity.setOnClickListener(this);
 
@@ -91,6 +98,12 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
       _model.loginToFacebook();
 
     }
+
+    if (buttonClickedName.equals(this.getResources().getResourceEntryName(
+        R.id.btn_login_facebook_browser))) {
+      _model.loginToFacebookBrowser();
+    }
+
     if (buttonClickedName.equals(this.getResources().getResourceEntryName(
         R.id.btn_invalidate_tokens))) {
       _model.invalidateTokens();
@@ -162,7 +175,7 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
     _loginStatusText.setText(Constants.UI_STR_LOGIN_STATUS + " " + status);
   }
 
-  // For Facebook
+  // Default is For Facebook
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);

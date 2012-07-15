@@ -9,7 +9,7 @@ import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
-public class TwitterAuthProviderOAuth {
+public class FacebookAuthProviderOAuth {
 
   private OAuthService _service;
   private Token _requestToken;
@@ -18,7 +18,7 @@ public class TwitterAuthProviderOAuth {
   private String _consumerSecret;
   private String _callbackUrl;
 
-  public TwitterAuthProviderOAuth(String consumerKey, String consumerSecret, String callbackUrl) {
+  public FacebookAuthProviderOAuth(String consumerKey, String consumerSecret, String callbackUrl) {
     _consumerKey = consumerKey;
     _consumerSecret = consumerSecret;
     _callbackUrl = callbackUrl;

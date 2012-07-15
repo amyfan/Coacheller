@@ -670,7 +670,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
     Intent lollapaloozerAuthIntent = new Intent(this, AuthChooseAccountActivity.class);
     // no extras needed here
-    // lollapaloozerAuthIntent.putExtra(Constants.INTENT_EXTRA_TWITTER_AUTHURL,
+    // lollapaloozerAuthIntent.putExtra(Constants.INTENT_EXTRA_AUTH_URL,
     // "String");
     startActivityForResult(lollapaloozerAuthIntent, Constants.INTENT_REQ_CHOOSE_LOGIN_TYPE);
 

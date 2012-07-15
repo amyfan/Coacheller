@@ -16,14 +16,15 @@ import com.lollapaloozer.ui.TwitterAuthWebpageActivity;
 import com.ratethisfest.shared.Constants;
 import com.ratethisfest.shared.Helper;
 
-public class TwitterAuthProvider implements AuthProvider {
+public class FacebookWebAuthProvider implements AuthProvider {
+
   private AuthChooseAccountActivity _activity;
 
   private TwitterAuthProviderOAuth _oAuthProvider;
   private HashMap<String, String> _twitterAccountProperties = new HashMap<String, String>();
   private ArrayList<String> _twitterAccountPropertyNames;
 
-  private TwitterAuthProvider() {
+  private FacebookWebAuthProvider() {
     // Default constructor disallowed
   }
 
@@ -32,11 +33,10 @@ public class TwitterAuthProvider implements AuthProvider {
   // Consumer key yit4Mu71Mj93eNILUo3uCw
   // Consumer secret rdYvdK4g3ckWVdnvzmAj6JXmj9RoI05rIb4nVYQsoI
 
-  public TwitterAuthProvider(AuthChooseAccountActivity activity) {
+  public FacebookWebAuthProvider(AuthChooseAccountActivity activity) {
     _activity = activity;
     _oAuthProvider = new TwitterAuthProviderOAuth(Constants.CONSUMER_KEY,
         Constants.CONSUMER_SECRET, Constants.OAUTH_CALLBACK_URL);
-
     _twitterAccountPropertyNames = new ArrayList<String>();
     _twitterAccountPropertyNames.add(TwitterVerifier.ACCOUNT_PROPERTY_ID);
     _twitterAccountPropertyNames.add(TwitterVerifier.ACCOUNT_PROPERTY_NAME);
@@ -110,6 +110,7 @@ public class TwitterAuthProvider implements AuthProvider {
     // System.out.println(response.getBody());
 
     _twitterAccountProperties.clear();
+
     for (String s : _twitterAccountPropertyNames) {
       _twitterAccountProperties.put(s, Helper.readXmlProperty(s, responseBody));
     }
