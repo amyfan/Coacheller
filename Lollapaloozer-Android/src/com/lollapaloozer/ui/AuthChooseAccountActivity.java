@@ -1,6 +1,8 @@
 package com.lollapaloozer.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -190,6 +192,7 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
         break;
       }
     default:
+
       System.out.println("onACtivityResult called with unknown values: " + requestCode + ","
           + resultCode);
       _model.getFacebookObject().authorizeCallback(requestCode, resultCode, data);
@@ -209,4 +212,25 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
     // _updateUI();
   }
 
+  public void showErrorDialog(String title, String problem, String details) {
+    String errorString = problem + "\r\n\r\nDetails:\r\n" + details;
+    System.out.println(errorString);
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle(title);
+    builder.setMessage(errorString).setCancelable(true)
+        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+          public void onClick(DialogInterface dialog, int id) {
+          }
+        })
+    // todo .setIcon(R.)
+
+    // .setNegativeButton("No", new DialogInterface.OnClickListener() {
+    // public void onClick(DialogInterface dialog, int id) {
+    // }
+    // })
+    ;
+    AlertDialog alert = builder.create();
+    alert.show();
+  }
 }

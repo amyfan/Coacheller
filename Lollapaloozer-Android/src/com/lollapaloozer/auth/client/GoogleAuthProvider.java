@@ -102,9 +102,11 @@ public class GoogleAuthProvider implements AuthProvider {
 
   @Override
   public void extendAccess() {
+    System.out.println("Google auth token is automatically extended?");
+  }
 
-    System.out
-        .println("Activity resumed.  Not sure if google auth token is automatically extended.");
+  private void _errorDialog(String problem, String details) {
+    _activity.showErrorDialog("Google Login Error", problem, details);
   }
 
   private final class GoogleAuthAccountManagerCallback implements AccountManagerCallback<Bundle> {
@@ -115,11 +117,15 @@ public class GoogleAuthProvider implements AuthProvider {
         System.out.println("Received token bundle from AccountManagerCallback");
       } catch (OperationCanceledException e) {
         Log.e("e", e.getMessage(), e);
-        System.out.println("User appears to have denied auth request");
+        _errorDialog(
+            "You should only see this message if you refused to authorize this app for your Google account.",
+            "OperationCanceledException" + e.getMessage());
       } catch (AuthenticatorException e) {
         Log.e("e", e.getMessage(), e);
+        _errorDialog("AuthenticatorException", e.getMessage());
       } catch (IOException e) {
         Log.e("e", e.getMessage(), e);
+        _errorDialog("IOException", e.getMessage());
       }
 
       for (String s : _currentGoogleLoginTokenBundle.keySet()) {
@@ -128,8 +134,9 @@ public class GoogleAuthProvider implements AuthProvider {
       }
 
       if (_currentGoogleLoginTokenBundle.containsKey(AccountManager.KEY_INTENT)) {
-        throw new RuntimeException("Unexpected Code Path");
-        // TODO return to account selection or something...
+        _errorDialog("Unexpected response from Google",
+            "Response contains Intent key.  Unexpected code path.");
+        return;
       }
 
       GoogleAuthVerifier googleVerifier = new GoogleAuthVerifier();
@@ -156,6 +163,10 @@ public class GoogleAuthProvider implements AuthProvider {
           _tokenRetries--;
           logout();
           _getToken(accountName);
+        } else {
+          // No More Retries
+          _errorDialog("Login failed after multiple attempts.", "Could not get access token after "
+              + TOKEN_RETRIES + " attempts.");
         }
       }
     }

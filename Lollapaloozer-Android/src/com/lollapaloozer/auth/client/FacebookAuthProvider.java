@@ -48,44 +48,20 @@ public class FacebookAuthProvider implements AuthProvider {
 
     FacebookVerifier verifier = new FacebookVerifier();
     return verifier.verify(getAuthToken(), getVerifiedAccountIdentifier());
-
-    // return _facebook.isSessionValid();
   }
 
   @Override
   public void login() {
-
-    _facebook.authorize(_activity, new String[] { "email" }, new DialogListener() {
-      @Override
-      public void onComplete(Bundle values) {
-        System.out.println("Facebook authorization completed, token: " + _facebook.getAccessToken()
-            + " valid until " + _facebook.getAccessExpires());
-        mAsyncRunner.request("me", new IDRequestListener()); // get user info
-                                                             // from facebook
-        _activity.modelChanged();
-        // TODO should lock UI here
-      }
-
-      @Override
-      public void onFacebookError(FacebookError error) {
-        System.out.println("Facebook platform error during authorization");
-      }
-
-      @Override
-      public void onError(DialogError e) {
-        System.out.println("Error with facebook authorization dialog");
-      }
-
-      @Override
-      public void onCancel() {
-        System.out.println("Facebook authorization dialog cancelled by user");
-      }
-    });
-
+    // Proceeds Asynchronously
+    _facebook.authorize(_activity, new String[] { "email" }, new AuthListener());
   }
 
   public Facebook getFacebookObject() {
     return _facebook;
+  }
+
+  private void _showError(String problem, String details) {
+    _activity.showErrorDialog("Facebook Login Error", problem, details);
   }
 
   @Override
@@ -136,6 +112,41 @@ public class FacebookAuthProvider implements AuthProvider {
     _facebook.extendAccessTokenIfNeeded(_activity, null);
   }
 
+  private final class AuthListener implements DialogListener {
+    @Override
+    public void onComplete(Bundle values) {
+      System.out.println("Facebook authorization completed, token: " + _facebook.getAccessToken()
+          + " valid until " + _facebook.getAccessExpires());
+      mAsyncRunner.request("me", new IDRequestListener()); // get user info
+                                                           // from facebook
+      _activity.modelChanged();
+      // TODO should lock UI here
+    }
+
+    @Override
+    public void onFacebookError(FacebookError error) {
+      System.out.println("Facebook platform error during authorization");
+      _showError("Facebook Authorization Platform Error",
+          error.getErrorType() + ": " + error.getMessage());
+      // error.getStackTrace()
+    }
+
+    @Override
+    public void onError(DialogError e) {
+      System.out.println("Error with facebook authorization dialog");
+      _showError("Facebook Authorization Dialog Error", "DialogError: " + e.getMessage());
+      // e.getStackTrace();
+    }
+
+    @Override
+    public void onCancel() {
+      System.out.println("Facebook authorization dialog cancelled by user");
+      _showError(
+          "User Cancelled Authorization",
+          "You should only be seeing this message if you declined to authorize this application for your Facebook account.");
+    }
+  }
+
   private class IDRequestListener implements RequestListener {
 
     private String TAG = "fbDemo";
@@ -156,32 +167,36 @@ public class FacebookAuthProvider implements AuthProvider {
         setLastInfoResponse(json);
         _activity.modelChanged();
 
-      } catch (JSONException e) {
-        Log.d(TAG, "JSONException: " + e.getMessage());
+      } catch (JSONException ex) {
+        _showError("Facebook Response Error", "JSONException reading response: " + ex.getMessage());
       } catch (FacebookError e) {
-        Log.d(TAG, "FacebookError: " + e.getMessage());
+        _showError("Facebook Response Platform Error", e.getErrorType() + ": " + e.getMessage()
+            + " " + state.toString());
       }
       // TODO Unlock UI here
     }
 
     @Override
     public void onIOException(IOException e, Object state) {
-      Log.d(TAG, "IOException: " + e.getMessage());
+      _showError("Facebook Request Error", "IOException while verifying account: " + e.getMessage());
     }
 
     @Override
     public void onFileNotFoundException(FileNotFoundException e, Object state) {
-      Log.d(TAG, "FileNotFoundException: " + e.getMessage());
+      _showError("Facebook Request Error",
+          "FileNotFoundException while verifying account: " + e.getMessage());
     }
 
     @Override
     public void onMalformedURLException(MalformedURLException e, Object state) {
-      Log.d(TAG, "MalformedURLException: " + e.getMessage());
+      _showError("Facebook Request Error",
+          "MalformedURLException while verifying account: " + e.getMessage());
     }
 
     @Override
     public void onFacebookError(FacebookError e, Object state) {
-      Log.d(TAG, "FacebookError: " + e.getMessage());
+      _showError("Facebook Request Platform Error", e.getErrorType() + ": " + e.getMessage() + " "
+          + state.toString());
     }
 
   }
