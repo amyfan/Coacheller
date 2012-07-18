@@ -104,18 +104,18 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
 
   private void _returnToMainActivity() {
     Intent returnIntent = getIntent();
-
-    returnIntent.putExtra(Constants.INTENT_EXTRA_LOGIN_TYPE, _model.getCurrentAuthProviderType());
-
-    returnIntent.putExtra(Constants.INTENT_EXTRA_ACCOUNT_IDENTIFIER, _model
-        .getCurrentAuthProvider().getVerifiedAccountIdentifier());
-
-    returnIntent.putExtra(Constants.INTENT_EXTRA_LOGIN_TOKEN, _model.getCurrentAuthProvider()
-        .getAuthToken());
-
     int result;
+
     if (_model.isLoggedIn()) {
       result = RESULT_OK;
+      returnIntent.putExtra(Constants.INTENT_EXTRA_LOGIN_TYPE, _model.getCurrentAuthProviderType());
+
+      returnIntent.putExtra(Constants.INTENT_EXTRA_ACCOUNT_IDENTIFIER, _model
+          .getCurrentAuthProvider().getVerifiedAccountIdentifier());
+
+      returnIntent.putExtra(Constants.INTENT_EXTRA_LOGIN_TOKEN, _model.getCurrentAuthProvider()
+          .getAuthToken());
+
     } else {
       result = RESULT_CANCELED;
     }
