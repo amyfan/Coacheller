@@ -20,11 +20,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
@@ -165,7 +167,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
         if (msg.what == THREAD_UPDATE_UI) {
           System.out.println("Executing update UI thread callback ");
-          redrawUI();
+          _redrawUI();
         }
 
         if (msg.what == THREAD_SUBMIT_RATING) {
@@ -190,10 +192,28 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
   }
 
-  protected void redrawUI() {
+  /** Called by Android Framework when activity (re)gains foreground status */
+  public void onResume() {
+    super.onResume();
+
+    String firstUse = _storageManager.getString("DATA_FIRST_USE");
+    // TODO: We'll reenable this if we have something significant to say in the
+    // beginning
+    // if (firstUse == null || firstUse.equals("true")) {
+    // showDialog(DIALOG_FIRST_USE);
+    // } else {
+    _showClickToRate();
+    // }
+
+    if ((System.currentTimeMillis() - _lastRefresh) / 1000 > REFRESH_INTERVAL__SECONDS) {
+      refreshData(); // TODO multi-thread this
+    }
+
+  }
+
+  private void _redrawUI() {
     try {
       setView_reSort();
-
     } catch (JSONException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -214,25 +234,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     }
   }
 
-  /** Called by Android Framework when activity (re)gains foreground status */
-  public void onResume() {
-    super.onResume();
-
-    String firstUse = _storageManager.getString("DATA_FIRST_USE");
-    // TODO: We'll reenable this if we have something significant to say in the
-    // beginning
-    // if (firstUse == null || firstUse.equals("true")) {
-    // showDialog(DIALOG_FIRST_USE);
-    // } else {
-    _showClickToRate();
-    // }
-
-    if ((System.currentTimeMillis() - _lastRefresh) / 1000 > REFRESH_INTERVAL__SECONDS) {
-      refreshData(); // TODO multi-thread this
-    }
-
-  }
-
   private void _showClickToRate() {
     Toast clickToRate = Toast.makeText(this, "Tap any set to rate it!", 20);
     clickToRate.show();
@@ -248,6 +249,29 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
    * _myRatings_JAHM = new JSONArrayHashMap(QUERY_RATINGS__SET_ID,
    * QUERY_RATINGS__WEEK); }
    */
+
+  private boolean _isLoggedIn() {
+    if (_loginData == null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  private void _beginSigninProcess() {
+    Toast featureRequiresSignin = Toast.makeText(this, Constants.MSG_SIGNIN_REQUIRED, 25);
+    featureRequiresSignin.show();
+
+    // This shows the 'enter email' dialog, no longer needed
+    // showDialog(DIALOG_GETEMAIL);
+
+    Intent lollapaloozerAuthIntent = new Intent(this, ChooseLoginActivity.class);
+    // no extras needed here
+    // lollapaloozerAuthIntent.putExtra(Constants.INTENT_EXTRA_AUTH_URL,
+    // "String");
+    startActivityForResult(lollapaloozerAuthIntent, Constants.INTENT_REQ_CHOOSE_LOGIN_TYPE);
+
+  }
 
   private void refreshData() {
     // Below here is stuff to be done each refresh
@@ -306,6 +330,35 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     }.start();
     LollapaloozerHelper.debug(this, "Rating thread launched");
 
+  }
+
+  private void setView_reSort() throws JSONException {
+    if (_sortMode == SORT_TIME) {
+      _setListAdapter.sortByField(_timeFieldName, JSONArraySortMap.VALUE_INTEGER);
+    } else if (_sortMode == SORT_ARTIST) {
+      _setListAdapter.sortByField("artist", JSONArraySortMap.VALUE_STRING);
+    } else {
+      LollapaloozerHelper.debug(this, "Unexpected sort mode: " + _sortMode);
+      (new Exception()).printStackTrace();
+    }
+  }
+
+  /**
+   * TODO: potentially make year a searchable field here
+   */
+  private void processExtraData() {
+    Intent intent = getIntent();
+    Bundle bundle = intent.getExtras();
+
+    if (bundle == null) {
+      return;
+    }
+
+    String day = intent.getExtras().getString("DAY");
+
+    LollapaloozerHelper.debug(this, "Searching day[" + day + "]");
+    _dayToExamine = day;
+    refreshData();
   }
 
   public void doNetworkOperations() throws JSONException {
@@ -455,47 +508,55 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     }
   }
 
-  // An item was selected from the list of sets
   @Override
-  public void onItemSelected(AdapterView<?> parent, View arg1, int arg2, long arg3) {
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    System.out.println("LollapaloozerActivity.onActivityResult req=" + requestCode + " result="
+        + resultCode);
 
-    // TODO Auto-generated method stub
-    LollapaloozerHelper.debug(this, "Search Type Spinner: Selected -> " + parent.getSelectedItem()
-        + "(" + arg2 + ")");
-    ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
+    if (resultCode == Activity.RESULT_OK) { // Login success
+      Bundle results = data.getExtras();
+      _loginData = new LoginData();
+      _loginData.timeLoginIssued = System.currentTimeMillis();
+      _loginData.loginType = results.getInt(Constants.INTENT_EXTRA_LOGIN_TYPE);
+      _loginData.accountIdentifier = results.getString(Constants.INTENT_EXTRA_ACCOUNT_IDENTIFIER);
+      _loginData.accountToken = results.getString(Constants.INTENT_EXTRA_LOGIN_TOKEN);
 
-    try {
-      if (parent.getSelectedItem().toString().toLowerCase().equals("time")) {
-        _sortMode = SORT_TIME;
-
-      } else if (parent.getSelectedItem().toString().toLowerCase().equals("artist")) {
-        _sortMode = SORT_ARTIST;
+      if (_loginData.loginType == Constants.LOGIN_TYPE_GOOGLE
+          || _loginData.loginType == Constants.LOGIN_TYPE_FACEBOOK) {
+        _loginData.emailAddress = _loginData.accountIdentifier;
+      } else {
+        _loginData.emailAddress = null;
       }
 
-      setView_reSort();
-      viewSetsList.invalidateViews();
-    } catch (JSONException e) {
-      LollapaloozerHelper.debug(this, "JSONException re-sorting data");
-      e.printStackTrace();
-    }
-  }
+      System.out.println("Saving login data timeIssued=" + _loginData.timeLoginIssued
+          + " loginType=" + _loginData.loginType + " accountIdentifier="
+          + _loginData.accountIdentifier + " accountToken=" + _loginData.accountToken
+          + " emailAddress=" + _loginData.emailAddress);
 
-  private void setView_reSort() throws JSONException {
-    if (_sortMode == SORT_TIME) {
-      _setListAdapter.sortByField(_timeFieldName, JSONArraySortMap.VALUE_INTEGER);
-    } else if (_sortMode == SORT_ARTIST) {
-      _setListAdapter.sortByField("artist", JSONArraySortMap.VALUE_STRING);
-    } else {
-      LollapaloozerHelper.debug(this, "Unexpected sort mode: " + _sortMode);
-      (new Exception()).printStackTrace();
+      _storageManager.putObject(DATA_LOGIN_INFO, _loginData);
+      _storageManager.save();
     }
   }
 
   @Override
-  public void onNothingSelected(AdapterView<?> arg0) {
-    LollapaloozerHelper.debug(this, "Search Type Spinner: Nothing Selected");
-    Spinner spinnerSortType = (Spinner) findViewById(R.id.spinner_sort_by);
-    spinnerSortType.setSelection(0);
+  public void onBackPressed() {
+    System.out.println("Back button pressed");
+    // Exit if back button is pressed from this activity.
+    super.onBackPressed();
+    // getApplication().
+  }
+
+  @Override
+  public void onCheckedChanged(RadioGroup clickedGroup, int checkedId) {
+    // This is only useful when we want to act based on a user changing
+    // radio selection i.e. week1/week2.
+    RadioGroup scoreGroup = (RadioGroup) _rateDialog.findViewById(R.id.radio_pick_score);
+
+    // Formerly used to select week, now always true
+    // if (clickedGroup == _rateDialog.findViewById(R.id.radio_pick_score))
+    // {
+
   }
 
   // Any button in any view or dialog was clicked
@@ -562,7 +623,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     if (viewClicked.getId() == R.id.buttonChangeToSearchSets) {
       System.out.println("Button: Switch Day");
       Intent intent = new Intent();
-      intent.setClass(this, ActivitySetsSearch.class);
+      intent.setClass(this, SetsSearchActivity.class);
       startActivity(intent);
     }
 
@@ -616,9 +677,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     } // End rating dialog submitted
 
     if (viewClicked.getId() == R.id.button_rate_cancel) {
-      // Dialog dialog = (Dialog) viewClicked.getParent();
-      RadioGroup scoreGroup = (RadioGroup) _rateDialog.findViewById(R.id.radio_pick_score);
-      // scoreGroup.clearCheck();
       _rateDialog.dismiss();
     }
 
@@ -626,6 +684,78 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
       _networkErrorDialog.dismiss();
     }
 
+  }
+
+  // Dialog handling, called once the first time this activity displays
+  // (a/each
+  // type of)? dialog
+  @Override
+  protected Dialog onCreateDialog(int id) {
+    if (id == DIALOG_FIRST_USE) {
+      _firstUseDialog = new Dialog(this);
+      _firstUseDialog.setContentView(R.layout.first_use_dialog);
+      _firstUseDialog.setTitle(Constants.DIALOG_TITLE_FIRST_USE);
+
+      Button buttonOK = (Button) _firstUseDialog.findViewById(R.id.button_firstuse_ok);
+      buttonOK.setOnClickListener(this);
+      return _firstUseDialog;
+    }
+
+    if (id == DIALOG_GETEMAIL) {
+      _getEmailDialog = new Dialog(this);
+      _getEmailDialog.setContentView(R.layout.get_email_address);
+      _getEmailDialog.setTitle(Constants.DIALOG_TITLE_GET_EMAIL);
+
+      Button buttonOK = (Button) _getEmailDialog.findViewById(R.id.button_provideEmail);
+      buttonOK.setOnClickListener(this);
+
+      Button buttonCancel = (Button) _getEmailDialog.findViewById(R.id.button_declineEmail);
+      buttonCancel.setOnClickListener(this);
+
+      return _getEmailDialog;
+    }
+
+    if (id == DIALOG_RATE) {
+      _rateDialog = new Dialog(this);
+      _rateDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+      _rateDialog.setContentView(R.layout.dialog_rate_set);
+
+      // Setup 'X' close widget
+      ImageView close_dialog = (ImageView) _rateDialog
+          .findViewById(R.id.imageView_custom_dialog_close);
+      close_dialog.setOnClickListener(new View.OnClickListener() {
+        public void onClick(View v) {
+          _rateDialog.dismiss();
+        }
+      });
+
+      Button buttonOK = (Button) _rateDialog.findViewById(R.id.button_rate_okgo);
+      buttonOK.setOnClickListener(this);
+
+      Button buttonCancel = (Button) _rateDialog.findViewById(R.id.button_rate_cancel);
+      buttonCancel.setOnClickListener(this);
+      return _rateDialog;
+    }
+
+    if (id == DIALOG_NETWORK_ERROR) {
+      _networkErrorDialog = new Dialog(this);
+      _networkErrorDialog.setContentView(R.layout.dialog_network_error);
+      _networkErrorDialog.setTitle("Network Error");
+
+      Button buttonOK = (Button) _networkErrorDialog.findViewById(R.id.button_network_error_ok);
+      buttonOK.setOnClickListener(this);
+      return _networkErrorDialog;
+
+    }
+
+    return super.onCreateDialog(id);
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.menu_global_options, menu);
+    return true;
   }
 
   // An item in the ListView of sets is clicked
@@ -653,57 +783,76 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     }
   }
 
-  private boolean _isLoggedIn() {
-    if (_loginData == null) {
-      return false;
-    } else {
-      return true;
+  @Override
+  public void onItemSelected(AdapterView<?> parent, View arg1, int arg2, long arg3) {
+
+    // TODO Auto-generated method stub
+    LollapaloozerHelper.debug(this, "Search Type Spinner: Selected -> " + parent.getSelectedItem()
+        + "(" + arg2 + ")");
+    ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
+
+    try {
+      if (parent.getSelectedItem().toString().toLowerCase().equals("time")) {
+        _sortMode = SORT_TIME;
+
+      } else if (parent.getSelectedItem().toString().toLowerCase().equals("artist")) {
+        _sortMode = SORT_ARTIST;
+      }
+
+      setView_reSort();
+      viewSetsList.invalidateViews();
+    } catch (JSONException e) {
+      LollapaloozerHelper.debug(this, "JSONException re-sorting data");
+      e.printStackTrace();
     }
   }
 
-  private void _beginSigninProcess() {
-    Toast featureRequiresSignin = Toast.makeText(this, Constants.MSG_SIGNIN_REQUIRED, 25);
-    featureRequiresSignin.show();
+  @Override
+  public void onNothingSelected(AdapterView<?> arg0) {
+    LollapaloozerHelper.debug(this, "Search Type Spinner: Nothing Selected");
+    Spinner spinnerSortType = (Spinner) findViewById(R.id.spinner_sort_by);
+    spinnerSortType.setSelection(0);
+  }
 
-    // This shows the 'enter email' dialog, no longer needed
-    // showDialog(DIALOG_GETEMAIL);
-
-    Intent lollapaloozerAuthIntent = new Intent(this, AuthChooseAccountActivity.class);
-    // no extras needed here
-    // lollapaloozerAuthIntent.putExtra(Constants.INTENT_EXTRA_AUTH_URL,
-    // "String");
-    startActivityForResult(lollapaloozerAuthIntent, Constants.INTENT_REQ_CHOOSE_LOGIN_TYPE);
-
+  protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    setIntent(intent);// must store the new intent unless getIntent() will
+    // return the old one
+    processExtraData();
   }
 
   @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    System.out.println("LollapaloozerActivity.onActivityResult req=" + requestCode + " result="
-        + resultCode);
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+    case R.id.menu_item_email_me:
+      LollapaloozerHelper.debug(this, "Menu button 'email me' pressed");
 
-    if (resultCode == Activity.RESULT_OK) { // Login success
-      Bundle results = data.getExtras();
-      _loginData = new LoginData();
-      _loginData.timeLoginIssued = System.currentTimeMillis();
-      _loginData.loginType = results.getInt(Constants.INTENT_EXTRA_LOGIN_TYPE);
-      _loginData.accountIdentifier = results.getString(Constants.INTENT_EXTRA_ACCOUNT_IDENTIFIER);
-      _loginData.accountToken = results.getString(Constants.INTENT_EXTRA_LOGIN_TOKEN);
-
-      if (_loginData.loginType == Constants.LOGIN_TYPE_GOOGLE
-          || _loginData.loginType == Constants.LOGIN_TYPE_FACEBOOK) {
-        _loginData.emailAddress = _loginData.accountIdentifier;
+      if (!_isLoggedIn()) {
+        Toast.makeText(this, "Try rating at least one set first", 15).show();
       } else {
-        _loginData.emailAddress = null;
+        try {
+
+          // Toast.makeText(this, "This feature coming soon!", 15).show();
+          showDialog(DIALOG_GETEMAIL);
+
+        } catch (Exception e) {
+          LollapaloozerHelper.debug(this, "Error requesting ratings email");
+          e.printStackTrace();
+        }
       }
+      return true;
 
-      System.out.println("Saving login data timeIssued=" + _loginData.timeLoginIssued
-          + " loginType=" + _loginData.loginType + " accountIdentifier="
-          + _loginData.accountIdentifier + " accountToken=" + _loginData.accountToken
-          + " emailAddress=" + _loginData.emailAddress);
-
+    case R.id.menu_item_delete_email:
+      LollapaloozerHelper.debug(this, "Menu button 'delete email' pressed");
+      _loginData = null;
       _storageManager.putObject(DATA_LOGIN_INFO, _loginData);
+
       _storageManager.save();
+      refreshData();
+      return true;
+
+    default:
+      return super.onOptionsItemSelected(item);
     }
   }
 
@@ -726,8 +875,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     }
 
     if (id == DIALOG_RATE) {
-
-      // _rateDialog.setTitle("Rate this Set!");
       try {
         TextView subtitleText = (TextView) _rateDialog.findViewById(R.id.text_rateBand_subtitle);
         subtitleText.setText(_lastItemSelected.getString("artist"));
@@ -781,149 +928,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
     } // end if rating dialog
 
-  }
-
-  // Dialog handling, called once the first time this activity displays
-  // (a/each
-  // type of)? dialog
-  @Override
-  protected Dialog onCreateDialog(int id) {
-    if (id == DIALOG_FIRST_USE) {
-      _firstUseDialog = new Dialog(this);
-      _firstUseDialog.setContentView(R.layout.first_use_dialog);
-      _firstUseDialog.setTitle(Constants.DIALOG_TITLE_FIRST_USE);
-
-      Button buttonOK = (Button) _firstUseDialog.findViewById(R.id.button_firstuse_ok);
-      buttonOK.setOnClickListener(this);
-      return _firstUseDialog;
-    }
-
-    if (id == DIALOG_GETEMAIL) {
-      _getEmailDialog = new Dialog(this);
-      _getEmailDialog.setContentView(R.layout.get_email_address);
-      _getEmailDialog.setTitle(Constants.DIALOG_TITLE_GET_EMAIL);
-
-      Button buttonOK = (Button) _getEmailDialog.findViewById(R.id.button_provideEmail);
-      buttonOK.setOnClickListener(this);
-
-      Button buttonCancel = (Button) _getEmailDialog.findViewById(R.id.button_declineEmail);
-      buttonCancel.setOnClickListener(this);
-
-      return _getEmailDialog;
-    }
-
-    if (id == DIALOG_RATE) {
-      _rateDialog = new Dialog(this);
-      _rateDialog.setContentView(R.layout.dialog_rate_set);
-      _rateDialog.setTitle("Rate This Set!");
-
-      Button buttonOK = (Button) _rateDialog.findViewById(R.id.button_rate_okgo);
-      buttonOK.setOnClickListener(this);
-
-      Button buttonCancel = (Button) _rateDialog.findViewById(R.id.button_rate_cancel);
-      buttonCancel.setOnClickListener(this);
-      return _rateDialog;
-    }
-
-    if (id == DIALOG_NETWORK_ERROR) {
-      _networkErrorDialog = new Dialog(this);
-      _networkErrorDialog.setContentView(R.layout.dialog_network_error);
-      _networkErrorDialog.setTitle("Network Error");
-
-      Button buttonOK = (Button) _networkErrorDialog.findViewById(R.id.button_network_error_ok);
-      buttonOK.setOnClickListener(this);
-      return _networkErrorDialog;
-
-    }
-
-    return super.onCreateDialog(id);
-  }
-
-  protected void onNewIntent(Intent intent) {
-    super.onNewIntent(intent);
-    setIntent(intent);// must store the new intent unless getIntent() will
-    // return the old one
-    processExtraData();
-  }
-
-  /**
-   * TODO: potentially make year a searchable field here
-   */
-  private void processExtraData() {
-    Intent intent = getIntent();
-    Bundle bundle = intent.getExtras();
-
-    if (bundle == null) {
-      return;
-    }
-
-    String day = intent.getExtras().getString("DAY");
-
-    LollapaloozerHelper.debug(this, "Searching day[" + day + "]");
-    _dayToExamine = day;
-    refreshData();
-  }
-
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.menu_global_options, menu);
-    return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-    case R.id.menu_item_email_me:
-      LollapaloozerHelper.debug(this, "Menu button 'email me' pressed");
-
-      if (!_isLoggedIn()) {
-        Toast.makeText(this, "Try rating at least one set first", 15).show();
-      } else {
-        try {
-
-          // Toast.makeText(this, "This feature coming soon!", 15).show();
-          showDialog(DIALOG_GETEMAIL);
-
-        } catch (Exception e) {
-          LollapaloozerHelper.debug(this, "Error requesting ratings email");
-          e.printStackTrace();
-        }
-      }
-      return true;
-
-    case R.id.menu_item_delete_email:
-      LollapaloozerHelper.debug(this, "Menu button 'delete email' pressed");
-      _loginData = null;
-      _storageManager.putObject(DATA_LOGIN_INFO, _loginData);
-
-      _storageManager.save();
-      refreshData();
-      return true;
-
-    default:
-      return super.onOptionsItemSelected(item);
-    }
-  }
-
-  @Override
-  public void onCheckedChanged(RadioGroup clickedGroup, int checkedId) {
-    // This is only useful when we want to act based on a user changing
-    // radio selection i.e. week1/week2.
-    RadioGroup scoreGroup = (RadioGroup) _rateDialog.findViewById(R.id.radio_pick_score);
-
-    // Formerly used to select week, now always true
-    // if (clickedGroup == _rateDialog.findViewById(R.id.radio_pick_score))
-    // {
-
-  }
-
-  @Override
-  public void onBackPressed() {
-    System.out.println("Back button pressed");
-    // Exit if back button is pressed from this activity.
-    super.onBackPressed();
-    // getApplication().
   }
 
 }

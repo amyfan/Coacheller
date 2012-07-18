@@ -5,6 +5,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -15,9 +18,9 @@ import com.lollapaloozer.auth.client.AuthDemoModel;
 import com.lollapaloozer.auth.client.AuthProvider;
 import com.ratethisfest.shared.Constants;
 
-public class AuthChooseAccountActivity extends Activity implements OnClickListener {
+public class ChooseLoginActivity extends Activity implements OnClickListener {
 
-  private boolean _DEBUG = true;
+  private boolean _debugMode = false;
 
   // Framework
   private TextView _loginStatusText;
@@ -32,11 +35,17 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
   private AuthDemoModel _model;
   private boolean _firstStart = true;
 
+  private static final int SWIPE_MIN_DISTANCE = 120;
+  private static final int SWIPE_MAX_OFF_PATH = 250;
+  private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+  private GestureDetector _gestureDetector;
+  private View.OnTouchListener _gestureListener;
+
   /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.auth_choose);
+    setContentView(R.layout.auth_choose_login);
     System.out.println("OnCreate starting");
 
     // Framework
@@ -58,10 +67,21 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
     _buttonDismissActivity = (Button) findViewById(R.id.btn_dismiss_activity);
     _buttonDismissActivity.setOnClickListener(this);
 
+    _gestureDetector = new GestureDetector(new MyGestureDetector());
+    _gestureListener = new View.OnTouchListener() {
+      public boolean onTouch(View v, MotionEvent event) {
+        return _gestureDetector.onTouchEvent(event);
+      }
+    };
+
+    findViewById(android.R.id.content).setOnClickListener(ChooseLoginActivity.this);
+    findViewById(android.R.id.content).setOnTouchListener(_gestureListener);
+
     // App
     _model = new AuthDemoModel(this);
     _model.checkAccounts();
     System.out.println("OnCreate complete");
+
   }
 
   @Override
@@ -73,49 +93,13 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
       currentProvider.extendAccess();
     }
 
-    _updateUI();
-
     if (_firstStart) {
-      System.out.println("AuthChooseAccountActivity First Launch, invalidating all logins");
+      System.out.println("ChooseLoginActivity First Launch, invalidating all logins");
       _model.invalidateTokens();
-      _updateUI();
       _firstStart = false;
     }
 
-  }
-
-  @Override
-  public void onClick(View arg0) {
-    String buttonClickedName = this.getResources().getResourceEntryName(arg0.getId());
-    System.out.println("Button Click: " + buttonClickedName);
-
-    if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_google))) {
-      _model.loginToGoogle(); // UI Update done on callback
-    }
-    if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_twitter))) {
-      _model.loginToTwitter();
-
-    }
-    if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_facebook))) {
-      _model.loginToFacebook();
-
-    }
-
-    if (buttonClickedName.equals(this.getResources().getResourceEntryName(
-        R.id.btn_login_facebook_browser))) {
-      _model.loginToFacebookBrowser();
-    }
-
-    if (buttonClickedName.equals(this.getResources().getResourceEntryName(
-        R.id.btn_invalidate_tokens))) {
-      _model.invalidateTokens();
-      _updateUI();
-    }
-
-    if (buttonClickedName.equals(this.getResources()
-        .getResourceEntryName(R.id.btn_dismiss_activity))) {
-      _returnToMainActivity();
-    }
+    _updateUI();
   }
 
   private void _returnToMainActivity() {
@@ -141,7 +125,11 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
   }
 
   private void _updateUI() {
-    if (_DEBUG) {
+    if (_debugMode) {
+      _accountNameText.setVisibility(View.VISIBLE);
+      _tokenIdText.setVisibility(View.VISIBLE);
+      _buttonInvalidateTokens.setVisibility(View.VISIBLE);
+      _buttonDismissActivity.setVisibility(View.VISIBLE);
 
       if (_model.isLoggedIn()) {
         AuthProvider currentProvider = _model.getCurrentAuthProvider();
@@ -152,15 +140,18 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
         _tokenIdText.setText("Token ID: " + currentProvider.getAuthToken());
       } else {
         _setLoginStatus("Not Logged In");
-        _accountNameText.setText("");
-        _tokenIdText.setText("");
+        _accountNameText.setText("-");
+        _tokenIdText.setText("-");
       }
 
-      if (this.findViewById(R.layout.auth_choose) != null) {
-        this.findViewById(R.layout.auth_choose).invalidate();
+      if (this.findViewById(R.layout.auth_choose_login) != null) {
+        this.findViewById(R.layout.auth_choose_login).invalidate();
       }
+
     } else {
-      _loginStatusText.setVisibility(View.GONE);
+      _loginStatusText.setText("");
+      // _loginStatusText.setVisibility(View.GONE);
+
       _accountNameText.setVisibility(View.GONE);
       _tokenIdText.setVisibility(View.GONE);
       _buttonInvalidateTokens.setVisibility(View.GONE);
@@ -182,7 +173,7 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
 
-    System.out.println("AuthChooseAccountActivity.onActivityResult(requestCode=[" + requestCode
+    System.out.println("ChooseLoginActivity.onActivityResult(requestCode=[" + requestCode
         + "], resultCode=[" + resultCode + "] with data: " + data);
 
     switch (requestCode) {
@@ -233,4 +224,73 @@ public class AuthChooseAccountActivity extends Activity implements OnClickListen
     AlertDialog alert = builder.create();
     alert.show();
   }
+
+  @Override
+  public void onClick(View arg0) {
+    String buttonClickedName = this.getResources().getResourceEntryName(arg0.getId());
+    System.out.println("Button Click: " + buttonClickedName);
+
+    if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_google))) {
+      _model.loginToGoogle(); // UI Update done on callback
+    }
+    if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_twitter))) {
+      _model.loginToTwitter();
+
+    }
+    if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_facebook))) {
+      _model.loginToFacebook();
+
+    }
+
+    if (buttonClickedName.equals(this.getResources().getResourceEntryName(
+        R.id.btn_login_facebook_browser))) {
+      _model.loginToFacebookBrowser();
+    }
+
+    if (buttonClickedName.equals(this.getResources().getResourceEntryName(
+        R.id.btn_invalidate_tokens))) {
+      _model.invalidateTokens();
+      _updateUI();
+    }
+
+    if (buttonClickedName.equals(this.getResources()
+        .getResourceEntryName(R.id.btn_dismiss_activity))) {
+      _returnToMainActivity();
+    }
+  }
+
+  class MyGestureDetector extends SimpleOnGestureListener {
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+      try {
+        if (_debugMode == true) {
+          return true;
+        }
+
+        if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH) {
+          return false;
+        }
+
+        if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
+            && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {// Left Swipe
+          _loginStatusText.setText(_loginStatusText.getText() + "L");
+        } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
+            && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {// Right Swipe
+          _loginStatusText.setText(_loginStatusText.getText() + "R");
+        }
+
+      } catch (Exception e) {
+        // nothing
+      }
+
+      if (_loginStatusText.getText().equals("LRLR")) {
+        _debugMode = true;
+        _updateUI();
+      }
+
+      return true;
+    }
+
+  }
+
 }

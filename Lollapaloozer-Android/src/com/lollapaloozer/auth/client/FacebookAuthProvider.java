@@ -18,11 +18,11 @@ import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
 import com.lollapaloozer.auth.verify.FacebookVerifier;
-import com.lollapaloozer.ui.AuthChooseAccountActivity;
+import com.lollapaloozer.ui.ChooseLoginActivity;
 
 public class FacebookAuthProvider implements AuthProvider {
 
-  private AuthChooseAccountActivity _activity;
+  private ChooseLoginActivity _activity;
   private Facebook _facebook = new Facebook("186287061500005");
   private AsyncFacebookRunner mAsyncRunner = new AsyncFacebookRunner(_facebook);
 
@@ -32,7 +32,7 @@ public class FacebookAuthProvider implements AuthProvider {
     // Default constructor disallowed
   }
 
-  public FacebookAuthProvider(AuthChooseAccountActivity activity) {
+  public FacebookAuthProvider(ChooseLoginActivity activity) {
     _activity = activity;
   }
 

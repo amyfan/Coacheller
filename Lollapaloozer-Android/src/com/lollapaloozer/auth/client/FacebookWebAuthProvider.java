@@ -11,14 +11,14 @@ import android.content.Intent;
 
 import com.lollapaloozer.auth.TwitterAuthProviderOAuth;
 import com.lollapaloozer.auth.verify.TwitterVerifier;
-import com.lollapaloozer.ui.AuthChooseAccountActivity;
+import com.lollapaloozer.ui.ChooseLoginActivity;
 import com.lollapaloozer.ui.TwitterAuthWebpageActivity;
 import com.ratethisfest.shared.Constants;
 import com.ratethisfest.shared.Helper;
 
 public class FacebookWebAuthProvider implements AuthProvider {
 
-  private AuthChooseAccountActivity _activity;
+  private ChooseLoginActivity _activity;
 
   private TwitterAuthProviderOAuth _oAuthProvider;
   private HashMap<String, String> _twitterAccountProperties = new HashMap<String, String>();
@@ -33,7 +33,7 @@ public class FacebookWebAuthProvider implements AuthProvider {
   // Consumer key yit4Mu71Mj93eNILUo3uCw
   // Consumer secret rdYvdK4g3ckWVdnvzmAj6JXmj9RoI05rIb4nVYQsoI
 
-  public FacebookWebAuthProvider(AuthChooseAccountActivity activity) {
+  public FacebookWebAuthProvider(ChooseLoginActivity activity) {
     _activity = activity;
     _oAuthProvider = new TwitterAuthProviderOAuth(Constants.CONSUMER_KEY,
         Constants.CONSUMER_SECRET, Constants.OAUTH_CALLBACK_URL);

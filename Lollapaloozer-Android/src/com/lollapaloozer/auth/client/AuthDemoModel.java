@@ -6,7 +6,7 @@ import android.accounts.AuthenticatorDescription;
 import android.content.Intent;
 
 import com.facebook.android.Facebook;
-import com.lollapaloozer.ui.AuthChooseAccountActivity;
+import com.lollapaloozer.ui.ChooseLoginActivity;
 import com.ratethisfest.shared.Constants;
 
 public class AuthDemoModel {
@@ -16,11 +16,11 @@ public class AuthDemoModel {
   private TwitterAuthProvider _authProviderTwitter;
   private FacebookWebAuthProvider _authProviderFacebookWeb;
 
-  private AuthChooseAccountActivity _activity;
+  private ChooseLoginActivity _activity;
 
   private String _verifiedAccountName = null;
 
-  public AuthDemoModel(AuthChooseAccountActivity activity) {
+  public AuthDemoModel(ChooseLoginActivity activity) {
     _activity = activity;
     _authProviderGoogle = new GoogleAuthProvider(_activity);
     _authProviderFacebook = new FacebookAuthProvider(_activity);

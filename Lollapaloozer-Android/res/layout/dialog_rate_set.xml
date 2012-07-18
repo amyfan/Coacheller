@@ -4,57 +4,76 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
-
+
+    <RelativeLayout
+        android:id="@+id/rate_set_titlebar_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/title_rate_set"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="Rate This Set!"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <ImageView
+            android:id="@+id/imageView_custom_dialog_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:src="@android:drawable/ic_delete" />
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:gravity="center" >
-
+
         <TextView
             android:id="@+id/text_rateBand_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:text="Artist"
             android:textAppearance="?android:attr/textAppearanceLarge" />
-
     </LinearLayout>
-
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="left" >
-
+
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="How Was It?"
-            android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
     </LinearLayout>
-
+
     <RadioGroup
         android:id="@+id/radio_pick_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checkedButton="-1"
         android:orientation="horizontal" >
-
+
         <RadioButton
             android:id="@+id/radio_button_score1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
             android:text="1" />
-
+
         <LinearLayout
             android:layout_width="10dp"
             android:layout_height="fill_parent" >
-
         </LinearLayout>
-
+
         <RadioButton
             android:id="@+id/radio_button_score2"
             android:layout_width="wrap_content"
@@ -65,7 +84,7 @@
             android:layout_width="10dp"
             android:layout_height="fill_parent" >
         </LinearLayout>
-
+
         <RadioButton
             android:id="@+id/radio_button_score3"
             android:layout_width="wrap_content"
@@ -76,7 +95,7 @@
             android:layout_width="10dp"
             android:layout_height="fill_parent" >
         </LinearLayout>
-
+
         <RadioButton
             android:id="@+id/radio_button_score4"
             android:layout_width="wrap_content"
@@ -87,7 +106,7 @@
             android:layout_width="10dp"
             android:layout_height="fill_parent" >
         </LinearLayout>
-
+
         <RadioButton
             android:id="@+id/radio_button_score5"
             android:layout_width="wrap_content"
@@ -98,43 +117,42 @@
             android:layout_width="10dp"
             android:layout_height="fill_parent" >
         </LinearLayout>
-
     </RadioGroup>
-
+
     <EditText
-        android:layout_marginTop="5dp"
         android:id="@+id/editText_commentsForSet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:ems="10"
         android:hint="Write any comments here"
         android:inputType="textMultiLine"
-        android:singleLine="false" android:maxLines="4" android:scrollbars="vertical">
+        android:maxLines="4"
+        android:scrollbars="vertical"
+        android:singleLine="false" >
 
         <requestFocus />
-
     </EditText>
-
+
     <LinearLayout
-        android:layout_marginTop="10dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal" >
-
+
         <Button
             android:id="@+id/button_rate_okgo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Rate It!" />
-
+
         <Button
             android:id="@+id/button_rate_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:text="Go Back" />
-
     </LinearLayout>
 
 </LinearLayout>

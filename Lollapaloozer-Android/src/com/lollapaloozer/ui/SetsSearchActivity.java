@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.lollapaloozer.R;
 import com.lollapaloozer.util.LollapaloozerHelper;
 
-public class ActivitySetsSearch extends Activity implements OnClickListener {
+public class SetsSearchActivity extends Activity implements OnClickListener {
 
   private String _daySelected;
 

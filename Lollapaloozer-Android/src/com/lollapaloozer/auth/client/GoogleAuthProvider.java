@@ -14,14 +14,14 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.lollapaloozer.auth.verify.GoogleAuthVerifier;
-import com.lollapaloozer.ui.AuthChooseAccountActivity;
+import com.lollapaloozer.ui.ChooseLoginActivity;
 
 public class GoogleAuthProvider implements AuthProvider {
 
   private final String ACCOUNT_TYPE_REQUESTED = "com.google";
   private final int TOKEN_RETRIES = 2;
 
-  private AuthChooseAccountActivity _activity;
+  private ChooseLoginActivity _activity;
   private Bundle _currentGoogleLoginTokenBundle = null;
   private JSONObject _currentAuthResult;
   private boolean _confirmedAuthorizedGoogle;
@@ -32,7 +32,7 @@ public class GoogleAuthProvider implements AuthProvider {
     // Default constructor disallowed
   }
 
-  public GoogleAuthProvider(AuthChooseAccountActivity activity) {
+  public GoogleAuthProvider(ChooseLoginActivity activity) {
     _activity = activity;
     GoogleAuthVerifier googleVerifier = new GoogleAuthVerifier();
     // googleVerifier.simulateFailure(1); // DEBUG ONLY.
