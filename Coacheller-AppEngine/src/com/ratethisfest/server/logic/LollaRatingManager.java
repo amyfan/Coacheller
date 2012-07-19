@@ -48,7 +48,7 @@ public class LollaRatingManager extends RatingManager {
    * @param year
    * @return
    */
-  public List<Rating> findRatingsByUserAndYear(String email, Integer year) {
+  public List<Rating> findRatingsByUserEmailAndYear(String email, Integer year) {
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     List<Rating> ratings = null;
     if (userKey != null) {

@@ -57,8 +57,12 @@ public class CoachellaEmailSender {
     return success;
   }
 
+  /*
+   * TODO: update once user auth implemented for coachella
+   */
   private static String generateMessageBody(String email) {
-    List<Rating> ratings = CoachellaRatingManager.getInstance().findAllRatingsByUser(email);
+    // TODO: don't constrain by (& definitely don't hardcode) year here
+    List<Rating> ratings = CoachellaRatingManager.getInstance().findRatingsByUserEmailAndYear(email, 2012);
     if (ratings == null) {
       return null;
     }
@@ -69,6 +73,8 @@ public class CoachellaEmailSender {
       ratingString.append(set.getYear());
       ratingString.append(" Weekend ");
       ratingString.append(rating.getWeekend());
+      ratingString.append(" ");
+      ratingString.append(set.getDay());
       ratingString.append(" - ");
       ratingString.append(set.getArtistName());
       ratingString.append(": ");
