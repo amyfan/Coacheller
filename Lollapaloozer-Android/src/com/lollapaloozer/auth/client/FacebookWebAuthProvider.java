@@ -11,21 +11,20 @@ import android.content.Intent;
 
 import com.lollapaloozer.auth.TwitterAuthProviderOAuth;
 import com.lollapaloozer.auth.verify.TwitterVerifier;
-import com.lollapaloozer.ui.ChooseLoginActivity;
 import com.lollapaloozer.ui.TwitterAuthWebpageActivity;
 import com.ratethisfest.shared.Constants;
 import com.ratethisfest.shared.Helper;
 
 public class FacebookWebAuthProvider implements AuthProvider {
 
-  private ChooseLoginActivity _activity;
-
+  // private ChooseLoginActivity _activity;
+  private AuthDemoModel _model;
   private TwitterAuthProviderOAuth _oAuthProvider;
   private HashMap<String, String> _twitterAccountProperties = new HashMap<String, String>();
   private ArrayList<String> _twitterAccountPropertyNames;
 
+  // Default constructor disallowed
   private FacebookWebAuthProvider() {
-    // Default constructor disallowed
   }
 
   // private String _key;
@@ -33,8 +32,10 @@ public class FacebookWebAuthProvider implements AuthProvider {
   // Consumer key yit4Mu71Mj93eNILUo3uCw
   // Consumer secret rdYvdK4g3ckWVdnvzmAj6JXmj9RoI05rIb4nVYQsoI
 
-  public FacebookWebAuthProvider(ChooseLoginActivity activity) {
-    _activity = activity;
+  public FacebookWebAuthProvider(AuthDemoModel model) {
+    // _activity = activity;
+    _model = model;
+
     _oAuthProvider = new TwitterAuthProviderOAuth(Constants.CONSUMER_KEY,
         Constants.CONSUMER_SECRET, Constants.OAUTH_CALLBACK_URL);
     _twitterAccountPropertyNames = new ArrayList<String>();
@@ -59,9 +60,11 @@ public class FacebookWebAuthProvider implements AuthProvider {
   @Override
   public void login() {
     String authReqTokenUrl = _oAuthProvider.getRequestTokenUrl();
-    Intent twitterAuthIntent = new Intent(_activity, TwitterAuthWebpageActivity.class);
+    Intent twitterAuthIntent = new Intent(_model.getAuthActivity(),
+        TwitterAuthWebpageActivity.class);
     twitterAuthIntent.putExtra(Constants.INTENT_EXTRA_AUTH_URL, authReqTokenUrl);
-    _activity.startActivityForResult(twitterAuthIntent, Constants.INTENT_REQ_TWITTER_LOGIN);
+    _model.getApp().getChooseLoginActivity()
+        .startActivityForResult(twitterAuthIntent, Constants.INTENT_REQ_TWITTER_LOGIN);
   }
 
   @Override
@@ -119,7 +122,7 @@ public class FacebookWebAuthProvider implements AuthProvider {
     if (getLocalAccountName() != null && getVerifiedAccountIdentifier() != null) {
 
       System.out.println("Twitter Authentication Successful");
-      _activity.modelChanged();
+      _model.getApp().getChooseLoginActivity().modelChanged();
     } else {
       System.out.println("Twitter Authentication was not successful");
     }

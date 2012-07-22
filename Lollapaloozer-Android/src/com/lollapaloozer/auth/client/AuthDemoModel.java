@@ -1,32 +1,39 @@
 package com.lollapaloozer.auth.client;
 
+import java.util.ArrayList;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AuthenticatorDescription;
+import android.content.Context;
 import android.content.Intent;
 
 import com.facebook.android.Facebook;
-import com.lollapaloozer.ui.ChooseLoginActivity;
+import com.lollapaloozer.LollapaloozerApplication;
 import com.ratethisfest.shared.Constants;
 
 public class AuthDemoModel {
 
+  private LollapaloozerApplication _app;
   private GoogleAuthProvider _authProviderGoogle;
   private FacebookAuthProvider _authProviderFacebook;
   private TwitterAuthProvider _authProviderTwitter;
   private FacebookWebAuthProvider _authProviderFacebookWeb;
-
-  private ChooseLoginActivity _activity;
+  // private ChooseLoginActivity _activity;
 
   private String _verifiedAccountName = null;
+  private ArrayList<Integer> _permissions = new ArrayList<Integer>();
 
-  public AuthDemoModel(ChooseLoginActivity activity) {
-    _activity = activity;
-    _authProviderGoogle = new GoogleAuthProvider(_activity);
-    _authProviderFacebook = new FacebookAuthProvider(_activity);
-    _authProviderFacebookWeb = new FacebookWebAuthProvider(_activity);
+  public AuthDemoModel(LollapaloozerApplication app) {
+    _app = app;
+    _authProviderGoogle = new GoogleAuthProvider(AuthDemoModel.this);
+    _authProviderFacebook = new FacebookAuthProvider(AuthDemoModel.this);
+    _authProviderFacebookWeb = new FacebookWebAuthProvider(AuthDemoModel.this);
+    _authProviderTwitter = new TwitterAuthProvider(AuthDemoModel.this);
+  }
 
-    _authProviderTwitter = new TwitterAuthProvider(_activity);
+  public LollapaloozerApplication getApp() {
+    return _app;
   }
 
   public boolean isLoggedIn() {
@@ -56,6 +63,45 @@ public class AuthDemoModel {
     } else {
       return false;
     }
+  }
+
+  public boolean havePermission(int permission) {
+    return _permissions.contains(permission);
+  }
+
+  public void getPermission(int permission) {
+    switch (permission) {
+    case Constants.PERMISSION_FACEBOOK_POSTWALL:
+      System.out.println("Placeholder to obtain Facebook permission");
+      if (true) {
+        _addPermission(permission);
+      }
+      break;
+
+    case Constants.PERMISSION_TWITTER_TWEET:
+      System.out.println("Placeholder to obtain Twitter permission");
+      if (true) {
+        _addPermission(permission);
+      }
+      break;
+
+    default:
+      throw new RuntimeException("Invalid permission, unexpected code path");
+    }
+  }
+
+  private void _addPermission(int permission) {
+    if (!havePermission(permission)) {
+      _permissions.add(permission);
+    }
+  }
+
+  public boolean ensurePermission(int permission) {
+    if (!havePermission(permission)) {
+      getPermission(permission);
+    }
+
+    return havePermission(permission);
   }
 
   public AuthProvider getCurrentAuthProvider() {
@@ -100,7 +146,7 @@ public class AuthDemoModel {
   }
 
   public void checkAccounts() {
-    AccountManager aMgr = AccountManager.get(_activity);
+    AccountManager aMgr = AccountManager.get(getApp().getChooseLoginActivity());
 
     System.out.println("Warning: The following requires permission GET_ACCOUNTS");
     for (Account a : aMgr.getAccounts()) {
@@ -124,6 +170,7 @@ public class AuthDemoModel {
     _authProviderFacebook.logout();
     _authProviderFacebookWeb.logout();
     _authProviderTwitter.logout();
+    _permissions.clear();
   }
 
   public void loginToGoogle() {
@@ -144,6 +191,11 @@ public class AuthDemoModel {
 
   public void twitterAuthCallback(int requestCode, int resultCode, Intent data) {
     _authProviderTwitter.requestTokenCallback(requestCode, resultCode, data);
+  }
+
+  public Context getAuthActivity() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

@@ -14,26 +14,27 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.lollapaloozer.auth.verify.GoogleAuthVerifier;
-import com.lollapaloozer.ui.ChooseLoginActivity;
 
 public class GoogleAuthProvider implements AuthProvider {
 
   private final String ACCOUNT_TYPE_REQUESTED = "com.google";
   private final int TOKEN_RETRIES = 2;
 
-  private ChooseLoginActivity _activity;
+  // private ChooseLoginActivity _activity;
+  private AuthDemoModel _model;
   private Bundle _currentGoogleLoginTokenBundle = null;
   private JSONObject _currentAuthResult;
   private boolean _confirmedAuthorizedGoogle;
   private String _verifiedAccountName = null;
   private int _tokenRetries;
 
+  // Default constructor disallowed
   private GoogleAuthProvider() {
-    // Default constructor disallowed
   }
 
-  public GoogleAuthProvider(ChooseLoginActivity activity) {
-    _activity = activity;
+  public GoogleAuthProvider(AuthDemoModel model) {
+    // _activity = activity;
+    _model = model;
     GoogleAuthVerifier googleVerifier = new GoogleAuthVerifier();
     // googleVerifier.simulateFailure(1); // DEBUG ONLY.
   }
@@ -55,16 +56,17 @@ public class GoogleAuthProvider implements AuthProvider {
   private void _getToken(String accountName) {
     if (accountName == null) {
 
-      AccountManagerFuture<Bundle> bundleFuture = AccountManager.get(_activity)
-          .getAuthTokenByFeatures(ACCOUNT_TYPE_REQUESTED,
-              "oauth2:https://www.googleapis.com/auth/userinfo.email", null, _activity, null, null,
-              new GoogleAuthAccountManagerCallback(), null);
+      AccountManagerFuture<Bundle> bundleFuture = AccountManager.get(
+          _model.getApp().getChooseLoginActivity()).getAuthTokenByFeatures(ACCOUNT_TYPE_REQUESTED,
+          "oauth2:https://www.googleapis.com/auth/userinfo.email", null,
+          _model.getApp().getChooseLoginActivity(), null, null,
+          new GoogleAuthAccountManagerCallback(), null);
       System.out.println("Done with AccountManager call.  Auth proceeds asynchronously");
     } else {
       Account accountObj = new Account(accountName, ACCOUNT_TYPE_REQUESTED);
-      AccountManager.get(_activity).getAuthToken(accountObj,
-          "oauth2:https://www.googleapis.com/auth/userinfo.email", null, _activity,
-          new GoogleAuthAccountManagerCallback(), null);
+      AccountManager.get(_model.getApp().getChooseLoginActivity()).getAuthToken(accountObj,
+          "oauth2:https://www.googleapis.com/auth/userinfo.email", null,
+          _model.getApp().getChooseLoginActivity(), new GoogleAuthAccountManagerCallback(), null);
       System.out.println("Done with AccountManager retry.  Auth proceeds asynchronously");
     }
   }
@@ -73,7 +75,7 @@ public class GoogleAuthProvider implements AuthProvider {
   public void logout() {
     System.out.println("GoogleAuthProvider.logout()");
     if (_currentGoogleLoginTokenBundle != null) {
-      AccountManager aMgr = AccountManager.get(_activity);
+      AccountManager aMgr = AccountManager.get(_model.getApp().getChooseLoginActivity());
       aMgr.invalidateAuthToken(getAccountType(), getAuthToken());
     }
 
@@ -106,7 +108,8 @@ public class GoogleAuthProvider implements AuthProvider {
   }
 
   private void _errorDialog(String problem, String details) {
-    _activity.showErrorDialog("Google Login Error", problem, details);
+    _model.getApp().getChooseLoginActivity()
+        .showErrorDialog("Google Login Error", problem, details);
   }
 
   private final class GoogleAuthAccountManagerCallback implements AccountManagerCallback<Bundle> {
@@ -152,7 +155,7 @@ public class GoogleAuthProvider implements AuthProvider {
 
         // MUST BE CALLED HERE AS A CONSEQUENCE OF MULTI-THREADING
         _verifiedAccountName = getLocalAccountName();
-        _activity.modelChanged();
+        _model.getApp().getChooseLoginActivity().modelChanged();
 
       } else {
 

@@ -15,23 +15,8 @@ public class Constants {
   public static final String DIALOG_TITLE_FIRST_USE = "Welcome, Fellow Lollapaloozer";
 
   // User Authentication
-
   public static final String CONSUMER_KEY = "yit4Mu71Mj93eNILUo3uCw";
   public static final String CONSUMER_SECRET = "rdYvdK4g3ckWVdnvzmAj6JXmj9RoI05rIb4nVYQsoI";
-
-  // public static final String REQUEST_URL_TWITTER =
-  // "https://api.twitter.com/oauth/request_token";
-  // public static final String AUTHORIZE_URL_TWITTER =
-  // "https://api.twitter.com/oauth/authorize";
-  // public static final String ACCESS_URL_TWITTER =
-  // "https://api.twitter.com/oauth/access_token";
-
-  // public static final String REQUEST_URL_FACEBOOK =
-  // "http://www.facebook.com/dialog/oauth/";
-  // public static final String AUTHORIZE_URL_TWITTER =
-  // "https://api.twitter.com/oauth/authorize";
-  // public static final String ACCESS_URL_TWITTER =
-  // "https://api.twitter.com/oauth/access_token";
 
   public static final String OAUTH_CALLBACK_SCHEME = "http";
   public static final String OAUTH_CALLBACK_URL = OAUTH_CALLBACK_SCHEME
@@ -58,5 +43,22 @@ public class Constants {
   public static final int LOGIN_TYPE_FACEBOOK = 2;
   public static final int LOGIN_TYPE_TWITTER = 3;
   public static final int LOGIN_TYPE_FACEBOOK_BROWSER = 4;
+
+  public static final int PERMISSION_FACEBOOK_POSTWALL = 1;
+  public static final int PERMISSION_TWITTER_TWEET = 2;
+
+  // public static final String REQUEST_URL_TWITTER =
+  // "https://api.twitter.com/oauth/request_token";
+  // public static final String AUTHORIZE_URL_TWITTER =
+  // "https://api.twitter.com/oauth/authorize";
+  // public static final String ACCESS_URL_TWITTER =
+  // "https://api.twitter.com/oauth/access_token";
+
+  // public static final String REQUEST_URL_FACEBOOK =
+  // "http://www.facebook.com/dialog/oauth/";
+  // public static final String AUTHORIZE_URL_TWITTER =
+  // "https://api.twitter.com/oauth/authorize";
+  // public static final String ACCESS_URL_TWITTER =
+  // "https://api.twitter.com/oauth/access_token";
 
 }

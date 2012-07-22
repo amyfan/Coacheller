@@ -18,22 +18,24 @@ import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
 import com.lollapaloozer.auth.verify.FacebookVerifier;
-import com.lollapaloozer.ui.ChooseLoginActivity;
 
 public class FacebookAuthProvider implements AuthProvider {
 
-  private ChooseLoginActivity _activity;
+  // private ChooseLoginActivity _activity;
+  private AuthDemoModel _model;
   private Facebook _facebook = new Facebook("186287061500005");
   private AsyncFacebookRunner mAsyncRunner = new AsyncFacebookRunner(_facebook);
 
   private JSONObject _userInfo;
 
+  // Default constructor disallowed
   private FacebookAuthProvider() {
-    // Default constructor disallowed
+
   }
 
-  public FacebookAuthProvider(ChooseLoginActivity activity) {
-    _activity = activity;
+  public FacebookAuthProvider(AuthDemoModel model) {
+    // _activity = activity;
+    _model = model;
   }
 
   private void setLastInfoResponse(JSONObject json) {
@@ -53,7 +55,8 @@ public class FacebookAuthProvider implements AuthProvider {
   @Override
   public void login() {
     // Proceeds Asynchronously
-    _facebook.authorize(_activity, new String[] { "email" }, new AuthListener());
+    _facebook.authorize(_model.getApp().getChooseLoginActivity(), new String[] { "email" },
+        new AuthListener());
   }
 
   public Facebook getFacebookObject() {
@@ -61,13 +64,14 @@ public class FacebookAuthProvider implements AuthProvider {
   }
 
   private void _showError(String problem, String details) {
-    _activity.showErrorDialog("Facebook Login Error", problem, details);
+    _model.getApp().getChooseLoginActivity()
+        .showErrorDialog("Facebook Login Error", problem, details);
   }
 
   @Override
   public void logout() {
     try {
-      _facebook.logout(_activity);
+      _facebook.logout(_model.getApp().getChooseLoginActivity());
     } catch (MalformedURLException e) {
       e.printStackTrace();
     } catch (IOException e) {
@@ -109,7 +113,7 @@ public class FacebookAuthProvider implements AuthProvider {
 
   @Override
   public void extendAccess() {
-    _facebook.extendAccessTokenIfNeeded(_activity, null);
+    _facebook.extendAccessTokenIfNeeded(_model.getApp().getChooseLoginActivity(), null);
   }
 
   private final class AuthListener implements DialogListener {
@@ -119,7 +123,7 @@ public class FacebookAuthProvider implements AuthProvider {
           + " valid until " + _facebook.getAccessExpires());
       mAsyncRunner.request("me", new IDRequestListener()); // get user info
                                                            // from facebook
-      _activity.modelChanged();
+      _model.getApp().getChooseLoginActivity().modelChanged();
       // TODO should lock UI here
     }
 
@@ -165,7 +169,7 @@ public class FacebookAuthProvider implements AuthProvider {
         System.out.println("Retrieved from Facebook userID[" + userID + "] username [" + userName
             + "]");
         setLastInfoResponse(json);
-        _activity.modelChanged();
+        _model.getApp().getChooseLoginActivity().modelChanged();
 
       } catch (JSONException ex) {
         _showError("Facebook Response Error", "JSONException reading response: " + ex.getMessage());

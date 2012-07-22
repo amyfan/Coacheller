@@ -34,6 +34,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lollapaloozer.LollapaloozerApplication;
 import com.lollapaloozer.LollapaloozerServiceUtils;
 import com.lollapaloozer.LollapaloozerStorageManager;
 import com.lollapaloozer.R;
@@ -195,6 +196,9 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   /** Called by Android Framework when activity (re)gains foreground status */
   public void onResume() {
     super.onResume();
+
+    LollapaloozerApplication app = (LollapaloozerApplication) getApplication();
+    app.registerLollapaloozerActivity(LollapaloozerActivity.this);
 
     String firstUse = _storageManager.getString("DATA_FIRST_USE");
     // TODO: We'll reenable this if we have something significant to say in the
@@ -628,7 +632,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     }
 
     // Submit rating for a set
-    if (viewClicked.getId() == R.id.button_rate_okgo) { // Selections
+    if (viewClicked.getId() == R.id.button_go_rate) { // Selections
       // incomplete
       RadioGroup scoreGroup = (RadioGroup) _rateDialog.findViewById(R.id.radio_pick_score);
       int scoreSelectedId = scoreGroup.getCheckedRadioButtonId();
@@ -676,11 +680,20 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
       }
     } // End rating dialog submitted
 
-    if (viewClicked.getId() == R.id.button_rate_cancel) {
-      _rateDialog.dismiss();
+    if (viewClicked.getId() == R.id.button_go_fb) {
+      System.out.println("Clicked post on FB");
+      LollapaloozerApplication app = (LollapaloozerApplication) getApplication();
+
+    }
+
+    if (viewClicked.getId() == R.id.button_go_tweet) {
+      System.out.println("Clicked post on Twitter");
+      LollapaloozerApplication app = (LollapaloozerApplication) getApplication();
+
     }
 
     if (viewClicked.getId() == R.id.button_network_error_ok) {
+      System.out.println("Clicked dismiss network error dialog");
       _networkErrorDialog.dismiss();
     }
 
@@ -729,11 +742,15 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
         }
       });
 
-      Button buttonOK = (Button) _rateDialog.findViewById(R.id.button_rate_okgo);
-      buttonOK.setOnClickListener(this);
+      Button buttonRate = (Button) _rateDialog.findViewById(R.id.button_go_rate);
+      buttonRate.setOnClickListener(this);
 
-      Button buttonCancel = (Button) _rateDialog.findViewById(R.id.button_rate_cancel);
-      buttonCancel.setOnClickListener(this);
+      Button buttonFB = (Button) _rateDialog.findViewById(R.id.button_go_fb);
+      buttonFB.setOnClickListener(this);
+
+      Button buttonTweet = (Button) _rateDialog.findViewById(R.id.button_go_tweet);
+      buttonTweet.setOnClickListener(this);
+
       return _rateDialog;
     }
 
