@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,9 +11,9 @@ import java.util.logging.Logger;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ratethisfest.client.CoachellerService;
 import com.ratethisfest.server.domain.Rating;
+import com.ratethisfest.server.logic.CoachellaEmailSender;
 import com.ratethisfest.server.logic.CoachellaRatingManager;
 import com.ratethisfest.server.logic.CoachellaSetDataLoader;
-import com.ratethisfest.server.logic.CoachellaEmailSender;
 import com.ratethisfest.server.logic.JSONUtils;
 import com.ratethisfest.shared.DayEnum;
 import com.ratethisfest.shared.FieldVerifier;
@@ -83,16 +82,13 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     return resp;
   }
 
-  /**
-   * TODO: pass in year
-   */
   public List<RatingGwt> getRatingsByUserEmail(String email, Integer year) {
 
     List<RatingGwt> ratingGwts = null;
 
     if (email != null) {
-      List<Rating> ratings = CoachellaRatingManager.getInstance().findRatingsByUserAndYear(email,
-          year);
+      List<Rating> ratings = CoachellaRatingManager.getInstance().findRatingsByUserEmailAndYear(
+          email, year);
       if (ratings != null) {
         ratingGwts = JSONUtils.convertRatingsToRatingGwts(ratings);
       }

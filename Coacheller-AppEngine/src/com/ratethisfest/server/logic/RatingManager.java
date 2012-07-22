@@ -48,7 +48,7 @@ public abstract class RatingManager {
     return ratings;
   }
 
-  public List<Rating> findAllRatingsByUser(String email) {
+  public List<Rating> findAllRatingsByUserEmail(String email) {
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     List<Rating> ratings = null;
     if (userKey != null) {

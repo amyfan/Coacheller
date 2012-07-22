@@ -61,6 +61,7 @@ public class LollaEmailSender {
 
   private static String generateMessageBody(String authType, String authId, String authToken,
       String email) {
+    // TODO: dude, why is year hardcoded HERE (maybe create method not constrained by year)
     List<Rating> ratings = LollaRatingManager.getInstance().findRatingsByUserAndYear(authType,
         authId, authToken, email, 2012);
     if (ratings == null) {
@@ -71,6 +72,8 @@ public class LollaEmailSender {
       Set set = LollaRatingManager.getInstance().findSet(rating.getSet().getId());
       StringBuilder ratingString = new StringBuilder();
       ratingString.append(set.getYear());
+      ratingString.append(" ");
+      ratingString.append(set.getDay());
       ratingString.append(" - ");
       ratingString.append(set.getArtistName());
       ratingString.append(": ");

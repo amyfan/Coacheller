@@ -85,7 +85,7 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     List<RatingGwt> ratingGwts = null;
 
     if (email != null) {
-      List<Rating> ratings = LollaRatingManager.getInstance().findRatingsByUserAndYear(email, year);
+      List<Rating> ratings = LollaRatingManager.getInstance().findRatingsByUserEmailAndYear(email, year);
       if (ratings != null) {
         ratingGwts = JSONUtils.convertRatingsToRatingGwts(ratings);
       }
