@@ -17,7 +17,7 @@ import com.ratethisfest.shared.Helper;
 
 public class TwitterAuthProvider implements AuthProvider {
   // private ChooseLoginActivity _activity;
-  private AuthDemoModel _model;
+  private AuthModel _model;
 
   private TwitterAuthProviderOAuth _oAuthProvider;
   private HashMap<String, String> _twitterAccountProperties = new HashMap<String, String>();
@@ -32,7 +32,7 @@ public class TwitterAuthProvider implements AuthProvider {
   // Consumer key yit4Mu71Mj93eNILUo3uCw
   // Consumer secret rdYvdK4g3ckWVdnvzmAj6JXmj9RoI05rIb4nVYQsoI
 
-  public TwitterAuthProvider(AuthDemoModel model) {
+  public TwitterAuthProvider(AuthModel model) {
     // _activity = activity;
     _model = model;
     _oAuthProvider = new TwitterAuthProviderOAuth(Constants.CONSUMER_KEY,

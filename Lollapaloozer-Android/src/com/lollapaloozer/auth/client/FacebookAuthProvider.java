@@ -22,24 +22,42 @@ import com.lollapaloozer.auth.verify.FacebookVerifier;
 public class FacebookAuthProvider implements AuthProvider {
 
   // private ChooseLoginActivity _activity;
-  private AuthDemoModel _model;
+  private AuthModel _model;
   private Facebook _facebook = new Facebook("186287061500005");
-  private AsyncFacebookRunner mAsyncRunner = new AsyncFacebookRunner(_facebook);
+  private AsyncFacebookRunner _AsyncRunner = new AsyncFacebookRunner(_facebook);
 
   private JSONObject _userInfo;
 
   // Default constructor disallowed
   private FacebookAuthProvider() {
-
   }
 
-  public FacebookAuthProvider(AuthDemoModel model) {
+  public FacebookAuthProvider(AuthModel model) {
     // _activity = activity;
     _model = model;
   }
 
-  private void setLastInfoResponse(JSONObject json) {
-    _userInfo = json;
+  private void _showError(String problem, String details) {
+    _model.getApp().getChooseLoginActivity()
+        .showErrorDialog("Facebook Login Error", problem, details);
+  }
+
+  @Override
+  public void login() {
+    // Proceeds Asynchronously
+    _facebook.authorize(_model.getApp().getChooseLoginActivity(), new String[] { "email",
+        "publish_stream" }, new AuthListener());
+  }
+
+  @Override
+  public void logout() {
+    try {
+      _facebook.logout(_model.getApp().getChooseLoginActivity());
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -52,31 +70,8 @@ public class FacebookAuthProvider implements AuthProvider {
     return verifier.verify(getAuthToken(), getVerifiedAccountIdentifier());
   }
 
-  @Override
-  public void login() {
-    // Proceeds Asynchronously
-    _facebook.authorize(_model.getApp().getChooseLoginActivity(), new String[] { "email" },
-        new AuthListener());
-  }
-
   public Facebook getFacebookObject() {
     return _facebook;
-  }
-
-  private void _showError(String problem, String details) {
-    _model.getApp().getChooseLoginActivity()
-        .showErrorDialog("Facebook Login Error", problem, details);
-  }
-
-  @Override
-  public void logout() {
-    try {
-      _facebook.logout(_model.getApp().getChooseLoginActivity());
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 
   @Override
@@ -116,12 +111,33 @@ public class FacebookAuthProvider implements AuthProvider {
     _facebook.extendAccessTokenIfNeeded(_model.getApp().getChooseLoginActivity(), null);
   }
 
+  public String postToWall(String message) {
+    Bundle parameters = new Bundle();
+    parameters.putString("message", message);
+    parameters.putString("description", "topic share");
+    try {
+      _facebook.request("me");
+      String response = _facebook.request("me/feed", parameters, "POST");
+      Log.d("Tests", "got response: " + response);
+      if (response == null || response.equals("") || response.equals("false")) {
+        return "Blank response from Facebook.";
+      } else {
+        return "Message posted to your facebook wall! " + response;
+      }
+
+    } catch (Exception e) {
+
+      e.printStackTrace();
+      return "Failed to post to wall!";
+    }
+  }
+
   private final class AuthListener implements DialogListener {
     @Override
     public void onComplete(Bundle values) {
       System.out.println("Facebook authorization completed, token: " + _facebook.getAccessToken()
           + " valid until " + _facebook.getAccessExpires());
-      mAsyncRunner.request("me", new IDRequestListener()); // get user info
+      _AsyncRunner.request("me", new IDRequestListener()); // get user info
                                                            // from facebook
       _model.getApp().getChooseLoginActivity().modelChanged();
       // TODO should lock UI here
@@ -168,7 +184,7 @@ public class FacebookAuthProvider implements AuthProvider {
 
         System.out.println("Retrieved from Facebook userID[" + userID + "] username [" + userName
             + "]");
-        setLastInfoResponse(json);
+        _userInfo = json;
         _model.getApp().getChooseLoginActivity().modelChanged();
 
       } catch (JSONException ex) {

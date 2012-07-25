@@ -23,7 +23,7 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
   private boolean _debugMode = false;
 
   // Framework
-  private LollapaloozerApplication _app = (LollapaloozerApplication) getApplication();
+  private LollapaloozerApplication _app;
   private TextView _loginStatusText;
   private TextView _accountNameText;
   private TextView _tokenIdText;
@@ -46,6 +46,10 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.auth_choose_login);
     System.out.println("OnCreate starting");
+
+    // CANNOT do this in constructor / member list
+    _app = (LollapaloozerApplication) getApplication();
+    _app.registerChooseLoginActivity(ChooseLoginActivity.this);
     _app.getAuthModel().checkAccounts();
 
     // Framework
@@ -85,10 +89,6 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
   @Override
   protected void onResume() {
     super.onResume();
-
-    LollapaloozerApplication app = (LollapaloozerApplication) getApplication();
-    app.registerChooseLoginActivity(ChooseLoginActivity.this);
-
     AuthProvider currentProvider = _app.getAuthModel().getCurrentAuthProvider();
     if (currentProvider != null) {
       currentProvider.extendAccess();

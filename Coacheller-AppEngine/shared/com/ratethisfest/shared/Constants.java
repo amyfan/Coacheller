@@ -44,9 +44,6 @@ public class Constants {
   public static final int LOGIN_TYPE_TWITTER = 3;
   public static final int LOGIN_TYPE_FACEBOOK_BROWSER = 4;
 
-  public static final int PERMISSION_FACEBOOK_POSTWALL = 1;
-  public static final int PERMISSION_TWITTER_TWEET = 2;
-
   // public static final String REQUEST_URL_TWITTER =
   // "https://api.twitter.com/oauth/request_token";
   // public static final String AUTHORIZE_URL_TWITTER =

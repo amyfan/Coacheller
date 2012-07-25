@@ -38,6 +38,7 @@ import com.lollapaloozer.LollapaloozerApplication;
 import com.lollapaloozer.LollapaloozerServiceUtils;
 import com.lollapaloozer.LollapaloozerStorageManager;
 import com.lollapaloozer.R;
+import com.lollapaloozer.auth.client.AuthModel;
 import com.lollapaloozer.data.CustomSetListAdapter;
 import com.lollapaloozer.data.JSONArrayHashMap;
 import com.lollapaloozer.data.JSONArraySortMap;
@@ -65,7 +66,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   private static final String DATA_SETS = "DATA_SETS";
   private static final String DATA_RATINGS = "DATA_RATINGS";
   private static final String DATA_FIRST_USE = "DATA_FIRST_USE";
-  private static final String DATA_LOGIN_INFO = "DATA_LOGIN_INFO";
 
   // Database
   public static final String QUERY_RATINGS__SET_ID = "set_id";
@@ -121,6 +121,14 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
     LollapaloozerHelper.debug(this, "LollapaloozerActivity Launched");
 
+    _storageManager = new LollapaloozerStorageManager(this);
+    _storageManager.load();
+    _obtainLoginDataFromStorage();
+
+    if (_loginData != null) {
+      _loginData.printDebug();
+    }
+
     _ratingSelectedIdToValue.put(R.id.radio_button_score1, 1);
     _ratingSelectedIdToValue.put(R.id.radio_button_score2, 2);
     _ratingSelectedIdToValue.put(R.id.radio_button_score3, 3);
@@ -132,11 +140,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     _ratingSelectedScoreToId.put("3", R.id.radio_button_score3);
     _ratingSelectedScoreToId.put("4", R.id.radio_button_score4);
     _ratingSelectedScoreToId.put("5", R.id.radio_button_score5);
-
-    _storageManager = new LollapaloozerStorageManager(this);
-    _storageManager.load();
-
-    // initJAHM(); //Only initialized once
 
     setContentView(R.layout.sets_list);
     _setListAdapter = new CustomSetListAdapter(this, QUERY_SETS__TIME_ONE, QUERY_SETS__STAGE_ONE,
@@ -159,7 +162,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     _sortMode = SORT_TIME;
 
     // Above here is stuff to be done once
-
+    // TODO consider changing this to AsyncTask
     _networkIOHandler = new Handler() {
       @Override
       public void handleMessage(Message msg) {
@@ -244,7 +247,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   }
 
   private void _obtainLoginDataFromStorage() {
-    _loginData = (LoginData) _storageManager.getObject(DATA_LOGIN_INFO);
+    _loginData = (LoginData) _storageManager.getObject(LoginData.DATA_LOGIN_INFO);
   }
 
   // Only called once, so commented out.
@@ -270,11 +273,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     // showDialog(DIALOG_GETEMAIL);
 
     Intent lollapaloozerAuthIntent = new Intent(this, ChooseLoginActivity.class);
-    // no extras needed here
-    // lollapaloozerAuthIntent.putExtra(Constants.INTENT_EXTRA_AUTH_URL,
-    // "String");
     startActivityForResult(lollapaloozerAuthIntent, Constants.INTENT_REQ_CHOOSE_LOGIN_TYPE);
-
   }
 
   private void refreshData() {
@@ -366,18 +365,14 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   }
 
   public void doNetworkOperations() throws JSONException {
-
-    LollapaloozerHelper.debug(this, "rebuildJAHM()");
     if (_isLoggedIn()) { // Get my ratings
 
       JSONArray myRatings = null;
       try {
         // TODO: year can remain hardcoded for now (to force users to
-        // update app
-        // in future)
+        // update app in future)
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair(HttpConstants.PARAM_YEAR, "2012"));
         params.add(new BasicNameValuePair(HttpConstants.PARAM_YEAR, "2012"));
         params.add(new BasicNameValuePair(HttpConstants.PARAM_DAY, _dayToExamine));
         params
@@ -404,11 +399,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
       }
 
       try {
-        // TODO this may not be correct. JAHM should only be initialized
-        // once.
-        // _myRatings_JAHM = new JSONArrayHashMap(myRatings,
-        // QUERY_RATINGS__SET_ID, QUERY_RATINGS__WEEK);
-
         if (myRatings == null) {
           LollapaloozerHelper.debug(this, "Had to initialize ratings data JSONArray");
           myRatings = new JSONArray();
@@ -422,13 +412,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
         e.printStackTrace();
       }
     } else {
-      // TODO This may not be correct. initJAHM() may have already been
-      // called
-      // on startup and
-      // TODO the reference to the JAHM may have been passed to the
-      // adapter
-      // already
-      // initJAHM(); //Commented in hope of addressing crash issue
 
       // Need to wipe out ratings if email was just deleted
       _myRatings_JAHM.wipeData();
@@ -538,7 +521,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
           + _loginData.accountIdentifier + " accountToken=" + _loginData.accountToken
           + " emailAddress=" + _loginData.emailAddress);
 
-      _storageManager.putObject(DATA_LOGIN_INFO, _loginData);
+      _storageManager.putObject(LoginData.DATA_LOGIN_INFO, _loginData);
       _storageManager.save();
     }
   }
@@ -683,13 +666,14 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     if (viewClicked.getId() == R.id.button_go_fb) {
       System.out.println("Clicked post on FB");
       LollapaloozerApplication app = (LollapaloozerApplication) getApplication();
-
+      app.getAuthModel().ensurePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL);
+      app.getAuthModel().postToFacebookWall("Test Message!");
     }
 
     if (viewClicked.getId() == R.id.button_go_tweet) {
       System.out.println("Clicked post on Twitter");
       LollapaloozerApplication app = (LollapaloozerApplication) getApplication();
-
+      app.getAuthModel().ensurePermission(AuthModel.PERMISSION_TWITTER_TWEET);
     }
 
     if (viewClicked.getId() == R.id.button_network_error_ok) {
@@ -700,8 +684,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   }
 
   // Dialog handling, called once the first time this activity displays
-  // (a/each
-  // type of)? dialog
+  // (a/each type of)? dialog
   @Override
   protected Dialog onCreateDialog(int id) {
     if (id == DIALOG_FIRST_USE) {
@@ -860,9 +843,9 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
       return true;
 
     case R.id.menu_item_delete_email:
-      LollapaloozerHelper.debug(this, "Menu button 'delete email' pressed");
+      LollapaloozerHelper.debug(this, "Menu button 'Forget Account Info' pressed");
       _loginData = null;
-      _storageManager.putObject(DATA_LOGIN_INFO, _loginData);
+      _storageManager.putObject(LoginData.DATA_LOGIN_INFO, _loginData);
 
       _storageManager.save();
       refreshData();

@@ -5,14 +5,16 @@ import java.util.ArrayList;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AuthenticatorDescription;
-import android.content.Context;
 import android.content.Intent;
 
 import com.facebook.android.Facebook;
 import com.lollapaloozer.LollapaloozerApplication;
 import com.ratethisfest.shared.Constants;
 
-public class AuthDemoModel {
+public class AuthModel {
+
+  public static final String PERMISSION_FACEBOOK_POSTWALL = "PERMISSION_FACEBOOK_POSTWALL";
+  public static final String PERMISSION_TWITTER_TWEET = "PERMISSION_TWITTER_TWEET";
 
   private LollapaloozerApplication _app;
   private GoogleAuthProvider _authProviderGoogle;
@@ -22,14 +24,14 @@ public class AuthDemoModel {
   // private ChooseLoginActivity _activity;
 
   private String _verifiedAccountName = null;
-  private ArrayList<Integer> _permissions = new ArrayList<Integer>();
+  private ArrayList<String> _permissions = new ArrayList<String>();
 
-  public AuthDemoModel(LollapaloozerApplication app) {
+  public AuthModel(LollapaloozerApplication app) {
     _app = app;
-    _authProviderGoogle = new GoogleAuthProvider(AuthDemoModel.this);
-    _authProviderFacebook = new FacebookAuthProvider(AuthDemoModel.this);
-    _authProviderFacebookWeb = new FacebookWebAuthProvider(AuthDemoModel.this);
-    _authProviderTwitter = new TwitterAuthProvider(AuthDemoModel.this);
+    _authProviderGoogle = new GoogleAuthProvider(AuthModel.this);
+    _authProviderFacebook = new FacebookAuthProvider(AuthModel.this);
+    _authProviderFacebookWeb = new FacebookWebAuthProvider(AuthModel.this);
+    _authProviderTwitter = new TwitterAuthProvider(AuthModel.this);
   }
 
   public LollapaloozerApplication getApp() {
@@ -65,38 +67,35 @@ public class AuthDemoModel {
     }
   }
 
-  public boolean havePermission(int permission) {
+  public boolean havePermission(String permission) {
     return _permissions.contains(permission);
   }
 
-  public void getPermission(int permission) {
-    switch (permission) {
-    case Constants.PERMISSION_FACEBOOK_POSTWALL:
+  public void getPermission(String permission) {
+    if (permission.equals(PERMISSION_FACEBOOK_POSTWALL)) {
       System.out.println("Placeholder to obtain Facebook permission");
       if (true) {
         _addPermission(permission);
       }
-      break;
-
-    case Constants.PERMISSION_TWITTER_TWEET:
+    } else if (permission.equals(PERMISSION_TWITTER_TWEET)) {
       System.out.println("Placeholder to obtain Twitter permission");
       if (true) {
         _addPermission(permission);
       }
-      break;
+    } else {
 
-    default:
       throw new RuntimeException("Invalid permission, unexpected code path");
     }
   }
 
-  private void _addPermission(int permission) {
+  private void _addPermission(String permission) {
     if (!havePermission(permission)) {
       _permissions.add(permission);
     }
   }
 
-  public boolean ensurePermission(int permission) {
+  // Return whether permission was successfully obtained
+  public boolean ensurePermission(String permission) {
     if (!havePermission(permission)) {
       getPermission(permission);
     }
@@ -193,9 +192,8 @@ public class AuthDemoModel {
     _authProviderTwitter.requestTokenCallback(requestCode, resultCode, data);
   }
 
-  public Context getAuthActivity() {
-    // TODO Auto-generated method stub
-    return null;
+  public String postToFacebookWall(String message) {
+    return _authProviderFacebook.postToWall(message);
   }
 
 }

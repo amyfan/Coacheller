@@ -2,19 +2,19 @@ package com.lollapaloozer;
 
 import android.app.Application;
 
-import com.lollapaloozer.auth.client.AuthDemoModel;
+import com.lollapaloozer.auth.client.AuthModel;
 import com.lollapaloozer.ui.ChooseLoginActivity;
 import com.lollapaloozer.ui.LollapaloozerActivity;
 
 public class LollapaloozerApplication extends Application {
-  private AuthDemoModel _authModel;
+  private AuthModel _authModel;
   private ChooseLoginActivity _activityChooseLogin = null;
   private LollapaloozerActivity _activityLollapaloozer = null;
 
   public LollapaloozerApplication() {
     System.out.println("Application Object Instantiated");
 
-    _authModel = new AuthDemoModel(this);
+    _authModel = new AuthModel(this);
   }
 
   public void registerChooseLoginActivity(ChooseLoginActivity act) {
@@ -47,7 +47,7 @@ public class LollapaloozerApplication extends Application {
     _activityLollapaloozer = null;
   }
 
-  public AuthDemoModel getAuthModel() {
+  public AuthModel getAuthModel() {
     return _authModel;
   }
 

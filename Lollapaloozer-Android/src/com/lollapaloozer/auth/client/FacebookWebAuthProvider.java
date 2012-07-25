@@ -18,7 +18,7 @@ import com.ratethisfest.shared.Helper;
 public class FacebookWebAuthProvider implements AuthProvider {
 
   // private ChooseLoginActivity _activity;
-  private AuthDemoModel _model;
+  private AuthModel _model;
   private TwitterAuthProviderOAuth _oAuthProvider;
   private HashMap<String, String> _twitterAccountProperties = new HashMap<String, String>();
   private ArrayList<String> _twitterAccountPropertyNames;
@@ -32,7 +32,7 @@ public class FacebookWebAuthProvider implements AuthProvider {
   // Consumer key yit4Mu71Mj93eNILUo3uCw
   // Consumer secret rdYvdK4g3ckWVdnvzmAj6JXmj9RoI05rIb4nVYQsoI
 
-  public FacebookWebAuthProvider(AuthDemoModel model) {
+  public FacebookWebAuthProvider(AuthModel model) {
     // _activity = activity;
     _model = model;
 
@@ -60,7 +60,7 @@ public class FacebookWebAuthProvider implements AuthProvider {
   @Override
   public void login() {
     String authReqTokenUrl = _oAuthProvider.getRequestTokenUrl();
-    Intent twitterAuthIntent = new Intent(_model.getAuthActivity(),
+    Intent twitterAuthIntent = new Intent(_model.getApp().getChooseLoginActivity(),
         TwitterAuthWebpageActivity.class);
     twitterAuthIntent.putExtra(Constants.INTENT_EXTRA_AUTH_URL, authReqTokenUrl);
     _model.getApp().getChooseLoginActivity()

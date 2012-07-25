@@ -21,7 +21,7 @@ public class GoogleAuthProvider implements AuthProvider {
   private final int TOKEN_RETRIES = 2;
 
   // private ChooseLoginActivity _activity;
-  private AuthDemoModel _model;
+  private AuthModel _model;
   private Bundle _currentGoogleLoginTokenBundle = null;
   private JSONObject _currentAuthResult;
   private boolean _confirmedAuthorizedGoogle;
@@ -32,7 +32,7 @@ public class GoogleAuthProvider implements AuthProvider {
   private GoogleAuthProvider() {
   }
 
-  public GoogleAuthProvider(AuthDemoModel model) {
+  public GoogleAuthProvider(AuthModel model) {
     // _activity = activity;
     _model = model;
     GoogleAuthVerifier googleVerifier = new GoogleAuthVerifier();
