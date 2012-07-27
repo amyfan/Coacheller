@@ -18,10 +18,12 @@ import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
 import com.lollapaloozer.auth.verify.FacebookVerifier;
+import com.ratethisfest.shared.Constants;
 
 public class FacebookAuthProvider implements AuthProvider {
 
   // private ChooseLoginActivity _activity;
+  private final String LOGIN_TYPE = Constants.LOGIN_TYPE_FACEBOOK;
   private AuthModel _model;
   private Facebook _facebook = new Facebook("186287061500005");
   private AsyncFacebookRunner _AsyncRunner = new AsyncFacebookRunner(_facebook);
@@ -38,15 +40,15 @@ public class FacebookAuthProvider implements AuthProvider {
   }
 
   private void _showError(String problem, String details) {
-    _model.getApp().getChooseLoginActivity()
-        .showErrorDialog("Facebook Login Error", problem, details);
+    _model.getApp().showErrorDialog("Facebook Login Error", problem, details);
   }
 
   @Override
   public void login() {
     // Proceeds Asynchronously
-    _facebook.authorize(_model.getApp().getChooseLoginActivity(), new String[] { "email",
-        "publish_stream" }, new AuthListener());
+    System.out.println("Starting Facebook Login");
+    _facebook.authorize(_model.getApp().getLastActivity(),
+        new String[] { "email", "publish_stream" }, new AuthListener());
   }
 
   @Override
@@ -132,14 +134,19 @@ public class FacebookAuthProvider implements AuthProvider {
     }
   }
 
+  // Called after onActivityResult calls the appropriate method
   private final class AuthListener implements DialogListener {
     @Override
     public void onComplete(Bundle values) {
-      System.out.println("Facebook authorization completed, token: " + _facebook.getAccessToken()
-          + " valid until " + _facebook.getAccessExpires());
-      _AsyncRunner.request("me", new IDRequestListener()); // get user info
-                                                           // from facebook
-      _model.getApp().getChooseLoginActivity().modelChanged();
+      // Auth is completed, now we can actually request user data
+      System.out.println("Facebook Authorization Complete, bundle: "
+          + _model.getApp().bundleValues(values));
+
+      int hours = ((int) (_facebook.getAccessExpires() - System.currentTimeMillis()) / 1000) / 60 / 60;
+      System.out.println("Token valid for " + hours + " hours: " + _facebook.getAccessToken());
+
+      // get user info from facebook
+      _AsyncRunner.request("me", new IDRequestListener());
       // TODO should lock UI here
     }
 
@@ -174,6 +181,7 @@ public class FacebookAuthProvider implements AuthProvider {
     @Override
     public void onComplete(String response, Object state) {
       try {
+        System.out.println("Facebook async request has returned");
 
         Log.d(TAG, "IDRequestONComplete");
         Log.d(TAG, "Response: " + response.toString());
@@ -185,7 +193,9 @@ public class FacebookAuthProvider implements AuthProvider {
         System.out.println("Retrieved from Facebook userID[" + userID + "] username [" + userName
             + "]");
         _userInfo = json;
-        _model.getApp().getChooseLoginActivity().modelChanged();
+
+        _model.loginSuccess(LOGIN_TYPE);
+        // _model.getApp().getChooseLoginActivity().modelChanged();
 
       } catch (JSONException ex) {
         _showError("Facebook Response Error", "JSONException reading response: " + ex.getMessage());

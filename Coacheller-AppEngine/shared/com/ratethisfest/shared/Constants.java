@@ -29,8 +29,10 @@ public class Constants {
   public static final int DEFAULT_PORT_HTTPS = 443;
   public static final String OAUTH_REQUEST_CONTENT_TYPE = "application/x-www-form-urlencoded";
 
-  public static final int INTENT_REQ_CHOOSE_LOGIN_TYPE = 2;
-  public static final int INTENT_REQ_TWITTER_LOGIN = 1;
+  // Derived from "FBOOK"
+  public static final int INTENT_FACEBOOK_LOGIN = 32665;
+  public static final int INTENT_CHOOSE_LOGIN_TYPE = 2;
+  public static final int INTENT_TWITTER_LOGIN = 1;
 
   public static final String INTENT_EXTRA_AUTH_URL = "intent.extra.twitter.auth";
   public static final String INTENT_EXTRA_OAUTH1_RETURN_TOKEN = "intent.extra.oauth1.token";
@@ -39,10 +41,10 @@ public class Constants {
   public static final String INTENT_EXTRA_ACCOUNT_IDENTIFIER = "intent.extra.account.identifier";
   public static final String INTENT_EXTRA_LOGIN_TOKEN = "intent.extra.login.token";
 
-  public static final int LOGIN_TYPE_GOOGLE = 1;
-  public static final int LOGIN_TYPE_FACEBOOK = 2;
-  public static final int LOGIN_TYPE_TWITTER = 3;
-  public static final int LOGIN_TYPE_FACEBOOK_BROWSER = 4;
+  public static final String LOGIN_TYPE_GOOGLE = "LOGIN_TYPE_GOOGLE";
+  public static final String LOGIN_TYPE_FACEBOOK = "LOGIN_TYPE_FACEBOOK";
+  public static final String LOGIN_TYPE_TWITTER = "LOGIN_TYPE_TWITTER";
+  public static final String LOGIN_TYPE_FACEBOOK_BROWSER = "LOGIN_TYPE_FACEBOOK_BROWSER";
 
   // public static final String REQUEST_URL_TWITTER =
   // "https://api.twitter.com/oauth/request_token";

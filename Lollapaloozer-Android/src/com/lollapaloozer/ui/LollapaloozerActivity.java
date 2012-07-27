@@ -40,9 +40,11 @@ import com.lollapaloozer.LollapaloozerStorageManager;
 import com.lollapaloozer.R;
 import com.lollapaloozer.auth.client.AuthModel;
 import com.lollapaloozer.data.CustomSetListAdapter;
+import com.lollapaloozer.data.FacebookPost;
 import com.lollapaloozer.data.JSONArrayHashMap;
 import com.lollapaloozer.data.JSONArraySortMap;
 import com.lollapaloozer.data.LoginData;
+import com.lollapaloozer.data.TwitterPost;
 import com.lollapaloozer.util.LollapaloozerHelper;
 import com.ratethisfest.shared.Constants;
 import com.ratethisfest.shared.FieldVerifier;
@@ -62,12 +64,10 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   private static final int SORT_TIME = 1;
   private static final int SORT_ARTIST = 2;
 
-  // Local Storage
   private static final String DATA_SETS = "DATA_SETS";
   private static final String DATA_RATINGS = "DATA_RATINGS";
   private static final String DATA_FIRST_USE = "DATA_FIRST_USE";
 
-  // Database
   public static final String QUERY_RATINGS__SET_ID = "set_id";
   public static final String QUERY_RATINGS__WEEK = "weekend";
   public static final String QUERY_SETS__SET_ID = "id";
@@ -112,6 +112,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
   private Handler _networkIOHandler;
   private LoginData _loginData;
+  private LollapaloozerApplication _app;
 
   /** Called by Android Framework when the activity is first created. */
 
@@ -120,6 +121,8 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     super.onCreate(savedInstanceState);
 
     LollapaloozerHelper.debug(this, "LollapaloozerActivity Launched");
+    _app = (LollapaloozerApplication) getApplication();
+    _app.registerLollapaloozerActivity(LollapaloozerActivity.this);
 
     _storageManager = new LollapaloozerStorageManager(this);
     _storageManager.load();
@@ -200,8 +203,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   public void onResume() {
     super.onResume();
 
-    LollapaloozerApplication app = (LollapaloozerApplication) getApplication();
-    app.registerLollapaloozerActivity(LollapaloozerActivity.this);
+    _app.setLastActivity(this);
 
     String firstUse = _storageManager.getString("DATA_FIRST_USE");
     // TODO: We'll reenable this if we have something significant to say in the
@@ -273,7 +275,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     // showDialog(DIALOG_GETEMAIL);
 
     Intent lollapaloozerAuthIntent = new Intent(this, ChooseLoginActivity.class);
-    startActivityForResult(lollapaloozerAuthIntent, Constants.INTENT_REQ_CHOOSE_LOGIN_TYPE);
+    startActivityForResult(lollapaloozerAuthIntent, Constants.INTENT_CHOOSE_LOGIN_TYPE);
   }
 
   private void refreshData() {
@@ -498,32 +500,57 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    System.out.println("LollapaloozerActivity.onActivityResult req=" + requestCode + " result="
-        + resultCode);
+    String infoMessage = "LollapaloozerActivity.onActivityResult req=" + requestCode
+        + " resultCode=" + resultCode + " data: " + data;
+    System.out.println(infoMessage);
+
+    if (data != null) {
+      System.out.println("Intent Data: " + data.getDataString());
+      System.out.println("Intent Extras: " + _app.bundleValues(data.getExtras()));
+    }
 
     if (resultCode == Activity.RESULT_OK) { // Login success
-      Bundle results = data.getExtras();
-      _loginData = new LoginData();
-      _loginData.timeLoginIssued = System.currentTimeMillis();
-      _loginData.loginType = results.getInt(Constants.INTENT_EXTRA_LOGIN_TYPE);
-      _loginData.accountIdentifier = results.getString(Constants.INTENT_EXTRA_ACCOUNT_IDENTIFIER);
-      _loginData.accountToken = results.getString(Constants.INTENT_EXTRA_LOGIN_TOKEN);
+      switch (requestCode) {
 
-      if (_loginData.loginType == Constants.LOGIN_TYPE_GOOGLE
-          || _loginData.loginType == Constants.LOGIN_TYPE_FACEBOOK) {
-        _loginData.emailAddress = _loginData.accountIdentifier;
-      } else {
-        _loginData.emailAddress = null;
+      case Constants.INTENT_CHOOSE_LOGIN_TYPE:
+        Bundle results = data.getExtras();
+        _loginData = new LoginData();
+        _loginData.timeLoginIssued = System.currentTimeMillis();
+        _loginData.loginType = results.getString(Constants.INTENT_EXTRA_LOGIN_TYPE);
+        _loginData.accountIdentifier = results.getString(Constants.INTENT_EXTRA_ACCOUNT_IDENTIFIER);
+        _loginData.accountToken = results.getString(Constants.INTENT_EXTRA_LOGIN_TOKEN);
+
+        if (_loginData.loginType == Constants.LOGIN_TYPE_GOOGLE
+            || _loginData.loginType == Constants.LOGIN_TYPE_FACEBOOK) {
+          _loginData.emailAddress = _loginData.accountIdentifier;
+        } else {
+          _loginData.emailAddress = null;
+        }
+
+        System.out.println("Saving login data timeIssued=" + _loginData.timeLoginIssued
+            + " loginType=" + _loginData.loginType + " accountIdentifier="
+            + _loginData.accountIdentifier + " accountToken=" + _loginData.accountToken
+            + " emailAddress=" + _loginData.emailAddress);
+
+        _storageManager.putObject(LoginData.DATA_LOGIN_INFO, _loginData);
+        _storageManager.save();
+        break;
+
+      case Constants.INTENT_FACEBOOK_LOGIN: {
+        // Assuming it is Facebook
+        System.out.println("onActivityResult called by Facebook API");
+        _app.getAuthModel().getFacebookObject().authorizeCallback(requestCode, resultCode, data);
+        break;
       }
 
-      System.out.println("Saving login data timeIssued=" + _loginData.timeLoginIssued
-          + " loginType=" + _loginData.loginType + " accountIdentifier="
-          + _loginData.accountIdentifier + " accountToken=" + _loginData.accountToken
-          + " emailAddress=" + _loginData.emailAddress);
+      default:
+        _app.showErrorDialog("Unexpected Response",
+            "An unexpected response was received from another window", infoMessage);
 
-      _storageManager.putObject(LoginData.DATA_LOGIN_INFO, _loginData);
-      _storageManager.save();
+        break;
+      }
     }
+
   }
 
   @Override
@@ -552,59 +579,16 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
     // OK clicked on first use dialog
     if (viewClicked.getId() == R.id.button_firstuse_ok) {
-      _storageManager.putString(DATA_FIRST_USE, false + "");
-      _storageManager.save();
-      _firstUseDialog.dismiss();
-      _showClickToRate(); // display 'tap set to rate it' toast
+      clickDialogFirstUseButtonOK();
     }
 
     // "OK" clicked to submit email address
     if (viewClicked.getId() == R.id.button_provideEmail) {
-      EditText emailField = (EditText) _getEmailDialog.findViewById(R.id.textField_enterEmail);
-      String email = emailField.getText().toString();
-
-      LollapaloozerHelper.debug(this, "User provided email address: " + email);
-
-      // if
-      // (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-      if (!FieldVerifier.isValidEmail(email)) {
-        Toast invalidEmail = Toast.makeText(this, "Please enter your real email address.", 25);
-        invalidEmail.show();
-
-      } else { // Email is valid. Save email and email ratings
-
-        _loginData.emailAddress = email;
-        _storageManager.save();
-        _getEmailDialog.dismiss();
-        try {
-
-          System.out.println("Requesting ratings email.");
-
-          List<NameValuePair> parameterList = new ArrayList<NameValuePair>();
-
-          parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_EMAIL, email));
-          parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TYPE,
-              _loginData.loginType + ""));
-          parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_ID,
-              _loginData.accountIdentifier));
-          parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TOKEN,
-              _loginData.accountToken));
-          if (_loginData.emailAddress != null) {
-            parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_EMAIL,
-                _loginData.emailAddress));
-          }
-          String result = LollapaloozerServiceUtils.emailMyRatings(parameterList, this);
-
-        } catch (Exception e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-      }
+      clickDialogConfirmEmailButtonOK();
     }
 
     if (viewClicked.getId() == R.id.button_declineEmail) {
       _getEmailDialog.dismiss();
-
     }
 
     if (viewClicked.getId() == R.id.buttonChangeToSearchSets) {
@@ -616,71 +600,165 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
     // Submit rating for a set
     if (viewClicked.getId() == R.id.button_go_rate) { // Selections
-      // incomplete
-      RadioGroup scoreGroup = (RadioGroup) _rateDialog.findViewById(R.id.radio_pick_score);
-      int scoreSelectedId = scoreGroup.getCheckedRadioButtonId();
-
-      if (scoreSelectedId == -1) {
-        Toast selectEverything = Toast.makeText(this, "Please select a rating for this Set", 25);
-        selectEverything.show();
-
-      } else { // Selections are valid
-
-        // _ratingSelectedScore = _ratingSelectedIdToValue.get(scoreSelectedId);
-
-        // LollapaloozerHelper.debug(this, "Score[" + _ratingSelectedScore +
-        // "] ScoreId[" + scoreSelectedId + "]");
-
-        // scoreGroup.clearCheck();
-
-        String submittedRating = _ratingSelectedIdToValue.get(scoreGroup.getCheckedRadioButtonId())
-            .toString();
-
-        EditText noteWidget = (EditText) _rateDialog.findViewById(R.id.editText_commentsForSet);
-        String submittedNote = noteWidget.getText().toString();
-
-        try {
-          if (_lastRatings == null) {
-            JSONObject newObj = new JSONObject();
-            newObj.put(QUERY_RATINGS__SET_ID, _lastItemSelected.get(QUERY_SETS__SET_ID));
-            newObj.put(QUERY_RATINGS__WEEK, "1"); // TODO leave in
-            // hard-coded for
-            // now
-            // newObj.put(QUERY_RATINGS__RATING, submittedRating);
-            // newObj.put(QUERY_RATINGS__NOTES, notes);
-            _lastRatings = newObj;
-          }
-
-          _lastRatings.put(QUERY_RATINGS__RATING, submittedRating);
-          _lastRatings.put(QUERY_RATINGS__NOTES, submittedNote);
-          launchSubmitRatingThread();
-          _rateDialog.dismiss();
-        } catch (JSONException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-
-      }
+      clickDialogSubmitRatingButtonOK();
     } // End rating dialog submitted
 
     if (viewClicked.getId() == R.id.button_go_fb) {
-      System.out.println("Clicked post on FB");
-      LollapaloozerApplication app = (LollapaloozerApplication) getApplication();
-      app.getAuthModel().ensurePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL);
-      app.getAuthModel().postToFacebookWall("Test Message!");
+      clickDialogSubmitRatingButtonFacebook();
     }
 
     if (viewClicked.getId() == R.id.button_go_tweet) {
-      System.out.println("Clicked post on Twitter");
-      LollapaloozerApplication app = (LollapaloozerApplication) getApplication();
-      app.getAuthModel().ensurePermission(AuthModel.PERMISSION_TWITTER_TWEET);
+      clickDialogSubmitRatingButtonTwitter();
     }
 
     if (viewClicked.getId() == R.id.button_network_error_ok) {
       System.out.println("Clicked dismiss network error dialog");
       _networkErrorDialog.dismiss();
     }
+  }
 
+  private void clickDialogConfirmEmailButtonOK() {
+    EditText emailField = (EditText) _getEmailDialog.findViewById(R.id.textField_enterEmail);
+    String email = emailField.getText().toString();
+
+    LollapaloozerHelper.debug(this, "User provided email address: " + email);
+
+    // if
+    // (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+    if (!FieldVerifier.isValidEmail(email)) {
+      Toast invalidEmail = Toast.makeText(this, "Please enter your real email address.", 25);
+      invalidEmail.show();
+
+    } else { // Email is valid. Save email and email ratings
+      _loginData.emailAddress = email;
+      _storageManager.save();
+      _getEmailDialog.dismiss();
+      try {
+
+        System.out.println("Requesting ratings email.");
+
+        List<NameValuePair> parameterList = new ArrayList<NameValuePair>();
+
+        parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_EMAIL, email));
+        parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TYPE,
+            _loginData.loginType + ""));
+        parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_ID,
+            _loginData.accountIdentifier));
+        parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TOKEN,
+            _loginData.accountToken));
+        if (_loginData.emailAddress != null) {
+          parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_EMAIL,
+              _loginData.emailAddress));
+        }
+        String result = LollapaloozerServiceUtils.emailMyRatings(parameterList, this);
+
+      } catch (Exception e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+  }
+
+  private void clickDialogFirstUseButtonOK() {
+    _storageManager.putString(DATA_FIRST_USE, false + "");
+    _storageManager.save();
+    _firstUseDialog.dismiss();
+    _showClickToRate(); // display 'tap set to rate it' toast
+  }
+
+  private void clickDialogSubmitRatingButtonTwitter() {
+    System.out.println("Clicked post on Twitter");
+    _app.getAuthModel().ensurePermission(AuthModel.PERMISSION_TWITTER_TWEET);
+    _rateDialog.dismiss();
+  }
+
+  public synchronized void doTwitterPost() {
+
+  }
+
+  private FacebookPost _queuedFacebookPost;
+  private TwitterPost _queuedTwitterPost;
+
+  private void clickDialogSubmitRatingButtonFacebook() {
+    System.out.println("Clicked post on FB");
+    _app.getAuthModel().ensurePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL);
+
+    FacebookPost post = new FacebookPost();
+    // Build data from dialog here
+
+    _queuedFacebookPost = post;
+    if (_app.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)) {
+      System.out.println("FB Auth available now, posting immediately");
+      doFacebookPost();
+    } else {
+      System.out.println("FB Auth not ready, posting later");
+
+    }
+    _rateDialog.dismiss();
+  }
+
+  public synchronized void doFacebookPost() {
+    if (_queuedFacebookPost == null) {
+      return;
+    }
+
+    if (!_app.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)) {
+      System.out.println("Warning: trying to post without facebook permissions");
+    }
+
+    // use _queuedFacebookPost
+    _app.getAuthModel().postToFacebookWall("Test Message!");
+
+    // If successful
+    _queuedFacebookPost = null;
+  }
+
+  private void clickDialogSubmitRatingButtonOK() {
+    // incomplete
+    RadioGroup scoreGroup = (RadioGroup) _rateDialog.findViewById(R.id.radio_pick_score);
+    int scoreSelectedId = scoreGroup.getCheckedRadioButtonId();
+
+    if (scoreSelectedId == -1) {
+      Toast selectEverything = Toast.makeText(this, "Please select a rating for this Set", 25);
+      selectEverything.show();
+
+    } else { // Selections are valid
+
+      // _ratingSelectedScore = _ratingSelectedIdToValue.get(scoreSelectedId);
+
+      // LollapaloozerHelper.debug(this, "Score[" + _ratingSelectedScore +
+      // "] ScoreId[" + scoreSelectedId + "]");
+
+      // scoreGroup.clearCheck();
+
+      String submittedRating = _ratingSelectedIdToValue.get(scoreGroup.getCheckedRadioButtonId())
+          .toString();
+
+      EditText noteWidget = (EditText) _rateDialog.findViewById(R.id.editText_commentsForSet);
+      String submittedNote = noteWidget.getText().toString();
+
+      try {
+        if (_lastRatings == null) {
+          JSONObject newObj = new JSONObject();
+          newObj.put(QUERY_RATINGS__SET_ID, _lastItemSelected.get(QUERY_SETS__SET_ID));
+          newObj.put(QUERY_RATINGS__WEEK, "1"); // TODO leave in
+          // hard-coded for
+          // now
+          // newObj.put(QUERY_RATINGS__RATING, submittedRating);
+          // newObj.put(QUERY_RATINGS__NOTES, notes);
+          _lastRatings = newObj;
+        }
+
+        _lastRatings.put(QUERY_RATINGS__RATING, submittedRating);
+        _lastRatings.put(QUERY_RATINGS__NOTES, submittedNote);
+        launchSubmitRatingThread();
+        _rateDialog.dismiss();
+      } catch (JSONException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
+    }
   }
 
   // Dialog handling, called once the first time this activity displays
@@ -761,7 +839,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   // An item in the ListView of sets is clicked
   @Override
   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+    System.out.println(this.toString() + "onItemClick position:" + position + " id:" + id);
     try {// TODO Hard coded strings means you are going to hell
       JSONObject obj = (JSONObject) _setListAdapter.getItem(position);
       _lastItemSelected = obj;
@@ -877,8 +955,19 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     if (id == DIALOG_RATE) {
       try {
         TextView subtitleText = (TextView) _rateDialog.findViewById(R.id.text_rateBand_subtitle);
-        subtitleText.setText(_lastItemSelected.getString("artist"));
 
+        // Bug finding. Debugger doesn't always find it. Race condition?
+        // Strange bug. reproduce by clicking something ASAP when app loads and
+        // clicking FB post
+        if (subtitleText == null) {
+          System.out.println("Subtitletext was " + subtitleText);
+        }
+
+        if (_lastItemSelected == null) {
+          System.out.println(this.toString() + "_lastItemSelected was " + _lastItemSelected);
+        } else {
+          subtitleText.setText(_lastItemSelected.getString("artist"));
+        }
       } catch (JSONException e) {
         LollapaloozerHelper.debug(this, "JSONException assigning Artist name to Rating dialog");
         e.printStackTrace();
@@ -928,6 +1017,24 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
     } // end if rating dialog
 
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    System.out.println("LollapaloozerActivity.onDestroy");
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+    System.out.println("LollapaloozerActivity.onPause");
+  }
+
+  @Override
+  protected void onStop() {
+    super.onStop();
+    System.out.println("LollapaloozerActivity.onStop");
   }
 
 }

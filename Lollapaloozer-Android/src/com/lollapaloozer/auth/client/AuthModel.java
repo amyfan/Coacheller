@@ -9,6 +9,8 @@ import android.content.Intent;
 
 import com.facebook.android.Facebook;
 import com.lollapaloozer.LollapaloozerApplication;
+import com.lollapaloozer.ui.ChooseLoginActivity;
+import com.lollapaloozer.ui.LollapaloozerActivity;
 import com.ratethisfest.shared.Constants;
 
 public class AuthModel {
@@ -21,6 +23,7 @@ public class AuthModel {
   private FacebookAuthProvider _authProviderFacebook;
   private TwitterAuthProvider _authProviderTwitter;
   private FacebookWebAuthProvider _authProviderFacebookWeb;
+  private String _primaryLoginType;
   // private ChooseLoginActivity _activity;
 
   private String _verifiedAccountName = null;
@@ -38,34 +41,67 @@ public class AuthModel {
     return _app;
   }
 
-  public boolean isLoggedIn() {
-    int numLogins = 0;
-    if (_authProviderGoogle.isLoggedIn()) {
-      numLogins++;
-    }
-
-    if (_authProviderFacebook.isLoggedIn()) {
-      numLogins++;
-    }
-
-    if (_authProviderFacebookWeb.isLoggedIn()) {
-      numLogins++;
-    }
-
-    if (_authProviderTwitter.isLoggedIn()) {
-      numLogins++;
-    }
-
-    if (numLogins > 1) {
-      System.out.println("WARNING: Multiple concurrent login types detected");
-    }
-
-    if (numLogins > 0) {
+  public boolean isLoggedInPrimary() {
+    if (_primaryLoginType != null) {
       return true;
     } else {
       return false;
     }
   }
+
+  public void loginSuccess(String loginType) {
+    if (_primaryLoginType == null) {
+      _primaryLoginType = loginType;
+    }
+
+    if (loginType.equals(Constants.LOGIN_TYPE_FACEBOOK)) {
+      _addPermission(PERMISSION_FACEBOOK_POSTWALL);
+      if (_app.getLastActivity() instanceof LollapaloozerActivity) {
+        _app.getLollapaloozerActivity().doFacebookPost();
+      }
+    }
+
+    if (loginType.equals(Constants.LOGIN_TYPE_TWITTER)) {
+      _addPermission(PERMISSION_TWITTER_TWEET);
+      if (_app.getLastActivity() instanceof LollapaloozerActivity) {
+        _app.getLollapaloozerActivity().doTwitterPost();
+      }
+    }
+
+    if (_app.getLastActivity() instanceof ChooseLoginActivity) {
+      _app.getChooseLoginActivity().modelChanged();
+    }
+
+  }
+
+  // public boolean isLoggedIn() {
+  // int numLogins = 0;
+  // if (_authProviderGoogle.isLoggedIn()) {
+  // numLogins++;
+  // }
+  //
+  // if (_authProviderFacebook.isLoggedIn()) {
+  // numLogins++;
+  // }
+  //
+  // if (_authProviderFacebookWeb.isLoggedIn()) {
+  // numLogins++;
+  // }
+  //
+  // if (_authProviderTwitter.isLoggedIn()) {
+  // numLogins++;
+  // }
+  //
+  // if (numLogins > 1) {
+  // System.out.println("WARNING: Multiple concurrent login types detected");
+  // }
+  //
+  // if (numLogins > 0) {
+  // return true;
+  // } else {
+  // return false;
+  // }
+  // }
 
   public boolean havePermission(String permission) {
     return _permissions.contains(permission);
@@ -73,15 +109,11 @@ public class AuthModel {
 
   public void getPermission(String permission) {
     if (permission.equals(PERMISSION_FACEBOOK_POSTWALL)) {
-      System.out.println("Placeholder to obtain Facebook permission");
-      if (true) {
-        _addPermission(permission);
-      }
+      _authProviderFacebook.login();
+
     } else if (permission.equals(PERMISSION_TWITTER_TWEET)) {
-      System.out.println("Placeholder to obtain Twitter permission");
-      if (true) {
-        _addPermission(permission);
-      }
+      _authProviderTwitter.login();
+
     } else {
 
       throw new RuntimeException("Invalid permission, unexpected code path");
@@ -95,54 +127,56 @@ public class AuthModel {
   }
 
   // Return whether permission was successfully obtained
-  public boolean ensurePermission(String permission) {
+  public void ensurePermission(String permission) {
     if (!havePermission(permission)) {
       getPermission(permission);
     }
-
-    return havePermission(permission);
   }
 
   public AuthProvider getCurrentAuthProvider() {
-    if (_authProviderGoogle.isLoggedIn()) {
+    if (Constants.LOGIN_TYPE_GOOGLE.equals(_primaryLoginType)) {
       return _authProviderGoogle;
     }
 
-    if (_authProviderFacebook.isLoggedIn()) {
+    if (Constants.LOGIN_TYPE_FACEBOOK.equals(_primaryLoginType)) {
       return _authProviderFacebook;
     }
 
-    if (_authProviderFacebookWeb.isLoggedIn()) {
+    if (Constants.LOGIN_TYPE_FACEBOOK_BROWSER.equals(_primaryLoginType)) {
       return _authProviderFacebookWeb;
     }
 
-    if (_authProviderTwitter.isLoggedIn()) {
+    if (Constants.LOGIN_TYPE_TWITTER.equals(_primaryLoginType)) {
       return _authProviderTwitter;
     }
 
     return null;
   }
 
-  public int getCurrentAuthProviderType() {
-    if (_authProviderGoogle.isLoggedIn()) {
-      return Constants.LOGIN_TYPE_GOOGLE;
-    }
-
-    if (_authProviderFacebook.isLoggedIn()) {
-      return Constants.LOGIN_TYPE_FACEBOOK;
-    }
-
-    if (_authProviderFacebookWeb.isLoggedIn()) {
-      return Constants.LOGIN_TYPE_FACEBOOK_BROWSER;
-    }
-
-    if (_authProviderTwitter.isLoggedIn()) {
-      return Constants.LOGIN_TYPE_TWITTER;
-    }
-
-    return 0;
-
+  public String getCurrentAuthProviderType() {
+    return _primaryLoginType;
   }
+
+  // public int getCurrentAuthProviderType() {
+  // if (_authProviderGoogle.isLoggedIn()) {
+  // return Constants.LOGIN_TYPE_GOOGLE;
+  // }
+  //
+  // if (_authProviderFacebook.isLoggedIn()) {
+  // return Constants.LOGIN_TYPE_FACEBOOK;
+  // }
+  //
+  // if (_authProviderFacebookWeb.isLoggedIn()) {
+  // return Constants.LOGIN_TYPE_FACEBOOK_BROWSER;
+  // }
+  //
+  // if (_authProviderTwitter.isLoggedIn()) {
+  // return Constants.LOGIN_TYPE_TWITTER;
+  // }
+  //
+  // return 0;
+  //
+  // }
 
   public void checkAccounts() {
     AccountManager aMgr = AccountManager.get(getApp().getChooseLoginActivity());
@@ -169,22 +203,42 @@ public class AuthModel {
     _authProviderFacebook.logout();
     _authProviderFacebookWeb.logout();
     _authProviderTwitter.logout();
+
+    _primaryLoginType = null;
     _permissions.clear();
   }
 
-  public void loginToGoogle() {
+  public void primaryLogin(String loginType) {
+    if (Constants.LOGIN_TYPE_GOOGLE.equals(loginType)) {
+      loginToGoogle();
+
+    } else if (Constants.LOGIN_TYPE_FACEBOOK.equals(loginType)) {
+      loginToFacebook();
+
+    } else if (Constants.LOGIN_TYPE_FACEBOOK_BROWSER.equals(loginType)) {
+      loginToFacebookBrowser();
+
+    } else if (Constants.LOGIN_TYPE_TWITTER.equals(loginType)) {
+      loginToTwitter();
+
+    } else {
+      throw new RuntimeException("Invalid login type, unexpected code path");
+    }
+  }
+
+  void loginToGoogle() {
     _authProviderGoogle.login();
   }
 
-  public void loginToFacebook() {
+  void loginToFacebook() {
     _authProviderFacebook.login();
   }
 
-  public void loginToFacebookBrowser() {
+  void loginToFacebookBrowser() {
     _authProviderFacebookWeb.login();
   }
 
-  public void loginToTwitter() {
+  void loginToTwitter() {
     _authProviderTwitter.login();
   }
 

@@ -1,8 +1,6 @@
 package com.lollapaloozer.ui;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.GestureDetector;
@@ -89,6 +87,10 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
   @Override
   protected void onResume() {
     super.onResume();
+
+    LollapaloozerApplication app = (LollapaloozerApplication) getApplication();
+    app.setLastActivity(this);
+
     AuthProvider currentProvider = _app.getAuthModel().getCurrentAuthProvider();
     if (currentProvider != null) {
       currentProvider.extendAccess();
@@ -107,7 +109,7 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
     Intent returnIntent = getIntent();
     int result;
 
-    if (_app.getAuthModel().isLoggedIn()) {
+    if (_app.getAuthModel().isLoggedInPrimary()) {
       result = RESULT_OK;
       returnIntent.putExtra(Constants.INTENT_EXTRA_LOGIN_TYPE, _app.getAuthModel()
           .getCurrentAuthProviderType());
@@ -133,7 +135,7 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
       _buttonInvalidateTokens.setVisibility(View.VISIBLE);
       _buttonDismissActivity.setVisibility(View.VISIBLE);
 
-      if (_app.getAuthModel().isLoggedIn()) {
+      if (_app.getAuthModel().isLoggedInPrimary()) {
         AuthProvider currentProvider = _app.getAuthModel().getCurrentAuthProvider();
         _setLoginStatus(currentProvider.getAccountType());
         _accountNameText.setText("Account: " + currentProvider.getLocalAccountName() + "\r\n"
@@ -158,7 +160,7 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
       _tokenIdText.setVisibility(View.GONE);
       _buttonInvalidateTokens.setVisibility(View.GONE);
       _buttonDismissActivity.setVisibility(View.GONE);
-      if (_app.getAuthModel().isLoggedIn()) {
+      if (_app.getAuthModel().isLoggedInPrimary()) {
         _returnToMainActivity();
       }
 
@@ -175,20 +177,29 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
 
-    System.out.println("ChooseLoginActivity.onActivityResult(requestCode=[" + requestCode
-        + "], resultCode=[" + resultCode + "] with data: " + data);
+    String infoMessage = "ChooseLoginActivity.onActivityResult(requestCode=[" + requestCode
+        + "], resultCode=[" + resultCode + "] with data: " + data;
+    System.out.println(infoMessage);
+
+    System.out.println();
 
     switch (requestCode) {
-    case Constants.INTENT_REQ_TWITTER_LOGIN:
+    case Constants.INTENT_TWITTER_LOGIN:
       if (resultCode == Activity.RESULT_OK) {
         _app.getAuthModel().twitterAuthCallback(requestCode, resultCode, data);
         break;
       }
-    default:
 
+    case Constants.INTENT_FACEBOOK_LOGIN: {
       System.out.println("onACtivityResult called with unknown values: " + requestCode + ","
           + resultCode);
       _app.getAuthModel().getFacebookObject().authorizeCallback(requestCode, resultCode, data);
+      break;
+    }
+    default:
+      _app.showErrorDialog("Unexpected Response",
+          "An unexpected response was received from another window", infoMessage);
+
       break;
     }
   }
@@ -202,31 +213,6 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
       }
     });
 
-    // _updateUI();
-  }
-
-  public void showErrorDialog(String title, String problem, String details) {
-    String errorString = problem + "\r\n\r\nDetails:\r\n" + details;
-    System.out.println(errorString);
-
-    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setTitle(title);
-    builder.setMessage(errorString).setCancelable(true)
-        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-          public void onClick(DialogInterface dialog, int id) {
-          }
-        }
-
-        )
-    // todo .setIcon(R.)
-
-    // .setNegativeButton("No", new DialogInterface.OnClickListener() {
-    // public void onClick(DialogInterface dialog, int id) {
-    // }
-    // })
-    ;
-    AlertDialog alert = builder.create();
-    alert.show();
   }
 
   @Override
@@ -235,20 +221,19 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
     System.out.println("Button Click: " + buttonClickedName);
 
     if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_google))) {
-      _app.getAuthModel().loginToGoogle(); // UI Update done on callback
+      _app.getAuthModel().primaryLogin(Constants.LOGIN_TYPE_GOOGLE);
     }
-    if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_twitter))) {
-      _app.getAuthModel().loginToTwitter();
 
+    if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_twitter))) {
+      _app.getAuthModel().primaryLogin(Constants.LOGIN_TYPE_TWITTER);
     }
     if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_facebook))) {
-      _app.getAuthModel().loginToFacebook();
-
+      _app.getAuthModel().primaryLogin(Constants.LOGIN_TYPE_FACEBOOK);
     }
 
     if (buttonClickedName.equals(this.getResources().getResourceEntryName(
         R.id.btn_login_facebook_browser))) {
-      _app.getAuthModel().loginToFacebookBrowser();
+      _app.getAuthModel().primaryLogin(Constants.LOGIN_TYPE_FACEBOOK_BROWSER);
     }
 
     if (buttonClickedName.equals(this.getResources().getResourceEntryName(

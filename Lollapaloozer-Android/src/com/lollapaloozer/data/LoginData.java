@@ -7,7 +7,7 @@ public class LoginData implements Serializable {
   public static final String DATA_LOGIN_INFO = "DATA_LOGIN_INFO";
 
   public long timeLoginIssued;
-  public int loginType;
+  public String loginType;
   public String accountIdentifier;
   public String emailAddress;
   public String accountToken;

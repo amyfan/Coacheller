@@ -18,6 +18,7 @@ import com.ratethisfest.shared.Helper;
 public class FacebookWebAuthProvider implements AuthProvider {
 
   // private ChooseLoginActivity _activity;
+  private final String LOGIN_TYPE = Constants.LOGIN_TYPE_FACEBOOK_BROWSER;
   private AuthModel _model;
   private TwitterAuthProviderOAuth _oAuthProvider;
   private HashMap<String, String> _twitterAccountProperties = new HashMap<String, String>();
@@ -64,7 +65,7 @@ public class FacebookWebAuthProvider implements AuthProvider {
         TwitterAuthWebpageActivity.class);
     twitterAuthIntent.putExtra(Constants.INTENT_EXTRA_AUTH_URL, authReqTokenUrl);
     _model.getApp().getChooseLoginActivity()
-        .startActivityForResult(twitterAuthIntent, Constants.INTENT_REQ_TWITTER_LOGIN);
+        .startActivityForResult(twitterAuthIntent, Constants.INTENT_TWITTER_LOGIN);
   }
 
   @Override
@@ -122,7 +123,8 @@ public class FacebookWebAuthProvider implements AuthProvider {
     if (getLocalAccountName() != null && getVerifiedAccountIdentifier() != null) {
 
       System.out.println("Twitter Authentication Successful");
-      _model.getApp().getChooseLoginActivity().modelChanged();
+      _model.loginSuccess(LOGIN_TYPE);
+      // _model.getApp().getChooseLoginActivity().modelChanged();
     } else {
       System.out.println("Twitter Authentication was not successful");
     }

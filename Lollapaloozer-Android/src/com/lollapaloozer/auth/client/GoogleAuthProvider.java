@@ -14,9 +14,11 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.lollapaloozer.auth.verify.GoogleAuthVerifier;
+import com.ratethisfest.shared.Constants;
 
 public class GoogleAuthProvider implements AuthProvider {
 
+  private final String LOGIN_TYPE = Constants.LOGIN_TYPE_GOOGLE;
   private final String ACCOUNT_TYPE_REQUESTED = "com.google";
   private final int TOKEN_RETRIES = 2;
 
@@ -61,7 +63,7 @@ public class GoogleAuthProvider implements AuthProvider {
           "oauth2:https://www.googleapis.com/auth/userinfo.email", null,
           _model.getApp().getChooseLoginActivity(), null, null,
           new GoogleAuthAccountManagerCallback(), null);
-      System.out.println("Done with AccountManager call.  Auth proceeds asynchronously");
+      System.out.println("Done with first AccountManager call.  Auth proceeds asynchronously");
     } else {
       Account accountObj = new Account(accountName, ACCOUNT_TYPE_REQUESTED);
       AccountManager.get(_model.getApp().getChooseLoginActivity()).getAuthToken(accountObj,
@@ -108,8 +110,7 @@ public class GoogleAuthProvider implements AuthProvider {
   }
 
   private void _errorDialog(String problem, String details) {
-    _model.getApp().getChooseLoginActivity()
-        .showErrorDialog("Google Login Error", problem, details);
+    _model.getApp().showErrorDialog("Google Login Error", problem, details);
   }
 
   private final class GoogleAuthAccountManagerCallback implements AccountManagerCallback<Bundle> {
@@ -155,7 +156,8 @@ public class GoogleAuthProvider implements AuthProvider {
 
         // MUST BE CALLED HERE AS A CONSEQUENCE OF MULTI-THREADING
         _verifiedAccountName = getLocalAccountName();
-        _model.getApp().getChooseLoginActivity().modelChanged();
+        _model.loginSuccess(LOGIN_TYPE);
+        // _model.getApp().getChooseLoginActivity().modelChanged();
 
       } else {
 
