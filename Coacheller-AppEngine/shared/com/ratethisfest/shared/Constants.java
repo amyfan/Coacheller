@@ -4,6 +4,7 @@ public class Constants {
 
   // Data
   public static final int DATA_NOTE_VISIBLE_MAX_LENGTH = 140;
+  public static final int RATING_MAXIMUM = 5;
 
   // UI String
   public static final String UI_STR_LOGIN_STATUS = "Login Status: ";

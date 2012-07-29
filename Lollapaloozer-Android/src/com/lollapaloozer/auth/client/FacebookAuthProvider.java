@@ -18,6 +18,7 @@ import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
 import com.lollapaloozer.auth.verify.FacebookVerifier;
+import com.lollapaloozer.data.SocialNetworkPost;
 import com.ratethisfest.shared.Constants;
 
 public class FacebookAuthProvider implements AuthProvider {
@@ -113,8 +114,13 @@ public class FacebookAuthProvider implements AuthProvider {
     _facebook.extendAccessTokenIfNeeded(_model.getApp().getChooseLoginActivity(), null);
   }
 
-  public String postToWall(String message) {
+  public String postToWall(SocialNetworkPost post) {
     Bundle parameters = new Bundle();
+    String message = "I saw the set by " + post.artistName + " and rated it " + post.rating
+        + " (out of " + Constants.RATING_MAXIMUM + ").";
+    if (post.note != null && !post.note.equals("")) {
+      message += "\r\nAlso: " + post.note;
+    }
     parameters.putString("message", message);
     parameters.putString("description", "topic share");
     try {

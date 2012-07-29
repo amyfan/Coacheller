@@ -9,6 +9,7 @@ import android.content.Intent;
 
 import com.facebook.android.Facebook;
 import com.lollapaloozer.LollapaloozerApplication;
+import com.lollapaloozer.data.SocialNetworkPost;
 import com.lollapaloozer.ui.ChooseLoginActivity;
 import com.lollapaloozer.ui.LollapaloozerActivity;
 import com.ratethisfest.shared.Constants;
@@ -246,8 +247,8 @@ public class AuthModel {
     _authProviderTwitter.requestTokenCallback(requestCode, resultCode, data);
   }
 
-  public String postToFacebookWall(String message) {
-    return _authProviderFacebook.postToWall(message);
+  public String postToFacebookWall(SocialNetworkPost _queuedFacebookPost) {
+    return _authProviderFacebook.postToWall(_queuedFacebookPost);
   }
 
 }
