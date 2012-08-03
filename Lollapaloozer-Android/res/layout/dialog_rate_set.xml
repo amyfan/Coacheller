@@ -146,26 +146,29 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:orientation="horizontal" >
-
+
         <Button
             android:id="@+id/button_go_rate_inline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:text="Rate It!" />
-
+
         <ImageButton
             android:id="@+id/button_go_fb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:cropToPadding="true"
             android:scaleType="center"
             android:src="@drawable/post_facebook_small" />
-
+
         <ImageButton
             android:id="@+id/button_go_tweet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:scaleType="center"
             android:src="@drawable/post_twitter_small" />
 
