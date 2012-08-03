@@ -77,16 +77,16 @@ public class LollapaloozerStorageManager {
       _data = (HashMap<String, Object>) is.readObject();
       is.close();
     } catch (FileNotFoundException e) {
-      // TODO Auto-generated catch block
+      System.out.println("FileNotFoundException deserializing stored data");
       e.printStackTrace();
     } catch (StreamCorruptedException e) {
-      // TODO Auto-generated catch block
+      System.out.println("StreamCorruptedException deserializing stored data");
       e.printStackTrace();
     } catch (IOException e) {
-      // TODO Auto-generated catch block
+      System.out.println("IOException deserializing stored data");
       e.printStackTrace();
     } catch (ClassNotFoundException e) {
-      // TODO Auto-generated catch block
+      System.out.println("ClassNotFoundException deserializing stored data");
       e.printStackTrace();
     }
 

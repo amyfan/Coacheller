@@ -11,29 +11,27 @@ import android.content.Intent;
 
 import com.lollapaloozer.auth.TwitterAuthProviderOAuth;
 import com.lollapaloozer.auth.verify.TwitterVerifier;
-import com.lollapaloozer.ui.ChooseLoginActivity;
+import com.lollapaloozer.data.SocialNetworkPost;
 import com.lollapaloozer.ui.TwitterAuthWebpageActivity;
 import com.ratethisfest.shared.Constants;
 import com.ratethisfest.shared.Helper;
 
 public class TwitterAuthProvider implements AuthProvider {
-  private ChooseLoginActivity _activity;
+  // private ChooseLoginActivity _activity;
+  private AuthModel _model;
+  private final String LOGIN_TYPE = Constants.LOGIN_TYPE_TWITTER;
 
   private TwitterAuthProviderOAuth _oAuthProvider;
   private HashMap<String, String> _twitterAccountProperties = new HashMap<String, String>();
   private ArrayList<String> _twitterAccountPropertyNames;
 
+  // Default constructor disallowed
   private TwitterAuthProvider() {
-    // Default constructor disallowed
   }
 
-  // private String _key;
-  // private String _secret;
-  // Consumer key yit4Mu71Mj93eNILUo3uCw
-  // Consumer secret rdYvdK4g3ckWVdnvzmAj6JXmj9RoI05rIb4nVYQsoI
-
-  public TwitterAuthProvider(ChooseLoginActivity activity) {
-    _activity = activity;
+  public TwitterAuthProvider(AuthModel model) {
+    // _activity = activity;
+    _model = model;
     _oAuthProvider = new TwitterAuthProviderOAuth(Constants.CONSUMER_KEY,
         Constants.CONSUMER_SECRET, Constants.OAUTH_CALLBACK_URL);
 
@@ -59,9 +57,10 @@ public class TwitterAuthProvider implements AuthProvider {
   @Override
   public void login() {
     String authReqTokenUrl = _oAuthProvider.getRequestTokenUrl();
-    Intent twitterAuthIntent = new Intent(_activity, TwitterAuthWebpageActivity.class);
+    Activity context = _model.getApp().getLastActivity();
+    Intent twitterAuthIntent = new Intent(context, TwitterAuthWebpageActivity.class);
     twitterAuthIntent.putExtra(Constants.INTENT_EXTRA_AUTH_URL, authReqTokenUrl);
-    _activity.startActivityForResult(twitterAuthIntent, Constants.INTENT_REQ_TWITTER_LOGIN);
+    context.startActivityForResult(twitterAuthIntent, Constants.INTENT_TWITTER_LOGIN);
   }
 
   @Override
@@ -118,10 +117,26 @@ public class TwitterAuthProvider implements AuthProvider {
     if (getLocalAccountName() != null && getVerifiedAccountIdentifier() != null) {
 
       System.out.println("Twitter Authentication Successful");
-      _activity.modelChanged();
+      _model.loginSuccess(LOGIN_TYPE);
+      // _model.getApp().getChooseLoginActivity().modelChanged();
     } else {
       System.out.println("Twitter Authentication was not successful");
     }
+  }
+
+  public String tweet(SocialNetworkPost post) {
+    String message = "I saw the set by " + post.artistName + " and rated it " + post.rating
+        + " (out of " + Constants.RATING_MAXIMUM + ").";
+    if (post.note != null && !post.note.equals("")) {
+      message += "\r\nAlso: " + post.note;
+    }
+
+    HashMap<String, String> bodyParameters = new HashMap<String, String>();
+    bodyParameters.put("status", message);
+
+    Response response = _oAuthProvider.accessResource(Verb.POST,
+        "https://api.twitter.com/1/statuses/update.json", bodyParameters);
+    return response.getBody();
   }
 
 }

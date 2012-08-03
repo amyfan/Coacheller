@@ -1,5 +1,7 @@
 package com.lollapaloozer.auth;
 
+import java.util.HashMap;
+
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
 import org.scribe.model.OAuthRequest;
@@ -59,5 +61,19 @@ public class TwitterAuthProviderOAuth {
 
   public void setAccessTokenObject(String token, String secret) {
     _accessToken = new Token(token, secret);
+  }
+
+  public Response accessResource(Verb httpVerb, String resourceUrl,
+      HashMap<String, String> bodyParameters) {
+
+    OAuthRequest request = new OAuthRequest(httpVerb, resourceUrl);
+    for (String s : bodyParameters.keySet()) {
+      request.addBodyParameter(s, bodyParameters.get(s));
+    }
+
+    _service.signRequest(_accessToken, request); // the access // token from
+    // // step 4 Response
+    // response =
+    return request.send();
   }
 }

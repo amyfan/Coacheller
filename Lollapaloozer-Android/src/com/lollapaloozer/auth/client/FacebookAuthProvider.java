@@ -18,26 +18,49 @@ import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
 import com.lollapaloozer.auth.verify.FacebookVerifier;
-import com.lollapaloozer.ui.ChooseLoginActivity;
+import com.lollapaloozer.data.SocialNetworkPost;
+import com.ratethisfest.shared.Constants;
 
 public class FacebookAuthProvider implements AuthProvider {
 
-  private ChooseLoginActivity _activity;
+  // private ChooseLoginActivity _activity;
+  private final String LOGIN_TYPE = Constants.LOGIN_TYPE_FACEBOOK;
+  private AuthModel _model;
   private Facebook _facebook = new Facebook("186287061500005");
-  private AsyncFacebookRunner mAsyncRunner = new AsyncFacebookRunner(_facebook);
+  private AsyncFacebookRunner _AsyncRunner = new AsyncFacebookRunner(_facebook);
 
   private JSONObject _userInfo;
 
+  // Default constructor disallowed
   private FacebookAuthProvider() {
-    // Default constructor disallowed
   }
 
-  public FacebookAuthProvider(ChooseLoginActivity activity) {
-    _activity = activity;
+  public FacebookAuthProvider(AuthModel model) {
+    // _activity = activity;
+    _model = model;
   }
 
-  private void setLastInfoResponse(JSONObject json) {
-    _userInfo = json;
+  private void _showError(String problem, String details) {
+    _model.getApp().showErrorDialog("Facebook Login Error", problem, details);
+  }
+
+  @Override
+  public void login() {
+    // Proceeds Asynchronously
+    System.out.println("Starting Facebook Login");
+    _facebook.authorize(_model.getApp().getLastActivity(),
+        new String[] { "email", "publish_stream" }, new AuthListener());
+  }
+
+  @Override
+  public void logout() {
+    try {
+      _facebook.logout(_model.getApp().getChooseLoginActivity());
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -50,29 +73,8 @@ public class FacebookAuthProvider implements AuthProvider {
     return verifier.verify(getAuthToken(), getVerifiedAccountIdentifier());
   }
 
-  @Override
-  public void login() {
-    // Proceeds Asynchronously
-    _facebook.authorize(_activity, new String[] { "email" }, new AuthListener());
-  }
-
   public Facebook getFacebookObject() {
     return _facebook;
-  }
-
-  private void _showError(String problem, String details) {
-    _activity.showErrorDialog("Facebook Login Error", problem, details);
-  }
-
-  @Override
-  public void logout() {
-    try {
-      _facebook.logout(_activity);
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 
   @Override
@@ -109,17 +111,48 @@ public class FacebookAuthProvider implements AuthProvider {
 
   @Override
   public void extendAccess() {
-    _facebook.extendAccessTokenIfNeeded(_activity, null);
+    _facebook.extendAccessTokenIfNeeded(_model.getApp().getChooseLoginActivity(), null);
   }
 
+  public String postToWall(SocialNetworkPost post) {
+    Bundle parameters = new Bundle();
+    String message = "I saw the set by " + post.artistName + " and rated it " + post.rating
+        + " (out of " + Constants.RATING_MAXIMUM + ").";
+    if (post.note != null && !post.note.equals("")) {
+      message += "\r\nAlso: " + post.note;
+    }
+    parameters.putString("message", message);
+
+    try {
+      _facebook.request("me");
+      String response = _facebook.request("me/feed", parameters, "POST");
+      Log.d("Tests", "got response: " + response);
+      if (response == null || response.equals("") || response.equals("false")) {
+        return "Blank response from Facebook.";
+      } else {
+        return "Message posted to your facebook wall! " + response;
+      }
+
+    } catch (Exception e) {
+
+      e.printStackTrace();
+      return "Failed to post to wall!";
+    }
+  }
+
+  // Called after onActivityResult calls the appropriate method
   private final class AuthListener implements DialogListener {
     @Override
     public void onComplete(Bundle values) {
-      System.out.println("Facebook authorization completed, token: " + _facebook.getAccessToken()
-          + " valid until " + _facebook.getAccessExpires());
-      mAsyncRunner.request("me", new IDRequestListener()); // get user info
-                                                           // from facebook
-      _activity.modelChanged();
+      // Auth is completed, now we can actually request user data
+      System.out.println("Facebook Authorization Complete, bundle: "
+          + _model.getApp().bundleValues(values));
+
+      int hours = ((int) (_facebook.getAccessExpires() - System.currentTimeMillis()) / 1000) / 60 / 60;
+      System.out.println("Token valid for " + hours + " hours: " + _facebook.getAccessToken());
+
+      // get user info from facebook
+      _AsyncRunner.request("me", new IDRequestListener());
       // TODO should lock UI here
     }
 
@@ -154,6 +187,7 @@ public class FacebookAuthProvider implements AuthProvider {
     @Override
     public void onComplete(String response, Object state) {
       try {
+        System.out.println("Facebook async request has returned");
 
         Log.d(TAG, "IDRequestONComplete");
         Log.d(TAG, "Response: " + response.toString());
@@ -164,8 +198,10 @@ public class FacebookAuthProvider implements AuthProvider {
 
         System.out.println("Retrieved from Facebook userID[" + userID + "] username [" + userName
             + "]");
-        setLastInfoResponse(json);
-        _activity.modelChanged();
+        _userInfo = json;
+
+        _model.loginSuccess(LOGIN_TYPE);
+        // _model.getApp().getChooseLoginActivity().modelChanged();
 
       } catch (JSONException ex) {
         _showError("Facebook Response Error", "JSONException reading response: " + ex.getMessage());
