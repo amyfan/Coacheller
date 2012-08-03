@@ -128,7 +128,7 @@ public class TwitterAuthProvider implements AuthProvider {
     String message = "I saw the set by " + post.artistName + " and rated it " + post.rating
         + " (out of " + Constants.RATING_MAXIMUM + ").";
     if (post.note != null && !post.note.equals("")) {
-      message += "\r\nAlso: " + post.note;
+      message += "\r\nNotes: " + post.note;
     }
 
     HashMap<String, String> bodyParameters = new HashMap<String, String>();
