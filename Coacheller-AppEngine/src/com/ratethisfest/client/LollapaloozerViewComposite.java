@@ -57,10 +57,7 @@ public class LollapaloozerViewComposite extends Composite {
   private List<Set> setsList;
 
   @UiField
-  Label title;
-
-  @UiField
-  Label beta;
+  Label subtitle;
 
   @UiField
   Anchor android;
@@ -103,8 +100,7 @@ public class LollapaloozerViewComposite extends Composite {
   }
 
   private void initUiElements() {
-    title.setText("LOLLAPALOOZER 2012");
-    beta.setText("beta");
+    subtitle.setText("Your unofficial Lolla ratings guide");
     android.setHref("http://play.google.com/store/apps/details?id=com.lollapaloozer");
     android.setText("Download Lollapaloozer for Android");
     android.setTarget("_blank");

@@ -11,7 +11,7 @@
 			<div class="appname">
 				<g:Label ui:field="title" addStyleNames="{style.header}" />
 				<g:Label ui:field="beta" addStyleNames="{style.beta}" />
-				<g:Anchor ui:field="android" addStyleNames="{style.text}" />
+				<g:Anchor ui:field="android" addStyleNames="{style.textLast}" />
 			</div>
 			<div class="roundrect">
 				<!--div class="buttoncell">

@@ -1,0 +1,28 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:c='urn:import:com.google.gwt.cell.client' xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:t='urn:import:com.ratethisfest.client' xmlns:d='urn:import:com.google.gwt.user.datepicker.client'>
+
+	<ui:style src="Coacheller.css" />
+	<ui:with field='res' type='com.ratethisfest.client.ClientResources'/>
+		
+	<g:HTMLPanel>
+		<div id="container" align="center">
+			<div id="android"></div>
+			<div class="appname">
+				<g:Image resource="{res.lollapaloozer_banner}"/>
+				<g:Label ui:field="title" addStyleNames="{style.header}" />
+			</div>
+			<div class="roundrect">
+				<div class="buttoncell">
+					<g:Button ui:field="googleButton" text="Google"
+						addStyleNames="{style.button}" />
+					<g:Button ui:field="facebookButton" text="Facebook"
+						addStyleNames="{style.button}" />
+					<g:Button ui:field="twitterButton" text="Twitter"
+						addStyleNames="{style.button}" />
+				</div>
+			</div>
+		</div>
+	</g:HTMLPanel>
+
+</ui:UiBinder>

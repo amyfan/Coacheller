@@ -4,14 +4,15 @@
 	xmlns:v='urn:import:com.google.gwt.visualization.client.visualizations.corechart'>
 
 	<ui:style src="Coacheller.css" />
+	<ui:with field='res' type='com.ratethisfest.client.ClientResources'/>
 		
 	<g:HTMLPanel>
 		<div id="container" align="center">
 			<div id="android"></div>
 			<div class="appname">
-				<g:Label ui:field="title" addStyleNames="{style.header}" />
-				<g:Label ui:field="beta" addStyleNames="{style.beta}" />
-				<g:Anchor ui:field="android" addStyleNames="{style.text}" />
+				<g:Image resource="{res.lollapaloozer_banner}"/>
+				<g:Label ui:field="subtitle" addStyleNames="{style.subtitle}" />
+				<g:Anchor ui:field="android" addStyleNames="{style.textLast}" />
 			</div>
 			<div class="roundrect">
 				<!--div class="buttoncell">

@@ -80,6 +80,8 @@ public class FlowControl {
           go(new LollapaloozerViewComposite());
         } else if (PageToken.EMAIL.equals(token)) {
           go(new LollapaloozerEmailComposite());
+        } else if (PageToken.LOGIN.equals(token)) {
+          go(new LollapaloozerLoginComposite());
         } else if (PageToken.RATE.equals(token)) {
           go(new LollapaloozerRateComposite(param));
         }

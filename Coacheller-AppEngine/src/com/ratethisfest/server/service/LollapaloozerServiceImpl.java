@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ratethisfest.client.LollapaloozerService;
 import com.ratethisfest.server.domain.Rating;
-import com.ratethisfest.server.logic.CoachellaEmailSender;
 import com.ratethisfest.server.logic.JSONUtils;
 import com.ratethisfest.server.logic.LollaRatingManager;
 import com.ratethisfest.server.logic.LollaSetDataLoader;
