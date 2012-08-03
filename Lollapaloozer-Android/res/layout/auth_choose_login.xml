@@ -42,36 +42,47 @@
             android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/text_banner_line3"/>
 
     </RelativeLayout>
-
+
     <RelativeLayout
         android:id="@+id/layout_signin_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_text_banner"
         android:layout_centerHorizontal="true"
-        android:orientation="vertical" >
-
+        android:layout_margin="8dp"
+        android:orientation="vertical" >
+
         <Button
             android:id="@+id/btn_login_google"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="false"
-            android:text="Log in with Google" />
-
+            android:layout_centerHorizontal="true"
+            android:layout_margin="8dp"
+            android:background="@drawable/signin_google"
+            android:height="54dp"
+            android:padding="8dp"
+            android:width="290dp" />
+
         <Button
             android:id="@+id/btn_login_facebook"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/btn_login_google"
-            android:text="Log in with Facebook" />
-
+            android:layout_centerHorizontal="true"
+            android:layout_margin="8dp"
+            android:background="@drawable/signin_facebook"
+            android:height="54dp"
+            android:width="290dp"
+            android:padding="8dp"
+             />
+
         <Button
             android:id="@+id/btn_invalidate_tokens"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/btn_login_facebook"
+            android:layout_below="@+id/btn_login_twitter"
             android:text="Invalidate Tokens" />
-
+
         <Button
             android:id="@+id/btn_dismiss_activity"
             android:layout_width="wrap_content"
@@ -80,15 +91,7 @@
             android:layout_centerHorizontal="true"
             android:layout_toRightOf="@+id/btn_invalidate_tokens"
             android:text="Go back to Lollapaloozer!" />
-
-        <Button
-            android:id="@+id/btn_login_twitter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_toRightOf="@+id/btn_login_google"
-            android:text="Log in with Twitter" />
-
+
         <Button
             android:id="@+id/btn_login_facebook_browser"
             android:layout_width="wrap_content"
@@ -96,7 +99,21 @@
             android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/btn_login_facebook"
             android:layout_toRightOf="@+id/btn_login_facebook"
-            android:text="Facebook (Browser)" />
+            android:text="Facebook (Browser)"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/btn_login_twitter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_login_facebook"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="8dp"
+            android:background="@drawable/signin_twitter"
+            android:padding="8dp"
+                        android:height="54dp"
+            android:width="290dp"
+             />
 
     </RelativeLayout>
 

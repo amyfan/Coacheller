@@ -26,6 +26,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioGroup;
@@ -235,6 +236,448 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   protected void onDestroy() {
     super.onDestroy();
     System.out.println(this + " onDestroy");
+  }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    String infoMessage = "LollapaloozerActivity.onActivityResult req=" + requestCode
+        + " resultCode=" + resultCode + " data: " + data;
+    System.out.println(infoMessage);
+
+    if (data != null) {
+      System.out.println("Intent Data: " + data.getDataString());
+      System.out.println("Intent Extras: " + _app.bundleValues(data.getExtras()));
+    }
+
+    if (resultCode == Activity.RESULT_OK) { // Login success
+      switch (requestCode) {
+
+      case Constants.INTENT_CHOOSE_LOGIN_TYPE:
+        Bundle results = data.getExtras();
+        _loginData = new LoginData();
+        _loginData.timeLoginIssued = System.currentTimeMillis();
+        _loginData.loginType = results.getString(Constants.INTENT_EXTRA_LOGIN_TYPE);
+        _loginData.accountIdentifier = results.getString(Constants.INTENT_EXTRA_ACCOUNT_IDENTIFIER);
+        _loginData.accountToken = results.getString(Constants.INTENT_EXTRA_LOGIN_TOKEN);
+
+        if (_loginData.loginType == Constants.LOGIN_TYPE_GOOGLE
+            || _loginData.loginType == Constants.LOGIN_TYPE_FACEBOOK) {
+          _loginData.emailAddress = _loginData.accountIdentifier;
+        } else {
+          _loginData.emailAddress = null;
+        }
+
+        System.out.println("Saving login data timeIssued=" + _loginData.timeLoginIssued
+            + " loginType=" + _loginData.loginType + " accountIdentifier="
+            + _loginData.accountIdentifier + " accountToken=" + _loginData.accountToken
+            + " emailAddress=" + _loginData.emailAddress);
+
+        _storageManager.putObject(LoginData.DATA_LOGIN_INFO, _loginData);
+        _storageManager.save();
+        break;
+
+      case Constants.INTENT_FACEBOOK_LOGIN: {
+        // Assuming it is Facebook
+        System.out.println("onActivityResult called by Facebook API");
+        // Required by Facebook API
+        _app.getAuthModel().getFacebookObject().authorizeCallback(requestCode, resultCode, data);
+        break;
+      }
+
+      case Constants.INTENT_TWITTER_LOGIN: {
+        // Assuming it is Facebook
+        System.out.println("onActivityResult called by Twitter API");
+        _app.getAuthModel().twitterAuthCallback(requestCode, resultCode, data);
+        break;
+      }
+
+      default:
+        _app.showErrorDialog("Unexpected Response",
+            "An unexpected response was received from another window", infoMessage);
+
+        break;
+      }
+    }
+
+  }
+
+  @Override
+  public void onBackPressed() {
+    System.out.println("Back button pressed");
+    // Exit if back button is pressed from this activity.
+    super.onBackPressed();
+    // getApplication().
+  }
+
+  @Override
+  public void onCheckedChanged(RadioGroup clickedGroup, int checkedId) {
+    // This is only useful when we want to act based on a user changing
+    // radio selection i.e. week1/week2.
+    RadioGroup scoreGroup = (RadioGroup) _rateDialog.findViewById(R.id.radio_pick_score);
+
+    // Formerly used to select week, now always true
+    // if (clickedGroup == _rateDialog.findViewById(R.id.radio_pick_score))
+    // {
+
+  }
+
+  // Any button in any view or dialog was clicked
+  @Override
+  public void onClick(View viewClicked) {
+
+    // OK clicked on first use dialog
+    if (viewClicked.getId() == R.id.button_firstuse_ok) {
+      clickDialogFirstUseButtonOK();
+    }
+
+    // "OK" clicked to submit email address
+    if (viewClicked.getId() == R.id.button_provideEmail) {
+      clickDialogConfirmEmailButtonOK();
+    }
+
+    if (viewClicked.getId() == R.id.button_declineEmail) {
+      _getEmailDialog.dismiss();
+    }
+
+    if (viewClicked.getId() == R.id.buttonChangeToSearchSets) {
+      System.out.println("Button: Switch Day");
+      Intent intent = new Intent();
+      intent.setClass(this, SetsSearchActivity.class);
+      startActivity(intent);
+    }
+
+    // Submit rating for a set
+    if (viewClicked.getId() == R.id.button_go_rate_inline) { // Selections
+      clickDialogSubmitRatingButtonOK();
+    } // End rating dialog submitted
+
+    // Submit rating for a set
+    if (viewClicked.getId() == R.id.button_go_rate_above) { // Selections
+      clickDialogSubmitRatingButtonOK();
+    } // End rating dialog submitted
+
+    if (viewClicked.getId() == R.id.button_go_fb) {
+      try {
+        clickDialogSubmitRatingFacebook();
+      } catch (JSONException e) {
+        System.out.println("JSONException gathering data for Facebook post");
+        e.printStackTrace();
+      }
+    }
+
+    if (viewClicked.getId() == R.id.button_go_tweet) {
+      try {
+        clickDialogSubmitRatingTwitter();
+      } catch (JSONException e) {
+        System.out.println("JSONException gathering data for Twitter post");
+        e.printStackTrace();
+      }
+    }
+
+    if (viewClicked.getId() == R.id.button_network_error_ok) {
+      System.out.println("Clicked dismiss network error dialog");
+      _networkErrorDialog.dismiss();
+    }
+  }
+
+  // Dialog handling, called once the first time this activity displays
+  // (a/each type of)? dialog
+  @Override
+  protected Dialog onCreateDialog(int id) {
+    if (id == DIALOG_FIRST_USE) {
+      _firstUseDialog = new Dialog(this);
+      _firstUseDialog.setContentView(R.layout.first_use_dialog);
+      _firstUseDialog.setTitle(Constants.DIALOG_TITLE_FIRST_USE);
+
+      Button buttonOK = (Button) _firstUseDialog.findViewById(R.id.button_firstuse_ok);
+      buttonOK.setOnClickListener(this);
+      return _firstUseDialog;
+    }
+
+    if (id == DIALOG_GETEMAIL) {
+      _getEmailDialog = new Dialog(this);
+      _getEmailDialog.setContentView(R.layout.get_email_address);
+      _getEmailDialog.setTitle(Constants.DIALOG_TITLE_GET_EMAIL);
+
+      Button buttonOK = (Button) _getEmailDialog.findViewById(R.id.button_provideEmail);
+      buttonOK.setOnClickListener(this);
+
+      Button buttonCancel = (Button) _getEmailDialog.findViewById(R.id.button_declineEmail);
+      buttonCancel.setOnClickListener(this);
+
+      return _getEmailDialog;
+    }
+
+    if (id == DIALOG_RATE) {
+      _rateDialog = new Dialog(this);
+      _rateDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+      _rateDialog.setContentView(R.layout.dialog_rate_set);
+
+      // Setup 'X' close widget
+      ImageView close_dialog = (ImageView) _rateDialog
+          .findViewById(R.id.imageView_custom_dialog_close);
+      close_dialog.setOnClickListener(new View.OnClickListener() {
+        public void onClick(View v) {
+          _rateDialog.dismiss();
+        }
+      });
+
+      Button buttonRateAbove = (Button) _rateDialog.findViewById(R.id.button_go_rate_above);
+      buttonRateAbove.setOnClickListener(this);
+
+      Button buttonRateInline = (Button) _rateDialog.findViewById(R.id.button_go_rate_inline);
+      buttonRateInline.setOnClickListener(this);
+
+      ImageButton buttonFB = (ImageButton) _rateDialog.findViewById(R.id.button_go_fb);
+      buttonFB.setOnClickListener(this);
+
+      ImageButton buttonTweet = (ImageButton) _rateDialog.findViewById(R.id.button_go_tweet);
+      buttonTweet.setOnClickListener(this);
+
+      return _rateDialog;
+    }
+
+    if (id == DIALOG_NETWORK_ERROR) {
+      _networkErrorDialog = new Dialog(this);
+      _networkErrorDialog.setContentView(R.layout.dialog_network_error);
+      _networkErrorDialog.setTitle("Network Error");
+
+      Button buttonOK = (Button) _networkErrorDialog.findViewById(R.id.button_network_error_ok);
+      buttonOK.setOnClickListener(this);
+      return _networkErrorDialog;
+
+    }
+
+    return super.onCreateDialog(id);
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.menu_global_options, menu);
+    return true;
+  }
+
+  // An item in the ListView of sets is clicked
+  @Override
+  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    System.out.println(this.toString() + "onItemClick position:" + position + " id:" + id);
+    try {// TODO Hard coded strings means you are going to hell
+      JSONObject obj = (JSONObject) _setListAdapter.getItem(position);
+      System.out.println(this + " Assigning " + obj + " to _lastItemSelected");
+      _lastItemSelected = obj;
+
+      String setId = _lastItemSelected.getString(QUERY_SETS__SET_ID);
+      _lastRatings = _myRatings_JAHM.getJSONObject(setId, "1");
+
+      LollapaloozerHelper.debug(this, "You Clicked On: " + obj + " previous ratings "
+          + _lastRatings);
+    } catch (JSONException e) {
+      LollapaloozerHelper.debug(this, "JSONException retrieving user's last rating");
+      e.printStackTrace();
+    }
+
+    if (!_isLoggedIn()) {
+      _beginSigninProcess();
+    } else {
+      System.out.println(this.toString() + "About to launch Dialog!  _lastItemSelected was "
+          + _lastItemSelected);
+      if (_lastItemSelected == null) {
+        System.out.println(this.toString()
+            + " NULL MEMBER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      } else {
+        System.out.println(this.toString()
+            + " OK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      }
+      showDialog(DIALOG_RATE);
+    }
+  }
+
+  @Override
+  public void onItemSelected(AdapterView<?> parent, View arg1, int arg2, long arg3) {
+
+    // TODO Auto-generated method stub
+    LollapaloozerHelper.debug(this, "Search Type Spinner: Selected -> " + parent.getSelectedItem()
+        + "(" + arg2 + ")");
+    ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
+
+    try {
+      if (parent.getSelectedItem().toString().toLowerCase().equals("time")) {
+        _sortMode = SORT_TIME;
+
+      } else if (parent.getSelectedItem().toString().toLowerCase().equals("artist")) {
+        _sortMode = SORT_ARTIST;
+      }
+
+      setView_reSort();
+      viewSetsList.invalidateViews();
+    } catch (JSONException e) {
+      LollapaloozerHelper.debug(this, "JSONException re-sorting data");
+      e.printStackTrace();
+    }
+  }
+
+  protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    setIntent(intent);// must store the new intent unless getIntent() will
+    // return the old one
+    processExtraData();
+  }
+
+  @Override
+  public void onNothingSelected(AdapterView<?> arg0) {
+    LollapaloozerHelper.debug(this, "Search Type Spinner: Nothing Selected");
+    Spinner spinnerSortType = (Spinner) findViewById(R.id.spinner_sort_by);
+    spinnerSortType.setSelection(0);
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+    case R.id.menu_item_email_me:
+      LollapaloozerHelper.debug(this, "Menu button 'email me' pressed");
+
+      if (!_isLoggedIn()) {
+        Toast.makeText(this, "Try rating at least one set first", 15).show();
+      } else {
+        try {
+
+          // Toast.makeText(this, "This feature coming soon!", 15).show();
+          showDialog(DIALOG_GETEMAIL);
+
+        } catch (Exception e) {
+          LollapaloozerHelper.debug(this, "Error requesting ratings email");
+          e.printStackTrace();
+        }
+      }
+      return true;
+
+    case R.id.menu_item_delete_email:
+      LollapaloozerHelper.debug(this, "Menu button 'Forget Account Info' pressed");
+      _loginData = null;
+      _storageManager.putObject(LoginData.DATA_LOGIN_INFO, _loginData);
+
+      _storageManager.save();
+      refreshData();
+      return true;
+
+    default:
+      return super.onOptionsItemSelected(item);
+    }
+  }
+
+  // Dialog handling, called before any dialog is shown
+  @Override
+  protected void onPrepareDialog(int id, Dialog dialog) {
+    super.onPrepareDialog(id, dialog);
+    System.out.println("onPrepareDialog");
+
+    if (id == DIALOG_GETEMAIL) {
+      EditText emailField = (EditText) _getEmailDialog.findViewById(R.id.textField_enterEmail);
+      if (_loginData.emailAddress == null) {
+        emailField.setText("");
+      } else {
+        emailField.setText(_loginData.emailAddress);
+        emailField.selectAll();
+        emailField.requestFocus();
+      }
+    }
+
+    if (id == DIALOG_RATE) {
+      try {
+        TextView subtitleText = (TextView) _rateDialog.findViewById(R.id.text_rateBand_subtitle);
+
+        // Bug finding. Debugger doesn't always find it. Race condition?
+        // Strange bug. reproduce by clicking something ASAP when app loads and
+        // clicking FB post
+        if (subtitleText == null) {
+          System.out.println("Subtitletext was " + subtitleText);
+        }
+
+        System.out.println(this.toString() + "_lastItemSelected was " + _lastItemSelected);
+        if (_lastItemSelected == null) {
+          System.out.println(this.toString()
+              + " NULL MEMBER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        } else {
+          System.out.println(this.toString()
+              + " OK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+          subtitleText.setText(_lastItemSelected.getString("artist"));
+        }
+      } catch (JSONException e) {
+        LollapaloozerHelper.debug(this, "JSONException assigning Artist name to Rating dialog");
+        e.printStackTrace();
+      }
+
+      // This checks the appropriate radio button based on the score set
+      // in _lastRatings
+      // _lastRatings is set by onItemClick not to be confused with
+      // onClick
+
+      RadioGroup scoreGroup = (RadioGroup) _rateDialog.findViewById(R.id.radio_pick_score);
+      EditText noteWidget = (EditText) _rateDialog.findViewById(R.id.editText_commentsForSet);
+      if (_lastRatings == null) {
+
+        scoreGroup.clearCheck();
+        noteWidget.setText("");
+
+        return; // Abandon if there is no previous data
+      }
+      try {
+        int selectedItemScore = _lastRatings.getInt(QUERY_RATINGS__RATING);
+        int buttonIdToCheck;
+        buttonIdToCheck = _ratingSelectedScoreToId.get(selectedItemScore + "");
+        scoreGroup.check(buttonIdToCheck);
+        // RadioButton buttonToCheck = (RadioButton) _rateDialog
+        // .findViewById(buttonIdToCheck);
+        // buttonToCheck.setChecked(true);
+
+      } catch (JSONException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
+      try {
+        // Ratings might not include notes
+        if (_lastRatings.has(QUERY_RATINGS__NOTES)) {
+          String selectedItemNote = _lastRatings.getString(QUERY_RATINGS__NOTES);
+          noteWidget = (EditText) _rateDialog.findViewById(R.id.editText_commentsForSet);
+          noteWidget.setText(selectedItemNote);
+        } else {
+          noteWidget.setText("");
+        }
+      } catch (JSONException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
+      if (_app.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)) {
+        ImageButton buttonFB = (ImageButton) _rateDialog.findViewById(R.id.button_go_fb);
+        buttonFB.setImageResource(R.drawable.post_facebook_large);
+        System.out.println(buttonFB.getPaddingTop() + " " + buttonFB.getPaddingLeft() + " "
+            + buttonFB.getPaddingBottom() + " " + buttonFB.getPaddingRight());
+        buttonFB.setPadding(7, 3, 7, 10);
+
+      }
+
+      if (_app.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
+        ImageButton buttonTweet = (ImageButton) _rateDialog.findViewById(R.id.button_go_tweet);
+        buttonTweet.setImageResource(R.drawable.post_twitter_large);
+        buttonTweet.setPadding(7, 3, 7, 10);
+      }
+
+      if (_app.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)
+          && _app.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
+
+        Button buttonRateAbove = (Button) _rateDialog.findViewById(R.id.button_go_rate_above);
+        buttonRateAbove.setVisibility(View.VISIBLE);
+
+        Button buttonRateInline = (Button) _rateDialog.findViewById(R.id.button_go_rate_inline);
+        buttonRateInline.setVisibility(View.GONE);
+      }
+
+    } // end if rating dialog
+
   }
 
   private void _redrawUI() {
@@ -514,136 +957,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     }
   }
 
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    String infoMessage = "LollapaloozerActivity.onActivityResult req=" + requestCode
-        + " resultCode=" + resultCode + " data: " + data;
-    System.out.println(infoMessage);
-
-    if (data != null) {
-      System.out.println("Intent Data: " + data.getDataString());
-      System.out.println("Intent Extras: " + _app.bundleValues(data.getExtras()));
-    }
-
-    if (resultCode == Activity.RESULT_OK) { // Login success
-      switch (requestCode) {
-
-      case Constants.INTENT_CHOOSE_LOGIN_TYPE:
-        Bundle results = data.getExtras();
-        _loginData = new LoginData();
-        _loginData.timeLoginIssued = System.currentTimeMillis();
-        _loginData.loginType = results.getString(Constants.INTENT_EXTRA_LOGIN_TYPE);
-        _loginData.accountIdentifier = results.getString(Constants.INTENT_EXTRA_ACCOUNT_IDENTIFIER);
-        _loginData.accountToken = results.getString(Constants.INTENT_EXTRA_LOGIN_TOKEN);
-
-        if (_loginData.loginType == Constants.LOGIN_TYPE_GOOGLE
-            || _loginData.loginType == Constants.LOGIN_TYPE_FACEBOOK) {
-          _loginData.emailAddress = _loginData.accountIdentifier;
-        } else {
-          _loginData.emailAddress = null;
-        }
-
-        System.out.println("Saving login data timeIssued=" + _loginData.timeLoginIssued
-            + " loginType=" + _loginData.loginType + " accountIdentifier="
-            + _loginData.accountIdentifier + " accountToken=" + _loginData.accountToken
-            + " emailAddress=" + _loginData.emailAddress);
-
-        _storageManager.putObject(LoginData.DATA_LOGIN_INFO, _loginData);
-        _storageManager.save();
-        break;
-
-      case Constants.INTENT_FACEBOOK_LOGIN: {
-        // Assuming it is Facebook
-        System.out.println("onActivityResult called by Facebook API");
-        _app.getAuthModel().getFacebookObject().authorizeCallback(requestCode, resultCode, data);
-        break;
-      }
-
-      default:
-        _app.showErrorDialog("Unexpected Response",
-            "An unexpected response was received from another window", infoMessage);
-
-        break;
-      }
-    }
-
-  }
-
-  @Override
-  public void onBackPressed() {
-    System.out.println("Back button pressed");
-    // Exit if back button is pressed from this activity.
-    super.onBackPressed();
-    // getApplication().
-  }
-
-  @Override
-  public void onCheckedChanged(RadioGroup clickedGroup, int checkedId) {
-    // This is only useful when we want to act based on a user changing
-    // radio selection i.e. week1/week2.
-    RadioGroup scoreGroup = (RadioGroup) _rateDialog.findViewById(R.id.radio_pick_score);
-
-    // Formerly used to select week, now always true
-    // if (clickedGroup == _rateDialog.findViewById(R.id.radio_pick_score))
-    // {
-
-  }
-
-  // Any button in any view or dialog was clicked
-  @Override
-  public void onClick(View viewClicked) {
-
-    // OK clicked on first use dialog
-    if (viewClicked.getId() == R.id.button_firstuse_ok) {
-      clickDialogFirstUseButtonOK();
-    }
-
-    // "OK" clicked to submit email address
-    if (viewClicked.getId() == R.id.button_provideEmail) {
-      clickDialogConfirmEmailButtonOK();
-    }
-
-    if (viewClicked.getId() == R.id.button_declineEmail) {
-      _getEmailDialog.dismiss();
-    }
-
-    if (viewClicked.getId() == R.id.buttonChangeToSearchSets) {
-      System.out.println("Button: Switch Day");
-      Intent intent = new Intent();
-      intent.setClass(this, SetsSearchActivity.class);
-      startActivity(intent);
-    }
-
-    // Submit rating for a set
-    if (viewClicked.getId() == R.id.button_go_rate) { // Selections
-      clickDialogSubmitRatingButtonOK();
-    } // End rating dialog submitted
-
-    if (viewClicked.getId() == R.id.button_go_fb) {
-      try {
-        clickDialogSubmitRatingFacebook();
-      } catch (JSONException e) {
-        System.out.println("JSONException gathering data for Facebook post");
-        e.printStackTrace();
-      }
-    }
-
-    if (viewClicked.getId() == R.id.button_go_tweet) {
-      try {
-        clickDialogSubmitRatingTwitter();
-      } catch (JSONException e) {
-        System.out.println("JSONException gathering data for Twitter post");
-        e.printStackTrace();
-      }
-    }
-
-    if (viewClicked.getId() == R.id.button_network_error_ok) {
-      System.out.println("Clicked dismiss network error dialog");
-      _networkErrorDialog.dismiss();
-    }
-  }
-
   private void clickDialogConfirmEmailButtonOK() {
     EditText emailField = (EditText) _getEmailDialog.findViewById(R.id.textField_enterEmail);
     String email = emailField.getText().toString();
@@ -711,15 +1024,15 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     _rateDialogSubmitRating();
     _app.getAuthModel().ensurePermission(AuthModel.PERMISSION_TWITTER_TWEET);
 
-    // TODO this is in the code 3 times and counting
-    RadioGroup scoreGroup = (RadioGroup) _rateDialog.findViewById(R.id.radio_pick_score);
-    String submittedRating = _ratingSelectedIdToValue.get(scoreGroup.getCheckedRadioButtonId())
-        .toString();
+    _queuedTwitterPost = _buildSocialNetworkPost();
 
-    EditText noteWidget = (EditText) _rateDialog.findViewById(R.id.editText_commentsForSet);
-    String submittedNote = noteWidget.getText().toString();
-
-    String artistName = _lastItemSelected.getString("artist");
+    // https://api.twitter.com/1/statuses
+    if (_app.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
+      System.out.println("Twitter Auth available now, posting immediately");
+      doTwitterPost();
+    } else {
+      System.out.println("Twitter Auth not ready, posting later");
+    }
 
     _rateDialog.dismiss();
   }
@@ -732,10 +1045,21 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     _rateDialogSubmitRating();
     _app.getAuthModel().ensurePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL);
 
+    _queuedFacebookPost = _buildSocialNetworkPost();
+    if (_app.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)) {
+      System.out.println("FB Auth available now, posting immediately");
+      doFacebookPost();
+    } else {
+      System.out.println("FB Auth not ready, posting later");
+    }
+
+    _rateDialog.dismiss();
+  }
+
+  private SocialNetworkPost _buildSocialNetworkPost() throws JSONException {
     SocialNetworkPost post = new SocialNetworkPost();
     // Build data from dialog here
-
-    // TODO this is in the code 3 times and counting
+    // TODO this is in the code in 2 places
     RadioGroup scoreGroup = (RadioGroup) _rateDialog.findViewById(R.id.radio_pick_score);
     String submittedRating = _ratingSelectedIdToValue.get(scoreGroup.getCheckedRadioButtonId())
         .toString();
@@ -747,16 +1071,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     post.rating = submittedRating;
     post.note = submittedNote;
     post.artistName = artistName;
-
-    _queuedFacebookPost = post;
-    if (_app.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)) {
-      System.out.println("FB Auth available now, posting immediately");
-      doFacebookPost();
-    } else {
-      System.out.println("FB Auth not ready, posting later");
-    }
-
-    _rateDialog.dismiss();
+    return post;
   }
 
   private boolean _rateDialogVerify() {
@@ -771,7 +1086,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   }
 
   private void _rateDialogSubmitRating() {
-    // TODO this is in the code 3 times and counting
+    // TODO this is in the code in 2 places
     RadioGroup scoreGroup = (RadioGroup) _rateDialog.findViewById(R.id.radio_pick_score);
     String submittedRating = _ratingSelectedIdToValue.get(scoreGroup.getCheckedRadioButtonId())
         .toString();
@@ -808,7 +1123,19 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   private SocialNetworkPost _queuedTwitterPost;
 
   public synchronized void doTwitterPost() {
+    if (_queuedTwitterPost == null) {
+      return;
+    }
 
+    if (!_app.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
+      System.out.println("Warning: trying to post without Twitter permissions");
+    }
+
+    // use _queuedFacebookPost
+    String result = _app.getAuthModel().tweetToTwitter(_queuedTwitterPost);
+    System.out.println("Twitter result:");
+    System.out.println(result);
+    _queuedTwitterPost = null;
   }
 
   private SocialNetworkPost _queuedFacebookPost;
@@ -823,282 +1150,10 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     }
 
     // use _queuedFacebookPost
-    _app.getAuthModel().postToFacebookWall(_queuedFacebookPost);
-
-    // If successful
+    String result = _app.getAuthModel().postToFacebookWall(_queuedFacebookPost);
+    System.out.println("Facebook result:");
+    System.out.println(result);
     _queuedFacebookPost = null;
-  }
-
-  // Dialog handling, called once the first time this activity displays
-  // (a/each type of)? dialog
-  @Override
-  protected Dialog onCreateDialog(int id) {
-    if (id == DIALOG_FIRST_USE) {
-      _firstUseDialog = new Dialog(this);
-      _firstUseDialog.setContentView(R.layout.first_use_dialog);
-      _firstUseDialog.setTitle(Constants.DIALOG_TITLE_FIRST_USE);
-
-      Button buttonOK = (Button) _firstUseDialog.findViewById(R.id.button_firstuse_ok);
-      buttonOK.setOnClickListener(this);
-      return _firstUseDialog;
-    }
-
-    if (id == DIALOG_GETEMAIL) {
-      _getEmailDialog = new Dialog(this);
-      _getEmailDialog.setContentView(R.layout.get_email_address);
-      _getEmailDialog.setTitle(Constants.DIALOG_TITLE_GET_EMAIL);
-
-      Button buttonOK = (Button) _getEmailDialog.findViewById(R.id.button_provideEmail);
-      buttonOK.setOnClickListener(this);
-
-      Button buttonCancel = (Button) _getEmailDialog.findViewById(R.id.button_declineEmail);
-      buttonCancel.setOnClickListener(this);
-
-      return _getEmailDialog;
-    }
-
-    if (id == DIALOG_RATE) {
-      _rateDialog = new Dialog(this);
-      _rateDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-      _rateDialog.setContentView(R.layout.dialog_rate_set);
-
-      // Setup 'X' close widget
-      ImageView close_dialog = (ImageView) _rateDialog
-          .findViewById(R.id.imageView_custom_dialog_close);
-      close_dialog.setOnClickListener(new View.OnClickListener() {
-        public void onClick(View v) {
-          _rateDialog.dismiss();
-        }
-      });
-
-      Button buttonRate = (Button) _rateDialog.findViewById(R.id.button_go_rate);
-      buttonRate.setOnClickListener(this);
-
-      Button buttonFB = (Button) _rateDialog.findViewById(R.id.button_go_fb);
-      buttonFB.setOnClickListener(this);
-
-      Button buttonTweet = (Button) _rateDialog.findViewById(R.id.button_go_tweet);
-      buttonTweet.setOnClickListener(this);
-
-      return _rateDialog;
-    }
-
-    if (id == DIALOG_NETWORK_ERROR) {
-      _networkErrorDialog = new Dialog(this);
-      _networkErrorDialog.setContentView(R.layout.dialog_network_error);
-      _networkErrorDialog.setTitle("Network Error");
-
-      Button buttonOK = (Button) _networkErrorDialog.findViewById(R.id.button_network_error_ok);
-      buttonOK.setOnClickListener(this);
-      return _networkErrorDialog;
-
-    }
-
-    return super.onCreateDialog(id);
-  }
-
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.menu_global_options, menu);
-    return true;
-  }
-
-  // An item in the ListView of sets is clicked
-  @Override
-  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-    System.out.println(this.toString() + "onItemClick position:" + position + " id:" + id);
-    try {// TODO Hard coded strings means you are going to hell
-      JSONObject obj = (JSONObject) _setListAdapter.getItem(position);
-      System.out.println(this + " Assigning " + obj + " to _lastItemSelected");
-      _lastItemSelected = obj;
-
-      String setId = _lastItemSelected.getString(QUERY_SETS__SET_ID);
-      _lastRatings = _myRatings_JAHM.getJSONObject(setId, "1");
-
-      LollapaloozerHelper.debug(this, "You Clicked On: " + obj + " previous ratings "
-          + _lastRatings);
-    } catch (JSONException e) {
-      LollapaloozerHelper.debug(this, "JSONException retrieving user's last rating");
-      e.printStackTrace();
-    }
-
-    if (!_isLoggedIn()) {
-      _beginSigninProcess();
-    } else {
-      System.out.println(this.toString() + "About to launch Dialog!  _lastItemSelected was "
-          + _lastItemSelected);
-      if (_lastItemSelected == null) {
-        System.out.println(this.toString()
-            + " NULL MEMBER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-      } else {
-        System.out.println(this.toString()
-            + " OK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-      }
-      showDialog(DIALOG_RATE);
-    }
-  }
-
-  @Override
-  public void onItemSelected(AdapterView<?> parent, View arg1, int arg2, long arg3) {
-
-    // TODO Auto-generated method stub
-    LollapaloozerHelper.debug(this, "Search Type Spinner: Selected -> " + parent.getSelectedItem()
-        + "(" + arg2 + ")");
-    ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
-
-    try {
-      if (parent.getSelectedItem().toString().toLowerCase().equals("time")) {
-        _sortMode = SORT_TIME;
-
-      } else if (parent.getSelectedItem().toString().toLowerCase().equals("artist")) {
-        _sortMode = SORT_ARTIST;
-      }
-
-      setView_reSort();
-      viewSetsList.invalidateViews();
-    } catch (JSONException e) {
-      LollapaloozerHelper.debug(this, "JSONException re-sorting data");
-      e.printStackTrace();
-    }
-  }
-
-  @Override
-  public void onNothingSelected(AdapterView<?> arg0) {
-    LollapaloozerHelper.debug(this, "Search Type Spinner: Nothing Selected");
-    Spinner spinnerSortType = (Spinner) findViewById(R.id.spinner_sort_by);
-    spinnerSortType.setSelection(0);
-  }
-
-  protected void onNewIntent(Intent intent) {
-    super.onNewIntent(intent);
-    setIntent(intent);// must store the new intent unless getIntent() will
-    // return the old one
-    processExtraData();
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-    case R.id.menu_item_email_me:
-      LollapaloozerHelper.debug(this, "Menu button 'email me' pressed");
-
-      if (!_isLoggedIn()) {
-        Toast.makeText(this, "Try rating at least one set first", 15).show();
-      } else {
-        try {
-
-          // Toast.makeText(this, "This feature coming soon!", 15).show();
-          showDialog(DIALOG_GETEMAIL);
-
-        } catch (Exception e) {
-          LollapaloozerHelper.debug(this, "Error requesting ratings email");
-          e.printStackTrace();
-        }
-      }
-      return true;
-
-    case R.id.menu_item_delete_email:
-      LollapaloozerHelper.debug(this, "Menu button 'Forget Account Info' pressed");
-      _loginData = null;
-      _storageManager.putObject(LoginData.DATA_LOGIN_INFO, _loginData);
-
-      _storageManager.save();
-      refreshData();
-      return true;
-
-    default:
-      return super.onOptionsItemSelected(item);
-    }
-  }
-
-  // Dialog handling, called before any dialog is shown
-  @Override
-  protected void onPrepareDialog(int id, Dialog dialog) {
-
-    // Always call through to super implementation
-    super.onPrepareDialog(id, dialog);
-
-    if (id == DIALOG_GETEMAIL) {
-      EditText emailField = (EditText) _getEmailDialog.findViewById(R.id.textField_enterEmail);
-      if (_loginData.emailAddress == null) {
-        emailField.setText("");
-      } else {
-        emailField.setText(_loginData.emailAddress);
-        emailField.selectAll();
-        emailField.requestFocus();
-      }
-    }
-
-    if (id == DIALOG_RATE) {
-      try {
-        TextView subtitleText = (TextView) _rateDialog.findViewById(R.id.text_rateBand_subtitle);
-
-        // Bug finding. Debugger doesn't always find it. Race condition?
-        // Strange bug. reproduce by clicking something ASAP when app loads and
-        // clicking FB post
-        if (subtitleText == null) {
-          System.out.println("Subtitletext was " + subtitleText);
-        }
-
-        System.out.println(this.toString() + "_lastItemSelected was " + _lastItemSelected);
-        if (_lastItemSelected == null) {
-          System.out.println(this.toString()
-              + " NULL MEMBER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        } else {
-          System.out.println(this.toString()
-              + " OK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-          subtitleText.setText(_lastItemSelected.getString("artist"));
-        }
-      } catch (JSONException e) {
-        LollapaloozerHelper.debug(this, "JSONException assigning Artist name to Rating dialog");
-        e.printStackTrace();
-      }
-
-      // This checks the appropriate radio button based on the score set
-      // in _lastRatings
-      // _lastRatings is set by onItemClick not to be confused with
-      // onClick
-
-      RadioGroup scoreGroup = (RadioGroup) _rateDialog.findViewById(R.id.radio_pick_score);
-      EditText noteWidget = (EditText) _rateDialog.findViewById(R.id.editText_commentsForSet);
-      if (_lastRatings == null) {
-
-        scoreGroup.clearCheck();
-        noteWidget.setText("");
-
-        return; // Abandon if there is no previous data
-      }
-      try {
-        int selectedItemScore = _lastRatings.getInt(QUERY_RATINGS__RATING);
-        int buttonIdToCheck;
-        buttonIdToCheck = _ratingSelectedScoreToId.get(selectedItemScore + "");
-        scoreGroup.check(buttonIdToCheck);
-        // RadioButton buttonToCheck = (RadioButton) _rateDialog
-        // .findViewById(buttonIdToCheck);
-        // buttonToCheck.setChecked(true);
-
-      } catch (JSONException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-
-      try {
-        // Ratings might not include notes
-        if (_lastRatings.has(QUERY_RATINGS__NOTES)) {
-          String selectedItemNote = _lastRatings.getString(QUERY_RATINGS__NOTES);
-          noteWidget = (EditText) _rateDialog.findViewById(R.id.editText_commentsForSet);
-          noteWidget.setText(selectedItemNote);
-        } else {
-          noteWidget.setText("");
-        }
-      } catch (JSONException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-
-    } // end if rating dialog
-
   }
 
 }

@@ -132,33 +132,42 @@
 
         <requestFocus />
     </EditText>
+
+    <Button
+        android:id="@+id/button_go_rate_above"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Rate It!"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:orientation="horizontal" >
-
+
         <Button
-            android:id="@+id/button_go_rate"
+            android:id="@+id/button_go_rate_inline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Rate It!" />
-
-        <Button
+
+        <ImageButton
             android:id="@+id/button_go_fb"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="FB" />
-
-        <Button
+            android:cropToPadding="true"
+            android:scaleType="center"
+            android:src="@drawable/post_facebook_small" />
+
+        <ImageButton
             android:id="@+id/button_go_tweet"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Tweet" />
+            android:scaleType="center"
+            android:src="@drawable/post_twitter_small" />
 
     </LinearLayout>
 

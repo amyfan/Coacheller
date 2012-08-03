@@ -43,6 +43,7 @@ public class GoogleAuthProvider implements AuthProvider {
 
   @Override
   public boolean isLoggedIn() {
+    // TODO this is supposed to use the google verifier
     return _confirmedAuthorizedGoogle;
   }
 

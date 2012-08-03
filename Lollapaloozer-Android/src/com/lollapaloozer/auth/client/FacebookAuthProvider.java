@@ -122,7 +122,7 @@ public class FacebookAuthProvider implements AuthProvider {
       message += "\r\nAlso: " + post.note;
     }
     parameters.putString("message", message);
-    parameters.putString("description", "topic share");
+
     try {
       _facebook.request("me");
       String response = _facebook.request("me/feed", parameters, "POST");

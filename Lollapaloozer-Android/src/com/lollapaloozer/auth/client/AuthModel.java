@@ -247,8 +247,12 @@ public class AuthModel {
     _authProviderTwitter.requestTokenCallback(requestCode, resultCode, data);
   }
 
-  public String postToFacebookWall(SocialNetworkPost _queuedFacebookPost) {
-    return _authProviderFacebook.postToWall(_queuedFacebookPost);
+  public String postToFacebookWall(SocialNetworkPost queuedFacebookPost) {
+    return _authProviderFacebook.postToWall(queuedFacebookPost);
+  }
+
+  public String tweetToTwitter(SocialNetworkPost queuedTwitterPost) {
+    return _authProviderTwitter.tweet(queuedTwitterPost);
   }
 
 }

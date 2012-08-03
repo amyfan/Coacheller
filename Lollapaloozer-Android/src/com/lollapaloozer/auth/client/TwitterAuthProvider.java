@@ -11,6 +11,7 @@ import android.content.Intent;
 
 import com.lollapaloozer.auth.TwitterAuthProviderOAuth;
 import com.lollapaloozer.auth.verify.TwitterVerifier;
+import com.lollapaloozer.data.SocialNetworkPost;
 import com.lollapaloozer.ui.TwitterAuthWebpageActivity;
 import com.ratethisfest.shared.Constants;
 import com.ratethisfest.shared.Helper;
@@ -27,11 +28,6 @@ public class TwitterAuthProvider implements AuthProvider {
   // Default constructor disallowed
   private TwitterAuthProvider() {
   }
-
-  // private String _key;
-  // private String _secret;
-  // Consumer key yit4Mu71Mj93eNILUo3uCw
-  // Consumer secret rdYvdK4g3ckWVdnvzmAj6JXmj9RoI05rIb4nVYQsoI
 
   public TwitterAuthProvider(AuthModel model) {
     // _activity = activity;
@@ -61,11 +57,10 @@ public class TwitterAuthProvider implements AuthProvider {
   @Override
   public void login() {
     String authReqTokenUrl = _oAuthProvider.getRequestTokenUrl();
-    Intent twitterAuthIntent = new Intent(_model.getApp().getChooseLoginActivity(),
-        TwitterAuthWebpageActivity.class);
+    Activity context = _model.getApp().getLastActivity();
+    Intent twitterAuthIntent = new Intent(context, TwitterAuthWebpageActivity.class);
     twitterAuthIntent.putExtra(Constants.INTENT_EXTRA_AUTH_URL, authReqTokenUrl);
-    _model.getApp().getChooseLoginActivity()
-        .startActivityForResult(twitterAuthIntent, Constants.INTENT_TWITTER_LOGIN);
+    context.startActivityForResult(twitterAuthIntent, Constants.INTENT_TWITTER_LOGIN);
   }
 
   @Override
@@ -127,6 +122,21 @@ public class TwitterAuthProvider implements AuthProvider {
     } else {
       System.out.println("Twitter Authentication was not successful");
     }
+  }
+
+  public String tweet(SocialNetworkPost post) {
+    String message = "I saw the set by " + post.artistName + " and rated it " + post.rating
+        + " (out of " + Constants.RATING_MAXIMUM + ").";
+    if (post.note != null && !post.note.equals("")) {
+      message += "\r\nAlso: " + post.note;
+    }
+
+    HashMap<String, String> bodyParameters = new HashMap<String, String>();
+    bodyParameters.put("status", message);
+
+    Response response = _oAuthProvider.accessResource(Verb.POST,
+        "https://api.twitter.com/1/statuses/update.json", bodyParameters);
+    return response.getBody();
   }
 
 }
