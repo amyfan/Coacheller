@@ -61,6 +61,12 @@ public class RatingDAO {
     return q.list();
   }
 
+  public QueryResultIterable<Key<Rating>> findRatingsBySetKeys(List<Key<Set>> setKeys) {
+    QueryResultIterable<Key<Rating>> q = dao.getObjectify().query(Rating.class)
+        .filter("set in", setKeys).fetchKeys();
+    return q;
+  }
+
   public List<Rating> findAllRatingsByUserKey(Key<AppUser> userKey) {
     Query<Rating> q = dao.getObjectify().query(Rating.class).filter("rater", userKey);
     return q.list();
@@ -103,10 +109,13 @@ public class RatingDAO {
     dao.getObjectify().delete(ratings);
   }
 
-  public void deleteAllRatingsByFestival(FestivalEnum festival) {
-    System.out.println("Deleting all Ratings from datastore: ");
-    dao.getObjectify().delete(
-        dao.getObjectify().query(Rating.class).filter("festival", festival.getValue()).fetchKeys());
+  /**
+   * 
+   * @param ratings
+   */
+  public void deleteRatings(QueryResultIterable<Key<Rating>> ratings) {
+    System.out.println("Deleting some Ratings from datastore: ");
+    dao.getObjectify().delete(ratings);
   }
 
   public int getRatingCount() {

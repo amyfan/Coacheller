@@ -32,27 +32,6 @@ public class FlowControl {
     History.newItem(c.getTitle());
   }
 
-  /*
-   * public static void go(String tokenString) { PageToken token =
-   * getPageFromToken(tokenString); String param =
-   * getParamFromToken(tokenString); if (token == null) { go(new
-   * CoachellerViewComposite()); } else if
-   * (PageToken.VIEW_COACHELLA.equals(token)) { go(new
-   * CoachellerViewComposite()); } else if
-   * (PageToken.EMAIL_COACHELLA.equals(token)) { go(new
-   * CoachellerEmailComposite()); } else if
-   * (PageToken.RATE_COACHELLA.equals(token)) { go(new
-   * CoachellerRateComposite(param)); } else if
-   * (PageToken.VIEW_LOLLA.equals(token)) { go(new
-   * LollapaloozerViewComposite()); } else if
-   * (PageToken.EMAIL_LOLLA.equals(token)) { go(new
-   * LollapaloozerEmailComposite()); } else if
-   * (PageToken.RATE_LOLLA.equals(token)) { go(new
-   * LollapaloozerRateComposite(param)); } // TODO: add retrievePoll to
-   * PollPhotoWidget // else if (PageToken.UPLOAD.equals(token)) { // go(new
-   * PollPhotoWidget()); // } }
-   */
-
   public static void go(String tokenString) {
     PageToken token = getPageFromToken(tokenString);
     String param = getParamFromToken(tokenString);

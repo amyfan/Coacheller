@@ -84,7 +84,8 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     List<RatingGwt> ratingGwts = null;
 
     if (email != null) {
-      List<Rating> ratings = LollaRatingManager.getInstance().findRatingsByUserEmailAndYear(email, year);
+      List<Rating> ratings = LollaRatingManager.getInstance().findRatingsByUserEmailAndYear(email,
+          year);
       if (ratings != null) {
         ratingGwts = JSONUtils.convertRatingsToRatingGwts(ratings);
       }
@@ -109,6 +110,19 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     return resp;
   }
 
+  /**
+   * SHOULD ONLY BE USED SPARINGLY, PRIOR TO FESTIVAL START
+   * 
+   * @param year
+   * @return
+   */
+  public String deleteRatingsByYear(Integer year) {
+    String resp = "fail";
+    LollaRatingManager.getInstance().deleteRatingsByYear(year);
+    resp = "ratings deleted";
+    return resp;
+  }
+
   public String emailRatingsToUser(String email) {
     // TODO
     // String resp = CoachellaEmailSender.emailRatings(email);
@@ -116,8 +130,12 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     return "";
   }
 
+  /**
+   * THIS SHOULD BE CALLED SPARINGLY
+   */
   public String insertSetData() {
     String success = "something happened";
+    // LollaRatingManager.getInstance().deleteSetsByYear(2012);
     LollaSetDataLoader.getInstance().insertSetsFromApi(2012);
     success = "success i believe";
     return success;

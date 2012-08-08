@@ -31,6 +31,8 @@ public interface LollapaloozerService extends RemoteService {
 
   String deleteRating(Long ratingId) throws IllegalArgumentException;
 
+  String deleteRatingsByYear(Integer year) throws IllegalArgumentException;
+
   String emailRatingsToUser(String email) throws IllegalArgumentException;
 
 }

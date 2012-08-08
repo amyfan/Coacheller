@@ -1,7 +1,12 @@
 package com.ratethisfest.client;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.moxieapps.gwt.highcharts.client.Chart;
+import org.moxieapps.gwt.highcharts.client.Point;
+import org.moxieapps.gwt.highcharts.client.Series;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.cell.client.TextCell;
@@ -60,7 +65,7 @@ public class LollapaloozerViewComposite extends Composite {
   Label subtitle;
 
   @UiField
-  Anchor android;
+  Anchor androidUrl;
 
   @UiField
   Label infoBox;
@@ -101,9 +106,9 @@ public class LollapaloozerViewComposite extends Composite {
 
   private void initUiElements() {
     subtitle.setText("Your unofficial Lolla ratings guide");
-    android.setHref("http://play.google.com/store/apps/details?id=com.lollapaloozer");
-    android.setText("Download Lollapaloozer for Android");
-    android.setTarget("_blank");
+    androidUrl.setHref("http://play.google.com/store/apps/details?id=com.lollapaloozer");
+    androidUrl.setText("Download Lollapaloozer for Android");
+    androidUrl.setTarget("_blank");
 
     ListDataProvider<Set> listDataProvider = new ListDataProvider<Set>();
     listDataProvider.addDataDisplay(setsTable);
@@ -113,9 +118,9 @@ public class LollapaloozerViewComposite extends Composite {
     // has been loaded.
     Runnable onLoadCallback = new Runnable() {
       public void run() {
-        // Create a pie chart visualization.
-        BarChart chart = new BarChart(createChartDataTable(), createOptions());
-        setsChartPanel.add(chart);
+        // Create a bar chart
+        // TODO
+        setsChartPanel.add(createChart());
       }
     };
 
@@ -175,16 +180,16 @@ public class LollapaloozerViewComposite extends Composite {
     chartTypeInput.addChangeHandler(new ChangeHandler() {
       @Override
       public void onChange(ChangeEvent event) {
-        final DataTable dataTable = (DataTable) createChartDataTable();
+        // final DataTable dataTable = (DataTable) createChartDataTable();
 
         // Create a callback to be called when the visualization API
         // has been loaded.
         Runnable onLoadCallback = new Runnable() {
           public void run() {
-            // Create a pie chart visualization.
-            BarChart chart = new BarChart(dataTable, createOptions());
+            // Create a bar chart
+            // TODO
             setsChartPanel.clear();
-            setsChartPanel.add(chart);
+            setsChartPanel.add(createChart());
           }
         };
 
@@ -243,16 +248,16 @@ public class LollapaloozerViewComposite extends Composite {
         setsList.clear();
         setsList.addAll(result);
 
-        final DataTable dataTable = (DataTable) createChartDataTable();
+        // final DataTable dataTable = (DataTable) createChartDataTable();
 
         // Create a callback to be called when the visualization API
         // has been loaded.
         Runnable onLoadCallback = new Runnable() {
           public void run() {
-            // Create a pie chart visualization.
-            BarChart chart = new BarChart(dataTable, createOptions());
+            // Create a bar chart
+            // TODO
             setsChartPanel.clear();
-            setsChartPanel.add(chart);
+            setsChartPanel.add(createChart());
           }
         };
 
@@ -264,6 +269,7 @@ public class LollapaloozerViewComposite extends Composite {
     });
   }
 
+  @Deprecated
   private Options createOptions() {
     Options options = Options.create();
     options.setHeight((setsList.size() * 25) + 20);
@@ -280,6 +286,7 @@ public class LollapaloozerViewComposite extends Composite {
     return options;
   }
 
+  @Deprecated
   private AbstractDataTable createChartDataTable() {
     DataTable data = DataTable.create();
     if (setsList == null) {
@@ -324,6 +331,59 @@ public class LollapaloozerViewComposite extends Composite {
       }
     }
     return data;
+  }
+
+  private Chart createChart() {
+    Chart chart = new Chart().setType(Series.Type.BAR).setChartTitleText("2012 RATING RESULTS")
+        .setMarginRight(10);
+    chart.getXAxis().setAxisTitleText("Artist");
+    chart.getYAxis().setAxisTitleText("Score").setMin(0).setMax(5);
+    Series series = chart.createSeries().setName("Average Score");
+    if (setsList != null) {
+      chart.setHeight(setsList.size() * 22);
+      List<String> artistsList = new ArrayList<String>();
+      List<Point> pointsList = new ArrayList<Point>();
+
+      if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Artist Name")) {
+        // sort first
+        Collections.sort(setsList, ComparatorUtils.SET_NAME_COMPARATOR);
+
+        for (Set set : setsList) {
+          artistsList.add(set.getArtistName());
+          Point point = new Point(set.getArtistName(), set.getAvgScoreOne()).setColor("#FF7800");
+          pointsList.add(point);
+        }
+      } else if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Score")) {
+        // sort first
+        Collections.sort(setsList, ComparatorUtils.SET_SCORE_COMPARATOR);
+
+        for (Set set : setsList) {
+          artistsList.add(set.getArtistName());
+          Point point = new Point(set.getArtistName(), set.getAvgScoreOne()).setColor("#FF7800");
+          pointsList.add(point);
+        }
+      } else {
+        // sort first
+        Collections.sort(setsList, ComparatorUtils.SET_TIME_COMPARATOR);
+
+        for (Set set : setsList) {
+          String timeString = DateTimeUtils.militaryToCivilianTime(set.getTimeOne());
+          String nameCombo = timeString + ": " + set.getArtistName();
+          artistsList.add(nameCombo);
+          Point point = new Point(set.getArtistName(), set.getAvgScoreOne()).setColor("#FF7800");
+          pointsList.add(point);
+        }
+      }
+
+      String[] artistsArray = artistsList.toArray(new String[artistsList.size()]);
+      chart.getXAxis().setCategories(artistsArray);
+
+      Point[] pointsArray = pointsList.toArray(new Point[pointsList.size()]);
+      series.setPoints(pointsArray);
+
+      chart.addSeries(series);
+    }
+    return chart;
   }
 
   public static class SetsTable extends CellTable<Set> {

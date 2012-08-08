@@ -32,6 +32,8 @@ public interface LollapaloozerServiceAsync {
 
   void deleteRating(Long ratingId, AsyncCallback<String> callback) throws IllegalArgumentException;
 
+  void deleteRatingsByYear(Integer year, AsyncCallback<String> callback) throws IllegalArgumentException;
+
   void emailRatingsToUser(String email, AsyncCallback<String> callback)
       throws IllegalArgumentException;
 

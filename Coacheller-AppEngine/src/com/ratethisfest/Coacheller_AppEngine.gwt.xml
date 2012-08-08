@@ -13,6 +13,7 @@
 
   <!-- Other module inherits                                      -->
   <inherits name='com.google.gwt.visualization.Visualization'/>
+  <inherits name="org.moxieapps.gwt.highcharts.Highcharts"/>
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='com.ratethisfest.client.Coacheller_AppEngine'/>

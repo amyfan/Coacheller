@@ -95,7 +95,7 @@ public class LollaSetDataLoader extends SetDataLoader {
       e.printStackTrace();
       log.log(Level.SEVERE, "insertSetsFromApi: " + e.getMessage());
     }
-    ratingMgr.deleteAllSets(FestivalEnum.LOLLAPALOOZA);
+    ratingMgr.deleteAllSetsByYear(FestivalEnum.LOLLAPALOOZA, 2012);
     for (Set set : sets) {
       set.setYear(year);
       set.setDateCreated(new Date());

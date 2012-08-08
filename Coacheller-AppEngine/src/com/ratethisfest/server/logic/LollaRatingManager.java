@@ -72,8 +72,8 @@ public class LollaRatingManager extends RatingManager {
     return ratings;
   }
 
-  public List<Rating> findRatingsByUserYearAndDay(String authType, String authId,
-      String authToken, String email, Integer year, DayEnum day) {
+  public List<Rating> findRatingsByUserYearAndDay(String authType, String authId, String authToken,
+      String email, Integer year, DayEnum day) {
     Key<AppUser> userKey = UserAccountManager.getInstance().manageAppUser(authType, authId,
         authToken, email);
     List<Rating> ratings = null;
@@ -165,6 +165,14 @@ public class LollaRatingManager extends RatingManager {
     updateScoreAverageAfterUpdate(rating, difference);
 
     return ratingDao.updateRating(rating);
+  }
+
+  public void deleteRatingsByYear(Integer year) {
+    QueryResultIterable<Key<Set>> setKeys = setDao.findSetKeysByYear(FestivalEnum.LOLLAPALOOZA,
+        year);
+    List<Key<Set>> setKeyList = CollectionUtils.iterableToList(setKeys);
+    QueryResultIterable<Key<Rating>> ratingKeys = ratingDao.findRatingsBySetKeys(setKeyList);
+    ratingDao.deleteRatings(ratingKeys);
   }
 
   private void updateScoreAverageAfterAdd(Rating rating) {
@@ -295,5 +303,9 @@ public class LollaRatingManager extends RatingManager {
     List<Set> set = setDao.findSetsByYearAndDay(FestivalEnum.LOLLAPALOOZA, year, day);
     return set;
   }
+
+  // public void deleteSetsByYear(Integer year) {
+  // setDao.deleteAllSetsByFestivalAndYear(FestivalEnum.LOLLAPALOOZA, year);
+  // }
 
 }

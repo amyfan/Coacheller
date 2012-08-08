@@ -14,12 +14,9 @@
 			</div>
 			<div class="roundrect">
 				<div class="buttoncell">
-					<g:Button ui:field="googleButton" text="Google"
-						addStyleNames="{style.button}" />
-					<g:Button ui:field="facebookButton" text="Facebook"
-						addStyleNames="{style.button}" />
-					<g:Button ui:field="twitterButton" text="Twitter"
-						addStyleNames="{style.button}" />
+				<g:Anchor ui:field="facebookUrl" addStyleNames="{style.textLast}" />
+				<g:Anchor ui:field="googleUrl" addStyleNames="{style.textLast}" />
+				<g:Anchor ui:field="twitterUrl" addStyleNames="{style.textLast}" />
 				</div>
 			</div>
 		</div>

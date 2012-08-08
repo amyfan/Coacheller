@@ -12,7 +12,7 @@
 			<div class="appname">
 				<g:Image resource="{res.lollapaloozer_banner}"/>
 				<g:Label ui:field="subtitle" addStyleNames="{style.subtitle}" />
-				<g:Anchor ui:field="android" addStyleNames="{style.textLast}" />
+				<g:Anchor ui:field="androidUrl" addStyleNames="{style.textLast}" />
 			</div>
 			<div class="roundrect">
 				<!--div class="buttoncell">

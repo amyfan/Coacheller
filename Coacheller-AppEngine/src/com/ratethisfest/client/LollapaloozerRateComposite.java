@@ -111,14 +111,17 @@ public class LollapaloozerRateComposite extends Composite {
   com.google.gwt.user.client.ui.Button backButton;
 
   // ADMIN PANEL:
-  // @UiField
-  // com.google.gwt.user.client.ui.Button updateSetButton;
-  //
-  // @UiField
-  // com.google.gwt.user.client.ui.Button recalculateButton;
-  //
-  // @UiField
-  // com.google.gwt.user.client.ui.Button clearMyRatingButton;
+  @UiField
+  com.google.gwt.user.client.ui.Button updateSetButton;
+
+  @UiField
+  com.google.gwt.user.client.ui.Button recalculateButton;
+
+  @UiField
+  com.google.gwt.user.client.ui.Button clearMyRatingButton;
+
+  @UiField
+  com.google.gwt.user.client.ui.Button clearAllRatingButton;
 
   @UiField
   RatingsTable ratingsTable;
@@ -207,73 +210,97 @@ public class LollapaloozerRateComposite extends Composite {
       }
     });
 
-    // updateSetButton.addClickHandler(new ClickHandler() {
-    // @Override
-    // public void onClick(ClickEvent event) {
-    // if (ownerEmail.equals(ADMIN_EMAIL)) {
-    // infoBox.setText("");
-    // lollapaloozerService.insertSetData(new AsyncCallback<String>() {
-    //
-    // public void onFailure(Throwable caught) {
-    // // Show the RPC error message to the user
-    // infoBox.setText(SERVER_ERROR);
-    // }
-    //
-    // public void onSuccess(String result) {
-    // infoBox.setText(result);
-    // }
-    // });
-    //
-    // androidAnimation.run(400);
-    // } else {
-    // infoBox.setText(ADMIN_ERROR);
-    // }
-    // }
-    // });
+    updateSetButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        if (ownerEmail.equals(ADMIN_EMAIL)) {
+          infoBox.setText("");
+          lollapaloozerService.insertSetData(new AsyncCallback<String>() {
 
-    // recalculateButton.addClickHandler(new ClickHandler() {
-    // @Override
-    // public void onClick(ClickEvent event) {
-    // if (ownerEmail.equals(ADMIN_EMAIL)) {
-    // infoBox.setText("");
-    // coachellerService.recalculateSetRatingAverages(new
-    // AsyncCallback<String>() {
-    //
-    // public void onFailure(Throwable caught) {
-    // // Show the RPC error message to the user
-    // infoBox.setText(SERVER_ERROR);
-    // }
-    //
-    // public void onSuccess(String result) {
-    // infoBox.setText(result);
-    // }
-    // });
-    //
-    // androidAnimation.run(400);
-    // } else {
-    // infoBox.setText(ADMIN_ERROR);
-    // }
-    // }
-    // });
-    //
-    // clearMyRatingButton.addClickHandler(new ClickHandler() {
-    // @Override
-    // public void onClick(ClickEvent event) {
-    // infoBox.setText("");
-    // coachellerService.deleteRatingsByUser(ownerEmail, new
-    // AsyncCallback<String>() {
-    // public void onFailure(Throwable caught) {
-    // // Show the RPC error message to the user
-    // infoBox.setText(SERVER_ERROR);
-    // }
-    //
-    // public void onSuccess(String result) {
-    // infoBox.setText(result);
-    // }
-    // });
-    // androidAnimation.run(400);
-    // }
-    // });
+            public void onFailure(Throwable caught) {
+              // Show the RPC error message to the user
+              // infoBox.setText(SERVER_ERROR);
+              infoBox.setText(caught.getMessage());
+            }
+
+            public void onSuccess(String result) {
+              infoBox.setText(result);
+            }
+          });
+
+          androidAnimation.run(400);
+        } else {
+          infoBox.setText(ADMIN_ERROR);
+        }
+      }
+    });
+
+    recalculateButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        if (ownerEmail.equals(ADMIN_EMAIL)) {
+          infoBox.setText("");
+          lollapaloozerService.recalculateSetRatingAverages(new AsyncCallback<String>() {
+
+            public void onFailure(Throwable caught) {
+              // Show the RPC error message to the user
+              // infoBox.setText(SERVER_ERROR);
+              infoBox.setText(caught.getMessage());
+            }
+
+            public void onSuccess(String result) {
+              infoBox.setText(result);
+            }
+          });
+
+          androidAnimation.run(400);
+        } else {
+          infoBox.setText(ADMIN_ERROR);
+        }
+      }
+    });
+
+    clearMyRatingButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        infoBox.setText("");
+        lollapaloozerService.deleteRatingsByUser(ownerEmail, new AsyncCallback<String>() {
+          public void onFailure(Throwable caught) {
+            // Show the RPC error message to the user
+            // infoBox.setText(SERVER_ERROR);
+            infoBox.setText(caught.getMessage());
+          }
+
+          public void onSuccess(String result) {
+            infoBox.setText(result);
+          }
+        });
+        androidAnimation.run(400);
+      }
+    });
+
+    clearAllRatingButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        if (ownerEmail.equals(ADMIN_EMAIL)) {
+          infoBox.setText("");
+          lollapaloozerService.deleteRatingsByYear(2012, new AsyncCallback<String>() {
+            public void onFailure(Throwable caught) {
+              // Show the RPC error message to the user
+              // infoBox.setText(SERVER_ERROR);
+              infoBox.setText(caught.getMessage());
+            }
+
+            public void onSuccess(String result) {
+              infoBox.setText(result);
+            }
+          });
+          androidAnimation.run(400);
+        } else {
+          infoBox.setText(ADMIN_ERROR);
+        }
+      }
+    });
 
     ratingsTable.deleteColumn.setFieldUpdater(new FieldUpdater<RatingGwt, String>() {
       public void update(int index, RatingGwt rating, String value) {

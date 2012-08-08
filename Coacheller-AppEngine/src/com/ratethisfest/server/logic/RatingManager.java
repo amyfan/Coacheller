@@ -79,10 +79,6 @@ public abstract class RatingManager {
     }
   }
 
-  protected void deleteAllRatings(FestivalEnum festival) {
-    ratingDao.deleteAllRatingsByFestival(festival);
-  }
-
   public Set updateSet(Set set) {
     return setDao.updateSet(set);
   }
@@ -97,8 +93,8 @@ public abstract class RatingManager {
     return set;
   }
 
-  protected void deleteAllSets(FestivalEnum festival) {
-    setDao.deleteAllSetsByFestival(festival);
+  protected void deleteAllSetsByYear(FestivalEnum festival, Integer year) {
+    setDao.deleteAllSetsByFestivalAndYear(festival, year);
   }
 
   public void deleteSet(Set set) {
