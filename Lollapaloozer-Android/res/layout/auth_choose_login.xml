@@ -32,13 +32,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="*Share with your friends using Facebook or Twitter"
-            android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/text_banner_line3"/>
+            android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/text_banner_line2"/>
         
         <TextView
             android:id="@+id/text_banner_line4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/text_banner_line2"
+            android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/text_banner_line3"
             android:text="*Use reminder alerts- Don't miss your favorite sets (coming soon)"/>
 
     </RelativeLayout>
