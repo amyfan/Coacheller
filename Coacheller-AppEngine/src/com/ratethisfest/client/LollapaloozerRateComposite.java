@@ -59,6 +59,7 @@ public class LollapaloozerRateComposite extends Composite {
 
   private final LollapaloozerServiceAsync lollapaloozerService = GWT
       .create(LollapaloozerService.class);
+  
   private List<Set> setsList = new ArrayList<Set>();
   private List<RatingGwt> ratingsList;
 

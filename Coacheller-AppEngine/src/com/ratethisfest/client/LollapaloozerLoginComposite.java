@@ -1,14 +1,15 @@
 package com.ratethisfest.client;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.ratethisfest.client.auth.FacebookAuthUtils;
+import com.ratethisfest.client.auth.GoogleAuthUtils;
+import com.ratethisfest.shared.AuthConstants;
 
 public class LollapaloozerLoginComposite extends Composite {
 
@@ -37,29 +38,17 @@ public class LollapaloozerLoginComposite extends Composite {
 
   private void initUiElements() {
     title.setText("CHOOSE LOGIN OPTION");
-    StringBuilder urlStringBuilder = new StringBuilder();
-    urlStringBuilder.append("https://www.facebook.com/dialog/oauth/?");
-    urlStringBuilder.append("client_id=");
-    urlStringBuilder.append("186287061500005");
-    urlStringBuilder.append("&redirect_uri=");
-    urlStringBuilder.append("http://www.lollapaloozer.com/#login_facebook");
-    // to prevent cross site forgery
-    // urlStringBuilder.append("&state=");
-    // urlStringBuilder.append("YOUR_STATE_VALUE");
-    // TODO
-    // urlStringBuilder.append("&scope=");
-    // urlStringBuilder.append("COMMA_SEPARATED_LIST_OF_PERMISSION_NAMES");
-    facebookUrl.setHref(urlStringBuilder.toString());
+    // Facebook
+    facebookUrl.setHref(FacebookAuthUtils.getRequestUrl(AuthConstants.LOLLA_FACEBOOK_APP_ID,
+        "http://www.lollapaloozer.com/"));
     facebookUrl.setText("Log in with Facebook");
 
-    urlStringBuilder = new StringBuilder();
-    urlStringBuilder.append("https://accounts.google.com/o/oauth2/auth/?");
-    urlStringBuilder.append("client_id=");
-    urlStringBuilder.append("186287061500005");
-    urlStringBuilder.append("&redirect_uri=");
-    urlStringBuilder.append("http://www.lollapaloozer.com/#login_google");
-    googleUrl.setHref(urlStringBuilder.toString());
+    // Google
+    googleUrl.setHref(GoogleAuthUtils.getRequestUrl(AuthConstants.LOLLA_GOOGLE_WEB_CLIENT_ID,
+        "http://www.lollapaloozer.com/"));
     googleUrl.setText("Log in with Google");
+
+    // Twitter
   }
 
   @Override

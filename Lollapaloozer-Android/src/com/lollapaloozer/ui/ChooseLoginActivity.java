@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.lollapaloozer.LollapaloozerApplication;
 import com.lollapaloozer.R;
 import com.lollapaloozer.auth.client.AuthProvider;
-import com.ratethisfest.shared.Constants;
+import com.ratethisfest.shared.AuthConstants;
 
 public class ChooseLoginActivity extends Activity implements OnClickListener {
 
@@ -111,13 +111,13 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
 
     if (_app.getAuthModel().isLoggedInPrimary()) {
       result = RESULT_OK;
-      returnIntent.putExtra(Constants.INTENT_EXTRA_LOGIN_TYPE, _app.getAuthModel()
+      returnIntent.putExtra(AuthConstants.INTENT_EXTRA_LOGIN_TYPE, _app.getAuthModel()
           .getCurrentAuthProviderType());
 
-      returnIntent.putExtra(Constants.INTENT_EXTRA_ACCOUNT_IDENTIFIER, _app.getAuthModel()
+      returnIntent.putExtra(AuthConstants.INTENT_EXTRA_ACCOUNT_IDENTIFIER, _app.getAuthModel()
           .getCurrentAuthProvider().getVerifiedAccountIdentifier());
 
-      returnIntent.putExtra(Constants.INTENT_EXTRA_LOGIN_TOKEN, _app.getAuthModel()
+      returnIntent.putExtra(AuthConstants.INTENT_EXTRA_LOGIN_TOKEN, _app.getAuthModel()
           .getCurrentAuthProvider().getAuthToken());
 
     } else {
@@ -169,7 +169,7 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
   }
 
   private void _setLoginStatus(String status) {
-    _loginStatusText.setText(Constants.UI_STR_LOGIN_STATUS + " " + status);
+    _loginStatusText.setText(AuthConstants.UI_STR_LOGIN_STATUS + " " + status);
   }
 
   // Default is For Facebook
@@ -184,13 +184,13 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
     System.out.println();
 
     switch (requestCode) {
-    case Constants.INTENT_TWITTER_LOGIN:
+    case AuthConstants.INTENT_TWITTER_LOGIN:
       if (resultCode == Activity.RESULT_OK) {
         _app.getAuthModel().twitterAuthCallback(requestCode, resultCode, data);
         break;
       }
 
-    case Constants.INTENT_FACEBOOK_LOGIN: {
+    case AuthConstants.INTENT_FACEBOOK_LOGIN: {
       System.out.println("onACtivityResult called with unknown values: " + requestCode + ","
           + resultCode);
       _app.getAuthModel().getFacebookObject().authorizeCallback(requestCode, resultCode, data);
@@ -221,19 +221,19 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
     System.out.println("Button Click: " + buttonClickedName);
 
     if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_google))) {
-      _app.getAuthModel().primaryLogin(Constants.LOGIN_TYPE_GOOGLE);
+      _app.getAuthModel().primaryLogin(AuthConstants.LOGIN_TYPE_GOOGLE);
     }
 
     if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_twitter))) {
-      _app.getAuthModel().primaryLogin(Constants.LOGIN_TYPE_TWITTER);
+      _app.getAuthModel().primaryLogin(AuthConstants.LOGIN_TYPE_TWITTER);
     }
     if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_facebook))) {
-      _app.getAuthModel().primaryLogin(Constants.LOGIN_TYPE_FACEBOOK);
+      _app.getAuthModel().primaryLogin(AuthConstants.LOGIN_TYPE_FACEBOOK);
     }
 
     if (buttonClickedName.equals(this.getResources().getResourceEntryName(
         R.id.btn_login_facebook_browser))) {
-      _app.getAuthModel().primaryLogin(Constants.LOGIN_TYPE_FACEBOOK_BROWSER);
+      _app.getAuthModel().primaryLogin(AuthConstants.LOGIN_TYPE_FACEBOOK_BROWSER);
     }
 
     if (buttonClickedName.equals(this.getResources().getResourceEntryName(

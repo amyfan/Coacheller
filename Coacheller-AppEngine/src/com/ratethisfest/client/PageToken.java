@@ -12,7 +12,8 @@ public enum PageToken {
   LOGIN("login"),
   LOGIN_FACEBOOK("login_facebook"),
   LOGIN_GOOGLE("login_google"),
-  LOGIN_TWITTER("login_twitter");
+  LOGIN_TWITTER("login_twitter"),
+  OAUTH2_CALLBACK("oauth2callback");
 
   private String value;
 

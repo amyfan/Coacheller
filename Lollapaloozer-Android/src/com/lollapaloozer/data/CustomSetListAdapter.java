@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.lollapaloozer.R;
 import com.lollapaloozer.ui.LollapaloozerActivity;
 import com.lollapaloozer.util.LollapaloozerHelper;
-import com.ratethisfest.shared.Constants;
+import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.DateTimeUtils;
 
 public class CustomSetListAdapter implements ListAdapter {
@@ -169,8 +169,8 @@ public class CustomSetListAdapter implements ListAdapter {
       if (myNote.equals("")) {
         holder.myComment.setVisibility(View.GONE);
       } else {
-        if (myNote.length() > Constants.DATA_NOTE_VISIBLE_MAX_LENGTH) {
-          myNote = myNote.substring(0, Constants.DATA_NOTE_VISIBLE_MAX_LENGTH) + "...";
+        if (myNote.length() > AuthConstants.DATA_NOTE_VISIBLE_MAX_LENGTH) {
+          myNote = myNote.substring(0, AuthConstants.DATA_NOTE_VISIBLE_MAX_LENGTH) + "...";
         }
         holder.myComment.setText(myNote);
         holder.myComment.setVisibility(View.VISIBLE);

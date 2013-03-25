@@ -19,14 +19,14 @@ import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
 import com.lollapaloozer.auth.verify.FacebookVerifier;
 import com.lollapaloozer.data.SocialNetworkPost;
-import com.ratethisfest.shared.Constants;
+import com.ratethisfest.shared.AuthConstants;
 
 public class FacebookAuthProvider implements AuthProvider {
 
   // private ChooseLoginActivity _activity;
-  private final String LOGIN_TYPE = Constants.LOGIN_TYPE_FACEBOOK;
+  private final String LOGIN_TYPE = AuthConstants.LOGIN_TYPE_FACEBOOK;
   private AuthModel _model;
-  private Facebook _facebook = new Facebook("186287061500005");
+  private Facebook _facebook = new Facebook(AuthConstants.LOLLA_FACEBOOK_APP_ID);
   private AsyncFacebookRunner _AsyncRunner = new AsyncFacebookRunner(_facebook);
 
   private JSONObject _userInfo;
@@ -117,7 +117,7 @@ public class FacebookAuthProvider implements AuthProvider {
   public String postToWall(SocialNetworkPost post) {
     Bundle parameters = new Bundle();
     String message = "I saw the set by " + post.artistName + " and rated it " + post.rating
-        + " (out of " + Constants.RATING_MAXIMUM + ").";
+        + " (out of " + AuthConstants.RATING_MAXIMUM + ").";
     if (post.note != null && !post.note.equals("")) {
       message += "\r\nNotes: " + post.note;
     }

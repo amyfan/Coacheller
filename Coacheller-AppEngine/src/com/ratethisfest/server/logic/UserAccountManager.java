@@ -99,6 +99,7 @@ public class UserAccountManager {
   }
 
   public AppUser createAppUser(String authType, String authId, String authToken, String email) {
+    // TODO: authenticate user
     AppUser appUser = new AppUser();
     appUser.setAuthType(authType);
     appUser.setAuthId(authId);

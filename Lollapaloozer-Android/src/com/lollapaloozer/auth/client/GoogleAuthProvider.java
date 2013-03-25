@@ -14,11 +14,11 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.lollapaloozer.auth.verify.GoogleAuthVerifier;
-import com.ratethisfest.shared.Constants;
+import com.ratethisfest.shared.AuthConstants;
 
 public class GoogleAuthProvider implements AuthProvider {
 
-  private final String LOGIN_TYPE = Constants.LOGIN_TYPE_GOOGLE;
+  private final String LOGIN_TYPE = AuthConstants.LOGIN_TYPE_GOOGLE;
   private final String ACCOUNT_TYPE_REQUESTED = "com.google";
   private final int TOKEN_RETRIES = 2;
 

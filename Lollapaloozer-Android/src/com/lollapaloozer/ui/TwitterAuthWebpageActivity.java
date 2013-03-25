@@ -11,7 +11,7 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
 import com.lollapaloozer.R;
-import com.ratethisfest.shared.Constants;
+import com.ratethisfest.shared.AuthConstants;
 
 public class TwitterAuthWebpageActivity extends Activity {
 
@@ -49,18 +49,18 @@ public class TwitterAuthWebpageActivity extends Activity {
         System.out.println("onPageStarted : " + url);
         Uri uri = Uri.parse(url);
 
-        if (url.startsWith(Constants.OAUTH_CALLBACK_URL) && url != null) {
+        if (url.startsWith(AuthConstants.OAUTH_CALLBACK_URL) && url != null) {
           System.out.println("Special callback URL was detected");
-          _requestTokenString = uri.getQueryParameter(Constants.OAUTH_CALLBACK_PARAM_TOKEN);
+          _requestTokenString = uri.getQueryParameter(AuthConstants.OAUTH_CALLBACK_PARAM_TOKEN);
           _requestTokenVerifierString = uri
-              .getQueryParameter(Constants.OAUTH_CALLBACK_PARAM_VERIFIER);
+              .getQueryParameter(AuthConstants.OAUTH_CALLBACK_PARAM_VERIFIER);
 
           System.out.println("OAuth token: " + _requestTokenString);
           System.out.println("OAuth verifier: " + _requestTokenVerifierString);
 
           Intent resultIntent = new Intent();
-          resultIntent.putExtra(Constants.INTENT_EXTRA_OAUTH1_RETURN_TOKEN, _requestTokenString);
-          resultIntent.putExtra(Constants.INTENT_EXTRA_OAUTH1_RETURN_VERIFIER,
+          resultIntent.putExtra(AuthConstants.INTENT_EXTRA_OAUTH1_RETURN_TOKEN, _requestTokenString);
+          resultIntent.putExtra(AuthConstants.INTENT_EXTRA_OAUTH1_RETURN_VERIFIER,
               _requestTokenVerifierString);
           setResult(RESULT_OK, resultIntent);
           finish();
@@ -71,7 +71,7 @@ public class TwitterAuthWebpageActivity extends Activity {
     });
 
     Intent callingIntent = getIntent();
-    String authUrl = callingIntent.getStringExtra(Constants.INTENT_EXTRA_AUTH_URL);
+    String authUrl = callingIntent.getStringExtra(AuthConstants.INTENT_EXTRA_AUTH_URL);
     webview.loadUrl(authUrl);
   }
 

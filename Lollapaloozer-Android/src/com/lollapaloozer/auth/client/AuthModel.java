@@ -12,7 +12,7 @@ import com.lollapaloozer.LollapaloozerApplication;
 import com.lollapaloozer.data.SocialNetworkPost;
 import com.lollapaloozer.ui.ChooseLoginActivity;
 import com.lollapaloozer.ui.LollapaloozerActivity;
-import com.ratethisfest.shared.Constants;
+import com.ratethisfest.shared.AuthConstants;
 
 public class AuthModel {
 
@@ -55,14 +55,14 @@ public class AuthModel {
       _primaryLoginType = loginType;
     }
 
-    if (loginType.equals(Constants.LOGIN_TYPE_FACEBOOK)) {
+    if (loginType.equals(AuthConstants.LOGIN_TYPE_FACEBOOK)) {
       _addPermission(PERMISSION_FACEBOOK_POSTWALL);
       if (_app.getLastActivity() instanceof LollapaloozerActivity) {
         _app.getLollapaloozerActivity().doFacebookPost();
       }
     }
 
-    if (loginType.equals(Constants.LOGIN_TYPE_TWITTER)) {
+    if (loginType.equals(AuthConstants.LOGIN_TYPE_TWITTER)) {
       _addPermission(PERMISSION_TWITTER_TWEET);
       if (_app.getLastActivity() instanceof LollapaloozerActivity) {
         _app.getLollapaloozerActivity().doTwitterPost();
@@ -135,19 +135,19 @@ public class AuthModel {
   }
 
   public AuthProvider getCurrentAuthProvider() {
-    if (Constants.LOGIN_TYPE_GOOGLE.equals(_primaryLoginType)) {
+    if (AuthConstants.LOGIN_TYPE_GOOGLE.equals(_primaryLoginType)) {
       return _authProviderGoogle;
     }
 
-    if (Constants.LOGIN_TYPE_FACEBOOK.equals(_primaryLoginType)) {
+    if (AuthConstants.LOGIN_TYPE_FACEBOOK.equals(_primaryLoginType)) {
       return _authProviderFacebook;
     }
 
-    if (Constants.LOGIN_TYPE_FACEBOOK_BROWSER.equals(_primaryLoginType)) {
+    if (AuthConstants.LOGIN_TYPE_FACEBOOK_BROWSER.equals(_primaryLoginType)) {
       return _authProviderFacebookWeb;
     }
 
-    if (Constants.LOGIN_TYPE_TWITTER.equals(_primaryLoginType)) {
+    if (AuthConstants.LOGIN_TYPE_TWITTER.equals(_primaryLoginType)) {
       return _authProviderTwitter;
     }
 
@@ -160,19 +160,19 @@ public class AuthModel {
 
   // public int getCurrentAuthProviderType() {
   // if (_authProviderGoogle.isLoggedIn()) {
-  // return Constants.LOGIN_TYPE_GOOGLE;
+  // return AuthConstants.LOGIN_TYPE_GOOGLE;
   // }
   //
   // if (_authProviderFacebook.isLoggedIn()) {
-  // return Constants.LOGIN_TYPE_FACEBOOK;
+  // return AuthConstants.LOGIN_TYPE_FACEBOOK;
   // }
   //
   // if (_authProviderFacebookWeb.isLoggedIn()) {
-  // return Constants.LOGIN_TYPE_FACEBOOK_BROWSER;
+  // return AuthConstants.LOGIN_TYPE_FACEBOOK_BROWSER;
   // }
   //
   // if (_authProviderTwitter.isLoggedIn()) {
-  // return Constants.LOGIN_TYPE_TWITTER;
+  // return AuthConstants.LOGIN_TYPE_TWITTER;
   // }
   //
   // return 0;
@@ -210,16 +210,16 @@ public class AuthModel {
   }
 
   public void primaryLogin(String loginType) {
-    if (Constants.LOGIN_TYPE_GOOGLE.equals(loginType)) {
+    if (AuthConstants.LOGIN_TYPE_GOOGLE.equals(loginType)) {
       loginToGoogle();
 
-    } else if (Constants.LOGIN_TYPE_FACEBOOK.equals(loginType)) {
+    } else if (AuthConstants.LOGIN_TYPE_FACEBOOK.equals(loginType)) {
       loginToFacebook();
 
-    } else if (Constants.LOGIN_TYPE_FACEBOOK_BROWSER.equals(loginType)) {
+    } else if (AuthConstants.LOGIN_TYPE_FACEBOOK_BROWSER.equals(loginType)) {
       loginToFacebookBrowser();
 
-    } else if (Constants.LOGIN_TYPE_TWITTER.equals(loginType)) {
+    } else if (AuthConstants.LOGIN_TYPE_TWITTER.equals(loginType)) {
       loginToTwitter();
 
     } else {

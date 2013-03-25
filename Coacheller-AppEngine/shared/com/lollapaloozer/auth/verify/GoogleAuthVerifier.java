@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import org.json.JSONException;
 
 import com.lollapaloozer.auth.OAuthHTTP;
+import com.ratethisfest.shared.AuthConstants;
 
 public class GoogleAuthVerifier implements AuthVerifier {
   private static int _failuresToSimulate;
@@ -17,8 +18,8 @@ public class GoogleAuthVerifier implements AuthVerifier {
     try {
       OAuthHTTP oauthreq;
       oauthreq = new OAuthHTTP("https://www.googleapis.com/oauth2/v1/userinfo?alt=json");
-      oauthreq.setRequestProperty("client_id", "253259340939.apps.googleusercontent.com");
-      oauthreq.setRequestProperty("client_secret", "3HqdJ51XXYc6Px83sZuJlfmI");
+      oauthreq.setRequestProperty("client_id", AuthConstants.LOLLA_GOOGLE_MOBILE_CLIENT_ID);
+      oauthreq.setRequestProperty("client_secret", AuthConstants.LOLLA_GOOGLE_MOBILE_CLIENT_SECRET);
       oauthreq.setRequestProperty("Authorization", "OAuth " + authToken);
 
       boolean oauthSuccess = oauthreq.execute();

@@ -12,13 +12,13 @@ import android.content.Intent;
 import com.lollapaloozer.auth.TwitterAuthProviderOAuth;
 import com.lollapaloozer.auth.verify.TwitterVerifier;
 import com.lollapaloozer.ui.TwitterAuthWebpageActivity;
-import com.ratethisfest.shared.Constants;
+import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.Helper;
 
 public class FacebookWebAuthProvider implements AuthProvider {
 
   // private ChooseLoginActivity _activity;
-  private final String LOGIN_TYPE = Constants.LOGIN_TYPE_FACEBOOK_BROWSER;
+  private final String LOGIN_TYPE = AuthConstants.LOGIN_TYPE_FACEBOOK_BROWSER;
   private AuthModel _model;
   private TwitterAuthProviderOAuth _oAuthProvider;
   private HashMap<String, String> _twitterAccountProperties = new HashMap<String, String>();
@@ -37,8 +37,8 @@ public class FacebookWebAuthProvider implements AuthProvider {
     // _activity = activity;
     _model = model;
 
-    _oAuthProvider = new TwitterAuthProviderOAuth(Constants.CONSUMER_KEY,
-        Constants.CONSUMER_SECRET, Constants.OAUTH_CALLBACK_URL);
+    _oAuthProvider = new TwitterAuthProviderOAuth(AuthConstants.CONSUMER_KEY,
+        AuthConstants.CONSUMER_SECRET, AuthConstants.OAUTH_CALLBACK_URL);
     _twitterAccountPropertyNames = new ArrayList<String>();
     _twitterAccountPropertyNames.add(TwitterVerifier.ACCOUNT_PROPERTY_ID);
     _twitterAccountPropertyNames.add(TwitterVerifier.ACCOUNT_PROPERTY_NAME);
@@ -63,9 +63,9 @@ public class FacebookWebAuthProvider implements AuthProvider {
     String authReqTokenUrl = _oAuthProvider.getRequestTokenUrl();
     Intent twitterAuthIntent = new Intent(_model.getApp().getChooseLoginActivity(),
         TwitterAuthWebpageActivity.class);
-    twitterAuthIntent.putExtra(Constants.INTENT_EXTRA_AUTH_URL, authReqTokenUrl);
+    twitterAuthIntent.putExtra(AuthConstants.INTENT_EXTRA_AUTH_URL, authReqTokenUrl);
     _model.getApp().getChooseLoginActivity()
-        .startActivityForResult(twitterAuthIntent, Constants.INTENT_TWITTER_LOGIN);
+        .startActivityForResult(twitterAuthIntent, AuthConstants.INTENT_TWITTER_LOGIN);
   }
 
   @Override
@@ -103,8 +103,8 @@ public class FacebookWebAuthProvider implements AuthProvider {
 
   public void requestTokenCallback(int requestCode, int resultCode, Intent data) {
     if (resultCode == Activity.RESULT_OK) {
-      String token = data.getStringExtra(Constants.INTENT_EXTRA_OAUTH1_RETURN_TOKEN);
-      String verifier = data.getStringExtra(Constants.INTENT_EXTRA_OAUTH1_RETURN_VERIFIER);
+      String token = data.getStringExtra(AuthConstants.INTENT_EXTRA_OAUTH1_RETURN_TOKEN);
+      String verifier = data.getStringExtra(AuthConstants.INTENT_EXTRA_OAUTH1_RETURN_VERIFIER);
       _oAuthProvider.requestTokenResult(token, verifier);
     }
 

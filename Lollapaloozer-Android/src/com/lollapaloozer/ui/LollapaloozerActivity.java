@@ -46,7 +46,7 @@ import com.lollapaloozer.data.JSONArraySortMap;
 import com.lollapaloozer.data.LoginData;
 import com.lollapaloozer.data.SocialNetworkPost;
 import com.lollapaloozer.util.LollapaloozerHelper;
-import com.ratethisfest.shared.Constants;
+import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.HttpConstants;
 
@@ -253,16 +253,16 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     if (resultCode == Activity.RESULT_OK) { // Login success
       switch (requestCode) {
 
-      case Constants.INTENT_CHOOSE_LOGIN_TYPE:
+      case AuthConstants.INTENT_CHOOSE_LOGIN_TYPE:
         Bundle results = data.getExtras();
         _loginData = new LoginData();
         _loginData.timeLoginIssued = System.currentTimeMillis();
-        _loginData.loginType = results.getString(Constants.INTENT_EXTRA_LOGIN_TYPE);
-        _loginData.accountIdentifier = results.getString(Constants.INTENT_EXTRA_ACCOUNT_IDENTIFIER);
-        _loginData.accountToken = results.getString(Constants.INTENT_EXTRA_LOGIN_TOKEN);
+        _loginData.loginType = results.getString(AuthConstants.INTENT_EXTRA_LOGIN_TYPE);
+        _loginData.accountIdentifier = results.getString(AuthConstants.INTENT_EXTRA_ACCOUNT_IDENTIFIER);
+        _loginData.accountToken = results.getString(AuthConstants.INTENT_EXTRA_LOGIN_TOKEN);
 
-        if (_loginData.loginType == Constants.LOGIN_TYPE_GOOGLE
-            || _loginData.loginType == Constants.LOGIN_TYPE_FACEBOOK) {
+        if (_loginData.loginType == AuthConstants.LOGIN_TYPE_GOOGLE
+            || _loginData.loginType == AuthConstants.LOGIN_TYPE_FACEBOOK) {
           _loginData.emailAddress = _loginData.accountIdentifier;
         } else {
           _loginData.emailAddress = null;
@@ -277,7 +277,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
         _storageManager.save();
         break;
 
-      case Constants.INTENT_FACEBOOK_LOGIN: {
+      case AuthConstants.INTENT_FACEBOOK_LOGIN: {
         // Assuming it is Facebook
         System.out.println("onActivityResult called by Facebook API");
         // Required by Facebook API
@@ -285,7 +285,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
         break;
       }
 
-      case Constants.INTENT_TWITTER_LOGIN: {
+      case AuthConstants.INTENT_TWITTER_LOGIN: {
         // Assuming it is Facebook
         System.out.println("onActivityResult called by Twitter API");
         _app.getAuthModel().twitterAuthCallback(requestCode, resultCode, data);
@@ -388,7 +388,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     if (id == DIALOG_FIRST_USE) {
       _firstUseDialog = new Dialog(this);
       _firstUseDialog.setContentView(R.layout.first_use_dialog);
-      _firstUseDialog.setTitle(Constants.DIALOG_TITLE_FIRST_USE);
+      _firstUseDialog.setTitle(AuthConstants.DIALOG_TITLE_FIRST_USE);
 
       Button buttonOK = (Button) _firstUseDialog.findViewById(R.id.button_firstuse_ok);
       buttonOK.setOnClickListener(this);
@@ -398,7 +398,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     if (id == DIALOG_GETEMAIL) {
       _getEmailDialog = new Dialog(this);
       _getEmailDialog.setContentView(R.layout.get_email_address);
-      _getEmailDialog.setTitle(Constants.DIALOG_TITLE_GET_EMAIL);
+      _getEmailDialog.setTitle(AuthConstants.DIALOG_TITLE_GET_EMAIL);
 
       Button buttonOK = (Button) _getEmailDialog.findViewById(R.id.button_provideEmail);
       buttonOK.setOnClickListener(this);
@@ -728,14 +728,14 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   }
 
   private void _beginSigninProcess() {
-    Toast featureRequiresSignin = Toast.makeText(this, Constants.MSG_SIGNIN_REQUIRED, 25);
+    Toast featureRequiresSignin = Toast.makeText(this, AuthConstants.MSG_SIGNIN_REQUIRED, 25);
     featureRequiresSignin.show();
 
     // This shows the 'enter email' dialog, no longer needed
     // showDialog(DIALOG_GETEMAIL);
 
     Intent lollapaloozerAuthIntent = new Intent(this, ChooseLoginActivity.class);
-    startActivityForResult(lollapaloozerAuthIntent, Constants.INTENT_CHOOSE_LOGIN_TYPE);
+    startActivityForResult(lollapaloozerAuthIntent, AuthConstants.INTENT_CHOOSE_LOGIN_TYPE);
   }
 
   private void refreshData() {

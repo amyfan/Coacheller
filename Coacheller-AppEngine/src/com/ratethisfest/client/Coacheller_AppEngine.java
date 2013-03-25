@@ -28,7 +28,17 @@ public class Coacheller_AppEngine implements EntryPoint, ValueChangeHandler<Stri
       c = new CoachellerViewComposite();
     } else if (Window.Location.getHostName().contains("lollapaloozer")) {
       Window.setTitle("Lollapaloozer");
-      c = new LollapaloozerViewComposite();
+      // TODO: need much more robust way to parse redirected URL's!
+      if (Window.Location.getHref().contains("code=4")) {
+        String code = Window.Location.getParameter("code");
+        c = new LollapaloozerLoginGoogleComposite(code);
+      } else if (Window.Location.getParameter("code") != null
+          && !Window.Location.getParameter("code").equals("")) {
+        String code = Window.Location.getParameter("code");
+        c = new LollapaloozerLoginFacebookComposite(code);
+      } else {
+        c = new LollapaloozerViewComposite();
+      }
     }
     // else if (Window.Location.getHostName().contains("127.0.0.1")) {
     // c = new LollapaloozerViewComposite();

@@ -1,0 +1,148 @@
+Lollapalooza,2012,Friday,1200,1200,Gobi,Gobi,Abe Vigoda
+Lollapalooza,2012,Friday,2135,2135,Sahara,Sahara,Afrojack
+Lollapalooza,2012,Friday,1955,1955,Sahara,Sahara,Alesso
+Lollapalooza,2012,Friday,2400,2400,Mojave,Mojave,Amon Tobin : ISAM Live
+Lollapalooza,2012,Friday,1830,1830,Lollapalooza,Lollapalooza,Arctic Monkeys
+Lollapalooza,2012,Friday,2130,2130,Gobi,Gobi,Atari Teenage Riot
+Lollapalooza,2012,Friday,1430,1430,Sahara,Sahara,Breakbot
+Lollapalooza,2012,Friday,2350,2350,Sahara,Sahara,Datsik
+Lollapalooza,2012,Friday,1820,1820,Mojave,Mojave,Dawes
+Lollapalooza,2012,Friday,1745,1745,Gobi,Gobi,Death Grips
+Lollapalooza,2012,Friday,1515,1515,Gobi,Gobi,EMA
+Lollapalooza,2012,Friday,2205,2205,Outdoor,Outdoor,Explosions in the Sky
+Lollapalooza,2012,Friday,1710,1710,Sahara,Sahara,Feed Me
+Lollapalooza,2012,Friday,2015,2015,Gobi,Gobi,Frank Ocean
+Lollapalooza,2012,Friday,1300,1300,Lollapalooza,Lollapalooza,Gabe Real
+Lollapalooza,2012,Friday,1630,1630,Gobi,Gobi,Gary Clark Jr.
+Lollapalooza,2012,Friday,1740,1740,Outdoor,Outdoor,GIRLS
+Lollapalooza,2012,Friday,1435,1435,Mojave,Mojave,GIVERS
+Lollapalooza,2012,Friday,1705,1705,Mojave,Mojave,Grouplove
+Lollapalooza,2012,Friday,1330,1330,Lollapalooza,Lollapalooza,Hello Seahorse!
+Lollapalooza,2012,Friday,1320,1320,Mojave,Mojave,honeyhoney
+Lollapalooza,2012,Friday,1550,1550,Lollapalooza,Lollapalooza,James
+Lollapalooza,2012,Friday,1710,1710,Lollapalooza,Lollapalooza,Jimmy Cliff with Tim Armstrong and the Engine Band
+Lollapalooza,2012,Friday,1440,1440,Lollapalooza,Lollapalooza,Kendrick Lamar
+Lollapalooza,2012,Friday,1215,1215,Sahara,Sahara,LA Riots
+Lollapalooza,2012,Friday,1935,1935,Mojave,Mojave,M. Ward
+Lollapalooza,2012,Friday,2215,2215,Mojave,Mojave,M83
+Lollapalooza,2012,Friday,1835,1835,Sahara,Sahara,Madeon
+Lollapalooza,2012,Friday,1900,1900,Outdoor,Outdoor,Madness
+Lollapalooza,2012,Friday,2050,2050,Outdoor,Outdoor,Mazzy Star
+Lollapalooza,2012,Friday,1120,1120,Sahara,Sahara,Mea
+Lollapalooza,2012,Friday,1625,1625,Outdoor,Outdoor,Neon Indian
+Lollapalooza,2012,Friday,1405,1405,Gobi,Gobi,Other Lives
+Lollapalooza,2012,Friday,1950,1950,Lollapalooza,Lollapalooza,Pulp
+Lollapalooza,2012,Friday,1315,1315,Sahara,Sahara,R3hab
+Lollapalooza,2012,Friday,2320,2320,Outdoor,Outdoor,Refused
+Lollapalooza,2012,Friday,1550,1550,Sahara,Sahara,SebastiAn
+Lollapalooza,2012,Friday,2330,2330,Lollapalooza,Lollapalooza,Swedish House Mafia
+Lollapalooza,2012,Friday,2250,2250,Gobi,Gobi,The Black Angels
+Lollapalooza,2012,Friday,2145,2145,Lollapalooza,Lollapalooza,The Black Keys
+Lollapalooza,2012,Friday,1400,1400,Outdoor,Outdoor,The Dear Hunter
+Lollapalooza,2012,Friday,2400,2400,Gobi,Gobi,The Horrors
+Lollapalooza,2012,Friday,2055,2055,Mojave,Mojave,The Rapture
+Lollapalooza,2012,Friday,1300,1300,Outdoor,Outdoor,The Sheepdogs
+Lollapalooza,2012,Friday,1210,1210,Mojave,Mojave,Wallpaper.
+Lollapalooza,2012,Friday,1300,1300,Gobi,Gobi,Wolf Gang
+Lollapalooza,2012,Friday,1900,1900,Gobi,Gobi,WU LYF
+Lollapalooza,2012,Friday,1550,1550,Mojave,Mojave,Ximena Sarinana
+Lollapalooza,2012,Friday,1515,1515,Outdoor,Outdoor,Yuck
+Lollapalooza,2012,Saturday,2335,2335,Gobi,Gobi,A$AP Rocky
+Lollapalooza,2012,Saturday,1805,1805,Outdoor,Outdoor,Andrew Bird
+Lollapalooza,2012,Saturday,1600,1600,Lollapalooza,Lollapalooza,AWOLNATION
+Lollapalooza,2012,Saturday,1450,1450,Gobi,Gobi,Azealia Banks
+Lollapalooza,2012,Saturday,1415,1415,Mojave,Mojave,Black Lips
+Lollapalooza,2012,Saturday,2130,2130,Lollapalooza,Lollapalooza,Bon Iver
+Lollapalooza,2012,Saturday,1430,1430,Sahara,Sahara,Borgore
+Lollapalooza,2012,Saturday,1715,1715,Gobi,Gobi,Buzzcocks
+Lollapalooza,2012,Saturday,1450,1450,Lollapalooza,Lollapalooza,Childish Gambino
+Lollapalooza,2012,Saturday,2115,2115,Sahara,Sahara,David Guetta
+Lollapalooza,2012,Saturday,1430,1430,Outdoor,Outdoor,Destroyer
+Lollapalooza,2012,Saturday,1225,1225,Sahara,Sahara,Destructo
+Lollapalooza,2012,Saturday,1140,1140,Outdoor,Outdoor,DJP
+Lollapalooza,2012,Saturday,1305,1305,Mojave,Mojave,Dragonette
+Lollapalooza,2012,Saturday,2040,2040,Outdoor,Outdoor,Feist
+Lollapalooza,2012,Saturday,1600,1600,Gobi,Gobi,fIREHOSE
+Lollapalooza,2012,Saturday,2100,2100,Gobi,Gobi,Flying Lotus
+Lollapalooza,2012,Saturday,2200,2200,Mojave,Mojave,Godspeed You! Black Emperor
+Lollapalooza,2012,Saturday,1540,1540,Outdoor,Outdoor,Grace Potter and the Nocturnals
+Lollapalooza,2012,Saturday,1535,1535,Sahara,Sahara,Jacques Lu Cont
+Lollapalooza,2012,Saturday,1920,1920,Outdoor,Outdoor,Jeff Mangum
+Lollapalooza,2012,Saturday,1300,1300,Lollapalooza,Lollapalooza,Juice
+Lollapalooza,2012,Saturday,1710,1710,Lollapalooza,Lollapalooza,Kaiser Chiefs
+Lollapalooza,2012,Saturday,2035,2035,Mojave,Mojave,Kasabian
+Lollapalooza,2012,Saturday,2315,2315,Sahara,Sahara,Kaskade
+Lollapalooza,2012,Saturday,1205,1205,Mojave,Mojave,Keep Shelly in Athens
+Lollapalooza,2012,Saturday,1140,1140,Gobi,Gobi,Kiss Kiss Bang Bang
+Lollapalooza,2012,Saturday,1830,1830,Gobi,Gobi,Laura Marling
+Lollapalooza,2012,Saturday,1755,1755,Mojave,Mojave,Manchester Orchestra
+Lollapalooza,2012,Saturday,1810,1810,Sahara,Sahara,Martin Solveig
+Lollapalooza,2012,Saturday,2210,2210,Outdoor,Outdoor,Miike Snow
+Lollapalooza,2012,Saturday,1325,1325,Sahara,Sahara,Mt Eden
+Lollapalooza,2012,Saturday,1830,1830,Lollapalooza,Lollapalooza,Noel Gallagher's High Flying Birds
+Lollapalooza,2012,Saturday,1125,1125,Sahara,Sahara,Pure Filth Sound
+Lollapalooza,2012,Saturday,2305,2305,Lollapalooza,Lollapalooza,Radiohead
+Lollapalooza,2012,Saturday,2215,2215,Gobi,Gobi,SBTRKT
+Lollapalooza,2012,Saturday,1935,1935,Sahara,Sahara,Sebastian Ingrosso
+Lollapalooza,2012,Saturday,1230,1230,Gobi,Gobi,Spector
+Lollapalooza,2012,Saturday,1915,1915,Mojave,Mojave,Squeeze
+Lollapalooza,2012,Saturday,1945,1945,Gobi,Gobi,St. Vincent
+Lollapalooza,2012,Saturday,2340,2340,Mojave,Mojave,Sub Focus
+Lollapalooza,2012,Saturday,1220,1220,Outdoor,Outdoor,Suedehead
+Lollapalooza,2012,Saturday,1525,1525,Mojave,Mojave,The Big Pink
+Lollapalooza,2012,Saturday,1640,1640,Mojave,Mojave,The Head and the Heart
+Lollapalooza,2012,Saturday,2010,2010,Lollapalooza,Lollapalooza,The Shins
+Lollapalooza,2012,Saturday,1340,1340,Gobi,Gobi,The Vaccines
+Lollapalooza,2012,Saturday,1125,1125,Mojave,Mojave,Tijuana Panthers
+Lollapalooza,2012,Saturday,1650,1650,Outdoor,Outdoor,tUnE-yArDs
+Lollapalooza,2012,Saturday,1345,1345,Lollapalooza,Lollapalooza,We Are Augustines
+Lollapalooza,2012,Saturday,1320,1320,Outdoor,Outdoor,We Were Promised Jetpacks
+Lollapalooza,2012,Saturday,1650,1650,Sahara,Sahara,Zeds Dead
+Lollapalooza,2012,Sunday,1115,1115,Gobi,Gobi,Alf Alpha
+Lollapalooza,2012,Sunday,1750,1750,Mojave,Mojave,araabMUZIK
+Lollapalooza,2012,Sunday,2110,2110,Lollapalooza,Lollapalooza,At The Drive-In
+Lollapalooza,2012,Sunday,2210,2140,Sahara,Sahara,AVICII
+Lollapalooza,2012,Sunday,1405,1405,Lollapalooza,Lollapalooza,Band of Skulls
+Lollapalooza,2012,Sunday,1635,1635,Mojave,Mojave,Beats Antique
+Lollapalooza,2012,Sunday,2030,2030,Mojave,Mojave,Beirut
+Lollapalooza,2012,Sunday,2025,2000,Sahara,Sahara,Calvin Harris
+Lollapalooza,2012,Sunday,2020,2020,Gobi,Gobi,Company Flow
+Lollapalooza,2012,Sunday,1730,1715,Sahara,Sahara,Dada Life
+Lollapalooza,2012,Sunday,2140,2140,Gobi,Gobi,DJ Shadow
+Lollapalooza,2012,Sunday,2235,2235,Lollapalooza,Lollapalooza,Dr. Dre & Snoop Dogg
+Lollapalooza,2012,Sunday,1200,1200,Gobi,Gobi,Fanfarlo
+Lollapalooza,2012,Sunday,1415,1415,Mojave,Mojave,First Aid Kit
+Lollapalooza,2012,Sunday,1645,1645,Lollapalooza,Lollapalooza,Fitz and the Tantrums
+Lollapalooza,2012,Sunday,2145,2145,Outdoor,Outdoor,Florence and the Machine
+Lollapalooza,2012,Sunday,1505,1455,Sahara,Sahara,Flux Pavilion & Dr. P
+Lollapalooza,2012,Sunday,1205,1205,Mojave,Mojave,Gardens & Villa
+Lollapalooza,2012,Sunday,2025,2025,Outdoor,Outdoor,Girl Talk
+Lollapalooza,2012,Sunday,1910,1910,Mojave,Mojave,Gotye
+Lollapalooza,2012,Sunday,1500,1500,Gobi,Gobi,Greg Ginn and the Royal We
+Lollapalooza,2012,Sunday,1255,1255,Gobi,Gobi,Housse de Racket
+Lollapalooza,2012,Sunday,1945,1945,Lollapalooza,Lollapalooza,Justice
+Lollapalooza,2012,Sunday,1115,1100,Sahara,Sahara,Jimbo Jenkins
+Lollapalooza,2012,Sunday,1355,1355,Gobi,Gobi,Le Butcherettes
+Lollapalooza,2012,Sunday,1250,1250,Outdoor,Outdoor,Lissie
+Lollapalooza,2012,Sunday,1300,1300,Lollapalooza,Lollapalooza,Mantastique
+Lollapalooza,2012,Sunday,1400,1400,Outdoor,Outdoor,Metronomy
+Lollapalooza,2012,Sunday,2145,2145,Mojave,Mojave,Modeselektor
+Lollapalooza,2012,Sunday,1200,1200,Sahara,Sahara,Morgan Page
+Lollapalooza,2012,Sunday,1850,1830,Sahara,Sahara,Nero
+Lollapalooza,2012,Sunday,1300,1255,Sahara,Sahara,NOISIA
+Lollapalooza,2012,Sunday,1310,1310,Mojave,Mojave,Oberhofer
+Lollapalooza,2012,Sunday,1620,1605,Sahara,Sahara,Porter Robinson
+Lollapalooza,2012,Sunday,1610,1610,Gobi,Gobi,Real Estate
+Lollapalooza,2012,Sunday,1525,1525,Lollapalooza,Lollapalooza,Santigold
+Lollapalooza,2012,Sunday,1510,1510,Outdoor,Outdoor,Seun Kuti & Egypt 80
+Lollapalooza,2012,Sunday,1200,1200,Outdoor,Outdoor,Sleeper Agent
+Lollapalooza,2012,Sunday,1910,1910,Gobi,Gobi,The Airplane Boys
+Lollapalooza,2012,Sunday,1800,1800,Gobi,Gobi,The Gaslamp Killer
+Lollapalooza,2012,Sunday,1620,1620,Outdoor,Outdoor,The Growlers
+Lollapalooza,2012,Sunday,1805,1805,Lollapalooza,Lollapalooza,The Hives
+Lollapalooza,2012,Sunday,1855,1855,Outdoor,Outdoor,The Weeknd
+Lollapalooza,2012,Sunday,1720,1720,Gobi,Gobi,Thundercat
+Lollapalooza,2012,Sunday,1115,1115,Mojave,Mojave,Tyler Uppercut
+Lollapalooza,2012,Sunday,1525,1525,Mojave,Mojave,Wild Beasts
+Lollapalooza,2012,Sunday,1730,1730,Outdoor,Outdoor,Wild Flag
+Lollapalooza,2012,Sunday,1400,1355,Sahara,Sahara,Zedd

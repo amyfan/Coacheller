@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ratethisfest.client.LollapaloozerService;
 import com.ratethisfest.server.domain.Rating;
@@ -44,6 +46,18 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
 
     return "Hello, " + input + "!<br><br>I am running " + serverInfo
         + ".<br><br>It looks like you are using:<br>" + userAgent;
+  }
+
+  void createSession(String username) {
+    getThreadLocalRequest().getSession().setAttribute("username", username);
+  }
+
+  boolean validateSession(String username) {
+    if (getThreadLocalRequest().getSession().getAttribute("username") != null) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   public List<Set> getSets(String yearString, String day) {

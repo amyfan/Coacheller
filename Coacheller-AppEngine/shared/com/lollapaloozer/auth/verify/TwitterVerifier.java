@@ -6,7 +6,7 @@ import org.scribe.model.Response;
 import org.scribe.model.Verb;
 
 import com.lollapaloozer.auth.TwitterAuthProviderOAuth;
-import com.ratethisfest.shared.Constants;
+import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.Helper;
 
 public class TwitterVerifier implements AuthVerifier {
@@ -17,7 +17,7 @@ public class TwitterVerifier implements AuthVerifier {
   private int _failuresToSimulate;
 
   private TwitterAuthProviderOAuth _oAuthProvider = new TwitterAuthProviderOAuth(
-      Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET, Constants.OAUTH_CALLBACK_URL);
+      AuthConstants.CONSUMER_KEY, AuthConstants.CONSUMER_SECRET, AuthConstants.OAUTH_CALLBACK_URL);
 
   @Override
   public boolean verify(String authToken, String identifier) {
