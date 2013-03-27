@@ -16,6 +16,10 @@ import com.lollapaloozer.R;
 import com.lollapaloozer.auth.client.AuthProvider;
 import com.ratethisfest.shared.AuthConstants;
 
+/**
+ * Activity to choose login type
+ * 
+ */
 public class ChooseLoginActivity extends Activity implements OnClickListener {
 
   private boolean _debugMode = false;

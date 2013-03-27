@@ -13,8 +13,8 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.lollapaloozer.R;
-import com.lollapaloozer.ui.LollapaloozerActivity;
 import com.lollapaloozer.util.LollapaloozerHelper;
+import com.ratethisfest.shared.AndroidConstants;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.DateTimeUtils;
 
@@ -127,7 +127,7 @@ public class CustomSetListAdapter implements ListAdapter {
 
       ViewHolder holder = (ViewHolder) rowView.getTag();
       JSONObject setObj = _sortMap.getSortedJSONObj(position);
-      String setId = setObj.getString(LollapaloozerActivity.QUERY_SETS__SET_ID); // Get
+      String setId = setObj.getString(AndroidConstants.QUERY_SETS__SET_ID); // Get
       // the
       // set
       // Id
@@ -137,7 +137,7 @@ public class CustomSetListAdapter implements ListAdapter {
 
       String score1 = "*";
       if (ratingsObjWk1 != null) {
-        score1 = ratingsObjWk1.get(LollapaloozerActivity.QUERY_RATINGS__RATING).toString();
+        score1 = ratingsObjWk1.get(AndroidConstants.QUERY_RATINGS__RATING).toString();
       }
 
       int milTime = setObj.getInt(_timeFieldName);
@@ -161,8 +161,8 @@ public class CustomSetListAdapter implements ListAdapter {
       }
 
       String myNote = "";
-      if (ratingsObjWk1 != null && ratingsObjWk1.has(LollapaloozerActivity.QUERY_RATINGS__NOTES)) {
-        myNote = ratingsObjWk1.get(LollapaloozerActivity.QUERY_RATINGS__NOTES).toString();
+      if (ratingsObjWk1 != null && ratingsObjWk1.has(AndroidConstants.QUERY_RATINGS__NOTES)) {
+        myNote = ratingsObjWk1.get(AndroidConstants.QUERY_RATINGS__NOTES).toString();
         LollapaloozerHelper.debug(_context, "Found note: " + myNote);
       }
 
