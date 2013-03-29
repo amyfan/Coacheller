@@ -72,8 +72,10 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     } else if (!FieldVerifier.isValidScore(score)) {
       resp = FieldVerifier.SCORE_ERROR;
     } else if (setId != null) {
-      resp = CoachellaRatingManager.getInstance().addRatingBySetId(email, setId,
-          Integer.valueOf(weekend), Integer.valueOf(score), notes);
+      // TODO: IMPL AFTER SERVER SIDE AUTH IMPLEMENTED!
+      // resp = CoachellaRatingManager.getInstance().addRatingBySetId(email,
+      // setId,
+      // Integer.valueOf(weekend), Integer.valueOf(score), notes);
     } else {
       log.log(Level.WARNING, "addRatingBySetArtist: null args");
       resp = "null args";

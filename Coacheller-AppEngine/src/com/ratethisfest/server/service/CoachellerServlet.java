@@ -1,7 +1,9 @@
 package com.ratethisfest.server.service;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +42,9 @@ public class CoachellerServlet extends HttpServlet {
     resp.setContentType("text/plain");
 
     String action = checkNull(req.getParameter(HttpConstants.PARAM_ACTION));
+    String authType = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TYPE));
+    String authId = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_ID));
+    String authToken = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TOKEN));
     String email = checkNull(req.getParameter(HttpConstants.PARAM_EMAIL));
     String day = checkNull(req.getParameter(HttpConstants.PARAM_DAY));
     String year = checkNull(req.getParameter(HttpConstants.PARAM_YEAR));
@@ -49,7 +54,7 @@ public class CoachellerServlet extends HttpServlet {
     if (action.equals(HttpConstants.ACTION_GET_SETS)) {
       respString = getSetsJson(year, day);
     } else if (action.equals(HttpConstants.ACTION_GET_RATINGS)) {
-      respString = getRatingsJsonByUser(email, year, day);
+      respString = getRatingsJsonByUser(authType, authId, authToken, email, year, day);
     }
 
     resp.getWriter().println(respString);
@@ -64,14 +69,26 @@ public class CoachellerServlet extends HttpServlet {
    */
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    String methodName = "doPost";
+    PrintWriter out = resp.getWriter();
+
+    out.println(methodName + " handling request for the following parameters:");
+
+    // Value is not a string but rather an array of strings
+    Map<String, String[]> parameterMap = req.getParameterMap();
+    for (String s : parameterMap.keySet()) {
+      out.println(s + " = " + parameterMap.get(s)[0]);
+    }
+    // above just helpful println's
+
     String action = checkNull(req.getParameter(HttpConstants.PARAM_ACTION));
+    String authType = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TYPE));
+    String authId = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_ID));
+    String authToken = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TOKEN));
     String email = checkNull(req.getParameter(HttpConstants.PARAM_EMAIL));
-    String day = checkNull(req.getParameter(HttpConstants.PARAM_DAY));
-    String year = checkNull(req.getParameter(HttpConstants.PARAM_YEAR));
-    String artist = checkNull(req.getParameter(HttpConstants.PARAM_ARTIST));
-    String setTime = checkNull(req.getParameter(HttpConstants.PARAM_TIME));
-    String score = checkNull(req.getParameter(HttpConstants.PARAM_SCORE));
+    String setId = checkNull(req.getParameter(HttpConstants.PARAM_SET_ID));
     String weekend = checkNull(req.getParameter(HttpConstants.PARAM_WEEKEND));
+    String score = checkNull(req.getParameter(HttpConstants.PARAM_SCORE));
     String notes = checkNull(req.getParameter(HttpConstants.PARAM_NOTES));
 
     if (notes.isEmpty()) {
@@ -79,7 +96,7 @@ public class CoachellerServlet extends HttpServlet {
       notes = null;
     }
     if (action.equals(HttpConstants.ACTION_ADD_RATING)) {
-      addRating(email, artist, setTime, day, year, weekend, score, notes);
+      addRating(authType, authId, authToken, email, setId, weekend, score, notes);
     } else if (action.equals(HttpConstants.ACTION_EMAIL_RATINGS)) {
       CoachellaEmailSender.emailRatings(email);
     }
@@ -125,19 +142,20 @@ public class CoachellerServlet extends HttpServlet {
    * @param day
    * @return
    */
-  private String getRatingsJsonByUser(String email, String year, String day) {
+  private String getRatingsJsonByUser(String authType, String authId, String authToken,
+      String email, String year, String day) {
     String resp = null;
 
     List<Rating> ratings = null;
 
-    if (email != null) {
+    if (authId != null) {
       if (!FieldVerifier.isValidYear(year)) {
         resp = FieldVerifier.YEAR_ERROR;
       } else if (!FieldVerifier.isValidDay(day)) {
         resp = FieldVerifier.DAY_ERROR;
       } else {
-        ratings = CoachellaRatingManager.getInstance().findRatingsByUserYearAndDay(email,
-            Integer.valueOf(year), DayEnum.fromValue(day));
+        ratings = LollaRatingManager.getInstance().findRatingsByUserYearAndDay(authType, authId,
+            authToken, email, Integer.valueOf(year), DayEnum.fromValue(day));
       }
     }
 
@@ -151,27 +169,21 @@ public class CoachellerServlet extends HttpServlet {
     return resp;
   }
 
-  private String addRating(String email, String setArtist, String setTime, String day, String year,
-      String weekend, String score, String notes) {
+  private String addRating(String authType, String authId, String authToken, String email,
+      String setId, String weekend, String score, String notes) {
 
     String resp = null;
 
-    if (!FieldVerifier.isValidEmail(email)) {
-      resp = FieldVerifier.EMAIL_ERROR;
-    } else if (!FieldVerifier.isValidYear(year)) {
-      resp = FieldVerifier.YEAR_ERROR;
-    } else if (!FieldVerifier.isValidDay(day)) {
-      resp = FieldVerifier.DAY_ERROR;
-    } else if (!FieldVerifier.isValidTime(setTime)) {
-      resp = FieldVerifier.TIME_ERROR;
-    } else if (!FieldVerifier.isValidWeekend(weekend)) {
+    // if (!FieldVerifier.isValidEmail(email)) {
+    // resp = FieldVerifier.EMAIL_ERROR;
+    // } else
+    if (!FieldVerifier.isValidWeekend(weekend)) {
       resp = FieldVerifier.WEEKEND_ERROR;
     } else if (!FieldVerifier.isValidScore(score)) {
       resp = FieldVerifier.SCORE_ERROR;
-    } else if (setArtist != null) {
-      resp = CoachellaRatingManager.getInstance().addRatingBySetArtist(email, setArtist,
-          Integer.valueOf(setTime), DayEnum.fromValue(day), Integer.valueOf(year),
-          Integer.valueOf(weekend), Integer.valueOf(score), notes);
+    } else if (authId != null && setId != null) {
+      resp = CoachellaRatingManager.getInstance().addRatingBySetId(authType, authId, authToken,
+          email, Long.valueOf(setId), Integer.valueOf(weekend), Integer.valueOf(score), notes);
     } else {
       resp = "null args";
     }

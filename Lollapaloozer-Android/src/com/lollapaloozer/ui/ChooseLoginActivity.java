@@ -13,14 +13,15 @@ import android.widget.TextView;
 
 import com.lollapaloozer.LollapaloozerApplication;
 import com.lollapaloozer.R;
-import com.lollapaloozer.auth.client.AuthProvider;
+import com.ratethisfest.android.auth.AuthActivityInt;
+import com.ratethisfest.android.auth.AuthProviderInt;
 import com.ratethisfest.shared.AuthConstants;
 
 /**
  * Activity to choose login type
  * 
  */
-public class ChooseLoginActivity extends Activity implements OnClickListener {
+public class ChooseLoginActivity extends Activity implements OnClickListener, AuthActivityInt {
 
   private boolean _debugMode = false;
 
@@ -52,7 +53,7 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
     // CANNOT do this in constructor / member list
     _app = (LollapaloozerApplication) getApplication();
     _app.registerChooseLoginActivity(ChooseLoginActivity.this);
-    _app.getAuthModel().checkAccounts();
+    // _app.getAuthModel().checkAccounts();
 
     // Framework
     _loginStatusText = (TextView) this.findViewById(R.id.text_login_status);
@@ -93,9 +94,9 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
     super.onResume();
 
     LollapaloozerApplication app = (LollapaloozerApplication) getApplication();
-    app.setLastActivity(this);
+    app.setLastAuthActivity(this);
 
-    AuthProvider currentProvider = _app.getAuthModel().getCurrentAuthProvider();
+    AuthProviderInt currentProvider = _app.getAuthModel().getCurrentAuthProvider();
     if (currentProvider != null) {
       currentProvider.extendAccess();
     }
@@ -140,7 +141,7 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
       _buttonDismissActivity.setVisibility(View.VISIBLE);
 
       if (_app.getAuthModel().isLoggedInPrimary()) {
-        AuthProvider currentProvider = _app.getAuthModel().getCurrentAuthProvider();
+        AuthProviderInt currentProvider = _app.getAuthModel().getCurrentAuthProvider();
         _setLoginStatus(currentProvider.getAccountType());
         _accountNameText.setText("Account: " + currentProvider.getLocalAccountName() + "\r\n"
             + currentProvider.getAccountType() + " confirms you are the owner of "
@@ -208,17 +209,6 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
     }
   }
 
-  public void modelChanged() {
-    // Run method in main UI thread
-    View v = findViewById(android.R.id.content);
-    v.post(new Runnable() {
-      public void run() {
-        _updateUI();
-      }
-    });
-
-  }
-
   @Override
   public void onClick(View arg0) {
     String buttonClickedName = this.getResources().getResourceEntryName(arg0.getId());
@@ -283,7 +273,35 @@ public class ChooseLoginActivity extends Activity implements OnClickListener {
 
       return true;
     }
+  }
+
+  public synchronized void doTwitterPost() {
 
   }
 
+  public synchronized void doFacebookPost() {
+
+  }
+
+  public void modelChanged() {
+    // Run method in main UI thread
+    View v = findViewById(android.R.id.content);
+    v.post(new Runnable() {
+      public void run() {
+        _updateUI();
+      }
+    });
+  }
+
+  @Override
+  public Activity getLastActivity() {
+    return this;
+  }
+
+  @Override
+  public void startWebAuthActivity(String authReqTokenUrl) {
+    Intent twitterAuthIntent = new Intent(this, TwitterAuthWebpageActivity.class);
+    twitterAuthIntent.putExtra(AuthConstants.INTENT_EXTRA_AUTH_URL, authReqTokenUrl);
+    this.startActivityForResult(twitterAuthIntent, AuthConstants.INTENT_TWITTER_LOGIN);
+  }
 }

@@ -81,6 +81,7 @@ public class LollapaloozerServlet extends HttpServlet {
     for (String s : parameterMap.keySet()) {
       out.println(s + " = " + parameterMap.get(s)[0]);
     }
+    // above just helpful println's
 
     String action = checkNull(req.getParameter(HttpConstants.PARAM_ACTION));
     String authType = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TYPE));
@@ -90,21 +91,22 @@ public class LollapaloozerServlet extends HttpServlet {
     String setId = checkNull(req.getParameter(HttpConstants.PARAM_SET_ID));
     String score = checkNull(req.getParameter(HttpConstants.PARAM_SCORE));
     String notes = checkNull(req.getParameter(HttpConstants.PARAM_NOTES));
-    
+
     if (action.equals(HttpConstants.ACTION_ADD_RATING)) {
       out.println("Calling addRating()");
       if (verifyToken(authType, authId, authToken)) {
         addRating(authType, authId, authToken, email, setId, score, notes);
       }
     } else if (action.equals(HttpConstants.ACTION_EMAIL_RATINGS)) {
-      out.println("Calling emailRatings(authType="+ authType +" authId="+ authId +" email="+ email +" authToken="+ authToken +")");
+      out.println("Calling emailRatings(authType=" + authType + " authId=" + authId + " email="
+          + email + " authToken=" + authToken + ")");
       if (verifyToken(authType, authId, authToken)) {
         String result = LollaEmailSender.emailRatings(authType, authId, authToken, email);
-        out.println("Result: "+ result);
+        out.println("Result: " + result);
       } else {
         out.println("Request is refused because user account did not pass verification");
       }
-    }  //end Email Ratings
+    } // end Email Ratings
     out.println("Done!");
     out.close();
   }
@@ -145,6 +147,7 @@ public class LollapaloozerServlet extends HttpServlet {
   }
 
   /**
+   * TODO: filter by year & day
    * 
    * @param email
    * @param year
@@ -168,9 +171,11 @@ public class LollapaloozerServlet extends HttpServlet {
       }
     }
 
-    JSONArray jsonArray = JSONUtils.convertRatingsToJSONArray(ratings);
-    if (jsonArray != null) {
-      resp = jsonArray.toString();
+    if (ratings != null) {
+      JSONArray jsonArray = JSONUtils.convertRatingsToJSONArray(ratings);
+      if (jsonArray != null) {
+        resp = jsonArray.toString();
+      }
     }
 
     return resp;

@@ -87,17 +87,6 @@ public class UserAccountManager {
     return appUser;
   }
 
-  @Deprecated
-  public AppUser createAppUser(String email) {
-    AppUser appUser = new AppUser();
-    appUser.setEmail(email);
-    appUser.setActive(true);
-    appUser.setDateCreated(new Date());
-    appUser.setDateModified(new Date());
-    // initializes ID
-    return appUserDao.updateAppUser(appUser);
-  }
-
   public AppUser createAppUser(String authType, String authId, String authToken, String email) {
     // TODO: authenticate user
     AppUser appUser = new AppUser();

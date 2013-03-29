@@ -47,52 +47,20 @@ public class CoachellaRatingManager extends RatingManager {
   }
 
   /**
+   * Assumption: Service layer had already authenticated the token (if exists)
    * 
+   * @param authType
+   * @param authId
+   * @param authToken
    * @param email
-   * @param setArtist
-   * @param setTime
-   * @param day
-   * @param year
+   * @param setId
    * @param weekend
    * @param score
    * @param notes
    * @return
    */
-  @Deprecated
-  public String addRatingBySetArtist(String email, String setArtist, Integer setTime, DayEnum day,
-      Integer year, Integer weekend, Integer score, String notes) {
-    String resp = null;
-
-    List<Rating> ratings = findRatingsBySetArtistAndUser(setArtist, email, weekend);
-    if (ratings == null || ratings.size() == 0) {
-      // add new rating
-      Key<Set> setKey = findSetKeyByArtistAndYear(setArtist, year);
-      if (setKey != null) {
-        addRating(setKey, email, weekend, score, notes);
-        resp = "rating added";
-      } else {
-        resp = "invalid artist name";
-        log.log(Level.WARNING, "invalid artist name: " + setArtist);
-      }
-    } else {
-      // update existing rating
-      updateRating(ratings.get(0), weekend, score, notes);
-      resp = "rating updated";
-    }
-
-    return resp;
-  }
-
-  /**
-   * 
-   * @param email
-   * @param setId
-   * @param score
-   * @param notes
-   * @return
-   */
-  public String addRatingBySetId(String email, Long setId, Integer weekend, Integer score,
-      String notes) {
+  public String addRatingBySetId(String authType, String authId, String authToken, String email,
+      Long setId, Integer weekend, Integer score, String notes) {
     String resp = null;
 
     Key<Set> setKey = setDao.findSetKeyById(setId);
@@ -100,7 +68,9 @@ public class CoachellaRatingManager extends RatingManager {
     if (ratings == null || ratings.size() == 0) {
       // add new rating
       if (setKey != null) {
-        addRating(setKey, email, weekend, score, notes);
+        Key<AppUser> userKey = UserAccountManager.getInstance().manageAppUser(authType, authId,
+            authToken, email);
+        addRating(userKey, setKey, weekend, score, notes);
         resp = "rating added";
       } else {
         resp = "invalid artist name";
@@ -115,7 +85,7 @@ public class CoachellaRatingManager extends RatingManager {
     return resp;
   }
 
-  private Rating addRating(Key<Set> setKey, String email, Integer weekend, Integer score,
+  private Rating addRating(Key<AppUser> userKey, Key<Set> setKey, Integer weekend, Integer score,
       String notes) {
     Rating rating = new Rating();
     rating.setSet(setKey);
@@ -123,11 +93,6 @@ public class CoachellaRatingManager extends RatingManager {
     rating.setWeekend(weekend);
     rating.setNotes(notes);
 
-    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
-    if (userKey == null) {
-      UserAccountManager.getInstance().createAppUser(email);
-      userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
-    }
     rating.setRater(userKey);
 
     updateScoreAverageAfterAdd(rating);

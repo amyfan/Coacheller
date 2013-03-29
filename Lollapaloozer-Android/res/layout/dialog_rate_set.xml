@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
-
+
     <RelativeLayout
         android:id="@+id/rate_set_titlebar_layout"
         android:layout_width="fill_parent"
@@ -132,7 +132,7 @@
 
         <requestFocus />
     </EditText>
-
+
     <Button
         android:id="@+id/button_go_rate_above"
         android:layout_width="wrap_content"
@@ -140,13 +140,12 @@
         android:layout_gravity="center_horizontal"
         android:text="Rate It!"
         android:visibility="gone" />
-
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:orientation="horizontal" >
-
+        android:orientation="horizontal" >
         <Button
             android:id="@+id/button_go_rate_inline"
             android:layout_width="wrap_content"
@@ -154,7 +153,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:text="Rate It!" />
-
+
         <ImageButton
             android:id="@+id/button_go_fb"
             android:layout_width="wrap_content"
@@ -163,7 +162,7 @@
             android:cropToPadding="true"
             android:scaleType="center"
             android:src="@drawable/post_facebook_small" />
-
+
         <ImageButton
             android:id="@+id/button_go_tweet"
             android:layout_width="wrap_content"

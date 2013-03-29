@@ -47,13 +47,17 @@ public class AuthConstants {
   public static final String LOGIN_TYPE_TWITTER = "LOGIN_TYPE_TWITTER";
   public static final String LOGIN_TYPE_FACEBOOK_BROWSER = "LOGIN_TYPE_FACEBOOK_BROWSER";
 
+  // TODO: FILL OUT!
+  public static final String COACH_FACEBOOK_APP_ID = "";
+  public static final String COACH_FACEBOOK_APP_SECRET = "";
+
   public static final String LOLLA_FACEBOOK_APP_ID = "186287061500005";
   public static final String LOLLA_FACEBOOK_APP_SECRET = "87eed9f76050ebd82c10a0ef161ec8a6";
   public static final String LOLLA_GOOGLE_MOBILE_CLIENT_ID = "253259340939.apps.googleusercontent.com";
   public static final String LOLLA_GOOGLE_MOBILE_CLIENT_SECRET = "3HqdJ51XXYc6Px83sZuJlfmI";
   public static final String LOLLA_GOOGLE_WEB_CLIENT_ID = "620188116680.apps.googleusercontent.com";
   public static final String LOLLA_GOOGLE_WEB_CLIENT_SECRET = "lbpYR2zYAl22gH6wf69lZKvj";
-  
+
   // public static final String REQUEST_URL_TWITTER =
   // "https://api.twitter.com/oauth/request_token";
   // public static final String AUTHORIZE_URL_TWITTER =

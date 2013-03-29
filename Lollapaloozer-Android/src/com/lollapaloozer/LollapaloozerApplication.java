@@ -9,19 +9,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 
-import com.lollapaloozer.auth.client.AuthModel;
-import com.lollapaloozer.data.JSONArrayHashMap;
-import com.lollapaloozer.data.LoginData;
 import com.lollapaloozer.ui.ChooseLoginActivity;
 import com.lollapaloozer.ui.LollapaloozerActivity;
-import com.lollapaloozer.util.LollapaloozerHelper;
-import com.ratethisfest.shared.AndroidConstants;
+import com.ratethisfest.android.AndroidConstants;
+import com.ratethisfest.android.AndroidUtils;
+import com.ratethisfest.android.CalendarUtils;
+import com.ratethisfest.android.ServiceUtils;
+import com.ratethisfest.android.StorageManager;
+import com.ratethisfest.android.auth.AppControllerInt;
+import com.ratethisfest.android.auth.AuthActivityInt;
+import com.ratethisfest.android.auth.AuthModel;
+import com.ratethisfest.android.data.JSONArrayHashMap;
+import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.HttpConstants;
 
@@ -29,16 +35,15 @@ import com.ratethisfest.shared.HttpConstants;
  * Class to maintain global application state. Serves as controller.
  * 
  */
-public class LollapaloozerApplication extends Application {
+public class LollapaloozerApplication extends Application implements AppControllerInt {
 
-  private AuthModel _authModel;
+  private AuthModel authModel;
   private ChooseLoginActivity _activityChooseLogin = null;
   private LollapaloozerActivity _activityLollapaloozer = null;
-  private Activity _lastActivity;
 
   private boolean dataFirstUse = true;
   private LoginData loginData;
-  private LollapaloozerStorageManager storageManager;
+  private StorageManager storageManager;
 
   private JSONArrayHashMap userRatingsJAHM;
   private boolean _networkErrors = false;
@@ -49,7 +54,7 @@ public class LollapaloozerApplication extends Application {
   public LollapaloozerApplication() {
     System.out.println("Application Object Instantiated");
 
-    _authModel = new AuthModel(this);
+    authModel = new AuthModel(this);
   }
 
   public void registerChooseLoginActivity(ChooseLoginActivity act) {
@@ -64,6 +69,7 @@ public class LollapaloozerApplication extends Application {
     _activityChooseLogin = act;
   }
 
+  @Override
   public ChooseLoginActivity getChooseLoginActivity() {
     return _activityChooseLogin;
   }
@@ -83,16 +89,16 @@ public class LollapaloozerApplication extends Application {
     }
     _activityLollapaloozer = act;
 
-    yearToQuery = LollapaloozerHelper.whatYearIsToday();
-    dayToQuery = LollapaloozerHelper.whatDayIsToday();
+    yearToQuery = CalendarUtils.whatYearIsToday();
+    dayToQuery = CalendarUtils.whatDayIsToday();
 
-    storageManager = new LollapaloozerStorageManager(this);
+    storageManager = new StorageManager(this, getString(R.string.save_file_name));
     storageManager.load();
 
     obtainLoginDataFromStorage();
 
-    userRatingsJAHM = new JSONArrayHashMap(AndroidConstants.QUERY_RATINGS__SET_ID,
-        AndroidConstants.QUERY_RATINGS__WEEK);
+    userRatingsJAHM = new JSONArrayHashMap(AndroidConstants.JSON_KEY_RATINGS__SET_ID,
+        AndroidConstants.JSON_KEY_RATINGS__WEEK);
   }
 
   public LollapaloozerActivity getLollapaloozerActivity() {
@@ -104,50 +110,15 @@ public class LollapaloozerApplication extends Application {
   }
 
   public AuthModel getAuthModel() {
-    return _authModel;
+    return authModel;
   }
 
-  public void setLastActivity(Activity act) {
-    _lastActivity = act;
+  public void setLastAuthActivity(AuthActivityInt lastActivity) {
+    authModel.setLastAuthActivity(lastActivity);
   }
 
-  public Activity getLastActivity() {
-    return _lastActivity;
-
-  }
-
-  public void showErrorDialog(String title, String problem, String details) {
-    String errorString = problem + "\r\n\r\nDetails:\r\n" + details;
-    System.out.println(errorString);
-
-    AlertDialog.Builder builder = new AlertDialog.Builder(getLastActivity());
-    builder.setTitle(title);
-    builder.setMessage(errorString).setCancelable(true)
-        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-          public void onClick(DialogInterface dialog, int id) {
-          }
-        }
-
-        )
-    // todo .setIcon(R.)
-
-    // .setNegativeButton("No", new DialogInterface.OnClickListener() {
-    // public void onClick(DialogInterface dialog, int id) {
-    // }
-    // })
-    ;
-    AlertDialog alert = builder.create();
-    alert.show();
-  }
-
-  public String bundleValues(Bundle inputBundle) {
-    StringBuilder returnString = new StringBuilder();
-    int count = 0;
-    for (String s : inputBundle.keySet()) {
-      returnString.append(s + ": " + inputBundle.get(s));
-      count++;
-    }
-    return "[" + count + "]: " + returnString.toString();
+  public AuthActivityInt getLastAuthActivity() {
+    return authModel.getLastAuthActivity();
   }
 
   public String getDayToQuery() {
@@ -235,7 +206,6 @@ public class LollapaloozerApplication extends Application {
   }
 
   public void saveDataLoginInfo(LoginData loginData) {
-    // TODO: optimize?
     storageManager.putObject(LoginData.DATA_LOGIN_INFO, loginData);
     storageManager.save();
   }
@@ -264,34 +234,26 @@ public class LollapaloozerApplication extends Application {
         // TODO: year can remain hardcoded for now (to force users to
         // update app in future)
 
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair(HttpConstants.PARAM_YEAR, "2012"));
-        params.add(new BasicNameValuePair(HttpConstants.PARAM_DAY, dayToQuery));
-        params.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TYPE, loginData.loginType + ""));
-        params
-            .add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_ID, loginData.accountIdentifier));
-        params.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TOKEN, loginData.accountToken));
-        if (loginData.emailAddress != null) {
-          params.add(new BasicNameValuePair(HttpConstants.PARAM_EMAIL, loginData.emailAddress));
-        }
-        myRatings = LollapaloozerServiceUtils.getRatings(params, this);
+        List<NameValuePair> params = AndroidUtils.createGetQueryParamsArrayList("2012", dayToQuery,
+            loginData);
+
+        myRatings = ServiceUtils.getRatings(params, this, HttpConstants.SERVER_URL_LOLLAPALOOZER);
 
         storageManager.putJSONArray(AndroidConstants.DATA_RATINGS, myRatings);
       } catch (Exception e1) {
         _networkErrors = true;
-        LollapaloozerHelper.debug(this,
-            "Exception getting Ratings data, loading from storage if available");
+        debug(this, "Exception getting Ratings data, loading from storage if available");
         try {
           myRatings = storageManager.getJSONArray(AndroidConstants.DATA_RATINGS);
         } catch (JSONException e) {
           e.printStackTrace();
-          LollapaloozerHelper.debug(this, "JSONException loading ratings from storage");
+          debug(this, "JSONException loading ratings from storage");
         }
       }
 
       try {
         if (myRatings == null) {
-          LollapaloozerHelper.debug(this, "Had to initialize ratings data JSONArray");
+          debug(this, "Had to initialize ratings data JSONArray");
           myRatings = new JSONArray();
         }
 
@@ -318,18 +280,17 @@ public class LollapaloozerApplication extends Application {
       List<NameValuePair> params = new ArrayList<NameValuePair>();
       params.add(new BasicNameValuePair(HttpConstants.PARAM_YEAR, "2012"));
       params.add(new BasicNameValuePair(HttpConstants.PARAM_DAY, dayToQuery));
-      setData = LollapaloozerServiceUtils.getSets(params, this);
+      setData = ServiceUtils.getSets(params, this, HttpConstants.SERVER_URL_LOLLAPALOOZER);
 
       storageManager.putJSONArray(AndroidConstants.DATA_SETS, setData);
     } catch (Exception e) {
       _networkErrors = true;
-      LollapaloozerHelper.debug(this,
-          "Exception getting Set data, loading from storage if available");
+      debug(this, "Exception getting Set data, loading from storage if available");
       setData = storageManager.getJSONArray(AndroidConstants.DATA_SETS);
     }
 
     if (setData == null) {
-      LollapaloozerHelper.debug(this, "Had to initialize set data JSONArray");
+      debug(this, "Had to initialize set data JSONArray");
       setData = new JSONArray();
     }
 
@@ -339,42 +300,30 @@ public class LollapaloozerApplication extends Application {
   /**
    * TODO: throw a more specific Exception
    * 
-   * @param scoreSelectedValue
-   * @param notes
-   * @param lastItemSelected
-   * @param lastRatings
+   * @param rating
    * @throws Exception
    */
-  public void doSubmitRating(String scoreSelectedValue, String notes, JSONObject lastItemSelected,
-      JSONObject lastRatings) throws Exception {
+  public void doSubmitRating(JSONObject rating) throws Exception {
     // submit rating
     // If Exception is thrown, do not store rating locally
     try {
-      String set_id = lastItemSelected.get(AndroidConstants.QUERY_SETS__SET_ID) + "";
-
-      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_SET_ID, set_id));
-      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_SCORE, scoreSelectedValue));
-      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_NOTES, notes));
-      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TYPE, loginData.loginType
-          + ""));
-      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_ID,
-          loginData.accountIdentifier));
-      nameValuePairs.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TOKEN,
-          loginData.accountToken));
-      if (loginData.emailAddress != null) {
-        nameValuePairs
-            .add(new BasicNameValuePair(HttpConstants.PARAM_EMAIL, loginData.emailAddress));
+      String setId = rating.get(AndroidConstants.JSON_KEY_RATINGS__SET_ID).toString();
+      String scoreSelectedValue = rating.get(AndroidConstants.JSON_KEY_RATINGS__RATING).toString();
+      String notes = "";
+      if (rating.has(AndroidConstants.JSON_KEY_RATINGS__NOTES)) {
+        notes = rating.getString(AndroidConstants.JSON_KEY_RATINGS__NOTES);
       }
 
-      LollapaloozerServiceUtils.addRating(nameValuePairs, this);
+      List<NameValuePair> nameValuePairs = AndroidUtils.createSubmitParamsArrayList("2012", setId,
+          scoreSelectedValue, notes, loginData, "1");
+      ServiceUtils.addRating(nameValuePairs, this, HttpConstants.SERVER_URL_LOLLAPALOOZER);
 
       // Need this in order to make the new rating appear in real time
 
       try {
         // CRITICAL that the keys are listed in this order
-        userRatingsJAHM.addValues(AndroidConstants.QUERY_RATINGS__SET_ID,
-            AndroidConstants.QUERY_RATINGS__WEEK, lastRatings);
+        userRatingsJAHM.addValues(AndroidConstants.JSON_KEY_RATINGS__SET_ID,
+            AndroidConstants.JSON_KEY_RATINGS__WEEK, rating);
 
       } catch (JSONException e) {
         // TODO Auto-generated catch block
@@ -382,10 +331,40 @@ public class LollapaloozerApplication extends Application {
       }
 
     } catch (Exception e1) {
-      LollapaloozerHelper.debug(this, "Error submitting rating");
+      debug(this, "Error submitting rating");
       e1.printStackTrace();
       throw e1;
     }
+  }
+
+  @Override
+  public void showErrorDialog(String title, String problem, String details) {
+    String errorString = problem + "\r\n\r\nDetails:\r\n" + details;
+    System.out.println(errorString);
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(authModel.getLastAuthActivity()
+        .getLastActivity());
+    builder.setTitle(title);
+    builder.setMessage(errorString).setCancelable(true)
+        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+          public void onClick(DialogInterface dialog, int id) {
+          }
+        }
+
+        )
+    // todo .setIcon(R.)
+
+    // .setNegativeButton("No", new DialogInterface.OnClickListener() {
+    // public void onClick(DialogInterface dialog, int id) {
+    // }
+    // })
+    ;
+    AlertDialog alert = builder.create();
+    alert.show();
+  }
+
+  public static void debug(Context context, String out) {
+    Log.d(context.getString(R.string.app_name), out);
   }
 
 }

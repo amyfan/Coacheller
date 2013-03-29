@@ -12,9 +12,7 @@ public class HttpConstants {
   public static final String PARAM_EMAIL = "email";
   public static final String PARAM_SET_ID = "set_id";
   public static final String PARAM_DAY = "day";
-  public static final String PARAM_TIME = "time";
   public static final String PARAM_YEAR = "year";
-  public static final String PARAM_ARTIST = "artist";
   public static final String PARAM_SCORE = "score";
   public static final String PARAM_WEEKEND = "weekend";
   public static final String PARAM_NOTES = "notes";

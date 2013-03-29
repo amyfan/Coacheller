@@ -13,7 +13,9 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.coacheller.R;
-import com.coacheller.ui.CoachellerActivity;
+import com.ratethisfest.android.AndroidConstants;
+import com.ratethisfest.android.data.JSONArrayHashMap;
+import com.ratethisfest.android.data.JSONArraySortMap;
 import com.ratethisfest.shared.DateTimeUtils;
 
 public class CustomSetListAdapter implements ListAdapter {
@@ -39,16 +41,16 @@ public class CustomSetListAdapter implements ListAdapter {
     _context = context;
     setTimeFieldName(timeFieldName);
     setStageFieldName(stageFieldName);
-   
-    //setNewJAHM(myRatings_JAHM);
-     _myRatings_JAHM = myRatings_JAHM;
+
+    // setNewJAHM(myRatings_JAHM);
+    _myRatings_JAHM = myRatings_JAHM;
   }
 
   /*
-  public void setNewJAHM(JSONArrayHashMap myRatings_JAHM) {
-    
-  }
-  */
+   * public void setNewJAHM(JSONArrayHashMap myRatings_JAHM) {
+   * 
+   * }
+   */
 
   public void setTimeFieldName(String name) {
     _timeFieldName = name;
@@ -124,10 +126,10 @@ public class CustomSetListAdapter implements ListAdapter {
 
       ViewHolder holder = (ViewHolder) rowView.getTag();
       JSONObject setObj = _sortMap.getSortedJSONObj(position);
-      String setId = setObj.getString(CoachellerActivity.QUERY_SETS__SET_ID); // Get
-                                                                              // the
-                                                                              // set
-                                                                              // Id
+      String setId = setObj.getString(AndroidConstants.JSON_KEY_SETS__SET_ID); // Get
+                                                                            // the
+                                                                            // set
+                                                                            // Id
 
       // Get Ratings for this set Id
       JSONObject ratingsObjWk1 = _myRatings_JAHM.getJSONObject(setId, "1");
@@ -135,12 +137,12 @@ public class CustomSetListAdapter implements ListAdapter {
 
       String score1 = "*";
       if (ratingsObjWk1 != null) {
-        score1 = ratingsObjWk1.get(CoachellerActivity.QUERY_RATINGS__RATING).toString();
-      } 
+        score1 = ratingsObjWk1.get(AndroidConstants.JSON_KEY_RATINGS__RATING).toString();
+      }
 
       String score2 = "*";
       if (ratingsObjWk2 != null) {
-        score2 = ratingsObjWk2.get(CoachellerActivity.QUERY_RATINGS__RATING).toString();
+        score2 = ratingsObjWk2.get(AndroidConstants.JSON_KEY_RATINGS__RATING).toString();
       }
 
       int milTime = setObj.getInt(_timeFieldName);
@@ -170,9 +172,10 @@ public class CustomSetListAdapter implements ListAdapter {
       } else {
         holder.myRating.setText("");
       }
-      
-      //Gnarly debug thing
-      //CoachellerApplication.debug(_context,"Artist["+ holder.textArtist.getText() +"] Rating["+ score1 +"/"+ score2);
+
+      // Gnarly debug thing
+      // CoachellerApplication.debug(_context,"Artist["+
+      // holder.textArtist.getText() +"] Rating["+ score1 +"/"+ score2);
 
     } catch (JSONException e) {
       // TODO Auto-generated catch block
@@ -190,7 +193,6 @@ public class CustomSetListAdapter implements ListAdapter {
     }
     return false;
   }
-
 
   @Override
   public int getViewTypeCount() {
