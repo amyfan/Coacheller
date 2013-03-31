@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.ratethisfest.shared.DayEnum;
 import com.ratethisfest.shared.FestivalEnum;
 import com.ratethisfest.shared.Set;
 
@@ -95,10 +94,8 @@ public class CoachellaSetDataLoader extends SetDataLoader {
         try {
           String[] fields = line.split(",");
 
-          Set set = ratingMgr.findSetByArtistAndTime(
-              FestivalEnum.fromValue(fields[FESTIVAL_INDEX]), fields[ARTIST_NAME_INDEX],
-              Integer.valueOf(fields[YEAR_INDEX]), DayEnum.fromValue(fields[DAY_INDEX]),
-              Integer.valueOf(fields[TIME_ONE_INDEX]));
+          Set set = ratingMgr.findSetByArtist(FestivalEnum.fromValue(fields[FESTIVAL_INDEX]),
+              fields[ARTIST_NAME_INDEX], Integer.valueOf(fields[YEAR_INDEX]));
 
           if (set == null) {
             // add new set to the database

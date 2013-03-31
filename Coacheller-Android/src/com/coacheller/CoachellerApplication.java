@@ -88,8 +88,7 @@ public class CoachellerApplication extends Application implements AppControllerI
     }
     activityCoacheller = act;
 
-    // yearToQuery = CalendarUtils.whatYearIsToday();
-    yearToQuery = 2012; // TODO: TEMPORARY!!!
+    yearToQuery = CalendarUtils.whatYearIsToday();
     weekToQuery = CalendarUtils.whichWeekIsToday();
     dayToQuery = CalendarUtils.whatDayIsToday();
 

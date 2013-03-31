@@ -124,9 +124,8 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     String success;
     String url;
     // TODO: move this to res file
-    // url =
-    // "http://ratethisfest.appspot.com/resources/sets_coachella_2012.txt";
-    url = "http://127.0.0.1:8888/resources/sets_coachella_2012.txt";
+    url = "http://ratethisfest.appspot.com/resources/sets_coachella_2013.txt";
+    // url = "http://127.0.0.1:8888/resources/sets_coachella_2013.txt";
     success = loadFile(url);
 
     return success;
@@ -151,7 +150,6 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
       URLConnection urlConn = inputData.openConnection();
       InputStreamReader is = new InputStreamReader(urlConn.getInputStream(), "UTF8");
       BufferedReader in = new BufferedReader(is);
-      // RatingManager.getInstance().deleteAllSets();
       CoachellaSetDataLoader.getInstance().updateSets(in);
       success = "success i believe";
     } catch (Exception e) {
