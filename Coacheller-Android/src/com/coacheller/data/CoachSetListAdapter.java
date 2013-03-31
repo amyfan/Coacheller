@@ -1,33 +1,23 @@
 package com.coacheller.data;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
 import com.ratethisfest.android.AndroidConstants;
+import com.ratethisfest.android.data.CustomSetListAdapter;
 import com.ratethisfest.android.data.JSONArrayHashMap;
-import com.ratethisfest.android.data.JSONArraySortMap;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.DateTimeUtils;
 
-public class CustomSetListAdapter implements ListAdapter {
-
-  private JSONArray _data;
-  private JSONArraySortMap _sortMap;
-  private Context _context;
-  private String _timeFieldName;
-  private String _stageFieldName;
-  private JSONArrayHashMap _myRatings_JAHM;
+public class CoachSetListAdapter extends CustomSetListAdapter {
 
   static class ViewHolder {
     public TextView textTime;
@@ -40,68 +30,14 @@ public class CustomSetListAdapter implements ListAdapter {
     public TextView myComment2;
   }
 
-  public CustomSetListAdapter(Context context, String timeFieldName, String stageFieldName,
+  public CoachSetListAdapter(Context context, String timeFieldName, String stageFieldName,
       JSONArrayHashMap myRatings_JAHM) {
-    _context = context;
+    setContext(context);
     setTimeFieldName(timeFieldName);
     setStageFieldName(stageFieldName);
 
     // setNewJAHM(myRatings_JAHM);
     _myRatings_JAHM = myRatings_JAHM;
-  }
-
-  /*
-   * public void setNewJAHM(JSONArrayHashMap myRatings_JAHM) {
-   * 
-   * }
-   */
-
-  public void setTimeFieldName(String name) {
-    _timeFieldName = name;
-  }
-
-  public void setStageFieldName(String name) {
-    _stageFieldName = name;
-  }
-
-  public void setData(JSONArray data) {
-    _data = data;
-  }
-
-  public void sortByField(String fieldName, int dataType) throws JSONException {
-    _sortMap = new JSONArraySortMap(_data, fieldName, dataType);
-  }
-
-  @Override
-  public int getCount() {
-    if (_data == null) {
-      return 0;
-    } else {
-      return _data.length();
-    }
-  }
-
-  @Override
-  public Object getItem(int position) {
-    try {
-      return _sortMap.getSortedJSONObj(position);
-    } catch (JSONException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    return null;
-  }
-
-  @Override
-  public long getItemId(int position) {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-  @Override
-  public int getItemViewType(int position) {
-    // TODO Auto-generated method stub
-    return 0;
   }
 
   @Override
@@ -220,57 +156,4 @@ public class CustomSetListAdapter implements ListAdapter {
 
     return rowView;
   }
-
-  // If we are ready to draw the view
-  // Needed for concurrency issues
-  private boolean haveData() {
-    if (_data != null) {
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public int getViewTypeCount() {
-    return 1;
-  }
-
-  @Override
-  public boolean hasStableIds() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  // Implemented prior to week 2, hope nothing breaks.
-  @Override
-  public boolean isEmpty() {
-    if (_data.length() == 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  @Override
-  public void registerDataSetObserver(DataSetObserver observer) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void unregisterDataSetObserver(DataSetObserver observer) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public boolean areAllItemsEnabled() {
-    return true;
-  }
-
-  @Override
-  public boolean isEnabled(int position) { // Everything is clickable
-    return true;
-  }
-
 }

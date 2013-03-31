@@ -20,8 +20,8 @@
     <string name="buttonlabel_search_sets">Go!</string>
 
     <string-array name="names_year">
-        <item>2012</item>
         <item>2013</item>
+        <item>2012</item>
     </string-array>
     <string-array name="names_week">
         <item>Weekend 1</item>
@@ -38,6 +38,7 @@
     <string-array name="search_types">
         <item>Time</item>
         <item>Artist</item>
+        <item>Stage</item>
     </string-array>
 
     <string name="name_week1_short">Week 1</string>

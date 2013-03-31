@@ -29,6 +29,7 @@
 	<string-array name="search_types">
 		<item>Time</item>
 		<item>Artist</item>
+        <item>Stage</item>
 	</string-array>
 
 </resources>

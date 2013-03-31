@@ -37,13 +37,12 @@ import android.widget.Toast;
 
 import com.lollapaloozer.LollapaloozerApplication;
 import com.lollapaloozer.R;
-import com.lollapaloozer.data.CustomSetListAdapter;
+import com.lollapaloozer.data.LollaSetListAdapter;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.ServiceUtils;
 import com.ratethisfest.android.auth.AuthActivityInt;
 import com.ratethisfest.android.auth.AuthModel;
-import com.ratethisfest.android.data.JSONArraySortMap;
 import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.android.data.SocialNetworkPost;
 import com.ratethisfest.shared.AuthConstants;
@@ -57,12 +56,9 @@ import com.ratethisfest.shared.HttpConstants;
 public class LollapaloozerActivity extends Activity implements View.OnClickListener,
     OnItemSelectedListener, OnItemClickListener, OnCheckedChangeListener, AuthActivityInt {
 
-  private static final int SORT_TIME = 1;
-  private static final int SORT_ARTIST = 2;
-
   private static final int REFRESH_INTERVAL__SECONDS = 15;
 
-  private int _sortMode;
+  private String sortMode;
   private long _lastRefresh = 0;
 
   private Dialog rateDialog;
@@ -70,7 +66,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   private Dialog networkErrorDialog;
   private Dialog firstUseDialog;
 
-  private CustomSetListAdapter setListAdapter;
+  private LollaSetListAdapter setListAdapter;
   // contains set id, stored in setListAdapter
   private JSONObject lastSetSelected;
   // contains actual rating, stored in userRatingsJAHM
@@ -97,6 +93,8 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
       appController.getLoginData().printDebug();
     }
 
+    sortMode = AndroidConstants.SORT_TIME;
+
     _ratingSelectedIdToValue.put(R.id.radio_button_score1, 1);
     _ratingSelectedIdToValue.put(R.id.radio_button_score2, 2);
     _ratingSelectedIdToValue.put(R.id.radio_button_score3, 3);
@@ -110,7 +108,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     _ratingSelectedScoreToId.put("5", R.id.radio_button_score5);
 
     setContentView(R.layout.sets_list);
-    setListAdapter = new CustomSetListAdapter(this, AndroidConstants.JSON_KEY_SETS__TIME_ONE,
+    setListAdapter = new LollaSetListAdapter(this, AndroidConstants.JSON_KEY_SETS__TIME_ONE,
         AndroidConstants.JSON_KEY_SETS__STAGE_ONE, appController.getUserRatingsJAHM());
     setListAdapter.setData(new JSONArray());
 
@@ -125,8 +123,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     AndroidUtils.populateSpinnerWithArray(spinnerSortType, android.R.layout.simple_spinner_item,
         R.array.search_types, android.R.layout.simple_spinner_dropdown_item);
     spinnerSortType.setOnItemSelectedListener(this);
-
-    _sortMode = SORT_TIME;
 
     // Above here is stuff to be done once
 
@@ -311,14 +307,8 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
 
     try {
-      if (parent.getSelectedItem().toString().toLowerCase().equals("time")) {
-        _sortMode = SORT_TIME;
-
-      } else if (parent.getSelectedItem().toString().toLowerCase().equals("artist")) {
-        _sortMode = SORT_ARTIST;
-      }
-
-      setView_reSort();
+      sortMode = parent.getSelectedItem().toString().toLowerCase();
+      setListAdapter.resortSetList(sortMode);
       viewSetsList.invalidateViews();
     } catch (JSONException e) {
       LollapaloozerApplication.debug(this, "JSONException re-sorting data");
@@ -622,7 +612,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
   private void redrawUI() {
     try {
-      setView_reSort();
+      setListAdapter.resortSetList(sortMode);
     } catch (JSONException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -666,18 +656,6 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     appController.refreshDataFromStorage();
 
     launchGetDataThread(); // TODO multithread this
-  }
-
-  private void setView_reSort() throws JSONException {
-    if (_sortMode == SORT_TIME) {
-      setListAdapter.sortByField(AndroidConstants.JSON_KEY_SETS__TIME_ONE,
-          JSONArraySortMap.VALUE_INTEGER);
-    } else if (_sortMode == SORT_ARTIST) {
-      setListAdapter.sortByField("artist", JSONArraySortMap.VALUE_STRING);
-    } else {
-      LollapaloozerApplication.debug(this, "Unexpected sort mode: " + _sortMode);
-      (new Exception()).printStackTrace();
-    }
   }
 
   private void clickDialogConfirmEmailButtonOK() {

@@ -38,7 +38,7 @@ import android.widget.Toast;
 
 import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
-import com.coacheller.data.CustomSetListAdapter;
+import com.coacheller.data.CoachSetListAdapter;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.CalendarUtils;
@@ -46,7 +46,6 @@ import com.ratethisfest.android.ServiceUtils;
 import com.ratethisfest.android.auth.AuthActivityInt;
 import com.ratethisfest.android.auth.AuthModel;
 import com.ratethisfest.android.data.CustomPair;
-import com.ratethisfest.android.data.JSONArraySortMap;
 import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.android.data.SocialNetworkPost;
 import com.ratethisfest.shared.AuthConstants;
@@ -56,23 +55,17 @@ import com.ratethisfest.shared.HttpConstants;
 public class CoachellerActivity extends Activity implements View.OnClickListener,
     OnItemSelectedListener, OnItemClickListener, OnCheckedChangeListener, AuthActivityInt {
 
-  private static final int SORT_TIME = 1;
-  private static final int SORT_ARTIST = 2;
-
   private static final int REFRESH_INTERVAL__SECONDS = 15;
 
-  private int _sortMode;
+  private String sortMode;
   private long _lastRefresh = 0;
-
-  private String _timeFieldName;
-  private String _stageFieldName;
 
   private Dialog rateDialog;
   private Dialog emailDialog;
   private Dialog networkErrorDialog;
   private Dialog firstUseDialog;
 
-  private CustomSetListAdapter _setListAdapter;
+  private CoachSetListAdapter setListAdapter;
   // contains set id, stored in setListAdapter
   private JSONObject lastSetSelected;
   // contains actual rating, stored in userRatingsJAHM
@@ -98,6 +91,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     appController = (CoachellerApplication) getApplication();
     appController.registerCoachellerActivity(CoachellerActivity.this);
 
+    sortMode = AndroidConstants.SORT_TIME;
+
     _ratingSelectedIdToValue.put(R.id.radio_button_week1, 1);
     _ratingSelectedIdToValue.put(R.id.radio_button_week2, 2);
 
@@ -114,12 +109,12 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     _ratingSelectedScoreToId.put("5", R.id.radio_button_score5);
 
     setContentView(R.layout.sets_list);
-    _setListAdapter = new CustomSetListAdapter(this, AndroidConstants.JSON_KEY_SETS__TIME_ONE,
+    setListAdapter = new CoachSetListAdapter(this, AndroidConstants.JSON_KEY_SETS__TIME_ONE,
         AndroidConstants.JSON_KEY_SETS__STAGE_ONE, appController.getUserRatingsJAHM());
-    _setListAdapter.setData(new JSONArray());
+    setListAdapter.setData(new JSONArray());
 
     ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
-    viewSetsList.setAdapter(_setListAdapter);
+    viewSetsList.setAdapter(setListAdapter);
     viewSetsList.setOnItemClickListener(this);
 
     Button buttonSearchSets = (Button) this.findViewById(R.id.buttonChangeToSearchSets);
@@ -129,8 +124,6 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     AndroidUtils.populateSpinnerWithArray(spinnerSortType, android.R.layout.simple_spinner_item,
         R.array.search_types, android.R.layout.simple_spinner_dropdown_item);
     spinnerSortType.setOnItemSelectedListener(this);
-
-    _sortMode = SORT_TIME;
 
     // Above here is stuff to be done once
 
@@ -279,7 +272,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   // An item in the ListView of sets is clicked
   @Override
   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-    JSONObject obj = (JSONObject) _setListAdapter.getItem(position);
+    JSONObject obj = (JSONObject) setListAdapter.getItem(position);
     lastSetSelected = obj;
 
     try {// TODO Hard coded strings means you are going to hell
@@ -334,14 +327,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
 
     try {
-      if (parent.getSelectedItem().toString().toLowerCase().equals("time")) {
-        _sortMode = SORT_TIME;
-
-      } else if (parent.getSelectedItem().toString().toLowerCase().equals("artist")) {
-        _sortMode = SORT_ARTIST;
-      }
-
-      setView_reSort();
+      sortMode = parent.getSelectedItem().toString().toLowerCase();
+      setListAdapter.resortSetList(sortMode);
       viewSetsList.invalidateViews();
     } catch (JSONException e) {
       CoachellerApplication.debug(this, "JSONException re-sorting data");
@@ -660,7 +647,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   protected void redrawUI() {
     try {
-      setView_reSort();
+      setListAdapter.resortSetList(sortMode);
 
     } catch (JSONException e) {
       // TODO Auto-generated catch block
@@ -696,11 +683,11 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   public void refreshData() {
     if (appController.getWeekToQuery() == 1) {
-      _timeFieldName = AndroidConstants.JSON_KEY_SETS__TIME_ONE;
-      _stageFieldName = AndroidConstants.JSON_KEY_SETS__STAGE_ONE;
+      setListAdapter.setTimeFieldName(AndroidConstants.JSON_KEY_SETS__TIME_ONE);
+      setListAdapter.setStageFieldName(AndroidConstants.JSON_KEY_SETS__STAGE_ONE);
     } else if (appController.getWeekToQuery() == 2) {
-      _timeFieldName = AndroidConstants.JSON_KEY_SETS__TIME_TWO;
-      _stageFieldName = AndroidConstants.JSON_KEY_SETS__STAGE_TWO;
+      setListAdapter.setTimeFieldName(AndroidConstants.JSON_KEY_SETS__TIME_TWO);
+      setListAdapter.setStageFieldName(AndroidConstants.JSON_KEY_SETS__STAGE_TWO);
     }
 
     TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
@@ -708,23 +695,10 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     titleView.setText(appController.getYearToQuery() + " - " + appController.getDayToQuery()
         + ", Weekend " + appController.getWeekToQuery());
     // +" "+ weekString);
-    _setListAdapter.setTimeFieldName(_timeFieldName);
-    _setListAdapter.setStageFieldName(_stageFieldName);
 
     appController.refreshDataFromStorage();
 
     launchGetDataThread(); // TODO multithread this
-  }
-
-  private void setView_reSort() throws JSONException {
-    if (_sortMode == SORT_TIME) {
-      _setListAdapter.sortByField(_timeFieldName, JSONArraySortMap.VALUE_INTEGER);
-    } else if (_sortMode == SORT_ARTIST) {
-      _setListAdapter.sortByField("artist", JSONArraySortMap.VALUE_STRING);
-    } else {
-      CoachellerApplication.debug(this, "Unexpected sort mode: " + _sortMode);
-      (new Exception()).printStackTrace();
-    }
   }
 
   private void clickDialogConfirmEmailButtonOK() {
@@ -909,7 +883,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     new Thread() {
       public void run() {
         try {
-          _setListAdapter.setData(appController.getRatingsFromServer());
+          setListAdapter.setData(appController.getRatingsFromServer());
         } catch (JSONException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
@@ -926,7 +900,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     new Thread() {
       public void run() {
         try {
-          _setListAdapter.setData(appController.getRatingsFromServer());
+          setListAdapter.setData(appController.getRatingsFromServer());
         } catch (JSONException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
