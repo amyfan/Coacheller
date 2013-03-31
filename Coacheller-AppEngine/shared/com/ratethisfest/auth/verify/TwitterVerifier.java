@@ -16,8 +16,16 @@ public class TwitterVerifier implements AuthVerifier {
   public final static String ACCOUNT_PROPERTY_HANDLE = "screen_name";
   private int _failuresToSimulate;
 
-  private TwitterAuthProviderOAuth _oAuthProvider = new TwitterAuthProviderOAuth(
-      AuthConstants.CONSUMER_KEY, AuthConstants.CONSUMER_SECRET, AuthConstants.OAUTH_CALLBACK_URL);
+  private TwitterAuthProviderOAuth _oAuthProvider;
+
+  // Can not instantiate without specifying application
+  @SuppressWarnings("unused")
+  private TwitterVerifier() {
+  }
+
+  public TwitterVerifier(String consumerKey, String consumerSecret, String callbackURL) {
+    _oAuthProvider = new TwitterAuthProviderOAuth(consumerKey, consumerSecret, callbackURL);
+  }
 
   @Override
   public boolean verify(String authToken, String identifier) {

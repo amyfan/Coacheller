@@ -1,6 +1,7 @@
 package com.coacheller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -34,6 +35,10 @@ import com.ratethisfest.shared.HttpConstants;
 
 public class CoachellerApplication extends Application implements AppControllerInt {
 
+  //An alternate solution has been implemented
+  //public static final String FACEBOOK_APP_ID = AuthConstants.COACH_FACEBOOK_APP_ID;
+  //public static final String FACEBOOK_APP_SECRET = AuthConstants.COACH_FACEBOOK_APP_SECRET;
+
   private AuthModel authModel;
   private ChooseLoginActivity activityChooseLogin = null;
   private CoachellerActivity activityCoacheller = null;
@@ -54,7 +59,20 @@ public class CoachellerApplication extends Application implements AppControllerI
   public CoachellerApplication() {
     System.out.println("Application Object Instantiated");
 
-    authModel = new AuthModel(this);
+    //Initialize app constant hashmap for this application (Coacheller)
+    HashMap<String, String> appConstants = new HashMap<String, String>();
+    
+    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_ID,  AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_ID);
+    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_SECRET, AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_SECRET);
+    
+    appConstants.put(AuthConstants.FACEBOOK_APP_ID, AuthConstants.COACH_FACEBOOK_APP_ID);
+    appConstants.put(AuthConstants.FACEBOOK_APP_SECRET, AuthConstants.COACH_FACEBOOK_APP_SECRET);
+    
+    appConstants.put(AuthConstants.TWITTER_CONSUMER_KEY, AuthConstants.COACH_TWITTER_CONSUMER_KEY);
+    appConstants.put(AuthConstants.TWITTER_CONSUMER_SECRET,  AuthConstants.COACH_TWITTER_CONSUMER_SECRET);
+    appConstants.put(AuthConstants.TWITTER_OAUTH_CALLBACK_URL, AuthConstants.COACH_TWITTER_OAUTH_CALLBACK_URL);
+    
+    authModel = new AuthModel(this, appConstants);
   }
 
   public void registerChooseLoginActivity(ChooseLoginActivity act) {

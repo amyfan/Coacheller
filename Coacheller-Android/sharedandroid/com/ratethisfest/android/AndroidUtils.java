@@ -19,6 +19,10 @@ import com.ratethisfest.shared.HttpConstants;
 public class AndroidUtils {
 
   public static String bundleValues(Bundle inputBundle) {
+    if (inputBundle == null) {
+      return "[bundle was null]";
+    }
+    
     StringBuilder returnString = new StringBuilder();
     int count = 0;
     for (String s : inputBundle.keySet()) {

@@ -49,7 +49,8 @@ public class TwitterAuthWebpageActivity extends Activity {
         System.out.println("onPageStarted : " + url);
         Uri uri = Uri.parse(url);
 
-        if (url.startsWith(AuthConstants.OAUTH_CALLBACK_URL) && url != null) {
+        //OK to use AuthConstants constant directly if this code is used in COACHELLER ONLY
+        if (url.startsWith(AuthConstants.COACH_TWITTER_OAUTH_CALLBACK_URL) && url != null) {
           System.out.println("Special callback URL was detected");
           _requestTokenString = uri.getQueryParameter(AuthConstants.OAUTH_CALLBACK_PARAM_TOKEN);
           _requestTokenVerifierString = uri

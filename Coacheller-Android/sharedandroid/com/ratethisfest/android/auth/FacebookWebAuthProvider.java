@@ -14,8 +14,8 @@ import com.ratethisfest.auth.verify.TwitterVerifier;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.Helper;
 
-public class FacebookWebAuthProvider implements AuthProviderInt {
-
+public abstract class FacebookWebAuthProvider implements AuthProviderInt {
+/*//Never implemented
   // private ChooseLoginActivity _activity;
   private final String LOGIN_TYPE = AuthConstants.LOGIN_TYPE_FACEBOOK_BROWSER;
   private AuthModel _model;
@@ -124,5 +124,5 @@ public class FacebookWebAuthProvider implements AuthProviderInt {
       System.out.println("Twitter Authentication was not successful");
     }
   }
-
+*/
 }

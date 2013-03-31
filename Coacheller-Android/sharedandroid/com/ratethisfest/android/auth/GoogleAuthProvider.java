@@ -31,14 +31,13 @@ public class GoogleAuthProvider implements AuthProviderInt {
   private int _tokenRetries;
 
   // Default constructor disallowed
+  @SuppressWarnings("unused")
   private GoogleAuthProvider() {
   }
 
   public GoogleAuthProvider(AuthModel model) {
     // _activity = activity;
     _model = model;
-    GoogleAuthVerifier googleVerifier = new GoogleAuthVerifier();
-    // googleVerifier.simulateFailure(1); // DEBUG ONLY.
   }
 
   @Override
@@ -144,7 +143,9 @@ public class GoogleAuthProvider implements AuthProviderInt {
         return;
       }
 
-      GoogleAuthVerifier googleVerifier = new GoogleAuthVerifier();
+      GoogleAuthVerifier googleVerifier = new GoogleAuthVerifier(
+          _model.getAppConstant(AuthConstants.GOOGLE_MOBILE_CLIENT_ID), 
+          _model.getAppConstant(AuthConstants.GOOGLE_MOBILE_CLIENT_SECRET));
       String currentToken = _currentGoogleLoginTokenBundle.getString(AccountManager.KEY_AUTHTOKEN);
       String accountName = _currentGoogleLoginTokenBundle
           .getString(AccountManager.KEY_ACCOUNT_NAME);

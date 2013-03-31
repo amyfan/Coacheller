@@ -1,6 +1,7 @@
 package com.lollapaloozer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -37,6 +38,7 @@ import com.ratethisfest.shared.HttpConstants;
  */
 public class LollapaloozerApplication extends Application implements AppControllerInt {
 
+
   private AuthModel authModel;
   private ChooseLoginActivity _activityChooseLogin = null;
   private LollapaloozerActivity _activityLollapaloozer = null;
@@ -53,8 +55,21 @@ public class LollapaloozerApplication extends Application implements AppControll
 
   public LollapaloozerApplication() {
     System.out.println("Application Object Instantiated");
+    
+    //Initialize app constant hashmap for this application (Lollapaloozer)
+    HashMap<String, String> appConstants = new HashMap<String, String>();
+    
+    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_ID,  AuthConstants.LOLLA_GOOGLE_MOBILE_CLIENT_ID);
+    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_SECRET, AuthConstants.LOLLA_GOOGLE_MOBILE_CLIENT_SECRET);
+    
+    appConstants.put(AuthConstants.FACEBOOK_APP_ID, AuthConstants.LOLLA_FACEBOOK_APP_ID);
+    appConstants.put(AuthConstants.FACEBOOK_APP_SECRET, AuthConstants.LOLLA_FACEBOOK_APP_SECRET);
+    
+    appConstants.put(AuthConstants.TWITTER_CONSUMER_KEY, AuthConstants.LOLLA_TWITTER_CONSUMER_KEY);
+    appConstants.put(AuthConstants.TWITTER_CONSUMER_SECRET,  AuthConstants.LOLLA_TWITTER_CONSUMER_SECRET);
+    appConstants.put(AuthConstants.TWITTER_OAUTH_CALLBACK_URL, AuthConstants.LOLLA_TWITTER_OAUTH_CALLBACK_URL);
 
-    authModel = new AuthModel(this);
+    authModel = new AuthModel(this, appConstants);
   }
 
   public void registerChooseLoginActivity(ChooseLoginActivity act) {
