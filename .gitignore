@@ -46,6 +46,9 @@ pip-log.txt
 bin/
 gen/
 
+# external src
+facebook-android-sdk/
+
 # Local configuration file (sdk path, etc)
 local.properties
 
