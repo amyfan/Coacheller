@@ -1,0 +1,169 @@
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Aesop Rock
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,ALT-J
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Band of Horses
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Bassnectar
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Beach House
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Beardyman
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Blur
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,C2C
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Dam-Funk
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,DEATHFIX
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Dillon Francis
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Divine Fits
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,DJ Harvey
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Dog Blood
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Earl Sweatshirt
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Foals
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Four Tet
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Grinderman
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,How to Destroy Angels
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Infected Mushroom
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,IO Echo
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Jake Bugg
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,James McCartney
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Jamie XX
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Japandroids
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Jello Biafra and the Guantanamo School of Medicine
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Johnny Marr
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Metric
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Modest Mouse
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Modestep
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Nicky Romero
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Of Monsters and Men
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Palma Violets
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Passion Pit
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Polica
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Purity Ring
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Sam XL Pure Filth Sound
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Seth Troxler
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Skinny Lister
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Sparks
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Stars
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Tegan and Sara
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,The Neighborhood
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,The Shouting Matches
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,The Stone Roses
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Thomas Gold
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,TNGHT
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Tokyo Ska Paradise
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Tommy Trash
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Wolfgang Gartner
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Yeah Yeah Yeahs
+Coachella,2013,Friday,0000,0000,Coachella,Coachella,Youth Lagoon
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,2 Chainz
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,3BALL MTY
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Action Bronson
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Allen Stone
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Baauer
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Bat For Lashes
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Ben Howard
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Benny Benassi
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Biffy Clyro
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Bingo Players
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Birdy Nam Nam
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Booka Shade
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Cafe Tacvba
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Cassy
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Danny Brown
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Descendents
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Dropkick Murphys
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,EL-P
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Fedde le Grand
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Franz Ferdinand
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Grizzly Bear
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Guards
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Hot Chip
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Huoratron
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Janelle Monae
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Jason Bentley
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Kids These Days
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Kill the Noise
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Knife Party
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Major Lazer
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Moby DJ Set
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Mona
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,New Order
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Phoenix
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Portugal. The Man
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Puscifer
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Pusha T
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Reignwolf
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Richie Hawtin
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Savages
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Shovels & Rope
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Sigur Ros
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Simian Mobile Disco
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Spiritualized
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,The 2 Bears
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,The Colourist
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,The Evens
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,The Make-Up
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,The Postal Service
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,The Selecter
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,The Wombats
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,The XX
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Theophilus London
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Trash Talk
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Two Door Cinema Club
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Vintage Trouble
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Violent Femmes
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Wild Nothing
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Yeasayer
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Zane Lowe
+Coachella,2013,Saturday,0000,0000,Coachella,Coachella,Parov Stelar Band
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Adrian Lux
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Alex Clare
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Cloud Nothings
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Danny Avila
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Dead Can Dance
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Deap Valley
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,DIIV
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Dinosaur Jr.
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Dirtyphonics
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Disclosure
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Dub FX
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Eric Prydz
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Excision Presents the Executioner
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Father John Misty
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Ghost B.C.
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Grimes
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Hanni El Khatib
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Hardwell
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,James Blake
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Jamie Jones
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Jeff the Brotherhood
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Jessie Ware
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Joris Voorn
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Julio Bashmore
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Kurt Vile and the Violators
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,La Roux
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Ladies Night
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Little Green Cars
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Loco Dice
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Maya Jane Coles
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Mimosa
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Mord Fustang
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Nick Cave & the Bad Seeds
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,OMD
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Paul Kalkbrenner
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Paul Oakenfold
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Pretty Lights
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Raider Klan
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Red Hot Chili Peppers
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Robert Delong
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Rodriguez
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Roni Size & Dynamite MC
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Smith Westerns
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Social Distortion
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Tame Impala
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Tanlines
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,The Airborne Toxic Event
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,The Faint
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,The Gaslight Anthem
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,The Lumineers
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,The Three O'Clock
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Thee Oh Sees
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Vampire Weekend
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,White Arrows
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Wild Belle
+Coachella,2013,Sunday,0000,0000,Coachella,Coachella,Wu-Tang Clan

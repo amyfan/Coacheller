@@ -57,8 +57,7 @@ public abstract class RatingManager {
     return ratings;
   }
 
-  public Set findSetByArtistAndTime(FestivalEnum festival, String artist, Integer year,
-      DayEnum day, Integer time) {
+  public Set findSetByArtist(FestivalEnum festival, String artist, Integer year) {
     Set set = setDao.findSetByArtistAndYear(festival, artist, year);
     return set;
   }

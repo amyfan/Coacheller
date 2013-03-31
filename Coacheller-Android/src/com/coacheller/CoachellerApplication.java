@@ -19,6 +19,7 @@ import android.util.Log;
 
 import com.coacheller.ui.ChooseLoginActivity;
 import com.coacheller.ui.CoachellerActivity;
+import com.coacheller.ui.SearchSetsActivity;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.CalendarUtils;
@@ -39,8 +40,9 @@ public class CoachellerApplication extends Application implements AppControllerI
   //public static final String FACEBOOK_APP_SECRET = AuthConstants.COACH_FACEBOOK_APP_SECRET;
 
   private AuthModel authModel;
-  private ChooseLoginActivity _activityChooseLogin = null;
-  private CoachellerActivity _activityCoacheller = null;
+  private ChooseLoginActivity activityChooseLogin = null;
+  private CoachellerActivity activityCoacheller = null;
+  private SearchSetsActivity activitySearchSets = null;
 
   private boolean dataFirstUse = true;
   private LoginData loginData;
@@ -74,35 +76,35 @@ public class CoachellerApplication extends Application implements AppControllerI
   }
 
   public void registerChooseLoginActivity(ChooseLoginActivity act) {
-    if (_activityChooseLogin != null) {
-      if (_activityChooseLogin == act) {
+    if (activityChooseLogin != null) {
+      if (activityChooseLogin == act) {
         System.out.println("Identical ChooseLoginActivity was registered with Application");
       } else {
         System.out
             .println("Warning: Different ChooseLoginActivity was registered with Application");
       }
     }
-    _activityChooseLogin = act;
+    activityChooseLogin = act;
   }
 
   @Override
   public ChooseLoginActivity getChooseLoginActivity() {
-    return _activityChooseLogin;
+    return activityChooseLogin;
   }
 
   public void unregisterChooseLoginActivity() {
-    _activityChooseLogin = null;
+    activityChooseLogin = null;
   }
 
   public void registerCoachellerActivity(CoachellerActivity act) {
-    if (_activityCoacheller != null) {
-      if (_activityCoacheller == act) {
+    if (activityCoacheller != null) {
+      if (activityCoacheller == act) {
         System.out.println("Identical CoachellerActivity was registered with Application");
       } else {
         System.out.println("Warning: Different CoachellerActivity was registered with Application");
       }
     }
-    _activityCoacheller = act;
+    activityCoacheller = act;
 
     yearToQuery = CalendarUtils.whatYearIsToday();
     weekToQuery = CalendarUtils.whichWeekIsToday();
@@ -118,11 +120,30 @@ public class CoachellerApplication extends Application implements AppControllerI
   }
 
   public CoachellerActivity getCoachellerActivity() {
-    return _activityCoacheller;
+    return activityCoacheller;
   }
 
   public void unregisterCoachellerActivity() {
-    _activityCoacheller = null;
+    activityCoacheller = null;
+  }
+
+  public void registerSearchSetsActivity(SearchSetsActivity act) {
+    if (activitySearchSets != null) {
+      if (activitySearchSets == act) {
+        System.out.println("Identical SetsSearchActivity was registered with Application");
+      } else {
+        System.out.println("Warning: Different SetsSearchActivity was registered with Application");
+      }
+    }
+    activitySearchSets = act;
+  }
+
+  public SearchSetsActivity getSearchSetsActivity() {
+    return activitySearchSets;
+  }
+
+  public void unregisterSearchSetsActivity() {
+    activitySearchSets = null;
   }
 
   public AuthModel getAuthModel() {
@@ -255,11 +276,8 @@ public class CoachellerApplication extends Application implements AppControllerI
 
       JSONArray myRatings = null;
       try {
-        // TODO: year can remain hardcoded for now (to force users to
-        // update app in future)
-
-        List<NameValuePair> params = AndroidUtils.createGetQueryParamsArrayList("2012", dayToQuery,
-            loginData);
+        List<NameValuePair> params = AndroidUtils.createGetQueryParamsArrayList(yearToQuery + "",
+            dayToQuery, loginData);
 
         myRatings = ServiceUtils.getRatings(params, this, HttpConstants.SERVER_URL_COACHELLER);
 
@@ -302,7 +320,7 @@ public class CoachellerApplication extends Application implements AppControllerI
     try {
       // TODO: pass proper values (year can remain hard-coded for now)
       List<NameValuePair> params = new ArrayList<NameValuePair>();
-      params.add(new BasicNameValuePair(HttpConstants.PARAM_YEAR, "2012"));
+      params.add(new BasicNameValuePair(HttpConstants.PARAM_YEAR, yearToQuery + ""));
       params.add(new BasicNameValuePair(HttpConstants.PARAM_DAY, dayToQuery));
       setData = ServiceUtils.getSets(params, this, HttpConstants.SERVER_URL_COACHELLER);
 
@@ -332,15 +350,15 @@ public class CoachellerApplication extends Application implements AppControllerI
     // If Exception is thrown, do not store rating locally
     try {
 
-      String setId = rating.get(AndroidConstants.JSON_KEY_SETS__SET_ID).toString();
+      String setId = rating.get(AndroidConstants.JSON_KEY_RATINGS__SET_ID).toString();
       String weekNumber = rating.get(AndroidConstants.JSON_KEY_RATINGS__WEEK).toString();
-      String scoreSelectedValue = rating.get(AndroidConstants.JSON_KEY_RATINGS__RATING).toString();
+      String scoreSelectedValue = rating.get(AndroidConstants.JSON_KEY_RATINGS__SCORE).toString();
       String notes = "";
       if (rating.has(AndroidConstants.JSON_KEY_RATINGS__NOTES)) {
         notes = rating.getString(AndroidConstants.JSON_KEY_RATINGS__NOTES);
       }
-      List<NameValuePair> nameValuePairs = AndroidUtils.createSubmitParamsArrayList("2012", setId,
-          scoreSelectedValue, notes, loginData, weekNumber + "");
+      List<NameValuePair> nameValuePairs = AndroidUtils.createSubmitRatingParamsArrayList(
+          yearToQuery + "", setId, scoreSelectedValue, notes, loginData, weekNumber + "");
       ServiceUtils.addRating(nameValuePairs, this, HttpConstants.SERVER_URL_COACHELLER);
 
       // Need this in order to make the new rating appear in real time
@@ -360,6 +378,16 @@ public class CoachellerApplication extends Application implements AppControllerI
       e1.printStackTrace();
       throw e1;
     }
+  }
+
+  public void updateSearchFields(String year, String week, String day) {
+    CoachellerApplication.debug(this, "Searching year[" + year + "] week[" + week + "] day[" + day
+        + "]");
+    setYearToQuery(Integer.valueOf(year));
+    setDayToQuery(day);
+    setWeekToQuery(Integer.valueOf(week));
+
+    getCoachellerActivity().refreshData();
   }
 
   @Override

@@ -12,10 +12,12 @@ import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.data.JSONArrayHashMap;
 import com.ratethisfest.android.data.JSONArraySortMap;
+import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.DateTimeUtils;
 
 public class CustomSetListAdapter implements ListAdapter {
@@ -34,6 +36,8 @@ public class CustomSetListAdapter implements ListAdapter {
     public TextView ratingWk1;
     public TextView ratingWk2;
     public TextView myRating;
+    public TextView myComment1;
+    public TextView myComment2;
   }
 
   public CustomSetListAdapter(Context context, String timeFieldName, String stageFieldName,
@@ -115,6 +119,8 @@ public class CustomSetListAdapter implements ListAdapter {
       viewHolder.ratingWk1 = (TextView) rowView.findViewById(R.id.text_wk1_rating);
       viewHolder.ratingWk2 = (TextView) rowView.findViewById(R.id.text_wk2_rating);
       viewHolder.myRating = (TextView) rowView.findViewById(R.id.text_my_rating);
+      viewHolder.myComment1 = (TextView) rowView.findViewById(R.id.text_note1);
+      viewHolder.myComment2 = (TextView) rowView.findViewById(R.id.text_note2);
       rowView.setTag(viewHolder);
     }
 
@@ -127,9 +133,7 @@ public class CustomSetListAdapter implements ListAdapter {
       ViewHolder holder = (ViewHolder) rowView.getTag();
       JSONObject setObj = _sortMap.getSortedJSONObj(position);
       String setId = setObj.getString(AndroidConstants.JSON_KEY_SETS__SET_ID); // Get
-                                                                            // the
-                                                                            // set
-                                                                            // Id
+      // the set Id
 
       // Get Ratings for this set Id
       JSONObject ratingsObjWk1 = _myRatings_JAHM.getJSONObject(setId, "1");
@@ -137,12 +141,12 @@ public class CustomSetListAdapter implements ListAdapter {
 
       String score1 = "*";
       if (ratingsObjWk1 != null) {
-        score1 = ratingsObjWk1.get(AndroidConstants.JSON_KEY_RATINGS__RATING).toString();
+        score1 = ratingsObjWk1.get(AndroidConstants.JSON_KEY_RATINGS__SCORE).toString();
       }
 
       String score2 = "*";
       if (ratingsObjWk2 != null) {
-        score2 = ratingsObjWk2.get(AndroidConstants.JSON_KEY_RATINGS__RATING).toString();
+        score2 = ratingsObjWk2.get(AndroidConstants.JSON_KEY_RATINGS__SCORE).toString();
       }
 
       int milTime = setObj.getInt(_timeFieldName);
@@ -171,6 +175,38 @@ public class CustomSetListAdapter implements ListAdapter {
         holder.myRating.setText("My Rtg: " + score1 + "/" + score2);
       } else {
         holder.myRating.setText("");
+      }
+
+      String myNote1 = "";
+      if (ratingsObjWk1 != null && ratingsObjWk1.has(AndroidConstants.JSON_KEY_RATINGS__NOTES)) {
+        myNote1 = ratingsObjWk1.get(AndroidConstants.JSON_KEY_RATINGS__NOTES).toString();
+        CoachellerApplication.debug(_context, "Found note: " + myNote1);
+      }
+
+      String myNote2 = "";
+      if (ratingsObjWk2 != null && ratingsObjWk2.has(AndroidConstants.JSON_KEY_RATINGS__NOTES)) {
+        myNote2 = ratingsObjWk2.get(AndroidConstants.JSON_KEY_RATINGS__NOTES).toString();
+        CoachellerApplication.debug(_context, "Found note: " + myNote2);
+      }
+
+      if (myNote1.equals("")) {
+        holder.myComment1.setVisibility(View.GONE);
+      } else {
+        if (myNote1.length() > AuthConstants.DATA_NOTE_VISIBLE_MAX_LENGTH) {
+          myNote1 = myNote1.substring(0, AuthConstants.DATA_NOTE_VISIBLE_MAX_LENGTH) + "...";
+        }
+        holder.myComment1.setText(myNote1);
+        holder.myComment1.setVisibility(View.VISIBLE);
+      }
+
+      if (myNote2.equals("")) {
+        holder.myComment2.setVisibility(View.GONE);
+      } else {
+        if (myNote2.length() > AuthConstants.DATA_NOTE_VISIBLE_MAX_LENGTH) {
+          myNote2 = myNote2.substring(0, AuthConstants.DATA_NOTE_VISIBLE_MAX_LENGTH) + "...";
+        }
+        holder.myComment2.setText(myNote2);
+        holder.myComment2.setVisibility(View.VISIBLE);
       }
 
       // Gnarly debug thing

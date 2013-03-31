@@ -166,14 +166,14 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
     };
 
-    processExtraData();
+    checkForExtraData();
 
   }
 
   /**
-   * TODO: potentially make year a searchable field here
+   * Currently passed in via SetsSearchActivity
    */
-  private void processExtraData() {
+  private void checkForExtraData() {
     Intent intent = getIntent();
     Bundle bundle = intent.getExtras();
 
@@ -229,7 +229,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     if (viewClicked.getId() == R.id.buttonChangeToSearchSets) {
       System.out.println("Button: Switch Day");
       Intent intent = new Intent();
-      intent.setClass(this, SetsSearchActivity.class);
+      intent.setClass(this, SearchSetsActivity.class);
       startActivity(intent);
     }
 
@@ -275,17 +275,17 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
       JSONObject obj = (JSONObject) setListAdapter.getItem(position);
       System.out.println(this + " Assigning " + obj + " to _lastItemSelected");
       lastSetSelected = obj;
-  
+
       String setId = lastSetSelected.getString(AndroidConstants.JSON_KEY_SETS__SET_ID);
       lastRating = appController.getUserRatingsJAHM().getJSONObject(setId, "1");
-  
+
       LollapaloozerApplication.debug(this, "You Clicked On: " + obj + " previous ratings "
           + lastRating);
     } catch (JSONException e) {
       LollapaloozerApplication.debug(this, "JSONException retrieving user's last rating");
       e.printStackTrace();
     }
-  
+
     if (!appController.getIsLoggedIn()) {
       _beginSigninProcess();
     } else {
@@ -304,20 +304,20 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
 
   @Override
   public void onItemSelected(AdapterView<?> parent, View arg1, int arg2, long arg3) {
-  
+
     // TODO Auto-generated method stub
     LollapaloozerApplication.debug(this,
         "Search Type Spinner: Selected -> " + parent.getSelectedItem() + "(" + arg2 + ")");
     ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
-  
+
     try {
       if (parent.getSelectedItem().toString().toLowerCase().equals("time")) {
         _sortMode = SORT_TIME;
-  
+
       } else if (parent.getSelectedItem().toString().toLowerCase().equals("artist")) {
         _sortMode = SORT_ARTIST;
       }
-  
+
       setView_reSort();
       viewSetsList.invalidateViews();
     } catch (JSONException e) {
@@ -331,7 +331,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     switch (item.getItemId()) {
     case R.id.menu_item_email_me:
       LollapaloozerApplication.debug(this, "Menu button 'email me' pressed");
-  
+
       if (!appController.getIsLoggedIn()) {
         Toast.makeText(this, "Try rating at least one set first", 15).show();
       } else {
@@ -343,13 +343,13 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
         }
       }
       return true;
-  
+
     case R.id.menu_item_delete_email:
       LollapaloozerApplication.debug(this, "Menu button 'Forget Account Info' pressed");
       appController.clearLoginData();
       refreshData();
       return true;
-  
+
     default:
       return super.onOptionsItemSelected(item);
     }
@@ -370,7 +370,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     // Formerly used to select week, now always true
     // if (clickedGroup == _rateDialog.findViewById(R.id.radio_pick_score))
     // {
-  
+
   }
 
   // Dialog handling, called once the first time this activity displays
@@ -381,31 +381,31 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
       firstUseDialog = new Dialog(this);
       firstUseDialog.setContentView(R.layout.first_use_dialog);
       firstUseDialog.setTitle(AuthConstants.DIALOG_TITLE_FIRST_USE);
-  
+
       Button buttonOK = (Button) firstUseDialog.findViewById(R.id.button_firstuse_ok);
       buttonOK.setOnClickListener(this);
       return firstUseDialog;
     }
-  
+
     if (id == AndroidConstants.DIALOG_GETEMAIL) {
       emailDialog = new Dialog(this);
       emailDialog.setContentView(R.layout.get_email_address);
       emailDialog.setTitle(AuthConstants.DIALOG_TITLE_GET_EMAIL);
-  
+
       Button buttonOK = (Button) emailDialog.findViewById(R.id.button_provideEmail);
       buttonOK.setOnClickListener(this);
-  
+
       Button buttonCancel = (Button) emailDialog.findViewById(R.id.button_declineEmail);
       buttonCancel.setOnClickListener(this);
-  
+
       return emailDialog;
     }
-  
+
     if (id == AndroidConstants.DIALOG_RATE) {
       rateDialog = new Dialog(this);
       rateDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
       rateDialog.setContentView(R.layout.dialog_rate_set);
-  
+
       // Setup 'X' close widget
       ImageView close_dialog = (ImageView) rateDialog
           .findViewById(R.id.imageView_custom_dialog_close);
@@ -414,33 +414,33 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
           rateDialog.dismiss();
         }
       });
-  
+
       Button buttonRateAbove = (Button) rateDialog.findViewById(R.id.button_go_rate_above);
       buttonRateAbove.setOnClickListener(this);
-  
+
       Button buttonRateInline = (Button) rateDialog.findViewById(R.id.button_go_rate_inline);
       buttonRateInline.setOnClickListener(this);
-  
+
       ImageButton buttonFB = (ImageButton) rateDialog.findViewById(R.id.button_go_fb);
       buttonFB.setOnClickListener(this);
-  
+
       ImageButton buttonTweet = (ImageButton) rateDialog.findViewById(R.id.button_go_tweet);
       buttonTweet.setOnClickListener(this);
-  
+
       return rateDialog;
     }
-  
+
     if (id == AndroidConstants.DIALOG_NETWORK_ERROR) {
       networkErrorDialog = new Dialog(this);
       networkErrorDialog.setContentView(R.layout.dialog_network_error);
       networkErrorDialog.setTitle("Network Error");
-  
+
       Button buttonOK = (Button) networkErrorDialog.findViewById(R.id.button_network_error_ok);
       buttonOK.setOnClickListener(this);
       return networkErrorDialog;
-  
+
     }
-  
+
     return super.onCreateDialog(id);
   }
 
@@ -449,7 +449,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
   protected void onPrepareDialog(int id, Dialog dialog) {
     super.onPrepareDialog(id, dialog);
     System.out.println("onPrepareDialog");
-  
+
     if (id == AndroidConstants.DIALOG_GETEMAIL) {
       EditText emailField = (EditText) emailDialog.findViewById(R.id.textField_enterEmail);
       if (appController.getLoginData().emailAddress == null) {
@@ -460,18 +460,18 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
         emailField.requestFocus();
       }
     }
-  
+
     if (id == AndroidConstants.DIALOG_RATE) {
       try {
         TextView subtitleText = (TextView) rateDialog.findViewById(R.id.text_rateBand_subtitle);
-  
+
         // Bug finding. Debugger doesn't always find it. Race condition?
         // Strange bug. reproduce by clicking something ASAP when app loads and
         // clicking FB post
         if (subtitleText == null) {
           System.out.println("Subtitletext was " + subtitleText);
         }
-  
+
         System.out.println(this.toString() + "_lastItemSelected was " + lastSetSelected);
         if (lastSetSelected == null) {
           System.out.println(this.toString()
@@ -486,35 +486,36 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
             .debug(this, "JSONException assigning Artist name to Rating dialog");
         e.printStackTrace();
       }
-  
+
       // This checks the appropriate radio button based on the score set
       // in _lastRatings
       // _lastRatings is set by onItemClick not to be confused with
       // onClick
-  
+
       RadioGroup scoreGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_score);
+
       EditText noteWidget = (EditText) rateDialog.findViewById(R.id.editText_commentsForSet);
       if (lastRating == null) {
-  
+
         scoreGroup.clearCheck();
         noteWidget.setText("");
-  
+
         return; // Abandon if there is no previous data
       }
       try {
-        int selectedItemScore = lastRating.getInt(AndroidConstants.JSON_KEY_RATINGS__RATING);
+        int selectedItemScore = lastRating.getInt(AndroidConstants.JSON_KEY_RATINGS__SCORE);
         int buttonIdToCheck;
         buttonIdToCheck = _ratingSelectedScoreToId.get(selectedItemScore + "");
         scoreGroup.check(buttonIdToCheck);
         // RadioButton buttonToCheck = (RadioButton) _rateDialog
         // .findViewById(buttonIdToCheck);
         // buttonToCheck.setChecked(true);
-  
+
       } catch (JSONException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
-  
+
       try {
         // Ratings might not include notes
         if (lastRating.has(AndroidConstants.JSON_KEY_RATINGS__NOTES)) {
@@ -528,34 +529,34 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
-  
+
       if (appController.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)) {
         ImageButton buttonFB = (ImageButton) rateDialog.findViewById(R.id.button_go_fb);
         buttonFB.setImageResource(R.drawable.post_facebook_large);
         System.out.println(buttonFB.getPaddingTop() + " " + buttonFB.getPaddingLeft() + " "
             + buttonFB.getPaddingBottom() + " " + buttonFB.getPaddingRight());
         buttonFB.setPadding(7, 3, 7, 10);
-  
+
       }
-  
+
       if (appController.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
         ImageButton buttonTweet = (ImageButton) rateDialog.findViewById(R.id.button_go_tweet);
         buttonTweet.setImageResource(R.drawable.post_twitter_large);
         buttonTweet.setPadding(7, 3, 7, 10);
       }
-  
+
       if (appController.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)
           && appController.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
-  
+
         Button buttonRateAbove = (Button) rateDialog.findViewById(R.id.button_go_rate_above);
         buttonRateAbove.setVisibility(View.VISIBLE);
-  
+
         Button buttonRateInline = (Button) rateDialog.findViewById(R.id.button_go_rate_inline);
         buttonRateInline.setVisibility(View.GONE);
       }
-  
+
     } // end if rating dialog
-  
+
   }
 
   @Override
@@ -564,20 +565,20 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     String infoMessage = "LollapaloozerActivity.onActivityResult req=" + requestCode
         + " resultCode=" + resultCode + " data: " + data;
     System.out.println(infoMessage);
-  
+
     if (data != null) {
       System.out.println("Intent Data: " + data.getDataString());
       System.out.println("Intent Extras: " + AndroidUtils.bundleValues(data.getExtras()));
     }
-  
+
     if (resultCode == Activity.RESULT_OK) { // Login success
       switch (requestCode) {
-  
+
       case AuthConstants.INTENT_CHOOSE_LOGIN_TYPE:
         Bundle results = data.getExtras();
         appController.processLoginData(results);
         break;
-  
+
       case AuthConstants.INTENT_FACEBOOK_LOGIN: {
         // Assuming it is Facebook
         System.out.println("onActivityResult called by Facebook API");
@@ -586,22 +587,22 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
             .authorizeCallback(requestCode, resultCode, data);
         break;
       }
-  
+
       case AuthConstants.INTENT_TWITTER_LOGIN: {
         // Assuming it is Facebook
         System.out.println("onActivityResult called by Twitter API");
         appController.getAuthModel().twitterAuthCallback(requestCode, resultCode, data);
         break;
       }
-  
+
       default:
         appController.showErrorDialog("Unexpected Response",
             "An unexpected response was received from another window", infoMessage);
-  
+
         break;
       }
     }
-  
+
   }
 
   @Override
@@ -616,7 +617,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     super.onNewIntent(intent);
     setIntent(intent);// must store the new intent unless getIntent() will
     // return the old one
-    processExtraData();
+    checkForExtraData();
   }
 
   private void redrawUI() {
@@ -832,7 +833,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
         lastRating = newObj;
       }
 
-      lastRating.put(AndroidConstants.JSON_KEY_RATINGS__RATING, submittedRating);
+      lastRating.put(AndroidConstants.JSON_KEY_RATINGS__SCORE, submittedRating);
       lastRating.put(AndroidConstants.JSON_KEY_RATINGS__NOTES, submittedNote);
 
       launchSubmitRatingThread();
