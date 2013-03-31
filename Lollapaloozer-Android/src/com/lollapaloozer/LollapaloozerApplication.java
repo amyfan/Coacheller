@@ -308,14 +308,14 @@ public class LollapaloozerApplication extends Application implements AppControll
     // If Exception is thrown, do not store rating locally
     try {
       String setId = rating.get(AndroidConstants.JSON_KEY_RATINGS__SET_ID).toString();
-      String scoreSelectedValue = rating.get(AndroidConstants.JSON_KEY_RATINGS__RATING).toString();
+      String scoreSelectedValue = rating.get(AndroidConstants.JSON_KEY_RATINGS__SCORE).toString();
       String notes = "";
       if (rating.has(AndroidConstants.JSON_KEY_RATINGS__NOTES)) {
         notes = rating.getString(AndroidConstants.JSON_KEY_RATINGS__NOTES);
       }
 
-      List<NameValuePair> nameValuePairs = AndroidUtils.createSubmitParamsArrayList("2012", setId,
-          scoreSelectedValue, notes, loginData, "1");
+      List<NameValuePair> nameValuePairs = AndroidUtils.createSubmitRatingParamsArrayList("2012",
+          setId, scoreSelectedValue, notes, loginData, "1");
       ServiceUtils.addRating(nameValuePairs, this, HttpConstants.SERVER_URL_LOLLAPALOOZER);
 
       // Need this in order to make the new rating appear in real time

@@ -8,7 +8,7 @@ public class AndroidConstants {
   // JSON Hashmap Keys
   public static final String JSON_KEY_RATINGS__SET_ID = "set_id";
   public static final String JSON_KEY_RATINGS__WEEK = "weekend";
-  public static final String JSON_KEY_RATINGS__RATING = "score";
+  public static final String JSON_KEY_RATINGS__SCORE = "score";
   public static final String JSON_KEY_RATINGS__NOTES = "notes";
   public static final String JSON_KEY_SETS__SET_ID = "id";
   public static final String JSON_KEY_SETS__DAY = "day";

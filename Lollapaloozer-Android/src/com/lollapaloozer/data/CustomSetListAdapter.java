@@ -130,16 +130,14 @@ public class CustomSetListAdapter implements ListAdapter {
       ViewHolder holder = (ViewHolder) rowView.getTag();
       JSONObject setObj = _sortMap.getSortedJSONObj(position);
       String setId = setObj.getString(AndroidConstants.JSON_KEY_SETS__SET_ID); // Get
-      // the
-      // set
-      // Id
+      // the set Id
 
       // Get Ratings for this set Id
       JSONObject ratingsObjWk1 = _myRatings_JAHM.getJSONObject(setId, "1");
 
       String score1 = "*";
       if (ratingsObjWk1 != null) {
-        score1 = ratingsObjWk1.get(AndroidConstants.JSON_KEY_RATINGS__RATING).toString();
+        score1 = ratingsObjWk1.get(AndroidConstants.JSON_KEY_RATINGS__SCORE).toString();
       }
 
       int milTime = setObj.getInt(_timeFieldName);

@@ -65,16 +65,16 @@ public class AndroidUtils {
   }
 
   /**
-   * TODO: account for weekend for coachella
    * 
    * @param year
    * @param set_id
    * @param scoreSelectedValue
    * @param notes
    * @param loginData
+   * @param weekend
    * @return
    */
-  public static List<NameValuePair> createSubmitParamsArrayList(String year, String set_id,
+  public static List<NameValuePair> createSubmitRatingParamsArrayList(String year, String set_id,
       String scoreSelectedValue, String notes, LoginData loginData, String weekend) {
     List<NameValuePair> params = new ArrayList<NameValuePair>(1);
 

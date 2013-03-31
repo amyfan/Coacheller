@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -77,8 +78,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   // contains actual rating, stored in userRatingsJAHM
   private JSONObject lastRating;
   // contains both week's scores
-  private CustomPair<String, String> lastRatingScorePair = new CustomPair<String, String>(null,
-      null);
+  private CustomPair<JSONObject, JSONObject> lastRatingScorePair = new CustomPair<JSONObject, JSONObject>(
+      null, null);
   private HashMap<Integer, Integer> _ratingSelectedIdToValue = new HashMap<Integer, Integer>();
   private HashMap<String, Integer> _ratingSelectedScoreToId = new HashMap<String, Integer>();
 
@@ -168,13 +169,11 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     };
 
-    processExtraData();
+    checkForExtraData();
   }
 
-  /**
-   * TODO: potentially make year a searchable field here
-   */
-  private void processExtraData() {
+  @Deprecated
+  private void checkForExtraData() {
     Intent intent = getIntent();
     Bundle bundle = intent.getExtras();
 
@@ -182,10 +181,13 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       return;
     }
 
-    String week = intent.getExtras().getString("WEEK");
-    String day = intent.getExtras().getString("DAY");
+    String year = intent.getExtras().getString(SearchSetsActivity.YEAR);
+    String week = intent.getExtras().getString(SearchSetsActivity.WEEK);
+    String day = intent.getExtras().getString(SearchSetsActivity.DAY);
 
-    CoachellerApplication.debug(this, "Searching week[" + week + "] day[" + day + "]");
+    CoachellerApplication.debug(this, "Searching year[" + year + "] week[" + week + "] day[" + day
+        + "]");
+    appController.setYearToQuery(Integer.valueOf(year));
     appController.setDayToQuery(day);
     appController.setWeekToQuery(Integer.valueOf(week));
     refreshData();
@@ -231,7 +233,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     if (viewClicked.getId() == R.id.buttonChangeToSearchSets) {
       System.out.println("Button: Switch Day");
       Intent intent = new Intent();
-      intent.setClass(this, SetsSearchActivity.class);
+      intent.setClass(this, SearchSetsActivity.class);
       startActivity(intent);
     }
 
@@ -285,19 +287,19 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       JSONObject lastRatingWeek1 = appController.getUserRatingsJAHM().getJSONObject(setId, "1");
       JSONObject lastRatingWeek2 = appController.getUserRatingsJAHM().getJSONObject(setId, "2");
 
-      if (lastRatingWeek1 != null) {
-        lastRatingScorePair.first = lastRatingWeek1
-            .getString(AndroidConstants.JSON_KEY_RATINGS__RATING);
-      } else {
-        lastRatingScorePair.first = null;
-      }
+      // if (lastRatingWeek1 != null) {
+      lastRatingScorePair.first = lastRatingWeek1;
+      // .getString(AndroidConstants.JSON_KEY_RATINGS__RATING);
+      // } else {
+      // lastRatingScorePair.first = null;
+      // }
 
-      if (lastRatingWeek2 != null) {
-        lastRatingScorePair.second = lastRatingWeek2
-            .getString(AndroidConstants.JSON_KEY_RATINGS__RATING);
-      } else {
-        lastRatingScorePair.second = null;
-      }
+      // if (lastRatingWeek2 != null) {
+      lastRatingScorePair.second = lastRatingWeek2;
+      // .getString(AndroidConstants.JSON_KEY_RATINGS__RATING);
+      // } else {
+      // lastRatingScorePair.second = null;
+      // }
 
     } catch (JSONException e) {
       CoachellerApplication.debug(this, "JSONException retrieving user's last rating");
@@ -387,31 +389,53 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   public void onCheckedChanged(RadioGroup clickedGroup, int checkedId) {
     // todo should use switch
     RadioGroup scoreGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_score);
+    EditText noteWidget = (EditText) rateDialog.findViewById(R.id.editText_commentsForSet);
+
     if (clickedGroup == rateDialog.findViewById(R.id.radio_pick_week)) {
 
-      if (checkedId == R.id.radio_button_week1 && lastRatingScorePair.first != null) {
-        int buttonIdToCheck = _ratingSelectedScoreToId.get(lastRatingScorePair.first);
-        RadioButton buttonToCheck = (RadioButton) rateDialog.findViewById(buttonIdToCheck);
-        buttonToCheck.setChecked(true);
+      try {
+        if (checkedId == R.id.radio_button_week1) {
+          if (lastRatingScorePair.first != null) {
+            int buttonIdToCheck = _ratingSelectedScoreToId.get(lastRatingScorePair.first
+                .getString(AndroidConstants.JSON_KEY_RATINGS__SCORE));
+            RadioButton buttonToCheck = (RadioButton) rateDialog.findViewById(buttonIdToCheck);
+            buttonToCheck.setChecked(true);
+            noteWidget.setText(lastRatingScorePair.first
+                .getString(AndroidConstants.JSON_KEY_RATINGS__NOTES));
+          } else {
+            scoreGroup.clearCheck();
+            noteWidget.setText("");
+          }
+        } else if (checkedId == R.id.radio_button_week2) {
+          if (lastRatingScorePair.second != null) {
+            CoachellerApplication.debug(
+                this,
+                "Last Rating "
+                    + lastRatingScorePair.second
+                        .getString(AndroidConstants.JSON_KEY_RATINGS__SCORE));
+            int buttonIdToCheck = _ratingSelectedScoreToId.get(lastRatingScorePair.second
+                .getString(AndroidConstants.JSON_KEY_RATINGS__SCORE));
+            CoachellerApplication.debug(this, "Button id to check " + buttonIdToCheck);
+            RadioButton buttonToCheck = (RadioButton) rateDialog.findViewById(buttonIdToCheck); // TODO
+                                                                                                // duplicate
+                                                                                                // code
+            buttonToCheck.setChecked(true);
+            noteWidget.setText(lastRatingScorePair.second
+                .getString(AndroidConstants.JSON_KEY_RATINGS__NOTES));
+          } else {
+            scoreGroup.clearCheck();
+            noteWidget.setText("");
+          }
 
-      } else if (checkedId == R.id.radio_button_week2 && lastRatingScorePair.second != null) {
-        CoachellerApplication.debug(this, "Last Rating " + lastRatingScorePair.second);
-        int buttonIdToCheck = _ratingSelectedScoreToId.get(lastRatingScorePair.second);
-        CoachellerApplication.debug(this, "Button id to check " + buttonIdToCheck);
-        RadioButton buttonToCheck = (RadioButton) rateDialog.findViewById(buttonIdToCheck); // TODO
-                                                                                            // duplicate
-                                                                                            // code
-        buttonToCheck.setChecked(true);
-
-      } else { // Not sure what is selected, clear rating check
-
-        scoreGroup.clearCheck();
+        } else { // Not sure what is selected, clear rating check
+          scoreGroup.clearCheck();
+          noteWidget.setText("");
+        }
+      } catch (JSONException e) {
+        e.printStackTrace();
       }
-
       scoreGroup.invalidate();
-
     }
-
   }
 
   // Dialog handling, called once the first time this activity displays (a/each
@@ -444,8 +468,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     if (id == AndroidConstants.DIALOG_RATE) {
       rateDialog = new Dialog(this);
+      rateDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
       rateDialog.setContentView(R.layout.dialog_rate_set);
-      rateDialog.setTitle("Rate This Set!");
 
       RadioGroup weekGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_week);
       weekGroup.setOnCheckedChangeListener(this);
@@ -491,9 +515,19 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   // Dialog handling, called before any dialog is shown
   @Override
   protected void onPrepareDialog(int id, Dialog dialog) {
-
-    // Always call through to super implementation
     super.onPrepareDialog(id, dialog);
+    System.out.println("onPrepareDialog");
+
+    if (id == AndroidConstants.DIALOG_GETEMAIL) {
+      EditText emailField = (EditText) emailDialog.findViewById(R.id.textField_enterEmail);
+      if (appController.getLoginData().emailAddress == null) {
+        emailField.setText("");
+      } else {
+        emailField.setText(appController.getLoginData().emailAddress);
+        emailField.selectAll();
+        emailField.requestFocus();
+      }
+    }
 
     if (id == AndroidConstants.DIALOG_RATE) {
 
@@ -536,9 +570,30 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       // TODO pick user's last rating
       onCheckedChanged(weekGroup, idChanged);
 
-      // RadioGroup scoreGroup = (RadioGroup)
-      // _lastRateDialog.findViewById(R.id.radio_pick_score);
-      // scoreGroup.clearCheck();
+      if (appController.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)) {
+        ImageButton buttonFB = (ImageButton) rateDialog.findViewById(R.id.button_go_fb);
+        buttonFB.setImageResource(R.drawable.post_facebook_large);
+        System.out.println(buttonFB.getPaddingTop() + " " + buttonFB.getPaddingLeft() + " "
+            + buttonFB.getPaddingBottom() + " " + buttonFB.getPaddingRight());
+        buttonFB.setPadding(7, 3, 7, 10);
+
+      }
+
+      if (appController.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
+        ImageButton buttonTweet = (ImageButton) rateDialog.findViewById(R.id.button_go_tweet);
+        buttonTweet.setImageResource(R.drawable.post_twitter_large);
+        buttonTweet.setPadding(7, 3, 7, 10);
+      }
+
+      if (appController.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)
+          && appController.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
+
+        Button buttonRateAbove = (Button) rateDialog.findViewById(R.id.button_go_rate_above);
+        buttonRateAbove.setVisibility(View.VISIBLE);
+
+        Button buttonRateInline = (Button) rateDialog.findViewById(R.id.button_go_rate_inline);
+        buttonRateInline.setVisibility(View.GONE);
+      }
 
     }
 
@@ -600,7 +655,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     super.onNewIntent(intent);
     setIntent(intent);// must store the new intent unless getIntent() will
                       // return the old one
-    processExtraData();
+    checkForExtraData();
   }
 
   protected void redrawUI() {
@@ -639,22 +694,19 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     startActivityForResult(lollapaloozerAuthIntent, AuthConstants.INTENT_CHOOSE_LOGIN_TYPE);
   }
 
-  private void refreshData() {
-    String weekString = "";
+  public void refreshData() {
     if (appController.getWeekToQuery() == 1) {
       _timeFieldName = AndroidConstants.JSON_KEY_SETS__TIME_ONE;
       _stageFieldName = AndroidConstants.JSON_KEY_SETS__STAGE_ONE;
-      weekString = getString(R.string.name_week1_short);
     } else if (appController.getWeekToQuery() == 2) {
       _timeFieldName = AndroidConstants.JSON_KEY_SETS__TIME_TWO;
       _stageFieldName = AndroidConstants.JSON_KEY_SETS__STAGE_TWO;
-      weekString = getString(R.string.name_week2_short);
     }
 
     TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
     // TODO: add year
-    titleView
-        .setText(appController.getDayToQuery() + ", Weekend " + appController.getWeekToQuery());
+    titleView.setText(appController.getYearToQuery() + " - " + appController.getDayToQuery()
+        + ", Weekend " + appController.getWeekToQuery());
     // +" "+ weekString);
     _setListAdapter.setTimeFieldName(_timeFieldName);
     _setListAdapter.setStageFieldName(_stageFieldName);
@@ -841,8 +893,9 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         lastRating = newObj;
       }
 
-      lastRating.put(AndroidConstants.JSON_KEY_RATINGS__RATING, submittedRating);
+      lastRating.put(AndroidConstants.JSON_KEY_RATINGS__SCORE, submittedRating);
       lastRating.put(AndroidConstants.JSON_KEY_RATINGS__NOTES, submittedNote);
+
       launchSubmitRatingThread();
     } catch (JSONException e) {
       // TODO Auto-generated catch block

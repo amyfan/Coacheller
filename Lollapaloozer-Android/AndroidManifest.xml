@@ -25,7 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.SetsSearchActivity" android:launchMode="standard"></activity>
+        <activity android:name=".ui.SearchSetsActivity" android:launchMode="standard"></activity>
         <activity android:name=".ui.ChooseLoginActivity" android:launchMode="standard"></activity>
         <activity android:launchMode="standard" android:name=".ui.TwitterAuthWebpageActivity"></activity>
     </application>

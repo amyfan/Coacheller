@@ -1,4 +1,4 @@
-package com.coacheller.ui;
+package com.lollapaloozer.ui;
 
 import java.util.Calendar;
 
@@ -12,14 +12,13 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.coacheller.CoachellerApplication;
-import com.coacheller.R;
+import com.lollapaloozer.LollapaloozerApplication;
+import com.lollapaloozer.R;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.CalendarUtils;
 
-public class SetsSearchActivity extends Activity implements OnClickListener {
+public class SearchSetsActivity extends Activity implements OnClickListener {
 
-  private String _weekSelected;
   private String _daySelected;
 
   /** Called when the activity is first created. */
@@ -27,40 +26,12 @@ public class SetsSearchActivity extends Activity implements OnClickListener {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    CoachellerApplication.debug(this, "Search Sets Activity Launched");
+    LollapaloozerApplication.debug(this, "Search Sets Activity Launched");
     this.initializeApp();
   }
 
   public void initializeApp() {
     setContentView(R.layout.sets_search);
-
-    // Setup Week Spinner
-    Spinner weekendSpinner = (Spinner) this.findViewById(R.id.search_spinner_week);
-    AndroidUtils.populateSpinnerWithArray(weekendSpinner, android.R.layout.simple_spinner_item,
-        R.array.names_week, android.R.layout.simple_spinner_dropdown_item);
-    weekendSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-      @Override
-      public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        CoachellerApplication.debug(parent.getContext(),
-            "Week Selected: " + parent.getSelectedItem());
-        _weekSelected = parent.getSelectedItem().toString().substring(0, 1);
-      }
-
-      @Override
-      public void onNothingSelected(AdapterView<?> parent) {
-        CoachellerApplication.debug(parent.getContext(), "No Week Selected - Unexpected condition");
-      }
-    });
-
-    if (CalendarUtils.whichWeekIsToday() == 1) {
-      CoachellerApplication.debug(this, "Date suggests week 1");
-      weekendSpinner.setSelection(0);
-
-    } else if (CalendarUtils.whichWeekIsToday() == 2) {
-      CoachellerApplication.debug(this, "Date suggests week 2");
-      weekendSpinner.setSelection(1);
-    }
 
     // Setup day spinner
     Spinner daySpinner = (Spinner) this.findViewById(R.id.search_spinner_day);
@@ -70,7 +41,7 @@ public class SetsSearchActivity extends Activity implements OnClickListener {
 
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        CoachellerApplication.debug(parent.getContext(),
+        LollapaloozerApplication.debug(parent.getContext(),
             "Day Selected: " + parent.getSelectedItem());
         _daySelected = parent.getSelectedItem().toString();
 
@@ -78,7 +49,8 @@ public class SetsSearchActivity extends Activity implements OnClickListener {
 
       @Override
       public void onNothingSelected(AdapterView<?> parent) {
-        CoachellerApplication.debug(parent.getContext(), "No Day Selected - Unexpected condition");
+        LollapaloozerApplication.debug(parent.getContext(),
+            "No Day Selected - Unexpected condition");
       }
     });
 
@@ -109,16 +81,15 @@ public class SetsSearchActivity extends Activity implements OnClickListener {
 
   public void onClick(View v) {
     if (v.getId() == R.id.sets_search_button_search) {
-      CoachellerApplication.debug(this, "Search button pressed");
+      LollapaloozerApplication.debug(this, "Search button pressed");
 
       try {
         Intent intent = new Intent();
         Bundle bun = new Bundle();
 
-        bun.putString("WEEK", _weekSelected);
         bun.putString("DAY", _daySelected);
 
-        intent.setClass(this, CoachellerActivity.class);
+        intent.setClass(this, LollapaloozerActivity.class);
 
         intent.putExtras(bun);
         startActivity(intent);
@@ -129,7 +100,7 @@ public class SetsSearchActivity extends Activity implements OnClickListener {
         exceptionText.show();
       }
     } else {
-      CoachellerApplication.debug(this, "An unknown button was pressed - Unexpected");
+      LollapaloozerApplication.debug(this, "An unknown button was pressed - Unexpected");
     }
 
   }
