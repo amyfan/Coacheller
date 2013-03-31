@@ -139,6 +139,19 @@ public class CoachellaRatingManager extends RatingManager {
     return ratings;
   }
 
+  public List<Rating> findRatingsByUserYearAndDay(String authType, String authId, String authToken,
+      String email, Integer year, DayEnum day) {
+    Key<AppUser> userKey = UserAccountManager.getInstance().manageAppUser(authType, authId,
+        authToken, email);
+    List<Rating> ratings = null;
+    QueryResultIterable<Key<Set>> setKeys = setDao.findSetKeysByYearAndDay(FestivalEnum.COACHELLA,
+        year, day);
+    List<Key<Set>> setKeyList = CollectionUtils.iterableToList(setKeys);
+    ratings = ratingDao.findRatingsByUserKeyAndSetKeys(userKey, setKeyList);
+    return ratings;
+  }
+
+  @Deprecated
   public List<Rating> findRatingsByUserYearAndDay(String email, Integer year, DayEnum day) {
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     List<Rating> ratings = null;

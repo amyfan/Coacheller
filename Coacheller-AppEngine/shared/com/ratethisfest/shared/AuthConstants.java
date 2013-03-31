@@ -48,8 +48,8 @@ public class AuthConstants {
   public static final String LOGIN_TYPE_FACEBOOK_BROWSER = "LOGIN_TYPE_FACEBOOK_BROWSER";
 
   // TODO: FILL OUT!
-  public static final String COACH_FACEBOOK_APP_ID = "";
-  public static final String COACH_FACEBOOK_APP_SECRET = "";
+  public static final String COACH_FACEBOOK_APP_ID = "275753515892849";
+  public static final String COACH_FACEBOOK_APP_SECRET = "e7fa740e453771b378640ea9c61ffc7a";
 
   public static final String LOLLA_FACEBOOK_APP_ID = "186287061500005";
   public static final String LOLLA_FACEBOOK_APP_SECRET = "87eed9f76050ebd82c10a0ef161ec8a6";

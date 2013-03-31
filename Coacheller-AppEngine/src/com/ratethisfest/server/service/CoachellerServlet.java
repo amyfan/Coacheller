@@ -13,9 +13,8 @@ import org.json.JSONArray;
 
 import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.server.logic.CoachellaEmailSender;
-import com.ratethisfest.server.logic.JSONUtils;
 import com.ratethisfest.server.logic.CoachellaRatingManager;
-import com.ratethisfest.server.logic.LollaRatingManager;
+import com.ratethisfest.server.logic.JSONUtils;
 import com.ratethisfest.shared.DayEnum;
 import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.HttpConstants;
@@ -154,8 +153,8 @@ public class CoachellerServlet extends HttpServlet {
       } else if (!FieldVerifier.isValidDay(day)) {
         resp = FieldVerifier.DAY_ERROR;
       } else {
-        ratings = LollaRatingManager.getInstance().findRatingsByUserYearAndDay(authType, authId,
-            authToken, email, Integer.valueOf(year), DayEnum.fromValue(day));
+        ratings = CoachellaRatingManager.getInstance().findRatingsByUserYearAndDay(authType,
+            authId, authToken, email, Integer.valueOf(year), DayEnum.fromValue(day));
       }
     }
 
