@@ -19,20 +19,32 @@ public class TwitterAuthProvider implements AuthProviderInt {
   // private ChooseLoginActivity _activity;
   private AuthModel _model;
   private final String LOGIN_TYPE = AuthConstants.LOGIN_TYPE_TWITTER;
+  private final String CONSUMER_KEY;
+  private final String CONSUMER_SECRET;
+  private final String OAUTH_CALLBACK_URL;
 
   private TwitterAuthProviderOAuth _oAuthProvider;
   private HashMap<String, String> _twitterAccountProperties = new HashMap<String, String>();
   private ArrayList<String> _twitterAccountPropertyNames;
 
   // Default constructor disallowed
+  @SuppressWarnings("unused")
   private TwitterAuthProvider() {
+    CONSUMER_KEY="";
+    CONSUMER_SECRET="";
+    OAUTH_CALLBACK_URL="";
   }
 
   public TwitterAuthProvider(AuthModel model) {
     // _activity = activity;
     _model = model;
-    _oAuthProvider = new TwitterAuthProviderOAuth(AuthConstants.CONSUMER_KEY,
-        AuthConstants.CONSUMER_SECRET, AuthConstants.OAUTH_CALLBACK_URL);
+    CONSUMER_KEY = _model.getAppConstant(AuthConstants.TWITTER_CONSUMER_KEY);
+    CONSUMER_SECRET = _model.getAppConstant(AuthConstants.TWITTER_CONSUMER_SECRET);
+    OAUTH_CALLBACK_URL = _model.getAppConstant(AuthConstants.TWITTER_OAUTH_CALLBACK_URL);
+
+    
+    _oAuthProvider = new TwitterAuthProviderOAuth(CONSUMER_KEY, CONSUMER_SECRET,
+        OAUTH_CALLBACK_URL);
 
     _twitterAccountPropertyNames = new ArrayList<String>();
     _twitterAccountPropertyNames.add(TwitterVerifier.ACCOUNT_PROPERTY_ID);
@@ -47,7 +59,7 @@ public class TwitterAuthProvider implements AuthProviderInt {
       return false;
     }
 
-    TwitterVerifier verifier = new TwitterVerifier();
+    TwitterVerifier verifier = new TwitterVerifier(CONSUMER_KEY, CONSUMER_SECRET, OAUTH_CALLBACK_URL);
     return verifier.verify(_oAuthProvider.getAccessToken(),
         _twitterAccountProperties.get(TwitterVerifier.ACCOUNT_PROPERTY_HANDLE));
 
@@ -121,8 +133,8 @@ public class TwitterAuthProvider implements AuthProviderInt {
   }
 
   public String tweet(SocialNetworkPost post) {
-    String message = "I saw the set by " + post.artistName + " and rated it " + post.rating
-        + " (out of " + AuthConstants.RATING_MAXIMUM + ").";
+    String message = "I saw the set by " + post.artistName + " and rated it " + post.rating + " (out of "
+        + AuthConstants.RATING_MAXIMUM + ").";
     if (post.note != null && !post.note.equals("")) {
       message += "\r\nNotes: " + post.note;
     }
@@ -130,8 +142,8 @@ public class TwitterAuthProvider implements AuthProviderInt {
     HashMap<String, String> bodyParameters = new HashMap<String, String>();
     bodyParameters.put("status", message);
 
-    Response response = _oAuthProvider.accessResource(Verb.POST,
-        "https://api.twitter.com/1/statuses/update.json", bodyParameters);
+    Response response = _oAuthProvider.accessResource(Verb.POST, "https://api.twitter.com/1/statuses/update.json",
+        bodyParameters);
     return response.getBody();
   }
 

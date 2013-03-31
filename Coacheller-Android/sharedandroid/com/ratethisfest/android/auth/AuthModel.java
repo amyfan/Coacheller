@@ -1,6 +1,7 @@
 package com.ratethisfest.android.auth;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.content.Intent;
 
@@ -14,6 +15,7 @@ public class AuthModel {
   public static final String PERMISSION_TWITTER_TWEET = "PERMISSION_TWITTER_TWEET";
 
   private AppControllerInt appController;
+  private HashMap<String, String> _appConstants;
   private AuthActivityInt lastAuthActivity;
   private GoogleAuthProvider _authProviderGoogle;
   private FacebookAuthProvider _authProviderFacebook;
@@ -25,12 +27,17 @@ public class AuthModel {
   private String _verifiedAccountName = null;
   private ArrayList<String> _permissions = new ArrayList<String>();
 
-  public AuthModel(AppControllerInt appController) {
+  public AuthModel(AppControllerInt appController, HashMap<String, String> appConstants) {
     this.appController = appController;
+    _appConstants = appConstants;
     _authProviderGoogle = new GoogleAuthProvider(AuthModel.this);
     _authProviderFacebook = new FacebookAuthProvider(AuthModel.this);
-    _authProviderFacebookWeb = new FacebookWebAuthProvider(AuthModel.this);
+    //_authProviderFacebookWeb = new FacebookWebAuthProvider(AuthModel.this); //Never implemented
     _authProviderTwitter = new TwitterAuthProvider(AuthModel.this);
+  }
+  
+  public String getAppConstant(String keyName) {
+    return _appConstants.get(keyName);
   }
 
   public boolean isLoggedInPrimary() {
@@ -189,7 +196,7 @@ public class AuthModel {
   public void invalidateTokens() {
     _authProviderGoogle.logout();
     _authProviderFacebook.logout();
-    _authProviderFacebookWeb.logout();
+    //_authProviderFacebookWeb.logout();
     _authProviderTwitter.logout();
 
     _primaryLoginType = null;

@@ -26,17 +26,21 @@ public class FacebookAuthProvider implements AuthProviderInt {
 
   private final String LOGIN_TYPE = AuthConstants.LOGIN_TYPE_FACEBOOK;
   private AuthModel _model;
-  private Facebook _facebook = new Facebook(AuthConstants.COACH_FACEBOOK_APP_ID);
-  private AsyncFacebookRunner _AsyncRunner = new AsyncFacebookRunner(_facebook);
+  
+  private Facebook _facebook;
+  private AsyncFacebookRunner _AsyncRunner;
 
   private JSONObject _userInfo;
 
   // Default constructor disallowed
+  @SuppressWarnings("unused")
   private FacebookAuthProvider() {
   }
 
   public FacebookAuthProvider(AuthModel model) {
     _model = model;
+    _facebook = new Facebook(_model.getAppConstant(AuthConstants.FACEBOOK_APP_ID));
+    _AsyncRunner = new AsyncFacebookRunner(_facebook);
   }
 
   private void _showError(String problem, String details) {

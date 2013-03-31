@@ -10,6 +10,21 @@ import com.ratethisfest.shared.AuthConstants;
 
 public class GoogleAuthVerifier implements AuthVerifier {
   private static int _failuresToSimulate;
+  private final String CLIENT_ID;
+  private final String CLIENT_SECRET;
+ 
+
+  //Cannot instantiate without specifying application
+  @SuppressWarnings("unused")
+  private GoogleAuthVerifier () {
+    CLIENT_ID = "";
+    CLIENT_SECRET = "";
+  }
+  
+  public GoogleAuthVerifier(String client_id, String client_secret) {
+    CLIENT_ID = client_id;
+    CLIENT_SECRET = client_secret;
+  }
 
   public boolean verify(String authToken, String identifier) {
 
@@ -18,8 +33,8 @@ public class GoogleAuthVerifier implements AuthVerifier {
     try {
       OAuthHTTP oauthreq;
       oauthreq = new OAuthHTTP("https://www.googleapis.com/oauth2/v1/userinfo?alt=json");
-      oauthreq.setRequestProperty("client_id", AuthConstants.LOLLA_GOOGLE_MOBILE_CLIENT_ID);
-      oauthreq.setRequestProperty("client_secret", AuthConstants.LOLLA_GOOGLE_MOBILE_CLIENT_SECRET);
+      oauthreq.setRequestProperty("client_id", CLIENT_ID);
+      oauthreq.setRequestProperty("client_secret", CLIENT_SECRET);
       oauthreq.setRequestProperty("Authorization", "OAuth " + authToken);
 
       boolean oauthSuccess = oauthreq.execute();
