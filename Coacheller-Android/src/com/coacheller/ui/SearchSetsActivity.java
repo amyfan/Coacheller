@@ -15,6 +15,7 @@ import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.CalendarUtils;
+import com.ratethisfest.android.log.LogController;
 
 public class SearchSetsActivity extends Activity implements OnClickListener {
   public final static String YEAR = "YEAR";
@@ -31,7 +32,7 @@ public class SearchSetsActivity extends Activity implements OnClickListener {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    CoachellerApplication.debug(this, "Search Sets Activity Launched");
+    LogController.LIFECYCLE_ACTIVITY.logMessage("Search Sets Activity Launched");
     appController = (CoachellerApplication) getApplication();
     appController.registerSearchSetsActivity(SearchSetsActivity.this);
     this.initializeApp();
@@ -48,15 +49,14 @@ public class SearchSetsActivity extends Activity implements OnClickListener {
 
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        CoachellerApplication.debug(parent.getContext(),
-            "Day Selected: " + parent.getSelectedItem());
+        LogController.USER_ACTION_UI.logMessage("Day Selected: " + parent.getSelectedItem());
         yearSelected = parent.getSelectedItem().toString();
 
       }
 
       @Override
       public void onNothingSelected(AdapterView<?> parent) {
-        CoachellerApplication.debug(parent.getContext(), "No Day Selected - Unexpected condition");
+        LogController.USER_ACTION_UI.logMessage("No Day Selected - Unexpected condition");
       }
     });
 
@@ -68,24 +68,23 @@ public class SearchSetsActivity extends Activity implements OnClickListener {
 
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        CoachellerApplication.debug(parent.getContext(),
-            "Week Selected: " + parent.getSelectedItem());
+        LogController.USER_ACTION_UI.logMessage("Week Selected: " + parent.getSelectedItem());
         String stringName = parent.getSelectedItem().toString();
         weekSelected = stringName.substring(stringName.length() - 1, stringName.length());
       }
 
       @Override
       public void onNothingSelected(AdapterView<?> parent) {
-        CoachellerApplication.debug(parent.getContext(), "No Week Selected - Unexpected condition");
+        LogController.USER_ACTION_UI.logMessage("No Week Selected - Unexpected condition");
       }
     });
 
     if (CalendarUtils.whichWeekIsToday() == 1) {
-      CoachellerApplication.debug(this, "Date suggests week 1");
+      LogController.OTHER.logMessage("Date suggests week 1");
       weekendSpinner.setSelection(0);
 
     } else if (CalendarUtils.whichWeekIsToday() == 2) {
-      CoachellerApplication.debug(this, "Date suggests week 2");
+      LogController.OTHER.logMessage("Date suggests week 2");
       weekendSpinner.setSelection(1);
     }
 
@@ -97,15 +96,14 @@ public class SearchSetsActivity extends Activity implements OnClickListener {
 
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        CoachellerApplication.debug(parent.getContext(),
-            "Day Selected: " + parent.getSelectedItem());
+        LogController.USER_ACTION_UI.logMessage("Day Selected: " + parent.getSelectedItem());
         daySelected = parent.getSelectedItem().toString();
 
       }
 
       @Override
       public void onNothingSelected(AdapterView<?> parent) {
-        CoachellerApplication.debug(parent.getContext(), "No Day Selected - Unexpected condition");
+        LogController.USER_ACTION_UI.logMessage("No Day Selected - Unexpected condition");
       }
     });
 
@@ -136,7 +134,7 @@ public class SearchSetsActivity extends Activity implements OnClickListener {
 
   public void onClick(View v) {
     if (v.getId() == R.id.sets_search_button_search) {
-      CoachellerApplication.debug(this, "Search button pressed");
+      LogController.USER_ACTION_UI.logMessage("Search button pressed");
 
       try {
         // Intent intent = new Intent();
@@ -160,7 +158,7 @@ public class SearchSetsActivity extends Activity implements OnClickListener {
         exceptionText.show();
       }
     } else {
-      CoachellerApplication.debug(this, "An unknown button was pressed - Unexpected");
+      LogController.USER_ACTION_UI.logMessage("An unknown button was pressed - Unexpected");
     }
 
   }
