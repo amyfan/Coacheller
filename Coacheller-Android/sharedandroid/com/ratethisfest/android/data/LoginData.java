@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.StringTokenizer;
 
 public class LoginData implements Serializable {
+
+  private static final long serialVersionUID = 1L;
+
   public static final String DATA_LOGIN_INFO = "DATA_LOGIN_INFO";
 
   public long timeLoginIssued;

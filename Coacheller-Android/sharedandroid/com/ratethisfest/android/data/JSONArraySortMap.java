@@ -14,25 +14,25 @@ public class JSONArraySortMap {
   final public static int VALUE_INTEGER = 0;
   final public static int VALUE_STRING = 1;
 
-  private ArrayList<CustomPair<Integer, Object>> _pairs = new ArrayList<CustomPair<Integer, Object>>();
-  JSONArray _arrayToSort;
+  private ArrayList<CustomPair<Integer, Object>> sortedArrayOfPairs = new ArrayList<CustomPair<Integer, Object>>();
+  JSONArray unsortedArray;
   private String _parameterToSort;
   private int _valueType;
 
-  public JSONArraySortMap(JSONArray arraySort, String parameterSort, int valType)
+  public JSONArraySortMap(JSONArray arrayToSort, String parameterToSort, int valueType)
       throws JSONException {
     // init
-    _arrayToSort = arraySort;
-    _valueType = valType;
-    _parameterToSort = parameterSort;
+    unsortedArray = arrayToSort;
+    _valueType = valueType;
+    _parameterToSort = parameterToSort;
 
     if (_valueType < 0 || 1 < _valueType) {
       throw new RuntimeException();
     }
 
     // read values in
-    for (int i = 0; i < _arrayToSort.length(); i++) {
-      JSONObject currentObj = _arrayToSort.getJSONObject(i);
+    for (int i = 0; i < arrayToSort.length(); i++) {
+      JSONObject currentObj = arrayToSort.getJSONObject(i);
       Object value = null;
 
       if (_valueType == VALUE_INTEGER) {
@@ -43,7 +43,7 @@ public class JSONArraySortMap {
 
       CustomPair<Integer, Object> nextPair = new CustomPair<Integer, Object>(i, value);
       // System.out.println(i + " || " + value.toString());
-      _pairs.add(nextPair);
+      sortedArrayOfPairs.add(nextPair);
 
     }
 
@@ -64,7 +64,7 @@ public class JSONArraySortMap {
       }
     };
 
-    Collections.sort(_pairs, comparator);
+    Collections.sort(sortedArrayOfPairs, comparator);
   }
 
   public JSONObject getSortedJSONObj(int index) throws JSONException {
@@ -72,8 +72,8 @@ public class JSONArraySortMap {
     // throw new RuntimeException();
     // }
 
-    Integer indexToReturn = (Integer) _pairs.get(index).first;
-    return _arrayToSort.getJSONObject(indexToReturn);
+    Integer indexToReturn = (Integer) sortedArrayOfPairs.get(index).first;
+    return unsortedArray.getJSONObject(indexToReturn);
   }
 
   // Redundant, did not need

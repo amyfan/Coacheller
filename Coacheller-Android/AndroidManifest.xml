@@ -2,32 +2,50 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.coacheller"
     android:versionCode="5"
-    android:versionName="2.0" >
+    android:versionName="1.9" >
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-sdk android:minSdkVersion="8" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
 
     <application
         android:debuggable="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" android:name=".CoachellerApplication">
+        android:label="@string/app_name"
+        android:name=".CoachellerApplication" >
         <uses-library android:name="com.google.android.maps" />
+
         <activity
+            android:label="@string/app_name"
+            android:launchMode="standard"
             android:name=".ui.CoachellerActivity"
-            android:label="@string/app_name" android:launchMode="standard">
-            <intent-filter>
+            android:screenOrientation="portrait" >
+            <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.SearchSetsActivity" android:launchMode="standard"></activity>
-        <activity android:name=".ui.ChooseLoginActivity" android:launchMode="standard"></activity>
-        <activity android:launchMode="standard" android:name=".ui.TwitterAuthWebpageActivity"></activity>
+        <activity
+            android:launchMode="standard"
+            android:name=".ui.SearchSetsActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:launchMode="standard"
+            android:name=".ui.ChooseLoginActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:launchMode="standard"
+            android:name=".ui.TwitterAuthWebpageActivity"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

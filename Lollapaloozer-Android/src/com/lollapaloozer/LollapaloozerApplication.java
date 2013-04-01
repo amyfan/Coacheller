@@ -112,6 +112,7 @@ public class LollapaloozerApplication extends Application implements AppControll
 
     obtainLoginDataFromStorage();
 
+    // CRITICAL that the keys are listed in this order
     userRatingsJAHM = new JSONArrayHashMap(AndroidConstants.JSON_KEY_RATINGS__SET_ID,
         AndroidConstants.JSON_KEY_RATINGS__WEEK);
   }
@@ -336,9 +337,7 @@ public class LollapaloozerApplication extends Application implements AppControll
       // Need this in order to make the new rating appear in real time
 
       try {
-        // CRITICAL that the keys are listed in this order
-        userRatingsJAHM.addValues(AndroidConstants.JSON_KEY_RATINGS__SET_ID,
-            AndroidConstants.JSON_KEY_RATINGS__WEEK, rating);
+        userRatingsJAHM.addValues(rating);
 
       } catch (JSONException e) {
         // TODO Auto-generated catch block

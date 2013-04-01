@@ -35,9 +35,11 @@ import com.ratethisfest.shared.HttpConstants;
 
 public class CoachellerApplication extends Application implements AppControllerInt {
 
-  //An alternate solution has been implemented
-  //public static final String FACEBOOK_APP_ID = AuthConstants.COACH_FACEBOOK_APP_ID;
-  //public static final String FACEBOOK_APP_SECRET = AuthConstants.COACH_FACEBOOK_APP_SECRET;
+  // An alternate solution has been implemented
+  // public static final String FACEBOOK_APP_ID =
+  // AuthConstants.COACH_FACEBOOK_APP_ID;
+  // public static final String FACEBOOK_APP_SECRET =
+  // AuthConstants.COACH_FACEBOOK_APP_SECRET;
 
   private AuthModel authModel;
   private ChooseLoginActivity activityChooseLogin = null;
@@ -48,6 +50,7 @@ public class CoachellerApplication extends Application implements AppControllerI
   private LoginData loginData;
   private StorageManager storageManager;
 
+  // CRITICAL that the keys are listed in this order
   private JSONArrayHashMap userRatingsJAHM = new JSONArrayHashMap(
       AndroidConstants.JSON_KEY_RATINGS__SET_ID, AndroidConstants.JSON_KEY_RATINGS__WEEK);
   private boolean _networkErrors;
@@ -59,19 +62,23 @@ public class CoachellerApplication extends Application implements AppControllerI
   public CoachellerApplication() {
     System.out.println("Application Object Instantiated");
 
-    //Initialize app constant hashmap for this application (Coacheller)
+    // Initialize app constant hashmap for this application (Coacheller)
     HashMap<String, String> appConstants = new HashMap<String, String>();
-    
-    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_ID,  AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_ID);
-    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_SECRET, AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_SECRET);
-    
+
+    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_ID,
+        AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_ID);
+    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_SECRET,
+        AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_SECRET);
+
     appConstants.put(AuthConstants.FACEBOOK_APP_ID, AuthConstants.COACH_FACEBOOK_APP_ID);
     appConstants.put(AuthConstants.FACEBOOK_APP_SECRET, AuthConstants.COACH_FACEBOOK_APP_SECRET);
-    
+
     appConstants.put(AuthConstants.TWITTER_CONSUMER_KEY, AuthConstants.COACH_TWITTER_CONSUMER_KEY);
-    appConstants.put(AuthConstants.TWITTER_CONSUMER_SECRET,  AuthConstants.COACH_TWITTER_CONSUMER_SECRET);
-    appConstants.put(AuthConstants.TWITTER_OAUTH_CALLBACK_URL, AuthConstants.COACH_TWITTER_OAUTH_CALLBACK_URL);
-    
+    appConstants.put(AuthConstants.TWITTER_CONSUMER_SECRET,
+        AuthConstants.COACH_TWITTER_CONSUMER_SECRET);
+    appConstants.put(AuthConstants.TWITTER_OAUTH_CALLBACK_URL,
+        AuthConstants.COACH_TWITTER_OAUTH_CALLBACK_URL);
+
     authModel = new AuthModel(this, appConstants);
   }
 
@@ -364,9 +371,7 @@ public class CoachellerApplication extends Application implements AppControllerI
       // Need this in order to make the new rating appear in real time
 
       try {
-        // CRITICAL that the keys are listed in this order
-        userRatingsJAHM.addValues(AndroidConstants.JSON_KEY_RATINGS__SET_ID,
-            AndroidConstants.JSON_KEY_RATINGS__WEEK, rating);
+        userRatingsJAHM.addValues(rating);
 
       } catch (JSONException e) {
         // TODO Auto-generated catch block
