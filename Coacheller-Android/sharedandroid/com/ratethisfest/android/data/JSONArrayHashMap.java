@@ -9,14 +9,14 @@ import org.json.JSONObject;
 
 public class JSONArrayHashMap {
 
-  private String _key1Name;
-  private String _key2Name;
+  private String keyName1;
+  private String keyName2;
 
   // TODO: Could be expanded to operate with an arbitrary number of keys
   private HashMap<String, JSONObject> _hash = new HashMap<String, JSONObject>();
 
-  public JSONArrayHashMap(String keyName) {
-    _key1Name = keyName;
+  public JSONArrayHashMap(String keyName1, String keyName2) {
+    setKeyNames(keyName1, keyName2);
   }
 
   // TODO this could be the reason for the crash in the release version.
@@ -24,9 +24,9 @@ public class JSONArrayHashMap {
   // TODO Inconsistency between re-creating and re-using JAHM object could have
   // made the bug harder to find
 
-  public void setKeyNames(String key1Name, String key2Name) {
-    _key1Name = key1Name;
-    _key2Name = key2Name;
+  public void setKeyNames(String keyName1, String keyName2) {
+    this.keyName1 = keyName1;
+    this.keyName2 = keyName2;
 
   }
 
@@ -34,12 +34,9 @@ public class JSONArrayHashMap {
     wipeData();
     for (int i = 0; i < data.length(); i++) {
       JSONObject obj = (JSONObject) data.get(i);
-      storeTwoKeyObj(_key1Name, _key2Name, obj);
+      // TODO: is it really necessary to pass these values?
+      storeTwoKeyObj(obj);
     }
-  }
-
-  public JSONArrayHashMap(String key1Name, String key2Name) {
-    setKeyNames(key1Name, key2Name);
   }
 
   public JSONArrayHashMap(JSONArray data, String firstKeyName, String secondKeyName)
@@ -49,8 +46,8 @@ public class JSONArrayHashMap {
   }
 
   public void wipeSchema() {
-    _key1Name = "";
-    _key2Name = "";
+    keyName1 = "";
+    keyName2 = "";
     wipeData();
   }
 
@@ -61,15 +58,14 @@ public class JSONArrayHashMap {
   // Not used in release
   /*
    * public JSONArrayHashMap(JSONArray data, String keyName) throws
-   * JSONException { _key1Name = keyName;
+   * JSONException { _keyName1 = keyName;
    * 
    * for (int i = 0; i < data.length(); i++) { JSONObject obj = (JSONObject)
-   * data.get(i); _hash.put(obj.getString(_key1Name), obj); } }
+   * data.get(i); _hash.put(obj.getString(_keyName1), obj); } }
    */
 
-  private void storeTwoKeyObj(String key1Name, String key2Name, JSONObject obj)
-      throws JSONException {
-    _hash.put(obj.getString(key1Name) + "-" + obj.getString(key2Name), obj);
+  private void storeTwoKeyObj(JSONObject obj) throws JSONException {
+    _hash.put(obj.getString(keyName1) + "-" + obj.getString(keyName2), obj);
   }
 
   // This should be called using a function specific to a two-parameter key
@@ -77,8 +73,8 @@ public class JSONArrayHashMap {
     return _hash.get(value);
   }
 
-  public void addValues(String key1, String key2, JSONObject obj) throws JSONException {
-    storeTwoKeyObj(key1, key2, obj);
+  public void addValues(JSONObject obj) throws JSONException {
+    storeTwoKeyObj(obj);
   }
 
   public JSONObject getJSONObject(String value1, String value2) {
@@ -91,6 +87,6 @@ public class JSONArrayHashMap {
 
   // Not used, so commented
   /*
-   * public String getKeyName() { return _key1Name; }
+   * public String getKeyName() { return _keyName1; }
    */
 }
