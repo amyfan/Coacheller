@@ -14,6 +14,7 @@ import com.coacheller.R;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.data.CustomSetListAdapter;
 import com.ratethisfest.android.data.JSONArrayHashMap;
+import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.DateTimeUtils;
 
@@ -116,13 +117,13 @@ public class CoachSetListAdapter extends CustomSetListAdapter {
       String myNote1 = "";
       if (ratingsObjWk1 != null && ratingsObjWk1.has(AndroidConstants.JSON_KEY_RATINGS__NOTES)) {
         myNote1 = ratingsObjWk1.get(AndroidConstants.JSON_KEY_RATINGS__NOTES).toString();
-        CoachellerApplication.debug(_context, "Found note: " + myNote1);
+        LogController.OTHER.logMessage("Found week1 note: " + myNote1);
       }
 
       String myNote2 = "";
       if (ratingsObjWk2 != null && ratingsObjWk2.has(AndroidConstants.JSON_KEY_RATINGS__NOTES)) {
         myNote2 = ratingsObjWk2.get(AndroidConstants.JSON_KEY_RATINGS__NOTES).toString();
-        CoachellerApplication.debug(_context, "Found note: " + myNote2);
+        LogController.OTHER.logMessage("Found week2 note: " + myNote2);
       }
 
       if (myNote1.equals("")) {

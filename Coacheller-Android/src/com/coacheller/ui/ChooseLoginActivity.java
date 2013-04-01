@@ -15,6 +15,7 @@ import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
 import com.ratethisfest.android.auth.AuthActivityInt;
 import com.ratethisfest.android.auth.AuthProviderInt;
+import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.shared.AuthConstants;
 
 /**
@@ -48,7 +49,7 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.auth_choose_login);
-    System.out.println("OnCreate starting");
+    LogController.LIFECYCLE_ACTIVITY.logMessage("OnCreate starting");
 
     // CANNOT do this in constructor / member list
     _app = (CoachellerApplication) getApplication();
@@ -85,7 +86,7 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
     findViewById(android.R.id.content).setOnTouchListener(_gestureListener);
 
     // App
-    System.out.println("OnCreate complete");
+    LogController.LIFECYCLE_ACTIVITY.logMessage("OnCreate complete");
 
   }
 
@@ -102,7 +103,7 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
     }
 
     if (_firstStart) {
-      System.out.println("ChooseLoginActivity First Launch, invalidating all logins");
+      LogController.LIFECYCLE_ACTIVITY.logMessage("ChooseLoginActivity First Launch, invalidating all logins");
       _app.getAuthModel().invalidateTokens();
       _firstStart = false;
     }
@@ -184,9 +185,9 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
 
     String infoMessage = "ChooseLoginActivity.onActivityResult(requestCode=[" + requestCode
         + "], resultCode=[" + resultCode + "] with data: " + data;
-    System.out.println(infoMessage);
+    LogController.LIFECYCLE_ACTIVITY.logMessage(infoMessage);
 
-    System.out.println();
+    LogController.LIFECYCLE_ACTIVITY.logMessage("");
 
     switch (requestCode) {
     case AuthConstants.INTENT_TWITTER_LOGIN:
@@ -196,7 +197,7 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
       }
 
     case AuthConstants.INTENT_FACEBOOK_LOGIN: {
-      System.out.println("onACtivityResult called with unknown values: " + requestCode + ","
+      LogController.LIFECYCLE_ACTIVITY.logMessage("onActivityResult called with unknown values: " + requestCode + ","
           + resultCode);
       _app.getAuthModel().getFacebookObject().authorizeCallback(requestCode, resultCode, data);
       break;

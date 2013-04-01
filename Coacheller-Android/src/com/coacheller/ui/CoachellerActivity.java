@@ -48,6 +48,7 @@ import com.ratethisfest.android.auth.AuthModel;
 import com.ratethisfest.android.data.CustomPair;
 import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.android.data.SocialNetworkPost;
+import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.HttpConstants;
@@ -87,7 +88,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    CoachellerApplication.debug(this, "CoachellerActivity Launched");
+    LogController.LIFECYCLE_ACTIVITY.logMessage("CoachellerActivity Launched");
     appController = (CoachellerApplication) getApplication();
     appController.registerCoachellerActivity(CoachellerActivity.this);
 
@@ -134,12 +135,12 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         super.handleMessage(msg);
 
         if (msg.what == AndroidConstants.THREAD_UPDATE_UI) {
-          System.out.println("Executing update UI thread callback ");
+          LogController.LIFECYCLE_THREAD.logMessage("Executing update UI thread callback ");
           redrawUI();
         }
 
         if (msg.what == AndroidConstants.THREAD_SUBMIT_RATING) {
-          System.out.println("Executing submit rating thread callback ");
+          LogController.LIFECYCLE_THREAD.logMessage("Executing submit rating thread callback ");
 
           try {
             appController.doSubmitRating(lastRating);
@@ -178,7 +179,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     String week = intent.getExtras().getString(SearchSetsActivity.WEEK);
     String day = intent.getExtras().getString(SearchSetsActivity.DAY);
 
-    CoachellerApplication.debug(this, "Searching year[" + year + "] week[" + week + "] day[" + day
+    LogController.OTHER.logMessage("Searching year[" + year + "] week[" + week + "] day[" + day
         + "]");
     appController.setYearToQuery(Integer.valueOf(year));
     appController.setDayToQuery(day);
@@ -189,7 +190,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   /** Called by Android Framework when activity (re)gains foreground status */
   public void onResume() {
     super.onResume();
-    System.out.println(this + " onResume");
+    LogController.LIFECYCLE_ACTIVITY.logMessage(this + " onResume");
 
     appController.setLastAuthActivity(this);
     // TODO: We'll reenable this if we have something significant to say in the
@@ -295,10 +296,10 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       // }
 
     } catch (JSONException e) {
-      CoachellerApplication.debug(this, "JSONException retrieving user's last rating");
+      LogController.OTHER.logMessage("JSONException retrieving user's last rating");
       e.printStackTrace();
     }
-    CoachellerApplication.debug(this, "You Clicked On: " + obj + " previous ratings "
+    LogController.OTHER.logMessage("You Clicked On: " + obj + " previous ratings "
         + lastRatingScorePair.first + "/" + lastRatingScorePair.second);
 
     if (!appController.getIsLoggedIn()) {
@@ -322,8 +323,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   public void onItemSelected(AdapterView<?> parent, View arg1, int arg2, long arg3) {
 
     // TODO Auto-generated method stub
-    CoachellerApplication.debug(this,
-        "Search Type Spinner: Selected -> " + parent.getSelectedItem() + "(" + arg2 + ")");
+    LogController.USER_ACTION_UI.logMessage("Search Type Spinner: Selected -> " + parent.getSelectedItem() + "(" + arg2 + ")");
     ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
 
     try {
@@ -331,7 +331,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       setListAdapter.resortSetList(sortMode);
       viewSetsList.invalidateViews();
     } catch (JSONException e) {
-      CoachellerApplication.debug(this, "JSONException re-sorting data");
+      LogController.OTHER.logMessage("JSONException re-sorting data");
       e.printStackTrace();
     }
   }
@@ -340,7 +340,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
     case R.id.menu_item_email_me:
-      CoachellerApplication.debug(this, "Menu button 'email me' pressed");
+      LogController.OTHER.logMessage("Menu button 'email me' pressed");
 
       if (!appController.getIsLoggedIn()) {
         Toast.makeText(this, "Try rating at least one set first", 15).show();
@@ -348,14 +348,14 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         try {
           showDialog(AndroidConstants.DIALOG_GETEMAIL);
         } catch (Exception e) {
-          CoachellerApplication.debug(this, "Error requesting ratings email");
+          LogController.OTHER.logMessage("Error requesting ratings email");
           e.printStackTrace();
         }
       }
       return true;
 
     case R.id.menu_item_delete_email:
-      CoachellerApplication.debug(this, "Menu button 'delete email' pressed");
+      LogController.OTHER.logMessage("Menu button 'delete email' pressed");
       appController.clearLoginData();
       refreshData();
       return true;
@@ -367,7 +367,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   @Override
   public void onNothingSelected(AdapterView<?> arg0) {
-    CoachellerApplication.debug(this, "Search Type Spinner: Nothing Selected");
+    LogController.USER_ACTION_UI.logMessage("Search Type Spinner: Nothing Selected");
     Spinner spinnerSortType = (Spinner) findViewById(R.id.spinner_sort_by);
     spinnerSortType.setSelection(0);
   }
@@ -395,14 +395,12 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
           }
         } else if (checkedId == R.id.radio_button_week2) {
           if (lastRatingScorePair.second != null) {
-            CoachellerApplication.debug(
-                this,
-                "Last Rating "
+            LogController.OTHER.logMessage("Last Rating "
                     + lastRatingScorePair.second
                         .getString(AndroidConstants.JSON_KEY_RATINGS__SCORE));
             int buttonIdToCheck = _ratingSelectedScoreToId.get(lastRatingScorePair.second
                 .getString(AndroidConstants.JSON_KEY_RATINGS__SCORE));
-            CoachellerApplication.debug(this, "Button id to check " + buttonIdToCheck);
+            LogController.OTHER.logMessage("Button id to check " + buttonIdToCheck);
             RadioButton buttonToCheck = (RadioButton) rateDialog.findViewById(buttonIdToCheck); // TODO
                                                                                                 // duplicate
                                                                                                 // code
@@ -521,10 +519,10 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       // _lastRateDialog.setTitle("Rate this Set!");
       try {
         TextView subtitleText = (TextView) rateDialog.findViewById(R.id.text_rateBand_subtitle);
-        subtitleText.setText(lastSetSelected.getString("artist"));
+        subtitleText.setText(lastSetSelected.getString("artist"));  //TODO NPE Here
 
       } catch (JSONException e) {
-        CoachellerApplication.debug(this, "JSONException assigning Artist name to Rating dialog");
+        LogController.OTHER.logMessage("JSONException assigning Artist name to Rating dialog");
         e.printStackTrace();
       }
 
@@ -608,7 +606,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
       case AuthConstants.INTENT_FACEBOOK_LOGIN: {
         // Assuming it is Facebook
-        System.out.println("onActivityResult called by Facebook API");
+        LogController.LIFECYCLE_ACTIVITY.logMessage("onActivityResult called by Facebook API");
         // Required by Facebook API
         appController.getAuthModel().getFacebookObject()
             .authorizeCallback(requestCode, resultCode, data);
@@ -617,7 +615,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
       case AuthConstants.INTENT_TWITTER_LOGIN: {
         // Assuming it is Facebook
-        System.out.println("onActivityResult called by Twitter API");
+        LogController.LIFECYCLE_ACTIVITY.logMessage("onActivityResult called by Twitter API");
         appController.getAuthModel().twitterAuthCallback(requestCode, resultCode, data);
         break;
       }
@@ -657,7 +655,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
     viewSetsList.invalidateViews();
 
-    CoachellerApplication.debug(this, "Data Refresh is complete");
+    LogController.OTHER.logMessage("Data Refresh is complete");
     _lastRefresh = System.currentTimeMillis();
 
     if (!appController.saveData()) {
@@ -705,7 +703,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     EditText emailField = (EditText) emailDialog.findViewById(R.id.textField_enterEmail);
     String email = emailField.getText().toString();
 
-    CoachellerApplication.debug(this, "User provided email address: " + email);
+    LogController.OTHER.logMessage("User provided email address: " + email);
 
     // if
     // (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -848,7 +846,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     EditText noteWidget = (EditText) rateDialog.findViewById(R.id.editText_commentsForSet);
     String submittedNote = noteWidget.getText().toString();
 
-    CoachellerApplication.debug(this, "Selected Week[" + _ratingSelectedWeek + "] Score["
+    LogController.OTHER.logMessage("Selected Week[" + _ratingSelectedWeek + "] Score["
         + submittedRating + "] WeekId[" + weekSelectedId + "] ScoreId[" + scoreSelectedId + "]");
 
     rateDialog.dismiss();
@@ -878,7 +876,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   }
 
   private void launchGetDataThread() {
-    CoachellerApplication.debug(this, "Launching getData thread");
+    LogController.LIFECYCLE_THREAD.logMessage("Launching getData thread");
 
     new Thread() {
       public void run() {
@@ -891,11 +889,11 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         networkIOHandler.sendEmptyMessage(AndroidConstants.THREAD_UPDATE_UI);
       }
     }.start();
-    CoachellerApplication.debug(this, "getData thread launched");
+    LogController.LIFECYCLE_THREAD.logMessage("getData thread launched");
   }
 
   private void launchSubmitRatingThread() {
-    CoachellerApplication.debug(this, "Launching Rating thread");
+    LogController.LIFECYCLE_THREAD.logMessage("Launching Rating thread");
 
     new Thread() {
       public void run() {
@@ -909,7 +907,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         msgToSend.sendToTarget();
       }
     }.start();
-    CoachellerApplication.debug(this, "Rating thread launched");
+    LogController.LIFECYCLE_THREAD.logMessage("Rating thread launched");
 
   }
 

@@ -30,6 +30,8 @@ import com.ratethisfest.android.auth.AuthActivityInt;
 import com.ratethisfest.android.auth.AuthModel;
 import com.ratethisfest.android.data.JSONArrayHashMap;
 import com.ratethisfest.android.data.LoginData;
+import com.ratethisfest.android.log.LogController;
+
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.HttpConstants;
 
@@ -38,7 +40,7 @@ public class CoachellerApplication extends Application implements AppControllerI
   //An alternate solution has been implemented
   //public static final String FACEBOOK_APP_ID = AuthConstants.COACH_FACEBOOK_APP_ID;
   //public static final String FACEBOOK_APP_SECRET = AuthConstants.COACH_FACEBOOK_APP_SECRET;
-
+  
   private AuthModel authModel;
   private ChooseLoginActivity activityChooseLogin = null;
   private CoachellerActivity activityCoacheller = null;
@@ -57,7 +59,14 @@ public class CoachellerApplication extends Application implements AppControllerI
   private String dayToQuery;
 
   public CoachellerApplication() {
-    System.out.println("Application Object Instantiated");
+    System.out.println("Application Object Instantiated");  //Keep this first
+    
+    //Set logging options here
+    LogController.LIFECYCLE_ACTIVITY._messagesEnabled = false;
+    LogController.LIFECYCLE_THREAD._messagesEnabled = false;
+    LogController.USER_ACTION_UI._messagesEnabled = false;
+    //LogController.allCategoriesOn();
+    
 
     //Initialize app constant hashmap for this application (Coacheller)
     HashMap<String, String> appConstants = new HashMap<String, String>();
@@ -78,7 +87,7 @@ public class CoachellerApplication extends Application implements AppControllerI
   public void registerChooseLoginActivity(ChooseLoginActivity act) {
     if (activityChooseLogin != null) {
       if (activityChooseLogin == act) {
-        System.out.println("Identical ChooseLoginActivity was registered with Application");
+        LogController.LIFECYCLE_ACTIVITY.logMessage("Identical ChooseLoginActivity was registered with Application");
       } else {
         System.out
             .println("Warning: Different ChooseLoginActivity was registered with Application");
@@ -99,9 +108,9 @@ public class CoachellerApplication extends Application implements AppControllerI
   public void registerCoachellerActivity(CoachellerActivity act) {
     if (activityCoacheller != null) {
       if (activityCoacheller == act) {
-        System.out.println("Identical CoachellerActivity was registered with Application");
+        LogController.LIFECYCLE_ACTIVITY.logMessage("Identical CoachellerActivity was registered with Application");
       } else {
-        System.out.println("Warning: Different CoachellerActivity was registered with Application");
+        LogController.LIFECYCLE_ACTIVITY.logMessage("Warning: Different CoachellerActivity was registered with Application");
       }
     }
     activityCoacheller = act;
@@ -130,9 +139,9 @@ public class CoachellerApplication extends Application implements AppControllerI
   public void registerSearchSetsActivity(SearchSetsActivity act) {
     if (activitySearchSets != null) {
       if (activitySearchSets == act) {
-        System.out.println("Identical SetsSearchActivity was registered with Application");
+        LogController.LIFECYCLE_ACTIVITY.logMessage("Identical SetsSearchActivity was registered with Application");
       } else {
-        System.out.println("Warning: Different SetsSearchActivity was registered with Application");
+        LogController.LIFECYCLE_ACTIVITY.logMessage("Warning: Different SetsSearchActivity was registered with Application");
       }
     }
     activitySearchSets = act;
@@ -284,18 +293,18 @@ public class CoachellerApplication extends Application implements AppControllerI
         storageManager.putJSONArray(AndroidConstants.DATA_RATINGS, myRatings);
       } catch (Exception e1) {
         _networkErrors = true;
-        debug(this, "Exception getting Ratings data, loading from storage if available");
+        LogController.OTHER.logMessage("Exception getting Ratings data, loading from storage if available");
         try {
           myRatings = storageManager.getJSONArray(AndroidConstants.DATA_RATINGS);
         } catch (JSONException e) {
           e.printStackTrace();
-          debug(this, "JSONException loading ratings from storage");
+          LogController.OTHER.logMessage("JSONException loading ratings from storage");
         }
       }
 
       try {
         if (myRatings == null) {
-          debug(this, "Had to initialize ratings data JSONArray");
+          LogController.OTHER.logMessage("Had to initialize ratings data JSONArray");
           myRatings = new JSONArray();
         }
 
@@ -327,12 +336,12 @@ public class CoachellerApplication extends Application implements AppControllerI
       storageManager.putJSONArray(AndroidConstants.DATA_SETS, setData);
     } catch (Exception e) {
       _networkErrors = true;
-      debug(this, "Exception getting Set data, loading from storage if available");
+      LogController.OTHER.logMessage("Exception getting Set data, loading from storage if available");
       setData = storageManager.getJSONArray(AndroidConstants.DATA_SETS);
     }
 
     if (setData == null) {
-      debug(this, "Had to initialize set data JSONArray");
+      LogController.OTHER.logMessage("Had to initialize set data JSONArray");
       setData = new JSONArray();
     }
 
@@ -374,14 +383,14 @@ public class CoachellerApplication extends Application implements AppControllerI
       }
 
     } catch (Exception e1) {
-      debug(this, "Error submitting rating");
+      LogController.OTHER.logMessage("Error submitting rating");
       e1.printStackTrace();
       throw e1;
     }
   }
 
   public void updateSearchFields(String year, String week, String day) {
-    CoachellerApplication.debug(this, "Searching year[" + year + "] week[" + week + "] day[" + day
+    LogController.OTHER.logMessage("Searching year[" + year + "] week[" + week + "] day[" + day
         + "]");
     setYearToQuery(Integer.valueOf(year));
     setDayToQuery(day);
@@ -414,10 +423,6 @@ public class CoachellerApplication extends Application implements AppControllerI
     ;
     AlertDialog alert = builder.create();
     alert.show();
-  }
-
-  public static void debug(Context context, String out) {
-    Log.d(context.getString(R.string.app_name), out);
   }
 
 }

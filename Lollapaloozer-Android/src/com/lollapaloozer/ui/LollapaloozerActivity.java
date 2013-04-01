@@ -45,6 +45,7 @@ import com.ratethisfest.android.auth.AuthActivityInt;
 import com.ratethisfest.android.auth.AuthModel;
 import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.android.data.SocialNetworkPost;
+import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.HttpConstants;
@@ -621,7 +622,7 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
     viewSetsList.invalidateViews();
 
-    LollapaloozerApplication.debug(this, "Data Refresh is complete");
+    LogController.OTHER.logMessage("Data Refresh is complete");
     _lastRefresh = System.currentTimeMillis();
 
     if (!appController.saveData()) {
