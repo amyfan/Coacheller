@@ -27,6 +27,9 @@ public class SearchSetsActivity extends Activity implements OnClickListener {
   private String daySelected;
 
   private CoachellerApplication appController;
+  private Spinner _weekendSpinner;
+  private Spinner _daySpinner;
+  private Spinner _yearSpinner;
 
   /** Called when the activity is first created. */
   @Override
@@ -41,83 +44,84 @@ public class SearchSetsActivity extends Activity implements OnClickListener {
   public void initializeApp() {
     setContentView(R.layout.sets_search);
 
-    // Setup year spinner
-    Spinner yearSpinner = (Spinner) this.findViewById(R.id.search_spinner_year);
-    AndroidUtils.populateSpinnerWithArray(yearSpinner, android.R.layout.simple_spinner_item,
-        R.array.names_year, android.R.layout.simple_spinner_dropdown_item);
-    yearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    _yearSpinner = (Spinner) this.findViewById(R.id.search_spinner_year);
+    AndroidUtils.populateSpinnerWithArray(_yearSpinner, android.R.layout.simple_spinner_item, R.array.names_year,
+        android.R.layout.simple_spinner_dropdown_item);
+    _yearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        LogController.USER_ACTION_UI.logMessage("Day Selected: " + parent.getSelectedItem());
+        LogController.USER_ACTION_UI.logMessage("Day Selected: " + parent.getSelectedItem() + ", position: "
+            + parent.getSelectedItemPosition());
         yearSelected = parent.getSelectedItem().toString();
 
       }
 
       @Override
       public void onNothingSelected(AdapterView<?> parent) {
-        LogController.USER_ACTION_UI.logMessage("No Day Selected - Unexpected condition");
+        LogController.USER_ACTION_UI.logMessage("No Day Selected - Unexpected condition - " + ", position: "
+            + parent.getSelectedItemPosition());
       }
     });
 
-    // Setup Week Spinner
-    Spinner weekendSpinner = (Spinner) this.findViewById(R.id.search_spinner_week);
-    AndroidUtils.populateSpinnerWithArray(weekendSpinner, android.R.layout.simple_spinner_item,
-        R.array.names_week, android.R.layout.simple_spinner_dropdown_item);
-    weekendSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    _weekendSpinner = (Spinner) this.findViewById(R.id.search_spinner_week);
+    AndroidUtils.populateSpinnerWithArray(_weekendSpinner, android.R.layout.simple_spinner_item, R.array.names_week,
+        android.R.layout.simple_spinner_dropdown_item);
+    _weekendSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        LogController.USER_ACTION_UI.logMessage("Week Selected: " + parent.getSelectedItem());
+        LogController.USER_ACTION_UI.logMessage("Week Selected: " + parent.getSelectedItem() + ", position: "
+            + parent.getSelectedItemPosition());
         String stringName = parent.getSelectedItem().toString();
         weekSelected = stringName.substring(stringName.length() - 1, stringName.length());
       }
 
       @Override
       public void onNothingSelected(AdapterView<?> parent) {
-        LogController.USER_ACTION_UI.logMessage("No Week Selected - Unexpected condition");
+        LogController.USER_ACTION_UI.logMessage("No Week Selected - Unexpected condition" + ", position: "
+            + parent.getSelectedItemPosition());
       }
     });
 
     if (CalendarUtils.whichWeekIsToday() == 1) {
       LogController.OTHER.logMessage("Date suggests week 1");
-      weekendSpinner.setSelection(0);
+      setUIWeek1();
 
     } else if (CalendarUtils.whichWeekIsToday() == 2) {
       LogController.OTHER.logMessage("Date suggests week 2");
-      weekendSpinner.setSelection(1);
+      setUIWeek2();
     }
 
-    // Setup day spinner
-    Spinner daySpinner = (Spinner) this.findViewById(R.id.search_spinner_day);
-    AndroidUtils.populateSpinnerWithArray(daySpinner, android.R.layout.simple_spinner_item,
-        R.array.names_day, android.R.layout.simple_spinner_dropdown_item);
-    daySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    _daySpinner = (Spinner) this.findViewById(R.id.search_spinner_day);
+    AndroidUtils.populateSpinnerWithArray(_daySpinner, android.R.layout.simple_spinner_item, R.array.names_day,
+        android.R.layout.simple_spinner_dropdown_item);
+    _daySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        LogController.USER_ACTION_UI.logMessage("Day Selected: " + parent.getSelectedItem());
+        LogController.USER_ACTION_UI.logMessage("Day Selected: " + parent.getSelectedItem() + ", position: "
+            + parent.getSelectedItemPosition());
         daySelected = parent.getSelectedItem().toString();
 
       }
 
       @Override
       public void onNothingSelected(AdapterView<?> parent) {
-        LogController.USER_ACTION_UI.logMessage("No Day Selected - Unexpected condition");
+        LogController.USER_ACTION_UI.logMessage("No Day Selected - Unexpected condition" + ", position: "
+            + parent.getSelectedItemPosition());
       }
     });
 
     Calendar cal = Calendar.getInstance();
     int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-    if (dayOfWeek == Calendar.FRIDAY) {
-      daySpinner.setSelection(0);
-    } else if (dayOfWeek == Calendar.SATURDAY) {
-      daySpinner.setSelection(1);
+    if (dayOfWeek == Calendar.SATURDAY) {
+      _daySpinner.setSelection(1);
     } else if (dayOfWeek == Calendar.SUNDAY) {
-      daySpinner.setSelection(2);
+      _daySpinner.setSelection(2);
     } else {
       // Select Friday
-      daySpinner.setSelection(0);
+      _daySpinner.setSelection(0);
     }
 
     // Register "this" as the onClick listener for search button
@@ -125,9 +129,41 @@ public class SearchSetsActivity extends Activity implements OnClickListener {
     searchButton.setOnClickListener(this);
   }
 
+  @Override
+  protected void onResume() {
+    super.onResume();
+    LogController.LIFECYCLE_ACTIVITY.logMessage("SearchSetsActivity OnResume()");
+    String lastQueriedDay = appController.getDayToQuery();
+    int lastQueriedWeek = appController.getWeekToQuery();
+    int lastQueriedYear = appController.getYearToQuery();
+
+    LogController.OTHER.logMessage("SearchSetsActivity found last queried day[" + lastQueriedDay + "] week["
+        + lastQueriedWeek + "] year[" + lastQueriedYear + "]");
+
+    if (lastQueriedYear == 2013) {
+      _yearSpinner.setSelection(0);
+    } else if (lastQueriedYear == 2012) {
+      _yearSpinner.setSelection(1);
+    }
+
+    if (lastQueriedWeek == 1) {
+      _weekendSpinner.setSelection(0);
+    } else if (lastQueriedWeek == 2) {
+      _weekendSpinner.setSelection(1);
+    }
+
+    if (lastQueriedDay.equals("Friday")) {
+      _daySpinner.setSelection(0);
+    } else if (lastQueriedDay.equals("Saturday")) {
+      _daySpinner.setSelection(1);
+    } else if (lastQueriedDay.equals("Sunday")) {
+      _daySpinner.setSelection(2);
+    }
+
+  }
+
   /**
-   * Fires when the Search ("Go!") button is pressed, this object is the OnClick
-   * listener.
+   * Fires when the Search ("Go!") button is pressed, this object is the OnClick listener.
    * 
    * @param v
    */
@@ -163,4 +199,11 @@ public class SearchSetsActivity extends Activity implements OnClickListener {
 
   }
 
+  public void setUIWeek1() {
+    _weekendSpinner.setSelection(0);
+  }
+
+  public void setUIWeek2() {
+    _weekendSpinner.setSelection(1);
+  }
 }

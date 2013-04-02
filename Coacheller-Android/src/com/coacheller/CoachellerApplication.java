@@ -66,7 +66,7 @@ public class CoachellerApplication extends Application implements AppControllerI
     //Set logging options here
     LogController.LIFECYCLE_ACTIVITY.disable();
     LogController.LIFECYCLE_THREAD.disable();
-    LogController.USER_ACTION_UI.disable();
+    //LogController.USER_ACTION_UI.disable();
     LogController.MULTIWEEK.disable();
     //LogController.allCategoriesOn();
     
@@ -124,7 +124,7 @@ public class CoachellerApplication extends Application implements AppControllerI
 
     yearToQuery = CalendarUtils.whatYearIsToday();
     weekToQuery = CalendarUtils.whichWeekIsToday();
-    dayToQuery = CalendarUtils.whatDayIsToday();
+    dayToQuery = CalendarUtils.suggestDayToQuery();
 
     storageManager = new StorageManager(this, getString(R.string.save_file_name));
     storageManager.load();
