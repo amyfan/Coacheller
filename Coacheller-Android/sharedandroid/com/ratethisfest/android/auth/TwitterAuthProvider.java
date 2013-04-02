@@ -9,7 +9,9 @@ import org.scribe.model.Verb;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.coacheller.ui.TwitterAuthWebpageActivity;
 import com.ratethisfest.android.data.SocialNetworkPost;
+import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.auth.TwitterAuthProviderOAuth;
 import com.ratethisfest.auth.verify.TwitterVerifier;
 import com.ratethisfest.shared.AuthConstants;
@@ -30,9 +32,9 @@ public class TwitterAuthProvider implements AuthProviderInt {
   // Default constructor disallowed
   @SuppressWarnings("unused")
   private TwitterAuthProvider() {
-    CONSUMER_KEY="";
-    CONSUMER_SECRET="";
-    OAUTH_CALLBACK_URL="";
+    CONSUMER_KEY = "";
+    CONSUMER_SECRET = "";
+    OAUTH_CALLBACK_URL = "";
   }
 
   public TwitterAuthProvider(AuthModel model) {
@@ -42,9 +44,7 @@ public class TwitterAuthProvider implements AuthProviderInt {
     CONSUMER_SECRET = _model.getAppConstant(AuthConstants.TWITTER_CONSUMER_SECRET);
     OAUTH_CALLBACK_URL = _model.getAppConstant(AuthConstants.TWITTER_OAUTH_CALLBACK_URL);
 
-    
-    _oAuthProvider = new TwitterAuthProviderOAuth(CONSUMER_KEY, CONSUMER_SECRET,
-        OAUTH_CALLBACK_URL);
+    _oAuthProvider = new TwitterAuthProviderOAuth(CONSUMER_KEY, CONSUMER_SECRET, OAUTH_CALLBACK_URL);
 
     _twitterAccountPropertyNames = new ArrayList<String>();
     _twitterAccountPropertyNames.add(TwitterVerifier.ACCOUNT_PROPERTY_ID);
@@ -67,8 +67,13 @@ public class TwitterAuthProvider implements AuthProviderInt {
 
   @Override
   public void login() {
+    LogController.AUTH_TWITTER.logMessage("Acquiring Twitter permissions");
     String authReqTokenUrl = _oAuthProvider.getRequestTokenUrl();
-    _model.getLastAuthActivity().startWebAuthActivity(authReqTokenUrl);
+    Activity lastAuthActivity = _model.getLastAuthActivity().getLastActivity();
+
+    Intent twitterAuthIntent = new Intent(lastAuthActivity, TwitterAuthWebpageActivity.class);
+    twitterAuthIntent.putExtra(AuthConstants.INTENT_EXTRA_AUTH_URL, authReqTokenUrl);
+    lastAuthActivity.startActivityForResult(twitterAuthIntent, AuthConstants.INTENT_TWITTER_LOGIN);
   }
 
   @Override

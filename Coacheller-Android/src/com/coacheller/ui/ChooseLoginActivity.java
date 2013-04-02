@@ -277,11 +277,11 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
   }
 
   public synchronized void doTwitterPost() {
-
+    LogController.OTHER.logMessage("WARNING: ChooseLoginActivity Empty interface method has been called");
   }
 
   public synchronized void doFacebookPost() {
-
+    LogController.OTHER.logMessage("WARNING: ChooseLoginActivity Empty interface method has been called");
   }
 
   public void modelChanged() {
@@ -299,10 +299,5 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
     return this;
   }
 
-  @Override
-  public void startWebAuthActivity(String authReqTokenUrl) {
-    Intent twitterAuthIntent = new Intent(this, TwitterAuthWebpageActivity.class);
-    twitterAuthIntent.putExtra(AuthConstants.INTENT_EXTRA_AUTH_URL, authReqTokenUrl);
-    this.startActivityForResult(twitterAuthIntent, AuthConstants.INTENT_TWITTER_LOGIN);
-  }
+
 }

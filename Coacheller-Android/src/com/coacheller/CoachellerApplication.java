@@ -67,6 +67,7 @@ public class CoachellerApplication extends Application implements AppControllerI
     LogController.LIFECYCLE_ACTIVITY._messagesEnabled = false;
     LogController.LIFECYCLE_THREAD._messagesEnabled = false;
     LogController.USER_ACTION_UI._messagesEnabled = false;
+    LogController.MULTIWEEK._messagesEnabled = false;
     //LogController.allCategoriesOn();
     
 
@@ -107,9 +108,9 @@ public class CoachellerApplication extends Application implements AppControllerI
     return activityChooseLogin;
   }
 
-  public void unregisterChooseLoginActivity() {
-    activityChooseLogin = null;
-  }
+//  public void unregisterChooseLoginActivity() {
+//    activityChooseLogin = null;
+//  }
 
   public void registerCoachellerActivity(CoachellerActivity act) {
     if (activityCoacheller != null) {

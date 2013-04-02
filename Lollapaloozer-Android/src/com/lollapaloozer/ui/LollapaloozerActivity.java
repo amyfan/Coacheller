@@ -906,7 +906,4 @@ public class LollapaloozerActivity extends Activity implements View.OnClickListe
     return this;
   }
 
-  @Override
-  public void startWebAuthActivity(String authReqTokenUrl) {
-  }
 }

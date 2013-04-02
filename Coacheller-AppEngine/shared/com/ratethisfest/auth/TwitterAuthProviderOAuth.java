@@ -11,6 +11,8 @@ import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
+import com.ratethisfest.android.log.LogController;
+
 public class TwitterAuthProviderOAuth {
 
   private OAuthService _service;
@@ -37,7 +39,7 @@ public class TwitterAuthProviderOAuth {
     _requestToken = _service.getRequestToken();
 
     String authUrl = _service.getAuthorizationUrl(_requestToken);
-    System.out.println("Twitter OAuth request token URL:" + authUrl);
+    LogController.AUTH_TWITTER.logMessage("Twitter OAuth request token URL:" + authUrl);
     return authUrl;
   }
 

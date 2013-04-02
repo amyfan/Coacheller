@@ -117,13 +117,13 @@ public class CoachSetListAdapter extends CustomSetListAdapter {
       String myNote1 = "";
       if (ratingsObjWk1 != null && ratingsObjWk1.has(AndroidConstants.JSON_KEY_RATINGS__NOTES)) {
         myNote1 = ratingsObjWk1.get(AndroidConstants.JSON_KEY_RATINGS__NOTES).toString();
-        LogController.OTHER.logMessage("Found week1 note: " + myNote1);
+        LogController.MULTIWEEK.logMessage("Found week1 note: " + myNote1);
       }
 
       String myNote2 = "";
       if (ratingsObjWk2 != null && ratingsObjWk2.has(AndroidConstants.JSON_KEY_RATINGS__NOTES)) {
         myNote2 = ratingsObjWk2.get(AndroidConstants.JSON_KEY_RATINGS__NOTES).toString();
-        LogController.OTHER.logMessage("Found week2 note: " + myNote2);
+        LogController.MULTIWEEK.logMessage("Found week2 note: " + myNote2);
       }
 
       if (myNote1.equals("")) {

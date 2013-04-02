@@ -3,7 +3,7 @@ package com.ratethisfest.android.log;
 public enum LogController {
   LIFECYCLE_ACTIVITY("Activity Lifecycle"), LIFECYCLE_THREAD("Thread Lifecycle"), USER_ACTION_UI("User UI Action"), SET_DATA(
       "Set Data Operations"), AUTH_GOOGLE("Google Authorization"), AUTH_FACEBOOK("Facebook Authorization"), AUTH_TWITTER(
-      "Twitter Authorization"), OTHER("Miscellaneous");
+      "Twitter Authorization"), OTHER("Miscellaneous"), MULTIWEEK("Multi-Week Functionality");
 
   public final String _readableDescription;
   public boolean _messagesEnabled;

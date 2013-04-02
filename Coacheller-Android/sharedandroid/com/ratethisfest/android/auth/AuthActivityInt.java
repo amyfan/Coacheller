@@ -11,6 +11,4 @@ public interface AuthActivityInt {
   public void modelChanged();
 
   public Activity getLastActivity();
-
-  public void startWebAuthActivity(String authReqTokenUrl);
 }

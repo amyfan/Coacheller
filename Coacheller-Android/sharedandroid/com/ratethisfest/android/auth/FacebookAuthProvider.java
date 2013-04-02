@@ -19,6 +19,7 @@ import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.data.SocialNetworkPost;
+import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.auth.verify.FacebookVerifier;
 import com.ratethisfest.shared.AuthConstants;
 
@@ -50,7 +51,7 @@ public class FacebookAuthProvider implements AuthProviderInt {
   @Override
   public void login() {
     // Proceeds Asynchronously
-    System.out.println("Starting Facebook Login");
+    LogController.AUTH_FACEBOOK.logMessage("Acquiring facebook permissions");
     _facebook.authorize(_model.getLastAuthActivity().getLastActivity(), new String[] { "email",
         "publish_stream" }, new AuthListener());
   }
