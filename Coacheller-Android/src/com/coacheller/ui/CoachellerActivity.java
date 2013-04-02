@@ -520,7 +520,6 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       int idChanged = -1;
 
       if (week == 1) {
-
         buttonWeek1.setClickable(true);
         buttonWeek2.setClickable(false);
         buttonWeek1.setChecked(true);

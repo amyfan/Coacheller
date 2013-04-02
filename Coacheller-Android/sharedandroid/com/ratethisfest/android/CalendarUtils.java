@@ -39,7 +39,7 @@ public class CalendarUtils extends Application {
    */
   public static int whichWeekIsToday() {
     Calendar cal = Calendar.getInstance();
-    if (cal.get(Calendar.DAY_OF_MONTH) < 19) {
+    if (cal.get(Calendar.DAY_OF_MONTH) < 18) {
       return 1;
     } else {
       return 2;

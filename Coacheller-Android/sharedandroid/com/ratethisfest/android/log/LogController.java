@@ -6,7 +6,7 @@ public enum LogController {
       "Twitter Authorization"), OTHER("Miscellaneous"), MULTIWEEK("Multi-Week Functionality");
 
   public final String _readableDescription;
-  public boolean _messagesEnabled;
+  private boolean _messagesEnabled;
 
   LogController(String description) {
     _readableDescription = description;
@@ -28,6 +28,14 @@ public enum LogController {
     }
   }
 
+  public void enable() {
+    _messagesEnabled = true;
+  }
+  
+  public void disable() {
+    _messagesEnabled = false;
+  }
+  
   public static void allCategoriesOn() {
     for (LogController category : LogController.values()) {
       category._messagesEnabled = true;
