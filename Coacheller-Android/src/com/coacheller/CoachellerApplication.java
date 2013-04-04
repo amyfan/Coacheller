@@ -252,6 +252,7 @@ public class CoachellerApplication extends Application implements AppControllerI
     loginData.accountIdentifier = results.getString(AuthConstants.INTENT_EXTRA_ACCOUNT_IDENTIFIER);
     loginData.accountToken = results.getString(AuthConstants.INTENT_EXTRA_LOGIN_TOKEN);
 
+    
     if (loginData.loginType.equals(AuthConstants.LOGIN_TYPE_GOOGLE)
         || loginData.loginType.equals(AuthConstants.LOGIN_TYPE_FACEBOOK)) {
       loginData.emailAddress = loginData.accountIdentifier;

@@ -9,18 +9,18 @@
         android:id="@+id/text_set_list_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4px"
         android:layout_marginBottom="4px"
+        android:layout_marginTop="4px"
         android:text="Date and Day"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textStyle="bold" />
-
+
     <TableRow
         android:id="@+id/SetsLayoutRow20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:baselineAligned="false" >
-
+
         <Button
             android:id="@+id/buttonChangeToSearchSets"
             android:layout_width="wrap_content"
@@ -41,21 +41,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-
+
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:text="Sort By:"
-            	android:textStyle="bold"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold" />
+
             <Spinner
                 android:id="@+id/spinner_sort_by"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-
         </LinearLayout>
     </TableRow>
 

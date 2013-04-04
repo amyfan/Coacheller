@@ -3,6 +3,8 @@ package com.ratethisfest.android.data;
 import java.io.Serializable;
 import java.util.StringTokenizer;
 
+import com.ratethisfest.android.log.LogController;
+
 public class LoginData implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -27,11 +29,12 @@ public class LoginData implements Serializable {
   }
 
   public void printDebug() {
-    System.out.println("Login Type: " + loginType);
-    System.out.println("Account Identifier: " + accountIdentifier);
-    System.out.println("Email Address (May be unverified): " + emailAddress);
+    
+    LogController.MODEL.logMessage("Login Type: " + loginType);
+    LogController.MODEL.logMessage("Account Identifier: " + accountIdentifier);
+    LogController.MODEL.logMessage("Email Address (May be unverified): " + emailAddress);
     int hoursAgo = ((int) (System.currentTimeMillis() - timeLoginIssued)) / 1000 / 60 / 60;
-    System.out.println("Time Issued: " + hoursAgo + " hours ago at " + timeLoginIssued);
-    System.out.println("Token Data: " + accountToken);
+    LogController.MODEL.logMessage("Time Issued: " + hoursAgo + " hours ago at " + timeLoginIssued);
+    LogController.MODEL.logMessage("Token Data: " + accountToken);
   }
 }
