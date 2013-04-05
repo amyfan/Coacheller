@@ -86,6 +86,8 @@ build/*
 xcuserdata
 profile
 *.moved-aside
+DerivedData
+.idea/
 
 ############################
 # OS generated files #
