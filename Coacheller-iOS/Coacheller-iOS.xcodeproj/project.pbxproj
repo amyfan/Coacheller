@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		79173887170F924700A5D750 /* SetTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79173886170F924700A5D750 /* SetTableViewController.m */; };
 		7987F68F170EBB4100C23C26 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7987F68E170EBB4100C23C26 /* UIKit.framework */; };
 		7987F691170EBB4100C23C26 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7987F690170EBB4100C23C26 /* Foundation.framework */; };
 		7987F693170EBB4100C23C26 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7987F692170EBB4100C23C26 /* CoreGraphics.framework */; };
@@ -29,6 +30,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		79173885170F924700A5D750 /* SetTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetTableViewController.h; sourceTree = "<group>"; };
+		79173886170F924700A5D750 /* SetTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetTableViewController.m; sourceTree = "<group>"; };
 		7987F68B170EBB4100C23C26 /* Coacheller-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Coacheller-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7987F68E170EBB4100C23C26 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7987F690170EBB4100C23C26 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -110,6 +113,8 @@
 				7987F6A9170EBB4100C23C26 /* MainStoryboard_iPad.storyboard */,
 				7987F6AC170EBB4100C23C26 /* CoachellerViewController.h */,
 				7987F6AD170EBB4100C23C26 /* CoachellerViewController.m */,
+				79173885170F924700A5D750 /* SetTableViewController.h */,
+				79173886170F924700A5D750 /* SetTableViewController.m */,
 				7987F6C5170EBD1400C23C26 /* CoachSetTVC.h */,
 				7987F6C6170EBD1400C23C26 /* CoachSetTVC.m */,
 				7987F6C8170EBD6000C23C26 /* SetDataForTVC.h */,
@@ -239,6 +244,7 @@
 				7987F6C4170EBCED00C23C26 /* LoginData.m in Sources */,
 				7987F6C7170EBD1400C23C26 /* CoachSetTVC.m in Sources */,
 				7987F6CA170EBD6000C23C26 /* SetDataForTVC.m in Sources */,
+				79173887170F924700A5D750 /* SetTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,6 +377,7 @@
 				7987F6B3170EBB4100C23C26 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

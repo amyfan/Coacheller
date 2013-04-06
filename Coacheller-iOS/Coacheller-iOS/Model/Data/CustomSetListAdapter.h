@@ -16,7 +16,7 @@
 @property (strong, nonatomic) NSString *timeFieldName;
 @property (strong, nonatomic) NSString *stageFieldName;
 @property (strong, nonatomic) NSArray *data;
-@property (strong, nonatomic) JSONArrayHashMap *myRatings;
+@property (weak, nonatomic) JSONArrayHashMap *myRatings;
 @property (strong, nonatomic) JSONArraySortMap *sortMap;
 
 - (void) sortByField:(NSString *)fieldName OfDataType:(NSString *)dataType;

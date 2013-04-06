@@ -43,7 +43,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ex8-pG-P3g" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-165" y="56"/>
+            <point key="canvasLocation" x="-305" y="-8"/>
         </scene>
         <!--Coacheller View Controller-->
         <scene sceneID="5">
@@ -59,14 +59,6 @@
             </objects>
         </scene>
     </scenes>
-    <classes>
-        <class className="CoachSetTVC" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CoachSetTVC.h"/>
-        </class>
-        <class className="CoachellerViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CoachellerViewController.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
