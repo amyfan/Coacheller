@@ -50,7 +50,7 @@
   reportButton.frame = CGRectMake(10.0, 50, 100.0, 40.0); // x,y,width,height
   [reportButton setTitle:@"Switch Day" forState:UIControlStateNormal];
   [reportButton addTarget:self
-                   action:@selector(buttonPressed:)
+                   action:@selector(switchDay)
          forControlEvents:UIControlEventTouchDown];
   
   [headerView addSubview:reportButton];
@@ -60,6 +60,33 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
   return 100;
+}
+
+- (IBAction)switchDay {
+  // TODO: launch segue
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+  if ([sender isKindOfClass:[UIButton class]]) {
+    // button clicked
+    if ([segue.identifier isEqualToString:@"Switch Day"]) {
+      
+    }
+    
+  } else if ([sender isKindOfClass:[UITableViewCell class]]) {
+    // table row selected
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
+    if (indexPath) {
+      if ([segue.identifier isEqualToString:@"Switch Day"]) {
+        if ([segue.destinationViewController respondsToSelector:@selector(rateSet:)]) {
+          // TODO: switch to customsetlistadapter collection
+          NSString *setId = self.setsArray[indexPath.row][SET_ID];
+          // TODO: create destination controller
+          //[segue.destinationViewController performSelector:@selector(rateSet:) withSetId:setId];
+        }
+      }
+    }
+  }
 }
 
 - (id)initWithStyle:(UITableViewStyle)style
