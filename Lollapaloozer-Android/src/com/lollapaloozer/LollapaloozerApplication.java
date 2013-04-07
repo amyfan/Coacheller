@@ -33,7 +33,7 @@ import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.HttpConstants;
 
 /**
- * Class to maintain global application state. Serves as controller.
+ * Class to maintain global application state. Serves as controller & model.
  * 
  */
 public class LollapaloozerApplication extends Application implements AppControllerInt {

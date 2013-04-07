@@ -50,7 +50,7 @@ import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.HttpConstants;
 
 /**
- * Main Lollapaloozer Activity
+ * Main Lollapaloozer Activity. Serves as view controller.
  * 
  */
 public class LollapaloozerActivity extends Activity implements View.OnClickListener,

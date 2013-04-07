@@ -33,6 +33,10 @@ import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.HttpConstants;
 
+/**
+ * Class to maintain global application state. Serves as controller & model.
+ * 
+ */
 public class CoachellerApplication extends Application implements AppControllerInt {
 
   // An alternate solution has been implemented

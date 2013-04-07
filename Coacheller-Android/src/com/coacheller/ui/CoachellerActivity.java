@@ -52,6 +52,10 @@ import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.HttpConstants;
 
+/**
+ * Main Coacheller Activity. Serves as view controller.
+ * 
+ */
 public class CoachellerActivity extends Activity implements View.OnClickListener,
     OnItemSelectedListener, OnItemClickListener, OnCheckedChangeListener, AuthActivityInt {
 
