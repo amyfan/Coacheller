@@ -13,6 +13,8 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import com.ratethisfest.android.log.LogController;
+
 import android.content.Context;
 
 /**
@@ -36,19 +38,6 @@ public class StorageManager {
     return _data.keySet();
   }
 
-  // Don't use this ever again
-  /*
-   * priva/
-   *//**//* te String resolveSav *//**//* eFilePath() { */
-  /* File sdCar *//* d = Environment.getE *//* xternalStora *//* geDirectory(); */
-  /* return sdCard *//* .getAbsolutePath() + _context *//* .getString(R.stri *//*
-                                                                                * ng
-                                                                                * .
-                                                                                * save_file_path
-                                                                                * )
-                                                                                * ;
-                                                                                */
-  /* } *//**/
 
   // File gets saved here on a good day
   // /data/data/com.lollapaloozer/files/CoachellerData.dat
@@ -81,16 +70,16 @@ public class StorageManager {
       _data = (HashMap<String, Object>) is.readObject();
       is.close();
     } catch (FileNotFoundException e) {
-      System.out.println("FileNotFoundException deserializing stored data");
+      LogController.ERROR.logMessage("FileNotFoundException deserializing stored data");
       e.printStackTrace();
     } catch (StreamCorruptedException e) {
-      System.out.println("StreamCorruptedException deserializing stored data");
+      LogController.ERROR.logMessage("StreamCorruptedException deserializing stored data");
       e.printStackTrace();
     } catch (IOException e) {
-      System.out.println("IOException deserializing stored data");
+      LogController.ERROR.logMessage("IOException deserializing stored data");
       e.printStackTrace();
     } catch (ClassNotFoundException e) {
-      System.out.println("ClassNotFoundException deserializing stored data");
+      LogController.ERROR.logMessage("ClassNotFoundException deserializing stored data");
       e.printStackTrace();
     }
 

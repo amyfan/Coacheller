@@ -10,6 +10,8 @@ import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
 public class FacebookAuthProviderOAuth {
+  //This code is not used and having it uncommented is causing confusion
+  /*
 
   private OAuthService _service;
   private Token _requestToken;
@@ -60,4 +62,5 @@ public class FacebookAuthProviderOAuth {
   public void setAccessTokenObject(String token, String secret) {
     _accessToken = new Token(token, secret);
   }
+  */
 }

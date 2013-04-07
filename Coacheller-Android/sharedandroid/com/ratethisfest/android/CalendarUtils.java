@@ -31,6 +31,19 @@ public class CalendarUtils extends Application {
     }
     return "";
   }
+  
+  //Use this when suggesting a day to search on and the user's preference is not yet known.
+  //No reason to try to display set data from a Monday
+  public static String suggestDayToQuery() {
+    Calendar cal = Calendar.getInstance();
+    if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+      return "Sunday";   
+    } else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+      return "Saturday";
+    } else {
+      return "Friday";
+    }
+  }
 
   /**
    * TODO: refine
@@ -39,7 +52,7 @@ public class CalendarUtils extends Application {
    */
   public static int whichWeekIsToday() {
     Calendar cal = Calendar.getInstance();
-    if (cal.get(Calendar.DAY_OF_MONTH) < 19) {
+    if (cal.get(Calendar.DAY_OF_MONTH) < 18) {
       return 1;
     } else {
       return 2;

@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
+import com.ratethisfest.android.log.LogController;
 
 public class FacebookVerifier implements AuthVerifier {
 
@@ -21,7 +22,7 @@ public class FacebookVerifier implements AuthVerifier {
 
   @Override
   public boolean verify(String authToken, String identifier) {
-    System.out.println("Verifying Facebook token: " + authToken + " identifier: " + identifier);
+    LogController.AUTH_FACEBOOK.logMessage("Verifying Facebook token: " + authToken + " identifier: " + identifier);
 
     HttpClient hc = new DefaultHttpClient();
     HttpGet req = new HttpGet("https://graph.facebook.com/me?access_token=" + authToken);
@@ -42,7 +43,7 @@ public class FacebookVerifier implements AuthVerifier {
       String email = json.getString("email");
 
       if (identifier.equals(email)) {
-        System.out.println("Verification passed");
+        LogController.AUTH_FACEBOOK.logMessage("Verification passed");
         return true;
       }
 
@@ -60,7 +61,7 @@ public class FacebookVerifier implements AuthVerifier {
       e.printStackTrace();
     }
 
-    System.out.println("Verification failed");
+    LogController.AUTH_FACEBOOK.logMessage("Verification failed");
     return false;
   }
 

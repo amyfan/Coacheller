@@ -298,10 +298,4 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
     return this;
   }
 
-  @Override
-  public void startWebAuthActivity(String authReqTokenUrl) {
-    Intent twitterAuthIntent = new Intent(this, TwitterAuthWebpageActivity.class);
-    twitterAuthIntent.putExtra(AuthConstants.INTENT_EXTRA_AUTH_URL, authReqTokenUrl);
-    this.startActivityForResult(twitterAuthIntent, AuthConstants.INTENT_TWITTER_LOGIN);
-  }
 }
