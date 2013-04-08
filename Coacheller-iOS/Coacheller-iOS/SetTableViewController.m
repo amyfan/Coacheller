@@ -46,14 +46,24 @@
   [headerView addSubview:headerLabel];
 
   // Add button
-  UIButton *reportButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-  reportButton.frame = CGRectMake(10.0, 50, 100.0, 40.0); // x,y,width,height
-  [reportButton setTitle:@"Switch Day" forState:UIControlStateNormal];
-  [reportButton addTarget:self
-                   action:@selector(switchDay)
-         forControlEvents:UIControlEventTouchDown];
+  UIButton *switchDayButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+  switchDayButton.frame = CGRectMake(10.0, 50, 100.0, 40.0); // x,y,width,height
+  [switchDayButton setTitle:@"Switch Day" forState:UIControlStateNormal];
+  [switchDayButton addTarget:self action:@selector(switchDay) forControlEvents:UIControlEventTouchUpInside];
+  [headerView addSubview:switchDayButton];
   
-  [headerView addSubview:reportButton];
+  
+  UIButton *debugScreenButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+  int buttonWidth = 40;
+  int buttonHeight = 40;
+  int rightborder = 30;
+  int topborder = 30;
+  
+  debugScreenButton.frame = CGRectMake(headerView.frame.size.width - rightborder - buttonWidth, topborder, buttonWidth, buttonHeight);
+  [debugScreenButton setTitle:@"Debug" forState:UIControlStateNormal];
+  [debugScreenButton addTarget:self action:@selector(showDebug) forControlEvents:UIControlEventTouchUpInside];
+  [headerView addSubview:debugScreenButton];
+  
   
   return headerView;
 }
@@ -63,6 +73,12 @@
 }
 
 - (IBAction)switchDay {
+  NSLog(@"switchDay action called");
+  // TODO: launch segue
+}
+
+- (IBAction)showDebug {
+  NSLog(@"showDebug action called");
   // TODO: launch segue
 }
 
