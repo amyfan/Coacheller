@@ -12,6 +12,8 @@
 
 @interface CoachSetTVC : SetTableViewController
 
+- (void)processLoginDataWithLoginType:(NSString *)loginType AccountId:(NSString *)accountId AndAccountToken:(NSString *)accountToken;
 - (LoginData *)getLoginData;
+- (void)clearLoginData;
 
 @end
