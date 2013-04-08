@@ -15,10 +15,15 @@
 
 @implementation SetDataForTVC
 
-// move to coach class
+// TODO move to coach class
+// designated initializer
 - (id)initWithTimeFieldName:(NSString *)timeFieldName StageFieldName:(NSString *)stageFieldName AndRatingsHashMap:(JSONArrayHashMap *)ratings {
-  self.timeFieldName = timeFieldName;
-  self.stageFieldName = stageFieldName;
+  self = [super init];
+  if (self) {
+    self.timeFieldName = timeFieldName;
+    self.stageFieldName = stageFieldName;
+  }
+  return self;
 }
 
 - (void)sortByField:(NSString *)fieldName WithValueType:(NSString *)valueType {

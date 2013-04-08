@@ -7,14 +7,15 @@
 //
 
 #import "CoachSetTVC.h"
-#import "LoginData.h"
+#import "StorageManager.h"
 #import "JSONArrayHashMap.h"
+
+#define DATA_LOGIN_INFO_KEY @"DATA_LOGIN_INFO"
 
 @interface CoachSetTVC ()
 
 @property (nonatomic, strong) NSMutableData *responseData;
-@property (nonatomic, strong) LoginData *loginData;
-// TODO storage mgr
+@property (nonatomic, strong) StorageManager *storageManager;
 @property (nonatomic, strong) JSONArrayHashMap *myRatings;
 
 @end
@@ -99,21 +100,29 @@
 }
 
 - (void)processLoginDataWithLoginType:(NSString *)loginType AccountId:(NSString *)accountId AndAccountToken:(NSString *)accountToken {
-  if (!self.loginData) {
-    self.loginData = [[LoginData alloc] init];
-  }
-  self.loginData.loginType = loginType;
-  self.loginData.accountIdentifier = accountId;
-  self.loginData.accountToken = accountToken;
+  LoginData *loginData = [[LoginData alloc] init];
+  loginData.loginType = loginType;
+  loginData.accountIdentifier = accountId;
+  loginData.accountToken = accountToken;
   
-  if ([self.loginData.loginType isEqualToString:LOGIN_TYPE_GOOGLE] || [self.loginData.loginType isEqualToString:LOGIN_TYPE_FACEBOOK]) {
-    self.loginData.emailAddress = accountId;
+  if ([loginData.loginType isEqualToString:LOGIN_TYPE_GOOGLE] || [loginData.loginType isEqualToString:LOGIN_TYPE_FACEBOOK]) {
+    loginData.emailAddress = accountId;
   }
+  
+  [self saveLoginDataInfo:loginData];
+}
+
+- (LoginData *)getLoginData {
+  return [self.storageManager getObject:DATA_LOGIN_INFO_KEY];
 }
 
 - (void)clearLoginData {
-  self.loginData = nil;
-  // TODO: save login data to storage mgr
+  [self saveLoginDataInfo:nil];
+}
+
+- (void)saveLoginDataInfo:(LoginData *)loginData {
+  [self.storageManager putObject:loginData WithName:DATA_LOGIN_INFO_KEY];
+  [self.storageManager save];
 }
 
 - (void)getSetsFromServer {
@@ -125,7 +134,8 @@
   [urlMutableString appendString:@"https://ratethisfest.appspot.com/coachellerServlet?action=get_ratings&year=2013&day=Friday"];
   
   NSString *authId = @"amyfan@gmail.com";
-  NSString *escapedAuthId = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes( NULL,	 (CFStringRef)authId,	 NULL,	 (CFStringRef)@"!’\"();:@&=+$,/?%#[]% ", kCFStringEncodingISOLatin1));
+  NSString *escapedAuthId = [authId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+  // NSString *escapedAuthId2 = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes( NULL,	 (CFStringRef)authId,	 NULL,	 (CFStringRef)@"!’\"();:@&=+$,/?%#[]% ", kCFStringEncodingISOLatin1));
   
   [urlMutableString appendString:@"&auth_type=LOGIN_TYPE_GOOGLE"];
   [urlMutableString appendString:@"&auth_id="];
@@ -134,7 +144,8 @@
   [urlMutableString appendString:@"&auth_token="];
   
   NSString *authToken = @"ya29.AHES6ZQ-xDAF0cSVKUgYiAMCnslgfX0ioi0_YT-qP2zImqzcMg";
-  NSString *escapedAuthToken = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes( NULL,	 (CFStringRef)authToken,	 NULL,	 (CFStringRef)@"!’\"();:@&=+$,/?%#[]% ", kCFStringEncodingISOLatin1));
+  NSString *escapedAuthToken = [authToken stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+  // NSString *escapedAuthToken2 = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes( NULL,	 (CFStringRef)authToken,	 NULL,	 (CFStringRef)@"!’\"();:@&=+$,/?%#[]% ", kCFStringEncodingISOLatin1));
   
   
   [urlMutableString appendString:escapedAuthToken];
