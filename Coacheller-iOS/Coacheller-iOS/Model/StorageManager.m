@@ -23,6 +23,8 @@
   if (self) {
     self.rootPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     self.saveFileName = saveFileName;
+    
+    [self load];
   }
   return self;
 }

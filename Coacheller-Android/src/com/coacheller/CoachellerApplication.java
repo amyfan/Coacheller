@@ -130,7 +130,6 @@ public class CoachellerApplication extends Application implements AppControllerI
     dayToQuery = CalendarUtils.suggestDayToQuery();
 
     storageManager = new StorageManager(this, getString(R.string.save_file_name));
-    storageManager.load();
 
     userRatingsJAHM = new JSONArrayHashMap(AndroidConstants.JSON_KEY_RATINGS__SET_ID,
         AndroidConstants.JSON_KEY_RATINGS__WEEK);

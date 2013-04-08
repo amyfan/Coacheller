@@ -108,7 +108,6 @@ public class LollapaloozerApplication extends Application implements AppControll
     dayToQuery = CalendarUtils.whatDayIsToday();
 
     storageManager = new StorageManager(this, getString(R.string.save_file_name));
-    storageManager.load();
 
     obtainLoginDataFromStorage();
 

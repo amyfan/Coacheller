@@ -81,6 +81,9 @@
   
   NSLog(@"viewdidload");
   
+  // TODO: put this in a place that gets invoked only once??
+  [self initData];
+  
   [self getSetsFromServer];
   
   // Uncomment the following line to preserve selection between presentations.
@@ -93,7 +96,9 @@
 - (void)initData {
   // TODO: init year/week/day
   
-  // TODO: obtain login data from storage
+  // TODO: create proper file name
+  NSString *saveFileName = @"CoachellerData.plist";
+  self.storageManager = [[StorageManager alloc] initWithSaveFileName:saveFileName];
   
   self.myRatings = [[JSONArrayHashMap alloc] initWithKeyName1:RATING_SET_ID AndKeyName2:RATING_WEEKEND];
   

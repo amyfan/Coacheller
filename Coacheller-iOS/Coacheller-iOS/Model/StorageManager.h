@@ -10,7 +10,8 @@
 
 @interface StorageManager : NSObject
 
-- (void)load;
+- (id)initWithSaveFileName:(NSString *)saveFileName;
+
 - (void)save;
 //- (void)putJSONArray:(NSArray*)array WithName:(NSString *)dataName;
 - (void)putObject:(id)object WithName:(NSString *)objectName;
