@@ -28,6 +28,7 @@
 		7987F6C7170EBD1400C23C26 /* CoachSetTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7987F6C6170EBD1400C23C26 /* CoachSetTVC.m */; };
 		7987F6CA170EBD6000C23C26 /* SetDataForTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7987F6C9170EBD6000C23C26 /* SetDataForTVC.m */; };
 		79FAB66C17123FA900AAC9C7 /* StorageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FAB66B17123FA900AAC9C7 /* StorageManager.m */; };
+		F6ED20C817126AC10094A99F /* LoginTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6ED20C717126AC10094A99F /* LoginTestViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,6 +67,8 @@
 		7987F6C9170EBD6000C23C26 /* SetDataForTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetDataForTVC.m; sourceTree = "<group>"; };
 		79FAB66A17123FA900AAC9C7 /* StorageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StorageManager.h; path = Model/StorageManager.h; sourceTree = "<group>"; };
 		79FAB66B17123FA900AAC9C7 /* StorageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StorageManager.m; path = Model/StorageManager.m; sourceTree = "<group>"; };
+		F6ED20C617126AC10094A99F /* LoginTestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginTestViewController.h; sourceTree = "<group>"; };
+		F6ED20C717126AC10094A99F /* LoginTestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginTestViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +127,8 @@
 				7987F6C9170EBD6000C23C26 /* SetDataForTVC.m */,
 				7987F6B4170EBC5F00C23C26 /* Model */,
 				7987F695170EBB4100C23C26 /* Supporting Files */,
+				F6ED20C617126AC10094A99F /* LoginTestViewController.h */,
+				F6ED20C717126AC10094A99F /* LoginTestViewController.m */,
 			);
 			path = "Coacheller-iOS";
 			sourceTree = "<group>";
@@ -251,6 +256,7 @@
 				7987F6CA170EBD6000C23C26 /* SetDataForTVC.m in Sources */,
 				79173887170F924700A5D750 /* SetTableViewController.m in Sources */,
 				79FAB66C17123FA900AAC9C7 /* StorageManager.m in Sources */,
+				F6ED20C817126AC10094A99F /* LoginTestViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

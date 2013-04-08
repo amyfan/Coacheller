@@ -79,6 +79,9 @@
 
 - (IBAction)showDebug {
   NSLog(@"showDebug action called");
+  
+  //This is how you perform a segue programmatically (i.e. in response to button click
+  [self performSegueWithIdentifier:@"debugScreen" sender:self];
   // TODO: launch segue
 }
 
@@ -93,7 +96,11 @@
     // table row selected
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     if (indexPath) {
-      if ([segue.identifier isEqualToString:@"Switch Day"]) {
+      if ([segue.identifier isEqualToString:@"debugScreen"]) {  //DEBUGGING ONLY
+        if (1) {
+          //TODO : Check if user is logged in (logindata is null?)
+        }
+      } else if ([segue.identifier isEqualToString:@"debugScreen"]) {
         if ([segue.destinationViewController respondsToSelector:@selector(rateSet:)]) {
           // TODO: switch to customsetlistadapter collection
           NSString *setId = self.setsArray[indexPath.row][SET_ID];
@@ -101,6 +108,7 @@
           //[segue.destinationViewController performSelector:@selector(rateSet:) withSetId:setId];
         }
       }
+
     }
   }
 }
