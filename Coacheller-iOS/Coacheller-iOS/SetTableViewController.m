@@ -76,15 +76,17 @@
 
 - (IBAction)switchDay {
   NSLog(@"switchDay action called");
-  // TODO: launch segue
+  // perform a segue programmatically
+  [self performSegueWithIdentifier:@"switchDay" sender:self];
+  
+  // TODO: need to actually create the segue w/ switchDay somewhere in the ether (programmatically)
 }
 
 - (IBAction)showDebug {
   NSLog(@"showDebug action called");
   
-  //This is how you perform a segue programmatically (i.e. in response to button click
+  // perform a segue programmatically
   [self performSegueWithIdentifier:@"debugScreen" sender:self];
-  // TODO: launch segue
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -99,10 +101,10 @@
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     if (indexPath) {
       if ([segue.identifier isEqualToString:@"debugScreen"]) {  //DEBUGGING ONLY
-        if (1) {
-          //TODO : Check if user is logged in (logindata is null?)
+        if (![self getLoginData]) {
+          // log in user
         }
-      } else if ([segue.identifier isEqualToString:@"debugScreen"]) {
+      } else if ([segue.identifier isEqualToString:@"rateSet"]) {
         if ([segue.destinationViewController respondsToSelector:@selector(rateSet:)]) {
           // TODO: switch to customsetlistadapter collection
           NSString *setId = [self.sets getItemAt:indexPath.row][SET_ID];

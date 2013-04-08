@@ -25,6 +25,7 @@
 		7987F6C4170EBCED00C23C26 /* LoginData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7987F6C3170EBCED00C23C26 /* LoginData.m */; };
 		7987F6CA170EBD6000C23C26 /* SetDataForTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7987F6C9170EBD6000C23C26 /* SetDataForTVC.m */; };
 		79D97CA51712B4C600D0B813 /* AppConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 79D97CA41712B4C600D0B813 /* AppConstants.m */; };
+		79D97CA81712BC6E00D0B813 /* SwitchDayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79D97CA71712BC6E00D0B813 /* SwitchDayViewController.m */; };
 		79FAB66C17123FA900AAC9C7 /* StorageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FAB66B17123FA900AAC9C7 /* StorageManager.m */; };
 		79FAB66F17126E6F00AAC9C7 /* CalendarUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FAB66E17126E6E00AAC9C7 /* CalendarUtils.m */; };
 		F6033059171272610042E8B2 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6033058171272610042E8B2 /* FacebookSDK.framework */; };
@@ -68,6 +69,8 @@
 		7987F6C9170EBD6000C23C26 /* SetDataForTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetDataForTVC.m; sourceTree = "<group>"; };
 		79D97CA31712B4C600D0B813 /* AppConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppConstants.h; path = Model/AppConstants.h; sourceTree = "<group>"; };
 		79D97CA41712B4C600D0B813 /* AppConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppConstants.m; path = Model/AppConstants.m; sourceTree = "<group>"; };
+		79D97CA61712BC6E00D0B813 /* SwitchDayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwitchDayViewController.h; sourceTree = "<group>"; };
+		79D97CA71712BC6E00D0B813 /* SwitchDayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwitchDayViewController.m; sourceTree = "<group>"; };
 		79FAB66A17123FA900AAC9C7 /* StorageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StorageManager.h; path = Model/StorageManager.h; sourceTree = "<group>"; };
 		79FAB66B17123FA900AAC9C7 /* StorageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StorageManager.m; path = Model/StorageManager.m; sourceTree = "<group>"; };
 		79FAB66D17126E6E00AAC9C7 /* CalendarUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CalendarUtils.h; path = Model/CalendarUtils.h; sourceTree = "<group>"; };
@@ -145,14 +148,16 @@
 				79173886170F924700A5D750 /* SetTableViewController.m */,
 				7987F6C8170EBD6000C23C26 /* SetDataForTVC.h */,
 				7987F6C9170EBD6000C23C26 /* SetDataForTVC.m */,
-				7987F6B4170EBC5F00C23C26 /* Model */,
-				7987F695170EBB4100C23C26 /* Supporting Files */,
 				F6ED20C617126AC10094A99F /* LoginTestViewController.h */,
 				F6ED20C717126AC10094A99F /* LoginTestViewController.m */,
 				F6ED20C917126D310094A99F /* FacebookAuthController.h */,
 				F6ED20CA17126D310094A99F /* FacebookAuthController.m */,
 				F6ED20CC17126D5C0094A99F /* FacebookAuthModel.h */,
 				F6ED20CD17126D5C0094A99F /* FacebookAuthModel.m */,
+				79D97CA61712BC6E00D0B813 /* SwitchDayViewController.h */,
+				79D97CA71712BC6E00D0B813 /* SwitchDayViewController.m */,
+				7987F6B4170EBC5F00C23C26 /* Model */,
+				7987F695170EBB4100C23C26 /* Supporting Files */,
 			);
 			path = "Coacheller-iOS";
 			sourceTree = "<group>";
@@ -287,6 +292,7 @@
 				F6ED20CE17126D5C0094A99F /* FacebookAuthModel.m in Sources */,
 				79FAB66F17126E6F00AAC9C7 /* CalendarUtils.m in Sources */,
 				79D97CA51712B4C600D0B813 /* AppConstants.m in Sources */,
+				79D97CA81712BC6E00D0B813 /* SwitchDayViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
