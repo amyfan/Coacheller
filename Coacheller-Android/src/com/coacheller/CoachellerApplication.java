@@ -12,10 +12,8 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.Application;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.coacheller.ui.ChooseLoginActivity;
 import com.coacheller.ui.CoachellerActivity;
@@ -31,7 +29,6 @@ import com.ratethisfest.android.auth.AuthModel;
 import com.ratethisfest.android.data.JSONArrayHashMap;
 import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.android.log.LogController;
-
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.HttpConstants;
 
@@ -228,6 +225,7 @@ public class CoachellerApplication extends Application implements AppControllerI
     saveDataLoginInfo(null);
   }
 
+  @Deprecated
   public void setLoginEmail(String email) {
     // this is deprecated
   }
@@ -283,8 +281,9 @@ public class CoachellerApplication extends Application implements AppControllerI
     this.userRatingsJAHM = userRatingsJAHM;
   }
 
-  public JSONArray getRatingsFromServer() throws JSONException {
-    if (getIsLoggedIn()) { // Get my ratings
+  public JSONArray getDataFromServer() throws JSONException {
+    // Get my ratings
+    if (getIsLoggedIn()) {
 
       JSONArray myRatings = null;
       try {
@@ -328,6 +327,7 @@ public class CoachellerApplication extends Application implements AppControllerI
     // needed
     // _setListAdapter.setNewJAHM(_myRatings_JAHM);
 
+    // Get sets
     JSONArray setData = null;
     try {
       // TODO: pass proper values (year can remain hard-coded for now)

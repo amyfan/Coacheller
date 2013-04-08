@@ -48,6 +48,7 @@ import com.ratethisfest.android.auth.AuthModel;
 import com.ratethisfest.android.data.CustomPair;
 import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.android.data.SocialNetworkPost;
+import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.HttpConstants;
@@ -861,7 +862,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     new Thread() {
       public void run() {
         try {
-          setListAdapter.setData(_appController.getRatingsFromServer());
+          setListAdapter.setData(_appController.getDataFromServer());
         } catch (JSONException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
@@ -878,7 +879,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     new Thread() {
       public void run() {
         try {
-          setListAdapter.setData(_appController.getRatingsFromServer());
+          setListAdapter.setData(_appController.getDataFromServer());
         } catch (JSONException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
