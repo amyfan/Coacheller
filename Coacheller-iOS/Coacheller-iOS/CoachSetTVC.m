@@ -65,6 +65,7 @@
   for (NSDictionary * dataDict in json) {
     [self.setsArray addObject:dataDict];
   }
+  [self.sets setSetsData:self.setsArray];
   
   // NSLog(@"sets: %@", self.setsArray);
 }
@@ -94,7 +95,7 @@
 }
 
 - (void)initData {
-  // TODO: init year/week/day
+  self.sets = [[SetDataForTVC alloc] initWithTimeFieldName:SET_TIME_ONE StageFieldName:SET_STAGE_ONE AndRatingsHashMap:self.myRatings];
   
   // TODO: create proper file name
   NSString *saveFileName = @"CoachellerData.plist";

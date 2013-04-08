@@ -10,13 +10,19 @@
 
 @implementation CustomSetListAdapter
 
-- (void) sortByField:(NSString *)fieldName OfDataType:(NSString *)dataType {
-  self.sortMap = [[JSONArraySortMap alloc] initWithArray:self.data AndParameterToSort:fieldName AndValueType:dataType];
+- (void) sortByField:(NSString *)fieldName {
+  self.sortMap = [[JSONArraySortMap alloc] initWithArray:self.data AndParameterToSort:fieldName];
 }
 
-// TODO: IMPL THIS CLASS TO EXTEND APPROPRIATE VIEW ADAPTER
+// TODO: create androidconstants class
 - (void) resortSetList:(NSString *)sortMode {
-  
+  if ([sortMode isEqualToString:@"time"]) {
+    [self sortByField:self.timeFieldName];
+  } else if ([sortMode isEqualToString:@"artist"]) {
+    [self sortByField:@"artist"];
+  } else if ([sortMode isEqualToString:@"stage"]) {
+    [self sortByField:self.stageFieldName];
+  }
 }
 
 @end

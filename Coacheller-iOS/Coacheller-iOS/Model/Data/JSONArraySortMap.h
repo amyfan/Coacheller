@@ -10,7 +10,7 @@
 
 @interface JSONArraySortMap : NSObject
 
-- (id)initWithArray:(NSArray *)arrayToSort AndParameterToSort:(NSString *)parameterToSort AndValueType:(NSString *)valueType;
+- (id)initWithArray:(NSArray *)arrayToSort AndParameterToSort:(NSString *)parameterToSort;
 
 - (NSDictionary *)getSortedJSONObject:(NSInteger)index;
 

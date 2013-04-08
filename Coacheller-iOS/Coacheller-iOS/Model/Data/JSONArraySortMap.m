@@ -18,12 +18,11 @@
 
 @implementation JSONArraySortMap
 
-- (id)initWithArray:(NSArray *)arrayToSort AndParameterToSort:(NSString *)parameterToSort AndValueType:(NSString *)valueType {
+- (id)initWithArray:(NSArray *)arrayToSort AndParameterToSort:(NSString *)parameterToSort {
   
   if (self = [super init]) {
     self.unsortedArray = arrayToSort;
     self.parameterToSort = parameterToSort;
-    self.valueType = valueType;
     id obj = nil;
     
     NSMutableArray *arrayOfPairs = [NSMutableArray array]; // array == alloc init

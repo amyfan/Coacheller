@@ -15,11 +15,15 @@
 @property (strong, nonatomic) NSString *timeFieldName;
 @property (strong, nonatomic) NSString *stageFieldName;
 @property (strong, nonatomic) NSArray *unsortedSets;
+@property (strong, nonatomic) JSONArrayHashMap *myRatings;
+@property (strong, nonatomic) JSONArraySortMap *sortedSets;
 
 // move to coach class
 - (id)initWithTimeFieldName:(NSString *)timeFieldName StageFieldName:(NSString *)stageFieldName AndRatingsHashMap:(JSONArrayHashMap *)ratings;
 
-- (void)sortByField:(NSString *)fieldName WithValueType:(NSString *)valueType;
+- (void)setSetsData:(NSArray *)setsData;
+
+- (void)sortByField:(NSString *)fieldName;
 
 - (NSDictionary *)getItemAt:(NSInteger)index;
 

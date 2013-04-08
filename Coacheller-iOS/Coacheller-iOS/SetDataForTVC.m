@@ -9,13 +9,10 @@
 #import "SetDataForTVC.h"
 
 @interface SetDataForTVC()
-@property (strong, nonatomic) JSONArrayHashMap *myRatings;
-@property (strong, nonatomic) JSONArraySortMap *sortedSets;
 @end
 
 @implementation SetDataForTVC
 
-// TODO move to coach class
 // designated initializer
 - (id)initWithTimeFieldName:(NSString *)timeFieldName StageFieldName:(NSString *)stageFieldName AndRatingsHashMap:(JSONArrayHashMap *)ratings {
   self = [super init];
@@ -26,8 +23,12 @@
   return self;
 }
 
-- (void)sortByField:(NSString *)fieldName WithValueType:(NSString *)valueType {
-  self.sortedSets = [[JSONArraySortMap alloc] initWithArray:self.unsortedSets AndParameterToSort:fieldName AndValueType:valueType];
+- (void)setSetsData:(NSArray *)setsData {
+  self.unsortedSets = setsData;
+}
+
+- (void)sortByField:(NSString *)fieldName {
+  self.sortedSets = [[JSONArraySortMap alloc] initWithArray:self.unsortedSets AndParameterToSort:fieldName];
 }
 
 - (NSDictionary *)getItemAt:(NSInteger)index {
@@ -38,8 +39,15 @@
   return [self.unsortedSets count];
 }
 
-- (void)resortSets:(NSString *)sortMode {
-  // TODO: impl
+// TODO: create androidconstants class
+- (void) resortSets:(NSString *)sortMode {
+  if ([sortMode isEqualToString:@"time"]) {
+    [self sortByField:self.timeFieldName];
+  } else if ([sortMode isEqualToString:@"artist"]) {
+    [self sortByField:@"artist"];
+  } else if ([sortMode isEqualToString:@"stage"]) {
+    [self sortByField:self.stageFieldName];
+  }
 }
 
 

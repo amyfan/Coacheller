@@ -28,6 +28,7 @@
 		7987F6C7170EBD1400C23C26 /* CoachSetTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7987F6C6170EBD1400C23C26 /* CoachSetTVC.m */; };
 		7987F6CA170EBD6000C23C26 /* SetDataForTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7987F6C9170EBD6000C23C26 /* SetDataForTVC.m */; };
 		79FAB66C17123FA900AAC9C7 /* StorageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FAB66B17123FA900AAC9C7 /* StorageManager.m */; };
+<<<<<<< HEAD
 		F6033059171272610042E8B2 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6033058171272610042E8B2 /* FacebookSDK.framework */; };
 		F603305B171272BF0042E8B2 /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F603305A171272BF0042E8B2 /* FacebookSDKResources.bundle */; };
 		F603305D171272EA0042E8B2 /* FBUserSettingsViewResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F603305C171272EA0042E8B2 /* FBUserSettingsViewResources.bundle */; };
@@ -37,6 +38,9 @@
 		F6ED20C817126AC10094A99F /* LoginTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6ED20C717126AC10094A99F /* LoginTestViewController.m */; };
 		F6ED20CB17126D310094A99F /* FacebookAuthController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6ED20CA17126D310094A99F /* FacebookAuthController.m */; };
 		F6ED20CE17126D5C0094A99F /* FacebookAuthModel.m in Sources */ = {isa = PBXBuildFile; fileRef = F6ED20CD17126D5C0094A99F /* FacebookAuthModel.m */; };
+=======
+		79FAB66F17126E6F00AAC9C7 /* CalendarUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FAB66E17126E6E00AAC9C7 /* CalendarUtils.m */; };
+>>>>>>> More c-ios impl
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -75,6 +79,7 @@
 		7987F6C9170EBD6000C23C26 /* SetDataForTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetDataForTVC.m; sourceTree = "<group>"; };
 		79FAB66A17123FA900AAC9C7 /* StorageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StorageManager.h; path = Model/StorageManager.h; sourceTree = "<group>"; };
 		79FAB66B17123FA900AAC9C7 /* StorageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StorageManager.m; path = Model/StorageManager.m; sourceTree = "<group>"; };
+<<<<<<< HEAD
 		F6033058171272610042E8B2 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		F603305A171272BF0042E8B2 /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FacebookSDKResources.bundle; sourceTree = "<group>"; };
 		F603305C171272EA0042E8B2 /* FBUserSettingsViewResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FBUserSettingsViewResources.bundle; sourceTree = "<group>"; };
@@ -87,6 +92,10 @@
 		F6ED20CA17126D310094A99F /* FacebookAuthController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookAuthController.m; sourceTree = "<group>"; };
 		F6ED20CC17126D5C0094A99F /* FacebookAuthModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FacebookAuthModel.h; path = Model/FacebookAuthModel.h; sourceTree = "<group>"; };
 		F6ED20CD17126D5C0094A99F /* FacebookAuthModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FacebookAuthModel.m; path = Model/FacebookAuthModel.m; sourceTree = "<group>"; };
+=======
+		79FAB66D17126E6E00AAC9C7 /* CalendarUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CalendarUtils.h; path = Model/CalendarUtils.h; sourceTree = "<group>"; };
+		79FAB66E17126E6E00AAC9C7 /* CalendarUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CalendarUtils.m; path = Model/CalendarUtils.m; sourceTree = "<group>"; };
+>>>>>>> More c-ios impl
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -184,6 +193,8 @@
 		7987F6B4170EBC5F00C23C26 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				79FAB66D17126E6E00AAC9C7 /* CalendarUtils.h */,
+				79FAB66E17126E6E00AAC9C7 /* CalendarUtils.m */,
 				79FAB66A17123FA900AAC9C7 /* StorageManager.h */,
 				79FAB66B17123FA900AAC9C7 /* StorageManager.m */,
 				7987F6B5170EBC6D00C23C26 /* Data */,
@@ -290,9 +301,13 @@
 				7987F6CA170EBD6000C23C26 /* SetDataForTVC.m in Sources */,
 				79173887170F924700A5D750 /* SetTableViewController.m in Sources */,
 				79FAB66C17123FA900AAC9C7 /* StorageManager.m in Sources */,
+<<<<<<< HEAD
 				F6ED20C817126AC10094A99F /* LoginTestViewController.m in Sources */,
 				F6ED20CB17126D310094A99F /* FacebookAuthController.m in Sources */,
 				F6ED20CE17126D5C0094A99F /* FacebookAuthModel.m in Sources */,
+=======
+				79FAB66F17126E6F00AAC9C7 /* CalendarUtils.m in Sources */,
+>>>>>>> More c-ios impl
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

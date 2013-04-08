@@ -7,6 +7,7 @@
 //
 
 #import "SetTableViewController.h"
+#import "CalendarUtils.h"
 
 @interface SetTableViewController ()
 
@@ -26,20 +27,11 @@
   headerLabel.font = [UIFont boldSystemFontOfSize:18];
   
   NSMutableString *headerMutableString = [[NSMutableString alloc] init];
-  int year = 2013;
-  if (self.yearToQuery) {
-    year = *(self.yearToQuery);
-  }
-  int week = 1;
-  if (self.weekToQuery) {
-    week = *(self.weekToQuery);
-  }
-  NSString *day = @"Friday";
-  if (self.dayToQuery) {
-    day = self.dayToQuery;
-  }
+  self.yearToQuery = [CalendarUtils whatYearIsToday];
+  self.weekToQuery = [CalendarUtils whichWeekIsToday];
+  self.dayToQuery = [CalendarUtils suggestDayToQuery];
   
-  [headerMutableString appendString:[NSString stringWithFormat:@"%d - Weekend %d, %@", year, week, day]];
+  [headerMutableString appendString:[NSString stringWithFormat:@"%d - Weekend %d, %@", self.yearToQuery, self.weekToQuery, self.dayToQuery]];
   
   headerLabel.text = [NSString stringWithString:headerMutableString];
   
