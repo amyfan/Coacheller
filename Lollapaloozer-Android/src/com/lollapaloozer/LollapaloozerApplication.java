@@ -221,7 +221,7 @@ public class LollapaloozerApplication extends Application implements AppControll
     saveDataLoginInfo(loginData);
   }
 
-  public void saveDataLoginInfo(LoginData loginData) {
+  private void saveDataLoginInfo(LoginData loginData) {
     storageManager.putObject(LoginData.DATA_LOGIN_INFO, loginData);
     storageManager.save();
   }

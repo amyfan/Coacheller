@@ -492,6 +492,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     super.onPrepareDialog(id, dialog);
     System.out.println("onPrepareDialog");
 
+    // TODO: deprecate?
     if (id == AndroidConstants.DIALOG_GETEMAIL) {
       EditText emailField = (EditText) emailDialog.findViewById(R.id.textField_enterEmail);
       if (_appController.getLoginData().emailAddress == null) {
@@ -686,6 +687,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     launchGetDataThread(); // TODO multithread this
   }
 
+  // TODO: deprecate?
   private void clickDialogConfirmEmailButtonOK() {
     EditText emailField = (EditText) emailDialog.findViewById(R.id.textField_enterEmail);
     String email = emailField.getText().toString();
