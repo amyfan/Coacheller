@@ -117,6 +117,12 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Gjk-1i-qbI"/>
+                    <connections>
+                        <outlet property="buttonLoginFacebook" destination="7PD-Bj-GSW" id="osP-Az-VCd"/>
+                        <outlet property="buttonLoginGoogle" destination="7PD-Bj-GSW" id="694-PT-B1I"/>
+                        <outlet property="buttonLoginTwitter" destination="J7d-ST-B9P" id="a8L-4y-mAz"/>
+                        <outlet property="buttonPostFacebook" destination="IBz-FB-f1h" id="W8b-tY-ayw"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4" sceneMemberID="firstResponder"/>
             </objects>
@@ -147,6 +153,14 @@
         </class>
         <class className="LoginTestViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/LoginTestViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="PostFacebookPressed:" candidateClass="UIButton"/>
+                <relationship kind="action" name="loginFacebookPressed:" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="buttonLoginFacebook" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="buttonLoginGoogle" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="buttonLoginTwitter" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="buttonPostFacebook" candidateClass="UIButton"/>
+            </relationships>
         </class>
         <class className="NSLayoutConstraint" superclassName="NSObject">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>

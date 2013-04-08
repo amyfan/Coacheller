@@ -9,5 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface LoginTestViewController : UIViewController
+@property (strong, nonatomic) IBOutlet UIButton *buttonLoginGoogle;
+@property (strong, nonatomic) IBOutlet UIButton *buttonLoginFacebook;
+@property (strong, nonatomic) IBOutlet UIButton *buttonLoginTwitter;
+@property (strong, nonatomic) IBOutlet UIButton *buttonPostFacebook;
 
 @end
