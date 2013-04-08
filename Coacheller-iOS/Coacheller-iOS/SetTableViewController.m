@@ -8,8 +8,16 @@
 
 #import "SetTableViewController.h"
 #import "CalendarUtils.h"
+#import "StorageManager.h"
+#import "JSONArrayHashMap.h"
+#import "AppConstants.h"
 
 @interface SetTableViewController ()
+
+@property (nonatomic, strong) NSMutableData *responseData;
+@property (nonatomic, strong) StorageManager *storageManager;
+@property (nonatomic, strong) JSONArrayHashMap *myRatings;
+@property (nonatomic, strong) NSString *sortMode;
 
 @end
 
@@ -37,12 +45,14 @@
   
   [headerView addSubview:headerLabel];
 
-  // Add button
+  // Add Switch Day button
   UIButton *switchDayButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
   switchDayButton.frame = CGRectMake(10.0, 50, 100.0, 40.0); // x,y,width,height
   [switchDayButton setTitle:@"Switch Day" forState:UIControlStateNormal];
   [switchDayButton addTarget:self action:@selector(switchDay) forControlEvents:UIControlEventTouchUpInside];
   [headerView addSubview:switchDayButton];
+  
+  // TODO Add Sort Mode UIPickerView (oof)
   
   
   UIButton *debugScreenButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -95,7 +105,7 @@
       } else if ([segue.identifier isEqualToString:@"debugScreen"]) {
         if ([segue.destinationViewController respondsToSelector:@selector(rateSet:)]) {
           // TODO: switch to customsetlistadapter collection
-          NSString *setId = self.setsArray[indexPath.row][SET_ID];
+          NSString *setId = [self.sets getItemAt:indexPath.row][SET_ID];
           // TODO: create destination controller
           //[segue.destinationViewController performSelector:@selector(rateSet:) withSetId:setId];
         }
@@ -116,20 +126,138 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
-
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+  [super viewDidLoad];
+  
+  NSLog(@"viewdidload");
+  
+  // TODO: put this in a place that gets invoked only once??
+  [self initData];
+  
+  [self getSetsFromServer];
+  
+  // Uncomment the following line to preserve selection between presentations.
+  // self.clearsSelectionOnViewWillAppear = NO;
+  
+  // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+  // TODO: prolly comment this out hehe
+  self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)initData {
+  self.sets = [[SetDataForTVC alloc] initWithTimeFieldName:SET_TIME_ONE StageFieldName:SET_STAGE_ONE AndRatingsHashMap:self.myRatings];
+  
+  self.sortMode = SORT_MODE_TIME;
+  
+  // TODO: create proper file name
+  NSString *saveFileName = @"CoachellerData.plist";
+  self.storageManager = [[StorageManager alloc] initWithSaveFileName:saveFileName];
+  
+  self.myRatings = [[JSONArrayHashMap alloc] initWithKeyName1:RATING_SET_ID AndKeyName2:RATING_WEEKEND];
+  
 }
+
+- (void)processLoginDataWithLoginType:(NSString *)loginType AccountId:(NSString *)accountId AndAccountToken:(NSString *)accountToken {
+  LoginData *loginData = [[LoginData alloc] init];
+  loginData.loginType = loginType;
+  loginData.accountIdentifier = accountId;
+  loginData.accountToken = accountToken;
+  
+  if ([loginData.loginType isEqualToString:LOGIN_TYPE_GOOGLE] || [loginData.loginType isEqualToString:LOGIN_TYPE_FACEBOOK]) {
+    loginData.emailAddress = accountId;
+  }
+  
+  [self saveLoginDataInfo:loginData];
+}
+
+- (LoginData *)getLoginData {
+  return [self.storageManager getObject:DATA_LOGIN_INFO_KEY];
+}
+
+- (void)clearLoginData {
+  [self saveLoginDataInfo:nil];
+}
+
+- (void)saveLoginDataInfo:(LoginData *)loginData {
+  [self.storageManager putObject:loginData WithName:DATA_LOGIN_INFO_KEY];
+  [self.storageManager save];
+}
+
+- (void)getSetsFromServer {
+  
+  self.responseData = [NSMutableData data];
+  
+  NSMutableString *urlMutableString = [[NSMutableString alloc] init];
+  
+  [urlMutableString appendString:@"https://ratethisfest.appspot.com/coachellerServlet?action=get_ratings&year=2013&day=Friday"];
+  
+  NSString *authId = @"amyfan@gmail.com";
+  NSString *escapedAuthId = [authId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+  // NSString *escapedAuthId2 = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes( NULL,	 (CFStringRef)authId,	 NULL,	 (CFStringRef)@"!’\"();:@&=+$,/?%#[]% ", kCFStringEncodingISOLatin1));
+  
+  [urlMutableString appendString:@"&auth_type=LOGIN_TYPE_GOOGLE"];
+  [urlMutableString appendString:@"&auth_id="];
+  [urlMutableString appendString:escapedAuthId];
+  
+  [urlMutableString appendString:@"&auth_token="];
+  
+  NSString *authToken = @"ya29.AHES6ZQ-xDAF0cSVKUgYiAMCnslgfX0ioi0_YT-qP2zImqzcMg";
+  NSString *escapedAuthToken = [authToken stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+  // NSString *escapedAuthToken2 = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes( NULL,	 (CFStringRef)authToken,	 NULL,	 (CFStringRef)@"!’\"();:@&=+$,/?%#[]% ", kCFStringEncodingISOLatin1));
+  
+  
+  [urlMutableString appendString:escapedAuthToken];
+  [urlMutableString appendString:@"&email="];
+  [urlMutableString appendString:escapedAuthToken];
+  
+  // NSString *urlString = [NSString stringWithString:urlMutableString];
+  
+  NSString *urlString = @"https://ratethisfest.appspot.com/coachellerServlet?action=get_sets&year=2013&day=Friday";
+  
+  NSURLRequest *request = [NSURLRequest requestWithURL:
+                           [NSURL URLWithString:urlString]];
+  [[NSURLConnection alloc] initWithRequest:request delegate:self];
+}
+
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+  NSLog(@"didReceiveResponse");
+  [self.responseData setLength:0];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+  [self.responseData appendData:data];
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+  NSLog(@"didFailWithError");
+  NSLog([NSString stringWithFormat:@"Connection failed: %@", [error description]]);
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+  NSLog(@"connectionDidFinishLoading");
+  NSLog(@"Succeeded! Received %d bytes of data",[self.responseData length]);
+  [self fetchedData:self.responseData];
+  NSLog(@"to reload data");
+  
+  [self.sets resortSets:self.sortMode];
+  [self.tableView reloadData];
+}
+
+- (void)fetchedData:(NSData *)responseData {
+  // parse out the json data
+  NSError *error;
+  NSDictionary* json = [NSJSONSerialization JSONObjectWithData:self.responseData options:kNilOptions error:&error];
+  
+  NSMutableArray *setsArray = [NSMutableArray array];
+  
+  for (NSDictionary * dataDict in json) {
+    [setsArray addObject:dataDict];
+  }
+  [self.sets setSetsData:setsArray];
+  
+  // NSLog(@"sets: %@", self.setsArray);
+}
+
 
 #pragma mark - Table view data source
 
@@ -137,17 +265,17 @@
 {
   // Return the number of rows in the section.
   // return [self.sets getItemCount];
-  return [self.setsArray count];
+  return [self.sets getItemCount];
 }
 
 - (NSString *)titleForRow:(NSUInteger)row {
-  //return [self.sets getItemAt:row][SET_ARTIST];
-  return self.setsArray[row][SET_ARTIST];
+  return [self.sets getItemAt:row][SET_ARTIST];
+  //return self.setsArray[row][SET_ARTIST];
 }
 
 - (NSString *)subtitleForRow:(NSUInteger)row {
-  //return [self.sets getItemAt:row][SET_STAGE_ONE];
-  return self.setsArray[row][SET_STAGE_ONE];
+  return [self.sets getItemAt:row][SET_STAGE_ONE];
+  //return self.setsArray[row][SET_STAGE_ONE];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

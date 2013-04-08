@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "SetDataForTVC.h"
+#import "LoginData.h"
 
 // TODO: move to constants file
 #define SET_ID @"id"
@@ -28,9 +29,12 @@
 @interface SetTableViewController : UITableViewController
 
 @property (nonatomic, strong) SetDataForTVC *sets;
-@property (nonatomic, strong) NSMutableArray *setsArray;
 @property (nonatomic) NSInteger yearToQuery;
 @property (nonatomic) NSInteger weekToQuery;
 @property (nonatomic, strong) NSString *dayToQuery;
+
+- (void)processLoginDataWithLoginType:(NSString *)loginType AccountId:(NSString *)accountId AndAccountToken:(NSString *)accountToken;
+- (LoginData *)getLoginData;
+- (void)clearLoginData;
 
 @end

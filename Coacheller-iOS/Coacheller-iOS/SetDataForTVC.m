@@ -7,6 +7,7 @@
 //
 
 #import "SetDataForTVC.h"
+#import "AppConstants.h"
 
 @interface SetDataForTVC()
 @end
@@ -39,13 +40,12 @@
   return [self.unsortedSets count];
 }
 
-// TODO: create androidconstants class
 - (void) resortSets:(NSString *)sortMode {
-  if ([sortMode isEqualToString:@"time"]) {
+  if ([sortMode isEqualToString:SORT_MODE_TIME]) {
     [self sortByField:self.timeFieldName];
-  } else if ([sortMode isEqualToString:@"artist"]) {
-    [self sortByField:@"artist"];
-  } else if ([sortMode isEqualToString:@"stage"]) {
+  } else if ([sortMode isEqualToString:SORT_MODE_ARTIST]) {
+    [self sortByField:SORT_MODE_ARTIST];
+  } else if ([sortMode isEqualToString:SORT_MODE_STAGE]) {
     [self sortByField:self.stageFieldName];
   }
 }

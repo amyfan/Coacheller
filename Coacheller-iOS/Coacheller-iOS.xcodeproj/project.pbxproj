@@ -19,15 +19,14 @@
 		7987F6A5170EBB4100C23C26 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7987F6A4170EBB4100C23C26 /* Default-568h@2x.png */; };
 		7987F6A8170EBB4100C23C26 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7987F6A6170EBB4100C23C26 /* MainStoryboard_iPhone.storyboard */; };
 		7987F6AB170EBB4100C23C26 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7987F6A9170EBB4100C23C26 /* MainStoryboard_iPad.storyboard */; };
-		7987F6AE170EBB4100C23C26 /* CoachellerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7987F6AD170EBB4100C23C26 /* CoachellerViewController.m */; };
 		7987F6B8170EBC9200C23C26 /* CustomPair.m in Sources */ = {isa = PBXBuildFile; fileRef = 7987F6B7170EBC9200C23C26 /* CustomPair.m */; };
-		7987F6BB170EBCAC00C23C26 /* CustomSetListAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7987F6BA170EBCAC00C23C26 /* CustomSetListAdapter.m */; };
 		7987F6BE170EBCCF00C23C26 /* JSONArrayHashMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 7987F6BD170EBCCF00C23C26 /* JSONArrayHashMap.m */; };
 		7987F6C1170EBCDE00C23C26 /* JSONArraySortMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 7987F6C0170EBCDE00C23C26 /* JSONArraySortMap.m */; };
 		7987F6C4170EBCED00C23C26 /* LoginData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7987F6C3170EBCED00C23C26 /* LoginData.m */; };
-		7987F6C7170EBD1400C23C26 /* CoachSetTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7987F6C6170EBD1400C23C26 /* CoachSetTVC.m */; };
 		7987F6CA170EBD6000C23C26 /* SetDataForTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7987F6C9170EBD6000C23C26 /* SetDataForTVC.m */; };
+		79D97CA51712B4C600D0B813 /* AppConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 79D97CA41712B4C600D0B813 /* AppConstants.m */; };
 		79FAB66C17123FA900AAC9C7 /* StorageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FAB66B17123FA900AAC9C7 /* StorageManager.m */; };
+		79FAB66F17126E6F00AAC9C7 /* CalendarUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FAB66E17126E6E00AAC9C7 /* CalendarUtils.m */; };
 		F6033059171272610042E8B2 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6033058171272610042E8B2 /* FacebookSDK.framework */; };
 		F603305B171272BF0042E8B2 /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F603305A171272BF0042E8B2 /* FacebookSDKResources.bundle */; };
 		F603305D171272EA0042E8B2 /* FBUserSettingsViewResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F603305C171272EA0042E8B2 /* FBUserSettingsViewResources.bundle */; };
@@ -37,8 +36,6 @@
 		F6ED20C817126AC10094A99F /* LoginTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6ED20C717126AC10094A99F /* LoginTestViewController.m */; };
 		F6ED20CB17126D310094A99F /* FacebookAuthController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6ED20CA17126D310094A99F /* FacebookAuthController.m */; };
 		F6ED20CE17126D5C0094A99F /* FacebookAuthModel.m in Sources */ = {isa = PBXBuildFile; fileRef = F6ED20CD17126D5C0094A99F /* FacebookAuthModel.m */; };
-		79FAB66F17126E6F00AAC9C7 /* CalendarUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FAB66E17126E6E00AAC9C7 /* CalendarUtils.m */; };
-
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,24 +56,22 @@
 		7987F6A4170EBB4100C23C26 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		7987F6A7170EBB4100C23C26 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
 		7987F6AA170EBB4100C23C26 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
-		7987F6AC170EBB4100C23C26 /* CoachellerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CoachellerViewController.h; sourceTree = "<group>"; };
-		7987F6AD170EBB4100C23C26 /* CoachellerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CoachellerViewController.m; sourceTree = "<group>"; };
 		7987F6B6170EBC9200C23C26 /* CustomPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CustomPair.h; path = Model/Data/CustomPair.h; sourceTree = "<group>"; };
 		7987F6B7170EBC9200C23C26 /* CustomPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CustomPair.m; path = Model/Data/CustomPair.m; sourceTree = "<group>"; };
-		7987F6B9170EBCAC00C23C26 /* CustomSetListAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CustomSetListAdapter.h; path = Model/Data/CustomSetListAdapter.h; sourceTree = "<group>"; };
-		7987F6BA170EBCAC00C23C26 /* CustomSetListAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CustomSetListAdapter.m; path = Model/Data/CustomSetListAdapter.m; sourceTree = "<group>"; };
 		7987F6BC170EBCCF00C23C26 /* JSONArrayHashMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSONArrayHashMap.h; path = Model/Data/JSONArrayHashMap.h; sourceTree = "<group>"; };
 		7987F6BD170EBCCF00C23C26 /* JSONArrayHashMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSONArrayHashMap.m; path = Model/Data/JSONArrayHashMap.m; sourceTree = "<group>"; };
 		7987F6BF170EBCDE00C23C26 /* JSONArraySortMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSONArraySortMap.h; path = Model/Data/JSONArraySortMap.h; sourceTree = "<group>"; };
 		7987F6C0170EBCDE00C23C26 /* JSONArraySortMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSONArraySortMap.m; path = Model/Data/JSONArraySortMap.m; sourceTree = "<group>"; };
 		7987F6C2170EBCED00C23C26 /* LoginData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LoginData.h; path = Model/Data/LoginData.h; sourceTree = "<group>"; };
 		7987F6C3170EBCED00C23C26 /* LoginData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoginData.m; path = Model/Data/LoginData.m; sourceTree = "<group>"; };
-		7987F6C5170EBD1400C23C26 /* CoachSetTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoachSetTVC.h; sourceTree = "<group>"; };
-		7987F6C6170EBD1400C23C26 /* CoachSetTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoachSetTVC.m; sourceTree = "<group>"; };
 		7987F6C8170EBD6000C23C26 /* SetDataForTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetDataForTVC.h; sourceTree = "<group>"; };
 		7987F6C9170EBD6000C23C26 /* SetDataForTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetDataForTVC.m; sourceTree = "<group>"; };
+		79D97CA31712B4C600D0B813 /* AppConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppConstants.h; path = Model/AppConstants.h; sourceTree = "<group>"; };
+		79D97CA41712B4C600D0B813 /* AppConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppConstants.m; path = Model/AppConstants.m; sourceTree = "<group>"; };
 		79FAB66A17123FA900AAC9C7 /* StorageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StorageManager.h; path = Model/StorageManager.h; sourceTree = "<group>"; };
 		79FAB66B17123FA900AAC9C7 /* StorageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StorageManager.m; path = Model/StorageManager.m; sourceTree = "<group>"; };
+		79FAB66D17126E6E00AAC9C7 /* CalendarUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CalendarUtils.h; path = Model/CalendarUtils.h; sourceTree = "<group>"; };
+		79FAB66E17126E6E00AAC9C7 /* CalendarUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CalendarUtils.m; path = Model/CalendarUtils.m; sourceTree = "<group>"; };
 		F6033058171272610042E8B2 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		F603305A171272BF0042E8B2 /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FacebookSDKResources.bundle; sourceTree = "<group>"; };
 		F603305C171272EA0042E8B2 /* FBUserSettingsViewResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FBUserSettingsViewResources.bundle; sourceTree = "<group>"; };
@@ -89,8 +84,6 @@
 		F6ED20CA17126D310094A99F /* FacebookAuthController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookAuthController.m; sourceTree = "<group>"; };
 		F6ED20CC17126D5C0094A99F /* FacebookAuthModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FacebookAuthModel.h; path = Model/FacebookAuthModel.h; sourceTree = "<group>"; };
 		F6ED20CD17126D5C0094A99F /* FacebookAuthModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FacebookAuthModel.m; path = Model/FacebookAuthModel.m; sourceTree = "<group>"; };
-		79FAB66D17126E6E00AAC9C7 /* CalendarUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CalendarUtils.h; path = Model/CalendarUtils.h; sourceTree = "<group>"; };
-		79FAB66E17126E6E00AAC9C7 /* CalendarUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CalendarUtils.m; path = Model/CalendarUtils.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,13 +141,8 @@
 			isa = PBXGroup;
 			children = (
 				7987F6A6170EBB4100C23C26 /* MainStoryboard_iPhone.storyboard */,
-				7987F6A9170EBB4100C23C26 /* MainStoryboard_iPad.storyboard */,
-				7987F6AC170EBB4100C23C26 /* CoachellerViewController.h */,
-				7987F6AD170EBB4100C23C26 /* CoachellerViewController.m */,
 				79173885170F924700A5D750 /* SetTableViewController.h */,
 				79173886170F924700A5D750 /* SetTableViewController.m */,
-				7987F6C5170EBD1400C23C26 /* CoachSetTVC.h */,
-				7987F6C6170EBD1400C23C26 /* CoachSetTVC.m */,
 				7987F6C8170EBD6000C23C26 /* SetDataForTVC.h */,
 				7987F6C9170EBD6000C23C26 /* SetDataForTVC.m */,
 				7987F6B4170EBC5F00C23C26 /* Model */,
@@ -172,6 +160,7 @@
 		7987F695170EBB4100C23C26 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				7987F6A9170EBB4100C23C26 /* MainStoryboard_iPad.storyboard */,
 				7987F69D170EBB4100C23C26 /* CoachellerAppDelegate.h */,
 				7987F69E170EBB4100C23C26 /* CoachellerAppDelegate.m */,
 				7987F696170EBB4100C23C26 /* Coacheller-iOS-Info.plist */,
@@ -188,6 +177,8 @@
 		7987F6B4170EBC5F00C23C26 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				79D97CA31712B4C600D0B813 /* AppConstants.h */,
+				79D97CA41712B4C600D0B813 /* AppConstants.m */,
 				79FAB66D17126E6E00AAC9C7 /* CalendarUtils.h */,
 				79FAB66E17126E6E00AAC9C7 /* CalendarUtils.m */,
 				79FAB66A17123FA900AAC9C7 /* StorageManager.h */,
@@ -202,8 +193,6 @@
 			children = (
 				7987F6B6170EBC9200C23C26 /* CustomPair.h */,
 				7987F6B7170EBC9200C23C26 /* CustomPair.m */,
-				7987F6B9170EBCAC00C23C26 /* CustomSetListAdapter.h */,
-				7987F6BA170EBCAC00C23C26 /* CustomSetListAdapter.m */,
 				7987F6BC170EBCCF00C23C26 /* JSONArrayHashMap.h */,
 				7987F6BD170EBCCF00C23C26 /* JSONArrayHashMap.m */,
 				7987F6BF170EBCDE00C23C26 /* JSONArraySortMap.h */,
@@ -286,13 +275,10 @@
 			files = (
 				7987F69B170EBB4100C23C26 /* main.m in Sources */,
 				7987F69F170EBB4100C23C26 /* CoachellerAppDelegate.m in Sources */,
-				7987F6AE170EBB4100C23C26 /* CoachellerViewController.m in Sources */,
 				7987F6B8170EBC9200C23C26 /* CustomPair.m in Sources */,
-				7987F6BB170EBCAC00C23C26 /* CustomSetListAdapter.m in Sources */,
 				7987F6BE170EBCCF00C23C26 /* JSONArrayHashMap.m in Sources */,
 				7987F6C1170EBCDE00C23C26 /* JSONArraySortMap.m in Sources */,
 				7987F6C4170EBCED00C23C26 /* LoginData.m in Sources */,
-				7987F6C7170EBD1400C23C26 /* CoachSetTVC.m in Sources */,
 				7987F6CA170EBD6000C23C26 /* SetDataForTVC.m in Sources */,
 				79173887170F924700A5D750 /* SetTableViewController.m in Sources */,
 				79FAB66C17123FA900AAC9C7 /* StorageManager.m in Sources */,
@@ -300,6 +286,7 @@
 				F6ED20CB17126D310094A99F /* FacebookAuthController.m in Sources */,
 				F6ED20CE17126D5C0094A99F /* FacebookAuthModel.m in Sources */,
 				79FAB66F17126E6F00AAC9C7 /* CalendarUtils.m in Sources */,
+				79D97CA51712B4C600D0B813 /* AppConstants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
