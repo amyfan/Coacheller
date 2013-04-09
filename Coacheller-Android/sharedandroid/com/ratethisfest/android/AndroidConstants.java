@@ -11,11 +11,14 @@ public class AndroidConstants {
 
   // JSON Hashmap Keys
   public static final String JSON_KEY_SETS__SET_ID = "id";
+  public static final String JSON_KEY_SETS__ARTIST = "artist";
   public static final String JSON_KEY_SETS__DAY = "day";
   public static final String JSON_KEY_SETS__TIME_ONE = "time_one";
   public static final String JSON_KEY_SETS__TIME_TWO = "time_two";
   public static final String JSON_KEY_SETS__STAGE_ONE = "stage_one";
   public static final String JSON_KEY_SETS__STAGE_TWO = "stage_two";
+  public static final String JSON_KEY_SETS__AVG_SCORE_ONE = "avg_score_one";
+  public static final String JSON_KEY_SETS__AVG_SCORE_TWO = "avg_score_two";
 
   public static final String JSON_KEY_RATINGS__SET_ID = "set_id";
   public static final String JSON_KEY_RATINGS__WEEK = "weekend";
