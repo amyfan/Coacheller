@@ -90,9 +90,6 @@
                                     <constraint firstItem="A1h-zN-aYT" firstAttribute="leading" secondItem="Wbx-83-QCX" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="lss-3T-Ney"/>
                                     <constraint firstAttribute="bottom" secondItem="A1h-zN-aYT" secondAttribute="bottom" constant="20" type="default" id="vZY-Mm-yMs"/>
                                 </constraints>
-                                <connections>
-                                    <segue destination="2" kind="push" identifier="debugScreen" id="Rt4-mY-xu2"/>
-                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -101,6 +98,10 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Coacheller (Unofficial)" id="lUz-Tb-9SG"/>
+                    <connections>
+                        <segue destination="2" kind="push" identifier="debugScreen" id="uXt-eS-jsX"/>
+                        <segue destination="Uml-ZL-Tbs" kind="push" identifier="switchDay" id="a2T-ob-kok"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ex8-pG-P3g" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -111,10 +112,11 @@
             <objects>
                 <viewController id="Uml-ZL-Tbs" customClass="SwitchDayViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="yNb-Sh-dqE">
-                        <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
+                    <navigationItem key="navigationItem" id="cGL-kl-hgF"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IaV-6k-Rfi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -259,6 +261,31 @@
             <point key="canvasLocation" x="-305" y="-8"/>
         </scene>
     </scenes>
+    <classes>
+        <class className="LoginTestViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/LoginTestViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="PostFacebookPressed:" candidateClass="UIButton"/>
+                <relationship kind="action" name="loginFacebookPressed:" candidateClass="UIButton"/>
+                <relationship kind="action" name="logoutFacebookPressed:" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="buttonLoginFacebook" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="buttonLoginGoogle" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="buttonLoginTwitter" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="buttonLogoutFacebook" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="buttonPostFacebook" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="loginTestViewHourglass" candidateClass="UIActivityIndicatorView"/>
+            </relationships>
+        </class>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+        <class className="SetTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/SetTableViewController.h"/>
+        </class>
+        <class className="SwitchDayViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/SwitchDayViewController.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
