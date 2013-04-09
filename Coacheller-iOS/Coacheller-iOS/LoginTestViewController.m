@@ -19,7 +19,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
+      self.buttonPostFacebook.enabled = false;
     }
     return self;
 }
@@ -39,21 +39,24 @@
 - (IBAction)PostFacebookPressed:(UIButton *)sender {
   NSLog(@"Post Facebook Pressed");
   [[self sharedAppDelegate].authController.facebookAuthController postStatusUpdate:self  buttonPushed:sender];
+  [self.loginTestViewHourglass startAnimating];
 }
 
 //The right way to reference our objects
 - (IBAction)logoutFacebookPressed:(UIButton *)sender {
-  [[self sharedAppDelegate].authController.facebookAuthController killSession];
+  [[self sharedAppDelegate].authController.facebookAuthController killSession:self];
 }
 
 
-- (void)loginFacebookSuccess {
+- (void)facebookLoggedIn {
   NSLog(@"LoginTestViewController: Facebook Login Succeeded");
+  self.buttonPostFacebook.enabled = TRUE;
   [self.loginTestViewHourglass stopAnimating];
 }
 
-- (void)loginFacebookFailed {
-  NSLog(@"LoginTestViewController: Facebook Login Failed");
+- (void)facebookLoggedOut {
+  NSLog(@"LoginTestViewController: Facebook Login Failed or Logged Out");
+  self.buttonPostFacebook.enabled = FALSE;
   [self.loginTestViewHourglass stopAnimating];
 }
 

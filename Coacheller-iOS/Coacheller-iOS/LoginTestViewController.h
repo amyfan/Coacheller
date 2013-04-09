@@ -17,7 +17,7 @@
 @property (strong, nonatomic) IBOutlet UIButton *buttonLogoutFacebook;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *loginTestViewHourglass;
 
-- (void)loginFacebookSuccess;
-- (void)loginFacebookFailed;
+- (void)facebookLoggedIn;
+- (void)facebookLoggedOut;
 
 @end

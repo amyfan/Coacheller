@@ -14,8 +14,9 @@
 @protocol AuthProtocol <NSObject>
 
 
-- (void) loginFacebookFailed;
-- (void) loginFacebookSuccess;
+- (void) facebookLoggedOut;
+- (void) facebookLoggedIn;
+- (void) facebookPostDone;
   
 
 @end

@@ -60,10 +60,10 @@
 
 - (BOOL)existingFacebookSession {
   if ([self.facebookAuthModel existingFacebookSession]) {
-    NSLog(@"FacebookAuthController: Facebook is Logged In");
+    NSLog(@"FacebookAuthController: Saved facebook session exists");
     return YES;
   } else {
-    NSLog(@"FacebookAuthController: Facebook is Logged Out");
+    NSLog(@"FacebookAuthController: NO previous saved facebook session");
     return NO;
   }
 }
@@ -86,8 +86,10 @@
 }
 
 
--(void)killSession {
+- (void) killSession:(UIViewController <AuthProtocol>*)caller {
   [FBSession.activeSession closeAndClearTokenInformation];
+  
+  [caller facebookLoggedOut];
 }
 
 //Facebook auth callback
@@ -98,8 +100,12 @@
   switch (state) {
     case FBSessionStateOpen: {
       NSLog(@"FacebookAuthController: FBSessionStateOpen");
-      [self.facebookAPICaller loginFacebookSuccess];
-      // Start the Facebook request
+      self.facebookAuthModel.appLoggedIn = YES;
+      [self.facebookAPICaller facebookLoggedIn];
+      
+  
+      
+      // Start the sample Facebook request
       [[FBRequest requestForMe]
        startWithCompletionHandler:
        ^(FBRequestConnection *connection, NSDictionary<FBGraphUser> *result, NSError *error)
@@ -107,9 +113,12 @@
          // Did everything come back okay with no errors?
          if (!error && result)
          {
-           //NSLog(@"ID: %@", result.id);
+           NSString *email = [result objectForKey:@"email"];
+           NSLog(@"Facebook ID: %@", result.id);
+           NSLog(@"Email Address: %@", email);
            NSLog(@"First Name: %@", result.first_name);
            NSLog(@"User Name: %@", result.username);
+           
            
            //[result.id longLongValue];
            
@@ -123,14 +132,16 @@
       break;
     case FBSessionStateClosed:
       NSLog(@"FacebookAuthController: FBSessionStateClosed 'Normally'");
+      self.facebookAuthModel.appLoggedIn = NO;
+      [self.facebookAPICaller facebookLoggedOut];
       break;
+      
+      
     case FBSessionStateClosedLoginFailed:
-      // Once the user has logged in, we want them to
-      // be looking at the root view.
-      //[self.navController popToRootViewControllerAnimated:NO];
+      self.facebookAuthModel.appLoggedIn = NO;
       NSLog(@"FacebookAuthController: FBSessionStateClosedLoginFailed");
       [FBSession.activeSession closeAndClearTokenInformation];
-      [self.facebookAPICaller loginFacebookFailed];
+      [self.facebookAPICaller facebookLoggedOut];
       
       //[self showLoginView];
       break;

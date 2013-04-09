@@ -11,6 +11,7 @@
 @interface FacebookAuthModel ()
 
 
+
 @end
 
 
@@ -24,4 +25,7 @@
     return NO;
   }
 }
+
+
+
 @end

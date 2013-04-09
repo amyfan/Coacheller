@@ -11,7 +11,11 @@
 
 @interface FacebookAuthModel : NSObject
 
+@property BOOL appLoggedIn;
+
 - (BOOL)existingFacebookSession;
+
+
 //Get items from Facebook SDK objects
 @property (strong, nonatomic) id<FBGraphUser> loggedInUser;
 
