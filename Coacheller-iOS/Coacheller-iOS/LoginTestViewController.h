@@ -7,11 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AuthProtocol.h"
 
-@interface LoginTestViewController : UIViewController
+@interface LoginTestViewController : UIViewController <AuthProtocol>
 @property (strong, nonatomic) IBOutlet UIButton *buttonLoginGoogle;
 @property (strong, nonatomic) IBOutlet UIButton *buttonLoginFacebook;
 @property (strong, nonatomic) IBOutlet UIButton *buttonLoginTwitter;
 @property (strong, nonatomic) IBOutlet UIButton *buttonPostFacebook;
+@property (strong, nonatomic) IBOutlet UIButton *buttonLogoutFacebook;
+@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *loginTestViewHourglass;
+
+- (void)loginFacebookSuccess;
+- (void)loginFacebookFailed;
 
 @end

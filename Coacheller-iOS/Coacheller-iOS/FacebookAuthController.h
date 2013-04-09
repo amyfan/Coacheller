@@ -10,13 +10,15 @@
 #import <FacebookSDK/FacebookSDK.h>
 
 #import "FacebookAuthModel.h"
+#import "AuthProtocol.h"
 #import "LoginTestViewController.h"
 
 @interface FacebookAuthController : NSObject
-@property (strong, nonatomic) FacebookAuthModel *fbAuthModel;
+@property (strong, nonatomic) FacebookAuthModel *facebookAuthModel;
 
-- (id) initWithViewController:(LoginTestViewController*) viewController;
-- (void) postStatusUpdate;
+
+- (void) postStatusUpdate:(UIViewController*)caller buttonPushed:(UIButton*)postButton;
 - (void) performPublishAction:(void (^)(void)) action;
+- (void) killSession;
 @end
 

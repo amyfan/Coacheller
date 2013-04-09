@@ -7,44 +7,61 @@
 //
 
 #import "FacebookAuthController.h"
-#import "LoginTestViewController.h"
+#import "CoachellerAppDelegate.h"
 
 @interface FacebookAuthController ()
-
-
-@property (strong, nonatomic) LoginTestViewController *managedViewController;
 
 - (void)showAlert:(NSString *)message
            result:(id)result
             error:(NSError *)error;
 
-
+- (BOOL)existingFacebookSession;
+- (CoachellerAppDelegate*) sharedAppDelegate;
 
 @end
 
 @implementation FacebookAuthController
 
+- (CoachellerAppDelegate*) sharedAppDelegate {
+  return (CoachellerAppDelegate*)[[UIApplication sharedApplication] delegate];
+}
 
-- (id) initWithViewController:(LoginTestViewController*) viewController {
+  - (id) init {
   self = [super init];
   
   if (self) {
-    _fbAuthModel = [[FacebookAuthModel alloc] init];
-    _managedViewController = viewController;
+    _facebookAuthModel = [[FacebookAuthModel alloc] init];
+    
   }
   
+  [self existingFacebookSession];
+
   return self;
+}
+
+- (BOOL)existingFacebookSession {
+    if ([self.facebookAuthModel existingFacebookSession]) {
+      NSLog(@"FacebookAuthController: Facebook is Logged In");
+      return YES;
+  } else {
+    NSLog(@"FacebookAuthController: Facebook is Logged Out");
+    return NO;
+  }
+}
+
+-(void)killSession {
+  [FBSession.activeSession closeAndClearTokenInformation];
 }
 
 
 
--(void)postStatusUpdate {
+- (void) postStatusUpdate:(UIViewController*)caller buttonPushed:(UIButton*)postButton {
   // Post a status update to the user's feed via the Graph API, and display an alert view
   // with the results or an error.
   NSLog(@"postStatusUpdate starting, about to attempt FB native dialog");
   
   // if it is available to us, we will post using the native dialog
-  BOOL displayedNativeDialog = [FBNativeDialogs presentShareDialogModallyFrom:(UIViewController*)self.managedViewController
+  BOOL displayedNativeDialog = [FBNativeDialogs presentShareDialogModallyFrom:caller
                                                                   initialText:nil
                                                                         image:nil
                                                                           url:nil
@@ -55,16 +72,16 @@
     [self performPublishAction:^{
       NSLog(@"performPublishAction exiting");
       // otherwise fall back on a request for permissions and a direct post
-      NSString *message = [NSString stringWithFormat:@"Updating status for %@ at %@", self.fbAuthModel.loggedInUser.first_name, [NSDate date]];
+      NSString *message = [NSString stringWithFormat:@"Updating status for %@ at %@", self.facebookAuthModel.loggedInUser.first_name, [NSDate date]];
       
       [FBRequestConnection startForPostStatusUpdate:message
                                   completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                                     NSLog(@"ConnectionHandler Starting");
                                     [self showAlert:message result:result error:error];
-                                    self.managedViewController.buttonPostFacebook.enabled = YES;
+                                    postButton.enabled = YES;
                                   }];
       
-      self.managedViewController.buttonPostFacebook.enabled = NO;
+      postButton.enabled = NO;
       NSLog(@"performPublishAction exiting");
     }];
   }

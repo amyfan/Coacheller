@@ -16,4 +16,11 @@
 
 @implementation FacebookAuthModel
 
+- (BOOL)existingFacebookSession {
+  if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded) {
+    return YES;
+  } else {
+    return NO;
+  }
+}
 @end

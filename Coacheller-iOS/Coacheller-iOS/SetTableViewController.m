@@ -12,6 +12,7 @@
 #import "JSONArrayHashMap.h"
 #import "AppConstants.h"
 #import "CustomPair.h"
+#import "AuthController.h"
 
 @interface SetTableViewController ()
 
@@ -19,6 +20,7 @@
 @property (nonatomic, strong) StorageManager *storageManager;
 @property (nonatomic, strong) JSONArrayHashMap *myRatings;
 @property (nonatomic, strong) NSString *sortMode;
+
 
 // contains set id, stored in setListAdapter
 @property (nonatomic, strong) NSDictionary *lastSetSelected;
@@ -320,7 +322,8 @@
   
   // determine whether sets or ratings
   if ([dataArray count] > 0) {
-    NSLog(@"ratings: %@", dataArray);
+    NSLog(@"ratings: %lu items", (unsigned long)dataArray.count);
+    NSLog(@"In format of: %@", [dataArray objectAtIndex:0]);
     if([dataArray objectAtIndex:0][JSON_RATING_SCORE]) {
       // data is of type rating
       [self.myRatings rebuildDataWith:dataArray];
