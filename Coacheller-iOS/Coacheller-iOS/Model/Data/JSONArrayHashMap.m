@@ -28,25 +28,29 @@
 }
 
 // TODO: fig out memory management
-- (void)rebuildDataWith:(NSMutableArray *)data {
+- (void)rebuildDataWith:(NSArray *)data {
   [self.dictionary removeAllObjects];
   for (int i = 0; i < [data count]; i++) {
-    NSData *jsonObj = data[i]; //[data objectAtIndex:(NSUInteger)i];
+    NSDictionary *jsonObj = data[i]; //[data objectAtIndex:(NSUInteger)i];
     [self storeTwoKeyObj:jsonObj];
   }
 }
 
-- (void)addValues:(NSData *)jsonObj {
+- (void)addValues:(NSDictionary *)jsonObj {
   [self storeTwoKeyObj:jsonObj];
 }
 
-- (void)storeTwoKeyObj:(NSData *)jsonObj {
+- (void)storeTwoKeyObj:(NSDictionary *)jsonObj {
   NSMutableString *keyFullName = [[NSMutableString alloc]init];
   // append first key
-  [keyFullName appendString:[jsonObj valueForKey:self.keyName1]];
+  [keyFullName appendString:[jsonObj[self.keyName1] stringValue]];
   // append second key
-  [keyFullName appendString:[jsonObj valueForKey:self.keyName2]];
-  [self.dictionary setObject:jsonObj forKey:(NSString *)keyFullName];
+  [keyFullName appendString:[jsonObj[self.keyName2] stringValue]];
+  [self.dictionary setObject:jsonObj forKey:[NSString stringWithString:keyFullName]];
+}
+
+- (void)clearRatings {
+  [self.dictionary removeAllObjects];
 }
 
 @end

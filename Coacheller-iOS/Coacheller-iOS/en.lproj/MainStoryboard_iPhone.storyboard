@@ -161,6 +161,28 @@
             <point key="canvasLocation" x="-305" y="-8"/>
         </scene>
     </scenes>
+    <classes>
+        <class className="LoginTestViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/LoginTestViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="PostFacebookPressed:" candidateClass="UIButton"/>
+                <relationship kind="action" name="loginFacebookPressed:" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="buttonLoginFacebook" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="buttonLoginGoogle" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="buttonLoginTwitter" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="buttonPostFacebook" candidateClass="UIButton"/>
+            </relationships>
+        </class>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+        <class className="SetTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/SetTableViewController.h"/>
+        </class>
+        <class className="SwitchDayViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/SwitchDayViewController.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

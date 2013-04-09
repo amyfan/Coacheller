@@ -11,6 +11,7 @@
 #import "StorageManager.h"
 #import "JSONArrayHashMap.h"
 #import "AppConstants.h"
+#import "CustomPair.h"
 
 @interface SetTableViewController ()
 
@@ -18,6 +19,13 @@
 @property (nonatomic, strong) StorageManager *storageManager;
 @property (nonatomic, strong) JSONArrayHashMap *myRatings;
 @property (nonatomic, strong) NSString *sortMode;
+
+// contains set id, stored in setListAdapter
+@property (nonatomic, strong) NSDictionary *lastSetSelected;
+// contains actual rating, stored in userRatingsJAHM
+@property (nonatomic, strong) NSDictionary *lastRating;
+// contains both week's scores
+@property (nonatomic, strong) CustomPair *lastRatingScorePair;
 
 @end
 
@@ -35,9 +43,6 @@
   headerLabel.font = [UIFont boldSystemFontOfSize:18];
   
   NSMutableString *headerMutableString = [[NSMutableString alloc] init];
-  self.yearToQuery = [CalendarUtils whatYearIsToday];
-  self.weekToQuery = [CalendarUtils whichWeekIsToday];
-  self.dayToQuery = [CalendarUtils suggestDayToQuery];
   
   [headerMutableString appendString:[NSString stringWithFormat:@"%d - Weekend %d, %@", self.yearToQuery, self.weekToQuery, self.dayToQuery]];
   
@@ -107,7 +112,7 @@
       } else if ([segue.identifier isEqualToString:@"rateSet"]) {
         if ([segue.destinationViewController respondsToSelector:@selector(rateSet:)]) {
           // TODO: switch to customsetlistadapter collection
-          NSString *setId = [self.sets getItemAt:indexPath.row][SET_ID];
+          NSString *setId = [self.sets getItemAt:indexPath.row][JSON_SET_ID];
           // TODO: create destination controller
           //[segue.destinationViewController performSelector:@selector(rateSet:) withSetId:setId];
         }
@@ -133,9 +138,13 @@
   NSLog(@"viewdidload");
   
   // TODO: put this in a place that gets invoked only once??
+  self.yearToQuery = [CalendarUtils whatYearIsToday];
+  self.weekToQuery = [CalendarUtils whichWeekIsToday];
+  self.dayToQuery = [CalendarUtils suggestDayToQuery];
+  
   [self initData];
   
-  [self getSetsFromServer];
+  [self getDataFromServer];
   
   // Uncomment the following line to preserve selection between presentations.
   // self.clearsSelectionOnViewWillAppear = NO;
@@ -146,7 +155,7 @@
 }
 
 - (void)initData {
-  self.sets = [[SetDataForTVC alloc] initWithTimeFieldName:SET_TIME_ONE StageFieldName:SET_STAGE_ONE AndRatingsHashMap:self.myRatings];
+  self.sets = [[SetDataForTVC alloc] initWithTimeFieldName:JSON_SET_TIME_ONE StageFieldName:JSON_SET_STAGE_ONE AndRatingsHashMap:self.myRatings];
   
   self.sortMode = SORT_MODE_TIME;
   
@@ -154,7 +163,7 @@
   NSString *saveFileName = @"CoachellerData.plist";
   self.storageManager = [[StorageManager alloc] initWithSaveFileName:saveFileName];
   
-  self.myRatings = [[JSONArrayHashMap alloc] initWithKeyName1:RATING_SET_ID AndKeyName2:RATING_WEEKEND];
+  self.myRatings = [[JSONArrayHashMap alloc] initWithKeyName1:JSON_RATING_SET_ID AndKeyName2:JSON_RATING_WEEKEND];
   
 }
 
@@ -184,42 +193,100 @@
   [self.storageManager save];
 }
 
-- (void)getSetsFromServer {
-  
+- (void)getDataFromServer {
   self.responseData = [NSMutableData data];
   
+  // get ratings
+  if ([self getLoginData]) {
+    NSMutableString *urlMutableString = [[NSMutableString alloc] init];
+    
+    [urlMutableString appendString:@"https://ratethisfest.appspot.com/coachellerServlet?action=get_ratings&year="];
+    [urlMutableString appendString:[NSString stringWithFormat:@"%d", self.yearToQuery]];
+    [urlMutableString appendString:@"&day="];
+    [urlMutableString appendString:self.dayToQuery];
+    
+    [urlMutableString appendString:[self appendParamWithName:PARAM_AUTH_TYPE AndValue:[self getLoginData].loginType]];
+    
+    NSString *authId = [self getLoginData].accountIdentifier;
+    NSString *escapedAuthId = [authId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    [urlMutableString appendString:[self appendParamWithName:PARAM_AUTH_ID AndValue:escapedAuthId]];
+    
+    NSString *authToken = [self getLoginData].accountToken;
+    NSString *escapedAuthToken = [authToken stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    [urlMutableString appendString:[self appendParamWithName:PARAM_AUTH_TOKEN AndValue:escapedAuthToken]];
+    
+    if ([self getLoginData].emailAddress) {
+      [urlMutableString appendString:[self appendParamWithName:PARAM_AUTH_TYPE AndValue:[self getLoginData].emailAddress]];
+    }
+    
+    NSString *urlString = [NSString stringWithString:urlMutableString];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:
+                             [NSURL URLWithString:urlString]];
+    [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    //NSError *error;
+    //NSURLResponse *response;
+    //NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+  } else {
+    [self.myRatings clearRatings];
+    
+    // TEMPORARY for testing!
+    NSMutableString *urlMutableString = [[NSMutableString alloc] init];
+    
+    [urlMutableString appendString:@"https://ratethisfest.appspot.com/coachellerServlet?action=get_ratings&year="];
+    [urlMutableString appendString:[NSString stringWithFormat:@"%d", self.yearToQuery]];
+    [urlMutableString appendString:@"&day="];
+    [urlMutableString appendString:self.dayToQuery];
+    
+    NSString *authId = @"amyfan@gmail.com";
+    NSString *escapedAuthId = [authId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    // NSString *escapedAuthId2 = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes( NULL,	 (CFStringRef)authId,	 NULL,	 (CFStringRef)@"!’\"();:@&=+$,/?%#[]% ", kCFStringEncodingISOLatin1));
+    
+    [urlMutableString appendString:@"&auth_type="];
+    [urlMutableString appendString:LOGIN_TYPE_GOOGLE];
+    [urlMutableString appendString:@"&auth_id="];
+    [urlMutableString appendString:escapedAuthId];
+    
+    [urlMutableString appendString:@"&auth_token="];
+    
+    NSString *authToken = @"ya29.AHES6ZQ-xDAF0cSVKUgYiAMCnslgfX0ioi0_YT-qP2zImqzcMg";
+    NSString *escapedAuthToken = [authToken stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    // NSString *escapedAuthToken2 = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes( NULL,	 (CFStringRef)authToken,	 NULL,	 (CFStringRef)@"!’\"();:@&=+$,/?%#[]% ", kCFStringEncodingISOLatin1));
+    
+    
+    [urlMutableString appendString:escapedAuthToken];
+    [urlMutableString appendString:@"&email="];
+    [urlMutableString appendString:escapedAuthToken];
+    
+    NSString *urlString = [NSString stringWithString:urlMutableString];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:
+                             [NSURL URLWithString:urlString]];
+    [[NSURLConnection alloc] initWithRequest:request delegate:self];
+  }
+  
+  // get sets
   NSMutableString *urlMutableString = [[NSMutableString alloc] init];
+  [urlMutableString appendString:@"https://ratethisfest.appspot.com/coachellerServlet?action=get_sets&year="];
+  [urlMutableString appendString:[NSString stringWithFormat:@"%d", self.yearToQuery]];
+  [urlMutableString appendString:@"&day="];
+  [urlMutableString appendString:self.dayToQuery];
   
-  [urlMutableString appendString:@"https://ratethisfest.appspot.com/coachellerServlet?action=get_ratings&year=2013&day=Friday"];
-  
-  NSString *authId = @"amyfan@gmail.com";
-  NSString *escapedAuthId = [authId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-  // NSString *escapedAuthId2 = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes( NULL,	 (CFStringRef)authId,	 NULL,	 (CFStringRef)@"!’\"();:@&=+$,/?%#[]% ", kCFStringEncodingISOLatin1));
-  
-  [urlMutableString appendString:@"&auth_type=LOGIN_TYPE_GOOGLE"];
-  [urlMutableString appendString:@"&auth_id="];
-  [urlMutableString appendString:escapedAuthId];
-  
-  [urlMutableString appendString:@"&auth_token="];
-  
-  NSString *authToken = @"ya29.AHES6ZQ-xDAF0cSVKUgYiAMCnslgfX0ioi0_YT-qP2zImqzcMg";
-  NSString *escapedAuthToken = [authToken stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-  // NSString *escapedAuthToken2 = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes( NULL,	 (CFStringRef)authToken,	 NULL,	 (CFStringRef)@"!’\"();:@&=+$,/?%#[]% ", kCFStringEncodingISOLatin1));
-  
-  
-  [urlMutableString appendString:escapedAuthToken];
-  [urlMutableString appendString:@"&email="];
-  [urlMutableString appendString:escapedAuthToken];
-  
-  // NSString *urlString = [NSString stringWithString:urlMutableString];
-  
-  NSString *urlString = @"https://ratethisfest.appspot.com/coachellerServlet?action=get_sets&year=2013&day=Friday";
+  NSString *urlString = [NSString stringWithString:urlMutableString];
   
   NSURLRequest *request = [NSURLRequest requestWithURL:
                            [NSURL URLWithString:urlString]];
   [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
 
+- (NSString *)appendParamWithName:(NSString *)name AndValue:(NSString *)value {
+  NSMutableString *urlMutableString = [[NSMutableString alloc] init];
+  [urlMutableString appendString:@"&"];
+  [urlMutableString appendString:name];
+  [urlMutableString appendString:@"="];
+  [urlMutableString appendString:value];
+  return [NSString stringWithString:urlMutableString];
+}
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
   NSLog(@"didReceiveResponse");
@@ -238,26 +305,37 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
   NSLog(@"connectionDidFinishLoading");
   NSLog(@"Succeeded! Received %d bytes of data",[self.responseData length]);
-  [self fetchedData:self.responseData];
-  NSLog(@"to reload data");
-  
-  [self.sets resortSets:self.sortMode];
-  [self.tableView reloadData];
+  [self processFetchedData:self.responseData];
 }
 
-- (void)fetchedData:(NSData *)responseData {
+- (void)processFetchedData:(NSData *)responseData {
   // parse out the json data
   NSError *error;
   NSDictionary* json = [NSJSONSerialization JSONObjectWithData:self.responseData options:kNilOptions error:&error];
   
-  NSMutableArray *setsArray = [NSMutableArray array];
+  NSMutableArray *dataArray = [NSMutableArray array];
   
   for (NSDictionary * dataDict in json) {
-    [setsArray addObject:dataDict];
+    [dataArray addObject:dataDict];
   }
-  [self.sets setSetsData:setsArray];
   
-  // NSLog(@"sets: %@", self.setsArray);
+  // determine whether sets or ratings
+  if ([dataArray count] > 0) {
+    NSLog(@"ratings: %@", dataArray);
+    if([dataArray objectAtIndex:0][JSON_RATING_SCORE]) {
+      // data is of type rating
+      [self.myRatings rebuildDataWith:dataArray];
+    } else {
+      // data is of type set
+      [self.sets setSetsData:dataArray];
+    }
+  }
+  
+  NSLog(@"to reload data");
+  
+  [self.sets resortSets:self.sortMode];
+  [self.storageManager save];
+  [self.tableView reloadData];
 }
 
 
@@ -271,13 +349,11 @@
 }
 
 - (NSString *)titleForRow:(NSUInteger)row {
-  return [self.sets getItemAt:row][SET_ARTIST];
-  //return self.setsArray[row][SET_ARTIST];
+  return [self.sets getItemAt:row][JSON_SET_ARTIST];
 }
 
 - (NSString *)subtitleForRow:(NSUInteger)row {
-  return [self.sets getItemAt:row][SET_STAGE_ONE];
-  //return self.setsArray[row][SET_STAGE_ONE];
+  return [self.sets getItemAt:row][JSON_SET_STAGE_ONE];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
