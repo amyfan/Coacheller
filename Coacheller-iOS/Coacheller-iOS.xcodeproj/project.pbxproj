@@ -24,6 +24,8 @@
 		7987F6C1170EBCDE00C23C26 /* JSONArraySortMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 7987F6C0170EBCDE00C23C26 /* JSONArraySortMap.m */; };
 		7987F6C4170EBCED00C23C26 /* LoginData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7987F6C3170EBCED00C23C26 /* LoginData.m */; };
 		7987F6CA170EBD6000C23C26 /* SetDataForTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7987F6C9170EBD6000C23C26 /* SetDataForTVC.m */; };
+		799D9FE61714DA8C00391BFC /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 799D9FE51714DA8C00391BFC /* Icon.png */; };
+		799D9FE81714DA9E00391BFC /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 799D9FE71714DA9E00391BFC /* Icon@2x.png */; };
 		79D97CA51712B4C600D0B813 /* AppConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 79D97CA41712B4C600D0B813 /* AppConstants.m */; };
 		79D97CA81712BC6E00D0B813 /* SwitchDayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79D97CA71712BC6E00D0B813 /* SwitchDayViewController.m */; };
 		79FAB66C17123FA900AAC9C7 /* StorageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FAB66B17123FA900AAC9C7 /* StorageManager.m */; };
@@ -44,7 +46,7 @@
 /* Begin PBXFileReference section */
 		79173885170F924700A5D750 /* SetTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetTableViewController.h; sourceTree = "<group>"; };
 		79173886170F924700A5D750 /* SetTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetTableViewController.m; sourceTree = "<group>"; };
-		7987F68B170EBB4100C23C26 /* Coacheller-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Coacheller-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7987F68B170EBB4100C23C26 /* Coacheller.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Coacheller.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7987F68E170EBB4100C23C26 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7987F690170EBB4100C23C26 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7987F692170EBB4100C23C26 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -69,6 +71,8 @@
 		7987F6C3170EBCED00C23C26 /* LoginData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoginData.m; path = Model/Data/LoginData.m; sourceTree = "<group>"; };
 		7987F6C8170EBD6000C23C26 /* SetDataForTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetDataForTVC.h; sourceTree = "<group>"; };
 		7987F6C9170EBD6000C23C26 /* SetDataForTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetDataForTVC.m; sourceTree = "<group>"; };
+		799D9FE51714DA8C00391BFC /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		799D9FE71714DA9E00391BFC /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		79D97CA31712B4C600D0B813 /* AppConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppConstants.h; path = Model/AppConstants.h; sourceTree = "<group>"; };
 		79D97CA41712B4C600D0B813 /* AppConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppConstants.m; path = Model/AppConstants.m; sourceTree = "<group>"; };
 		79D97CA61712BC6E00D0B813 /* SwitchDayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwitchDayViewController.h; sourceTree = "<group>"; };
@@ -117,6 +121,8 @@
 		7987F682170EBB4100C23C26 = {
 			isa = PBXGroup;
 			children = (
+				799D9FE71714DA9E00391BFC /* Icon@2x.png */,
+				799D9FE51714DA8C00391BFC /* Icon.png */,
 				7987F694170EBB4100C23C26 /* Coacheller-iOS */,
 				7987F68D170EBB4100C23C26 /* Frameworks */,
 				7987F68C170EBB4100C23C26 /* Products */,
@@ -126,7 +132,7 @@
 		7987F68C170EBB4100C23C26 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7987F68B170EBB4100C23C26 /* Coacheller-iOS.app */,
+				7987F68B170EBB4100C23C26 /* Coacheller.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -245,7 +251,7 @@
 			);
 			name = "Coacheller-iOS";
 			productName = "Coacheller-iOS";
-			productReference = 7987F68B170EBB4100C23C26 /* Coacheller-iOS.app */;
+			productReference = 7987F68B170EBB4100C23C26 /* Coacheller.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -288,6 +294,8 @@
 				7987F6AB170EBB4100C23C26 /* MainStoryboard_iPad.storyboard in Resources */,
 				F603305B171272BF0042E8B2 /* FacebookSDKResources.bundle in Resources */,
 				F603305D171272EA0042E8B2 /* FBUserSettingsViewResources.bundle in Resources */,
+				799D9FE61714DA8C00391BFC /* Icon.png in Resources */,
+				799D9FE81714DA9E00391BFC /* Icon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -420,7 +428,8 @@
 					"-lsqlite3.0",
 					"-ObjC",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Coacheller;
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -439,7 +448,8 @@
 					"-lsqlite3.0",
 					"-ObjC",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Coacheller;
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
