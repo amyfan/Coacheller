@@ -13,8 +13,6 @@
 @interface CoachellerAppDelegate : UIResponder <UIApplicationDelegate>
 @property (nonatomic, strong) AuthController* authController;
 
-- (void) openSession:(id <AuthProtocol>)caller;
-
 @property (strong, nonatomic) UIWindow *window;
 
 @end

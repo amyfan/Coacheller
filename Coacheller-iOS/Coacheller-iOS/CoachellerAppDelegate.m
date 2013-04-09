@@ -12,7 +12,7 @@
 
 @interface CoachellerAppDelegate()
 
-@property (nonatomic, strong) id <AuthProtocol> facebookAPICaller;
+
 
 @end
 
@@ -62,74 +62,14 @@
   [FBSession.activeSession close];
 }
 
-
-//Facebook auth
-- (void) openSession:(UIViewController <AuthProtocol>*)caller {
-  //We probably need this
-  //FBSession* session = [[FBSession alloc] init];
-  //[FBSession setActiveSession:session];
-  
-  [FBSession openActiveSessionWithReadPermissions:nil
-                                     allowLoginUI:YES
-                                completionHandler:
-   ^(FBSession *session,
-     FBSessionState state, NSError *error) {
-     [self sessionStateChanged:session state:state error:error];
-   }];
-  self.facebookAPICaller = caller;
-}
-
-
-//Facebook auth callback
-- (void)sessionStateChanged:(FBSession *)session
-                      state:(FBSessionState) state
-                      error:(NSError *)error
-{
-  switch (state) {
-      case FBSessionStateOpen: {
-            //UIViewController *topViewController = [self.navController topViewController];
-      //if ([[topViewController modalViewController]
-           //isKindOfClass:[SCLoginViewController class]]) {
-        //[topViewController dismissModalViewControllerAnimated:YES];
-      //}
-      
-      NSLog(@"CoachellerAppDelegate: FBSessionStateOpen");
-      [self.facebookAPICaller loginFacebookSuccess];
-    }
-      break;
-    case FBSessionStateClosed:
-      NSLog(@"CoachellerAppDelegate: FBSessionStateClosed 'Normally'");      
-      break;
-    case FBSessionStateClosedLoginFailed:
-      // Once the user has logged in, we want them to
-      // be looking at the root view.
-      //[self.navController popToRootViewControllerAnimated:NO];
-      NSLog(@"CoachellerAppDelegate: FBSessionStateClosedLoginFailed");
-      [FBSession.activeSession closeAndClearTokenInformation];
-      [self.facebookAPICaller loginFacebookFailed];
-      
-      //[self showLoginView];
-      break;
-    default:
-      break;
-  }
-  
-  if (error) {
-    UIAlertView *alertView = [[UIAlertView alloc]
-                              initWithTitle:@"Error"
-                              message:error.localizedDescription
-                              delegate:nil
-                              cancelButtonTitle:@"OK"
-                              otherButtonTitles:nil];
-    [alertView show];
-  }
-}
-
 - (BOOL)application:(UIApplication *)application
             openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication
-         annotation:(id)annotation {
+         annotation:(id)annotation
+{
+  NSLog(@"CoachellerAppDelegate: application/openURL/sourceApplication/annotation handler called");
   return [FBSession.activeSession handleOpenURL:url];
 }
+
 
 @end

@@ -16,6 +16,7 @@
 
 @implementation FacebookAuthModel
 
+//Return true if facebook connection can be re-established without user input
 - (BOOL)existingFacebookSession {
   if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded) {
     return YES;

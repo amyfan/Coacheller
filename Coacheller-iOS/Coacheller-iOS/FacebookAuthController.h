@@ -16,9 +16,13 @@
 @interface FacebookAuthController : NSObject
 @property (strong, nonatomic) FacebookAuthModel *facebookAuthModel;
 
-
+- (void) openSession:(UIViewController <AuthProtocol>*)caller;
 - (void) postStatusUpdate:(UIViewController*)caller buttonPushed:(UIButton*)postButton;
 - (void) performPublishAction:(void (^)(void)) action;
 - (void) killSession;
+
+- (void)handleSessionStateChanged:(FBSession *)session
+                            state:(FBSessionState) state
+                            error:(NSError *)error;
 @end
 

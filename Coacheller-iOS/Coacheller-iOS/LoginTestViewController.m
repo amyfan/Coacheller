@@ -33,7 +33,7 @@
 - (IBAction)loginFacebookPressed:(UIButton *)sender {
   NSLog(@"Login Facebook Pressed");
   [self.loginTestViewHourglass startAnimating];
-  [[self sharedAppDelegate] openSession:self];
+  [[self sharedAppDelegate].authController.facebookAuthController openSession:self];
 }
 
 - (IBAction)PostFacebookPressed:(UIButton *)sender {
