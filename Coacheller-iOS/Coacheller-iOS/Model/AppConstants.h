@@ -48,6 +48,8 @@ extern NSString * const JSON_SET_TIME_ONE;
 extern NSString * const JSON_SET_TIME_TWO;
 extern NSString * const JSON_SET_STAGE_ONE;
 extern NSString * const JSON_SET_STAGE_TWO;
+extern NSString * const JSON_SET_AVG_SCORE_ONE;
+extern NSString * const JSON_SET_AVG_SCORE_TWO;
 extern NSString * const JSON_RATING_SET_ID;
 extern NSString * const JSON_RATING_WEEKEND;
 extern NSString * const JSON_RATING_SCORE;

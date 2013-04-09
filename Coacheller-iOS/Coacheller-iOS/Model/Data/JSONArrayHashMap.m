@@ -45,12 +45,22 @@
   // append first key
   [keyFullName appendString:[jsonObj[self.keyName1] stringValue]];
   // append second key
+  [keyFullName appendString:@"-"];
   [keyFullName appendString:[jsonObj[self.keyName2] stringValue]];
   [self.dictionary setObject:jsonObj forKey:[NSString stringWithString:keyFullName]];
 }
 
 - (void)clearRatings {
   [self.dictionary removeAllObjects];
+}
+
+- (NSDictionary *)getObjectWithKey:(NSString *)key {
+  return [self.dictionary objectForKey:key];
+}
+
+- (NSDictionary *)getObjectWithKeyOne:(NSString *)keyOne AndKeyTwo:(NSString *)keyTwo {
+  NSString *key = [NSString stringWithFormat:@"%@-%@", keyOne, keyTwo];
+  return [self.dictionary objectForKey:[NSString stringWithString:key]];
 }
 
 @end

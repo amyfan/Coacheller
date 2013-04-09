@@ -19,4 +19,8 @@
 
 - (void)clearRatings;
 
+- (NSDictionary *)getObjectWithKey:(NSString *)key;
+
+- (NSDictionary *)getObjectWithKeyOne:(NSString *)keyOne AndKeyTwo:(NSString *)keyTwo;
+
 @end

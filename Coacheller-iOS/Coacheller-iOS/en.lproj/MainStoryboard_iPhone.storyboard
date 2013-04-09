@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
     </dependencies>
     <scenes>
-        <!--Set Table View Controller-->
+        <!--Set Table View Controller - Coacheller (Unofficial)-->
         <scene sceneID="vSV-Kk-R3Q">
             <objects>
                 <tableViewController id="PVy-xt-cdz" customClass="SetTableViewController" sceneMemberID="viewController">
@@ -13,26 +13,83 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Set" textLabel="5jM-Q5-3bL" detailTextLabel="iDt-l0-udb" style="IBUITableViewCellStyleSubtitle" id="ovc-FQ-GwS">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="SetCell" id="ovc-FQ-GwS">
                                 <rect key="frame" x="0.0" y="22" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="300" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5jM-Q5-3bL">
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="12:00a" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6VS-9t-zLy">
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="79" id="DaU-V8-oQI"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="17"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </label>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iDt-l0-udb">
-                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                            <color key="textColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="STAGE" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wbx-83-QCX">
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="21" id="6ha-vo-r7v"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </label>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" text="ARTIST" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A1h-zN-aYT">
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="21" id="9bt-mH-ndd"/>
+                                                <constraint firstAttribute="width" constant="213" id="pcl-ls-3BW"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="18"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </label>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="3" contentMode="left" text="Wk1: 0.0" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="75L-3k-Exu">
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="55" id="WSQ-cy-yMl"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="12"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </label>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="4" contentMode="left" text="Wk2: 0.0" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9AV-Ac-ec6">
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="55" id="zOa-9g-F9I"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="12"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </label>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="5" contentMode="left" text="My Rtg: 5/5" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="biQ-Ua-5am">
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="70" id="bx8-5C-bfK"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="12"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </label>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
+                                <constraints>
+                                    <constraint firstItem="Wbx-83-QCX" firstAttribute="leading" secondItem="ovc-FQ-GwS" secondAttribute="leading" type="default" id="1mo-I7-W5V"/>
+                                    <constraint firstItem="Wbx-83-QCX" firstAttribute="baseline" secondItem="75L-3k-Exu" secondAttribute="baseline" type="default" id="2eE-Qe-Ylo"/>
+                                    <constraint firstItem="biQ-Ua-5am" firstAttribute="baseline" secondItem="9AV-Ac-ec6" secondAttribute="baseline" type="default" id="6Y8-6A-9WH"/>
+                                    <constraint firstItem="biQ-Ua-5am" firstAttribute="leading" secondItem="9AV-Ac-ec6" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="9Gk-U3-dxy"/>
+                                    <constraint firstItem="A1h-zN-aYT" firstAttribute="leading" secondItem="ovc-FQ-GwS" secondAttribute="leading" constant="82" id="Ecp-AR-tUH"/>
+                                    <constraint firstItem="A1h-zN-aYT" firstAttribute="baseline" secondItem="6VS-9t-zLy" secondAttribute="baseline" type="default" id="Glf-zb-wpd"/>
+                                    <constraint firstItem="9AV-Ac-ec6" firstAttribute="top" secondItem="ovc-FQ-GwS" secondAttribute="top" constant="20" type="default" id="HB1-mH-Gah"/>
+                                    <constraint firstItem="Wbx-83-QCX" firstAttribute="top" secondItem="ovc-FQ-GwS" secondAttribute="top" constant="20" type="default" id="KLz-wz-Z6V"/>
+                                    <constraint firstItem="biQ-Ua-5am" firstAttribute="top" secondItem="ovc-FQ-GwS" secondAttribute="top" constant="20" type="default" id="Mx3-5b-xLb"/>
+                                    <constraint firstItem="75L-3k-Exu" firstAttribute="baseline" secondItem="9AV-Ac-ec6" secondAttribute="baseline" type="default" id="Nd0-ZJ-Ayi"/>
+                                    <constraint firstItem="6VS-9t-zLy" firstAttribute="leading" secondItem="ovc-FQ-GwS" secondAttribute="leading" type="default" id="V55-jq-73l"/>
+                                    <constraint firstItem="9AV-Ac-ec6" firstAttribute="leading" secondItem="75L-3k-Exu" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="Vp5-Of-1aD"/>
+                                    <constraint firstItem="75L-3k-Exu" firstAttribute="leading" secondItem="Wbx-83-QCX" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="XyV-08-cQX"/>
+                                    <constraint firstItem="75L-3k-Exu" firstAttribute="top" secondItem="ovc-FQ-GwS" secondAttribute="top" constant="20" type="default" id="huU-90-wAc"/>
+                                    <constraint firstItem="A1h-zN-aYT" firstAttribute="leading" secondItem="Wbx-83-QCX" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="lss-3T-Ney"/>
+                                    <constraint firstAttribute="bottom" secondItem="A1h-zN-aYT" secondAttribute="bottom" constant="20" type="default" id="vZY-Mm-yMs"/>
+                                </constraints>
                                 <connections>
                                     <segue destination="2" kind="push" identifier="debugScreen" id="Rt4-mY-xu2"/>
                                 </connections>
@@ -43,7 +100,7 @@
                             <outlet property="delegate" destination="PVy-xt-cdz" id="UcY-f4-C9E"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="lUz-Tb-9SG"/>
+                    <navigationItem key="navigationItem" title="Coacheller (Unofficial)" id="lUz-Tb-9SG"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ex8-pG-P3g" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

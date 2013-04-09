@@ -32,7 +32,7 @@
 @implementation SetTableViewController
 
 -(UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-  UIView* headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 100)];
+  UIView* headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 90)];
   headerView.backgroundColor = [UIColor darkGrayColor];
   
   // Add label
@@ -52,7 +52,7 @@
 
   // Add Switch Day button
   UIButton *switchDayButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-  switchDayButton.frame = CGRectMake(10.0, 50, 100.0, 40.0); // x,y,width,height
+  switchDayButton.frame = CGRectMake(10.0, 40, 100.0, 35.0); // x,y,width,height
   [switchDayButton setTitle:@"Switch Day" forState:UIControlStateNormal];
   [switchDayButton addTarget:self action:@selector(switchDay) forControlEvents:UIControlEventTouchUpInside];
   [headerView addSubview:switchDayButton];
@@ -76,7 +76,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-  return 100;
+  return 90;
 }
 
 - (IBAction)switchDay {
@@ -150,14 +150,13 @@
   // self.clearsSelectionOnViewWillAppear = NO;
   
   // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-  // TODO: prolly comment this out hehe
-  self.navigationItem.rightBarButtonItem = self.editButtonItem;
+  // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)initData {
   self.sets = [[SetDataForTVC alloc] initWithTimeFieldName:JSON_SET_TIME_ONE StageFieldName:JSON_SET_STAGE_ONE AndRatingsHashMap:self.myRatings];
   
-  self.sortMode = SORT_MODE_TIME;
+  self.sortMode = SORT_MODE_ARTIST;
   
   // TODO: create proper file name
   NSString *saveFileName = @"CoachellerData.plist";
@@ -328,12 +327,12 @@
     } else {
       // data is of type set
       [self.sets setSetsData:dataArray];
+      [self.sets resortSets:self.sortMode];
     }
   }
   
   NSLog(@"to reload data");
   
-  [self.sets resortSets:self.sortMode];
   [self.storageManager save];
   [self.tableView reloadData];
 }
@@ -348,22 +347,97 @@
   return [self.sets getItemCount];
 }
 
+// no longer used
 - (NSString *)titleForRow:(NSUInteger)row {
+  //return [self.sets getItemAt:row][JSON_SET_ARTIST];
+  return nil;
+}
+
+// no longer used
+- (NSString *)subtitleForRow:(NSUInteger)row {
+  //return [self.sets getItemAt:row][JSON_SET_STAGE_ONE];
+  return nil;
+}
+
+// TODO: DETERMINE PROPER WEEK:
+
+- (NSString *)timeForRow:(NSUInteger)row {
+  return [self.sets getItemAt:row][JSON_SET_TIME_ONE];
+}
+
+- (NSString *)artistForRow:(NSUInteger)row {
   return [self.sets getItemAt:row][JSON_SET_ARTIST];
 }
 
-- (NSString *)subtitleForRow:(NSUInteger)row {
+- (NSString *)stageForRow:(NSUInteger)row {
   return [self.sets getItemAt:row][JSON_SET_STAGE_ONE];
+}
+
+- (NSString *)avgScoreOneForRow:(NSUInteger)row {
+  NSString *avgScoreString = @"";
+  NSDecimalNumber *zero = [NSDecimalNumber zero];
+  NSDecimalNumber *avgScore = [NSDecimalNumber decimalNumberWithString:[[self.sets getItemAt:row][JSON_SET_AVG_SCORE_ONE] stringValue]];
+  if ([avgScore compare:zero] ==  NSOrderedDescending) {
+    avgScoreString = [NSString stringWithFormat:@"Wk1: %0.01f", [avgScore floatValue]];
+  }
+  return avgScoreString;
+}
+
+- (NSString *)avgScoreTwoForRow:(NSUInteger)row {
+  NSString *avgScoreString = @"";
+  NSDecimalNumber *zero = [NSDecimalNumber zero];
+  NSDecimalNumber *avgScore = [NSDecimalNumber decimalNumberWithString:[[self.sets getItemAt:row][JSON_SET_AVG_SCORE_TWO] stringValue]];
+  if ([avgScore compare:zero] ==  NSOrderedDescending) {
+    avgScoreString = [NSString stringWithFormat:@"Wk2: %0.01f", [avgScore floatValue]];
+  }
+  return avgScoreString;
+}
+
+- (NSString *)myRatingsForRow:(NSUInteger)row {
+  NSString *setId = [[self.sets getItemAt:row][JSON_SET_ID] stringValue];
+  
+  // Get Ratings for this set Id
+  NSDictionary *ratingWk1 = [self.myRatings getObjectWithKeyOne:setId AndKeyTwo:@"1"];
+  NSDictionary *ratingWk2 = [self.myRatings getObjectWithKeyOne:setId AndKeyTwo:@"2"];
+  
+  NSString *score1 = @"*";
+  if (ratingWk1) {
+    score1 = [ratingWk1[JSON_RATING_SCORE] stringValue];
+  }
+  
+  NSString *score2 = @"*";
+  if (ratingWk2) {
+    score2 = [ratingWk2[JSON_RATING_SCORE] stringValue];
+  }
+  
+  NSString *myRatingsString = @"";
+  if (![score1 isEqualToString:@"*"] || ![score2 isEqualToString:@"*"]) {
+    myRatingsString = [NSString stringWithFormat:@"My Rtg: %@/%@", score1, score2];
+  }
+  
+  return myRatingsString;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  static NSString *CellIdentifier = @"Set";
+  static NSString *CellIdentifier = @"SetCell";
   UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
   
-  // Configure the cell...
-  cell.textLabel.text = [self titleForRow:indexPath.row];
-  cell.detailTextLabel.text = [self subtitleForRow:indexPath.row];
+  if (cell) {
+    // Configure the cell...
+    UILabel *label = (UILabel *)[cell viewWithTag:0];
+    label.text = [self titleForRow:indexPath.row];
+    label = (UILabel *)[cell viewWithTag:1];
+    label.text = [self artistForRow:indexPath.row];
+    label = (UILabel *)[cell viewWithTag:2];
+    label.text = [[self stageForRow:indexPath.row] uppercaseString];
+    label = (UILabel *)[cell viewWithTag:3];
+    label.text = [self avgScoreOneForRow:indexPath.row];
+    label = (UILabel *)[cell viewWithTag:4];
+    label.text = [self avgScoreTwoForRow:indexPath.row];
+    label = (UILabel *)[cell viewWithTag:5];
+    label.text = [self myRatingsForRow:indexPath.row];
+  }
   
   return cell;
 }
