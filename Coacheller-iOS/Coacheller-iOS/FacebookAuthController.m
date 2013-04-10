@@ -116,9 +116,17 @@
            [self.facebookAuthModel setUserData:result];
            
            NSLog(@"Facebook ID: %@", [self.facebookAuthModel getFacebookID]);
-           NSLog(@"Email Address: %@", [self.facebookAuthModel getFacebookID]);
-           NSLog(@"First Name: %@", [self.facebookAuthModel getFacebookID]);
-           NSLog(@"User Name: %@", [self.facebookAuthModel getFacebookID]);
+           NSLog(@"Email Address: %@", [self.facebookAuthModel getUserEmailAddress]);
+           NSLog(@"First Name: %@", [self.facebookAuthModel getUserFirstName]);
+           NSLog(@"Last Name: %@", [self.facebookAuthModel getUserLastName]);
+           
+           //How to get login data
+           //CoachellerAppDelegate* appDelegate = (CoachellerAppDelegate*)[[UIApplication sharedApplication] delegate];
+           //NSLog(@"Facebook ID: %@", [appDelegate.authController getFacebookID]);
+           //NSLog(@"Email Address: %@", [appDelegate.authController getUserEmailAddress]);
+           //NSLog(@"First Name: %@", [appDelegate.authController getUserFirstName]);
+           //NSLog(@"Last Name: %@", [appDelegate.authController getUserLastName]);
+           
            
            // Create a texture from the user's profile picture
            //m_pUserTexture = new System::TextureResource();
