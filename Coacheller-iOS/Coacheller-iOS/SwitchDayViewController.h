@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SwitchDayViewController : UIViewController
+@interface SwitchDayViewController : UIViewController<UIPickerViewDataSource, UIPickerViewDelegate> 
+
+@property (nonatomic) NSInteger defaultYear;
+@property (nonatomic) NSInteger defaultWeek;
+@property (nonatomic, strong) NSString *defaultDay;
 
 @end

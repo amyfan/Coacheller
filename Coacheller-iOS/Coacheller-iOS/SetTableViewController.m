@@ -13,6 +13,7 @@
 #import "AppConstants.h"
 #import "CustomPair.h"
 #import "AuthController.h"
+#import "SwitchDayViewController.h"
 
 @interface SetTableViewController ()
 
@@ -97,13 +98,16 @@
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-  if ([sender isKindOfClass:[UIButton class]]) {
+  //if ([sender isKindOfClass:[UIButton class]]) {
     // button clicked
-    if ([segue.identifier isEqualToString:@"Switch Day"]) {
-      
+    if ([segue.identifier isEqualToString:@"switchDay"]) {
+      SwitchDayViewController *switchDayViewController = (SwitchDayViewController *)segue.destinationViewController;
+      switchDayViewController.defaultYear = self.yearToQuery;
+      switchDayViewController.defaultWeek = self.weekToQuery;
+      switchDayViewController.defaultDay = self.dayToQuery;
     }
     
-  } else if ([sender isKindOfClass:[UITableViewCell class]]) {
+  //} else if ([sender isKindOfClass:[UITableViewCell class]]) {
     // table row selected
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     if (indexPath) {
@@ -120,7 +124,7 @@
         }
       }
 
-    }
+    //}
   }
 }
 
@@ -139,10 +143,9 @@
   
   NSLog(@"viewdidload");
   
-  // TODO: put this in a place that gets invoked only once??
-  self.yearToQuery = [CalendarUtils whatYearIsToday];
-  self.weekToQuery = [CalendarUtils whichWeekIsToday];
-  self.dayToQuery = [CalendarUtils suggestDayToQuery];
+  if (!self.yearToQuery) self.yearToQuery = [CalendarUtils whatYearIsToday];
+  if (!self.weekToQuery) self.weekToQuery = [CalendarUtils whichWeekIsToday];
+  if (!self.dayToQuery) self.dayToQuery = [CalendarUtils suggestDayToQuery];
   
   [self initData];
   
