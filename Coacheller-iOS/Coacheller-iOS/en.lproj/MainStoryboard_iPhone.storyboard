@@ -107,27 +107,114 @@
             </objects>
             <point key="canvasLocation" x="221" y="-8"/>
         </scene>
-        <!--Switch Day View Controller-->
+        <!--Switch Day View Controller - Switch Day-->
         <scene sceneID="rjR-D4-UVd">
             <objects>
                 <viewController id="Uml-ZL-Tbs" customClass="SwitchDayViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="yNb-Sh-dqE">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EZc-YR-m0q">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="216" id="juj-Nz-Ezy"/>
+                                </constraints>
+                            </pickerView>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Weekend: " textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xa7-DP-mrC">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="say-Pb-igV"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="kst-9I-WK1"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="1" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HP7-Ba-m9s">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="28" id="GcL-T4-APl"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Year: " textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iAr-0a-qr0">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="101" id="FQK-PU-ldX"/>
+                                    <constraint firstAttribute="height" constant="21" id="lca-lc-YZY"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="RUl-om-p64"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="2013" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kbL-PH-Z0s">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="56" id="680-kz-asJ"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HfK-y7-KFG">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="73" id="OyF-BL-ZQF"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="Go!">
+                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="PVy-xt-cdz" kind="push" identifier="loadDay" id="72U-62-TtE"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="HP7-Ba-m9s" firstAttribute="centerY" secondItem="kst-9I-WK1" secondAttribute="centerY" type="default" id="3WJ-bK-g08"/>
+                            <constraint firstItem="EZc-YR-m0q" firstAttribute="leading" secondItem="yNb-Sh-dqE" secondAttribute="leading" type="default" id="92n-q0-0mK"/>
+                            <constraint firstItem="Xa7-DP-mrC" firstAttribute="top" secondItem="HP7-Ba-m9s" secondAttribute="top" type="default" id="ARi-oI-Vqc"/>
+                            <constraint firstAttribute="bottom" secondItem="HfK-y7-KFG" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="D0g-ty-0uk"/>
+                            <constraint firstItem="kbL-PH-Z0s" firstAttribute="centerY" secondItem="RUl-om-p64" secondAttribute="centerY" type="default" id="EQW-ZZ-kR7"/>
+                            <constraint firstAttribute="trailing" secondItem="RUl-om-p64" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="F8S-1c-0yz"/>
+                            <constraint firstItem="EZc-YR-m0q" firstAttribute="trailing" secondItem="yNb-Sh-dqE" secondAttribute="trailing" type="default" id="FQB-pE-pxx"/>
+                            <constraint firstItem="kbL-PH-Z0s" firstAttribute="top" secondItem="iAr-0a-qr0" secondAttribute="top" type="default" id="G3p-OR-JXi"/>
+                            <constraint firstItem="iAr-0a-qr0" firstAttribute="baseline" secondItem="kbL-PH-Z0s" secondAttribute="baseline" type="default" id="ImU-h9-dPy"/>
+                            <constraint firstItem="kbL-PH-Z0s" firstAttribute="leading" secondItem="HP7-Ba-m9s" secondAttribute="leading" type="default" id="KSF-Ja-18p"/>
+                            <constraint firstItem="kst-9I-WK1" firstAttribute="top" secondItem="yNb-Sh-dqE" secondAttribute="top" constant="69" id="MDk-qt-rxC"/>
+                            <constraint firstItem="HP7-Ba-m9s" firstAttribute="baseline" secondItem="Xa7-DP-mrC" secondAttribute="baseline" type="default" id="NcP-1r-y90"/>
+                            <constraint firstItem="kbL-PH-Z0s" firstAttribute="leading" secondItem="iAr-0a-qr0" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="PJO-5U-vkb"/>
+                            <constraint firstItem="Xa7-DP-mrC" firstAttribute="leading" secondItem="yNb-Sh-dqE" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="Zqv-hz-ff0"/>
+                            <constraint firstItem="iAr-0a-qr0" firstAttribute="leading" secondItem="yNb-Sh-dqE" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="dGy-jb-sgm"/>
+                            <constraint firstItem="EZc-YR-m0q" firstAttribute="top" secondItem="yNb-Sh-dqE" secondAttribute="top" constant="115" id="iQK-dh-pyf"/>
+                            <constraint firstItem="HP7-Ba-m9s" firstAttribute="leading" secondItem="Xa7-DP-mrC" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="k7a-G2-MSa"/>
+                            <constraint firstAttribute="trailing" secondItem="kst-9I-WK1" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="m88-B9-Yvu"/>
+                            <constraint firstItem="RUl-om-p64" firstAttribute="top" secondItem="yNb-Sh-dqE" secondAttribute="top" constant="28" id="mqC-pK-kSZ"/>
+                            <constraint firstItem="HfK-y7-KFG" firstAttribute="centerX" secondItem="EZc-YR-m0q" secondAttribute="centerX" type="default" id="tqC-cM-S7q"/>
+                        </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="cGL-kl-hgF"/>
+                    <navigationItem key="navigationItem" title="Switch Day" id="cGL-kl-hgF"/>
+                    <connections>
+                        <outlet property="chooseDay" destination="EZc-YR-m0q" id="V53-Iv-SNX"/>
+                        <outlet property="weekendLabel" destination="HP7-Ba-m9s" id="EtZ-6A-SfX"/>
+                        <outlet property="weekendStepper" destination="kst-9I-WK1" id="JyP-g2-x4t"/>
+                        <outlet property="yearLabel" destination="kbL-PH-Z0s" id="8b2-ee-yFG"/>
+                        <outlet property="yearStepper" destination="RUl-om-p64" id="q9T-wE-sRv"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IaV-6k-Rfi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="570" y="-670"/>
+            <point key="canvasLocation" x="674" y="-668"/>
         </scene>
         <!--Login Test View Controller-->
         <scene sceneID="5">
             <objects>
                 <viewController id="2" customClass="LoginTestViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="20" width="320" height="548"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="crI-S4-L6t">
@@ -261,34 +348,12 @@
             <point key="canvasLocation" x="-305" y="-8"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="LoginTestViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LoginTestViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="PostFacebookPressed:" candidateClass="UIButton"/>
-                <relationship kind="action" name="loginFacebookPressed:" candidateClass="UIButton"/>
-                <relationship kind="action" name="logoutFacebookPressed:" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="buttonLoginFacebook" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="buttonLoginGoogle" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="buttonLoginTwitter" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="buttonLogoutFacebook" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="buttonPostFacebook" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="loginTestViewHourglass" candidateClass="UIActivityIndicatorView"/>
-            </relationships>
-        </class>
-        <class className="NSLayoutConstraint" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
-        </class>
-        <class className="SetTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SetTableViewController.h"/>
-        </class>
-        <class className="SwitchDayViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SwitchDayViewController.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="72U-62-TtE"/>
+    </inferredMetricsTieBreakers>
 </document>

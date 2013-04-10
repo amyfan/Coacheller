@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SwitchDayViewController : UIViewController
+@interface SwitchDayViewController : UIViewController<UIPickerViewDataSource, UIPickerViewDelegate> 
 
 @end
