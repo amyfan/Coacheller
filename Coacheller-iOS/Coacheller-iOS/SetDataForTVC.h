@@ -23,8 +23,6 @@
 
 - (void)setSetsData:(NSArray *)setsData;
 
-- (void)sortByField:(NSString *)fieldName;
-
 - (NSDictionary *)getItemAt:(NSInteger)index;
 
 - (NSInteger)getItemCount;

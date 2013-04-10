@@ -11,9 +11,10 @@
 #import "StorageManager.h"
 #import "JSONArrayHashMap.h"
 #import "AppConstants.h"
-#import "CustomPair.h"
 #import "AuthController.h"
 #import "SwitchDayViewController.h"
+#import "RateSetViewController.h"
+#import "CoachellerAppDelegate.h"
 
 @interface SetTableViewController ()
 
@@ -21,12 +22,9 @@
 @property (nonatomic, strong) StorageManager *storageManager;
 @property (nonatomic, strong) JSONArrayHashMap *myRatings;
 @property (nonatomic, strong) NSString *sortMode;
+@property (nonatomic, strong) UIButton *sortModeButton;
+@property (nonatomic, strong) NSArray *sortModeTitles;
 
-
-// contains set id, stored in setListAdapter
-@property (nonatomic, strong) NSDictionary *lastSetSelected;
-// contains actual rating, stored in userRatingsJAHM
-@property (nonatomic, strong) NSDictionary *lastRating;
 // contains both week's scores
 @property (nonatomic, strong) CustomPair *lastRatingScorePair;
 
@@ -38,7 +36,7 @@
   UIView* headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 90)];
   headerView.backgroundColor = [UIColor darkGrayColor];
   
-  // Add label
+  // Add main label
   UILabel* headerLabel = [[UILabel alloc] init];
   headerLabel.frame = CGRectMake(10, 0, 300, 30);
   headerLabel.backgroundColor = [UIColor darkGrayColor];
@@ -55,23 +53,41 @@
 
   // Add Switch Day button
   UIButton *switchDayButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-  switchDayButton.frame = CGRectMake(10.0, 40, 100.0, 35.0); // x,y,width,height
+  switchDayButton.frame = CGRectMake(10.0, 40, 95, 35.0); // x,y,width,height
   [switchDayButton setTitle:@"Switch Day" forState:UIControlStateNormal];
-  [switchDayButton addTarget:self action:@selector(switchDay) forControlEvents:UIControlEventTouchUpInside];
+  [switchDayButton addTarget:self action:@selector(switchDayAction) forControlEvents:UIControlEventTouchUpInside];
   [headerView addSubview:switchDayButton];
   
-  // TODO Add Sort Mode UIPickerView (oof)
+  // Add Sort Mode Label
+  UILabel* sortLabel = [[UILabel alloc] init];
+  sortLabel.frame = CGRectMake(120, 40, 50, 30);
+  sortLabel.backgroundColor = [UIColor darkGrayColor];
+  sortLabel.textColor = [UIColor whiteColor];
+  sortLabel.font = [UIFont systemFontOfSize:14];
+  sortLabel.text = @"Sort By:";
+  [headerView addSubview:sortLabel];
+  
+  // Add Sort Mode Day button
+  self.sortModeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+  self.sortModeButton.frame = CGRectMake(180, 40, 70, 35.0); // x,y,width,height
+  NSString *sortModeTitle = @"Time";
+  if (self.sortMode) {
+    sortModeTitle = [self.sortMode capitalizedString];
+  }
+  [self.sortModeButton setTitle:sortModeTitle forState:UIControlStateNormal];
+  [self.sortModeButton addTarget:self action:@selector(sortModeAction) forControlEvents:UIControlEventTouchUpInside];
+  [headerView addSubview:self.sortModeButton];
   
   
   UIButton *debugScreenButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
   int buttonWidth = 40;
   int buttonHeight = 40;
   int rightborder = 30;
-  int topborder = 30;
+  int topborder = 0;
   
   debugScreenButton.frame = CGRectMake(headerView.frame.size.width - rightborder - buttonWidth, topborder, buttonWidth, buttonHeight);
   [debugScreenButton setTitle:@"Debug" forState:UIControlStateNormal];
-  [debugScreenButton addTarget:self action:@selector(showDebug) forControlEvents:UIControlEventTouchUpInside];
+  [debugScreenButton addTarget:self action:@selector(showDebugAction) forControlEvents:UIControlEventTouchUpInside];
   [headerView addSubview:debugScreenButton];
   
   
@@ -82,50 +98,30 @@
   return 90;
 }
 
-- (IBAction)switchDay {
+- (IBAction)switchDayAction {
   NSLog(@"switchDay action called");
   // perform a segue programmatically
   [self performSegueWithIdentifier:@"switchDay" sender:self];
-  
-  // TODO: need to actually create the segue w/ switchDay somewhere in the ether (programmatically)
 }
 
-- (IBAction)showDebug {
+- (IBAction)sortModeAction {
+  NSLog(@"sortMode action called");
+
+  int sortModesIndex = [self.sortModeTitles indexOfObject:self.sortMode];
+  sortModesIndex++;
+  if(sortModesIndex >= [self.sortModeTitles count]) sortModesIndex = 0;
+  self.sortMode = self.sortModeTitles[sortModesIndex];
+  [self.sortModeButton setTitle:[self.sortMode capitalizedString] forState:UIControlStateNormal];
+  //[self.sortModeButton setTitle:card.contents forState:UIControlStateSelected|UIControlStateDisabled];
+  [self.sets resortSets:self.sortMode];
+  [self.tableView reloadData];
+}
+
+- (IBAction)showDebugAction {
   NSLog(@"showDebug action called");
   
   // perform a segue programmatically
   [self performSegueWithIdentifier:@"debugScreen" sender:self];
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-  //if ([sender isKindOfClass:[UIButton class]]) {
-    // button clicked
-    if ([segue.identifier isEqualToString:@"switchDay"]) {
-      SwitchDayViewController *switchDayViewController = (SwitchDayViewController *)segue.destinationViewController;
-      switchDayViewController.defaultYear = self.yearToQuery;
-      switchDayViewController.defaultWeek = self.weekToQuery;
-      switchDayViewController.defaultDay = self.dayToQuery;
-    }
-    
-  //} else if ([sender isKindOfClass:[UITableViewCell class]]) {
-    // table row selected
-    NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-    if (indexPath) {
-      if ([segue.identifier isEqualToString:@"debugScreen"]) {  //DEBUGGING ONLY
-        if (![self getLoginData]) {
-          // log in user
-        }
-      } else if ([segue.identifier isEqualToString:@"rateSet"]) {
-        if ([segue.destinationViewController respondsToSelector:@selector(rateSet:)]) {
-          // TODO: switch to customsetlistadapter collection
-          NSString *setId = [self.sets getItemAt:indexPath.row][JSON_SET_ID];
-          // TODO: create destination controller
-          //[segue.destinationViewController performSelector:@selector(rateSet:) withSetId:setId];
-        }
-      }
-
-    //}
-  }
 }
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -162,6 +158,7 @@
   self.sets = [[SetDataForTVC alloc] initWithTimeFieldName:JSON_SET_TIME_ONE StageFieldName:JSON_SET_STAGE_ONE AndRatingsHashMap:self.myRatings];
   
   self.sortMode = SORT_MODE_TIME;
+  self.sortModeTitles = @[SORT_MODE_TIME, SORT_MODE_ARTIST, SORT_MODE_STAGE];
   
   // TODO: create proper file name
   NSString *saveFileName = @"CoachellerData.plist";
@@ -169,6 +166,12 @@
   
   self.myRatings = [[JSONArrayHashMap alloc] initWithKeyName1:JSON_RATING_SET_ID AndKeyName2:JSON_RATING_WEEKEND];
   
+  self.lastRatingScorePair = [[CustomPair alloc] init];
+  
+}
+
+- (CoachellerAppDelegate*) sharedAppDelegate {
+  return (CoachellerAppDelegate*)[[UIApplication sharedApplication] delegate];
 }
 
 - (void)processLoginDataWithLoginType:(NSString *)loginType AccountId:(NSString *)accountId AndAccountToken:(NSString *)accountToken {
@@ -501,6 +504,57 @@
      // Pass the selected object to the new view controller.
      [self.navigationController pushViewController:detailViewController animated:YES];
      */
+  
+  self.lastSetSelected = [self.sets getItemAt:indexPath.row];
+  
+  NSString *setId = self.lastSetSelected[JSON_SET_ID];  
+  // Get Ratings for this set Id
+  NSDictionary *ratingWk1 = [self.myRatings getObjectWithKeyOne:setId AndKeyTwo:@"1"];
+  NSDictionary *ratingWk2 = [self.myRatings getObjectWithKeyOne:setId AndKeyTwo:@"2"];
+  
+  self.lastRatingScorePair.firstObj = ratingWk1;
+  self.lastRatingScorePair.secondObj = ratingWk2;
+  
+  [self performSegueWithIdentifier:@"rateSet" sender:self];
+}
+
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+  //if ([sender isKindOfClass:[UIButton class]]) {
+  // button clicked
+  if ([segue.identifier isEqualToString:@"switchDay"]) {
+    SwitchDayViewController *switchDayViewController = (SwitchDayViewController *)segue.destinationViewController;
+    switchDayViewController.defaultYear = self.yearToQuery;
+    switchDayViewController.defaultWeek = self.weekToQuery;
+    switchDayViewController.defaultDay = self.dayToQuery;
+  } else if ([segue.identifier isEqualToString:@"rateSet"]) {
+    if ([segue.destinationViewController respondsToSelector:@selector(rateSet:)]) {
+      // first check for login status
+      //if (![self getLoginData]) {
+      //}
+      if (![self sharedAppDelegate].authController.isLoggedIn) {
+        [[self sharedAppDelegate].authController.facebookAuthController openSession:self];
+      } else {
+        RateSetViewController *rateSetViewController = (RateSetViewController *)segue.destinationViewController;
+        
+        rateSetViewController.set = self.lastSetSelected;
+        rateSetViewController.ratingScorePair = self.lastRatingScorePair;
+        
+        // TODO: create destination controller
+        //[segue.destinationViewController performSelector:@selector(rateSet:) withSetId:setId];
+      }
+    }
+  }
+  
+  //} else if ([sender isKindOfClass:[UITableViewCell class]]) {
+  // table row selected
+  NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
+  if (indexPath) {
+    if ([segue.identifier isEqualToString:@"debugScreen"]) {  //DEBUGGING ONLY
+    } else {
+    }
+  //}
+  }
 }
 
 @end

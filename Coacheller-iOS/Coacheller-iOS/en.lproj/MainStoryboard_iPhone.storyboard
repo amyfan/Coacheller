@@ -9,7 +9,7 @@
             <objects>
                 <tableViewController id="PVy-xt-cdz" customClass="SetTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="9Vm-Dg-UsF">
-                        <rect key="frame" x="0.0" y="20" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -101,18 +101,19 @@
                     <connections>
                         <segue destination="2" kind="push" identifier="debugScreen" id="uXt-eS-jsX"/>
                         <segue destination="Uml-ZL-Tbs" kind="push" identifier="switchDay" id="a2T-ob-kok"/>
+                        <segue destination="aic-kx-grh" kind="push" identifier="rateSet" id="Uxe-Et-xtB"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ex8-pG-P3g" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="221" y="-8"/>
+            <point key="canvasLocation" x="-203" y="-132"/>
         </scene>
         <!--Switch Day View Controller - Switch Day-->
         <scene sceneID="rjR-D4-UVd">
             <objects>
                 <viewController id="Uml-ZL-Tbs" customClass="SwitchDayViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="yNb-Sh-dqE">
-                        <rect key="frame" x="0.0" y="20" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EZc-YR-m0q">
@@ -215,7 +216,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IaV-6k-Rfi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="674" y="-668"/>
+            <point key="canvasLocation" x="348" y="-610"/>
         </scene>
         <!--Login Test View Controller-->
         <scene sceneID="5">
@@ -335,7 +336,101 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="674" y="-8"/>
+            <point key="canvasLocation" x="716" y="-132"/>
+        </scene>
+        <!--Rate Set View Controller - Rate This!-->
+        <scene sceneID="5k5-IE-a8x">
+            <objects>
+                <viewController id="aic-kx-grh" customClass="RateSetViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="e6w-FF-7KG">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Artist" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="phh-bC-jQ1">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="Krr-Ud-gUT"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Which Weekend?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vqo-4S-qbM">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="150" id="b89-4h-XM4"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="How Was It?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XtT-X4-2Ea">
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Notes" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ERK-bh-2YJ">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="52" id="mmO-zO-tyl"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="HsM-nv-MF1"/>
+                            <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="DeK-xU-YLM"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O3x-ww-MOR">
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="128" id="viI-7V-dtE"/>
+                                </constraints>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dtp-mb-8FV">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="73" id="WVx-Ry-lcv"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="Rate!">
+                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="DeK-xU-YLM" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="08O-37-Rmh"/>
+                            <constraint firstAttribute="bottom" secondItem="Dtp-mb-8FV" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="0wM-0S-7wA"/>
+                            <constraint firstAttribute="trailing" secondItem="O3x-ww-MOR" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="12q-Pj-oVv"/>
+                            <constraint firstAttribute="trailing" secondItem="HsM-nv-MF1" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="56B-qc-QOC"/>
+                            <constraint firstItem="XtT-X4-2Ea" firstAttribute="leading" secondItem="e6w-FF-7KG" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="5iI-yl-7do"/>
+                            <constraint firstItem="phh-bC-jQ1" firstAttribute="leading" secondItem="e6w-FF-7KG" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="Dpc-fg-tdN"/>
+                            <constraint firstItem="ERK-bh-2YJ" firstAttribute="top" secondItem="e6w-FF-7KG" secondAttribute="top" constant="172" id="EZ1-7z-94y"/>
+                            <constraint firstItem="ERK-bh-2YJ" firstAttribute="leading" secondItem="e6w-FF-7KG" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="Lj1-Jh-7oZ"/>
+                            <constraint firstItem="Vqo-4S-qbM" firstAttribute="trailing" secondItem="XtT-X4-2Ea" secondAttribute="trailing" type="default" id="QDn-po-wMR"/>
+                            <constraint firstItem="HsM-nv-MF1" firstAttribute="top" secondItem="e6w-FF-7KG" secondAttribute="top" constant="84" id="SUd-hs-ejE"/>
+                            <constraint firstItem="Vqo-4S-qbM" firstAttribute="leading" secondItem="e6w-FF-7KG" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="SYs-F5-iSX"/>
+                            <constraint firstItem="DeK-xU-YLM" firstAttribute="centerY" secondItem="XtT-X4-2Ea" secondAttribute="centerY" type="default" id="Slc-eA-B9j"/>
+                            <constraint firstItem="DeK-xU-YLM" firstAttribute="top" secondItem="HsM-nv-MF1" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="TBf-18-uSb"/>
+                            <constraint firstItem="Dtp-mb-8FV" firstAttribute="centerX" secondItem="O3x-ww-MOR" secondAttribute="centerX" type="default" id="XPL-8K-XkX"/>
+                            <constraint firstItem="O3x-ww-MOR" firstAttribute="top" secondItem="ERK-bh-2YJ" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="cen-8e-yOK"/>
+                            <constraint firstAttribute="trailing" secondItem="phh-bC-jQ1" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="mhl-RO-R7C"/>
+                            <constraint firstItem="phh-bC-jQ1" firstAttribute="top" secondItem="e6w-FF-7KG" secondAttribute="top" constant="20" symbolic="YES" type="default" id="qAc-cQ-SK3"/>
+                            <constraint firstItem="O3x-ww-MOR" firstAttribute="leading" secondItem="e6w-FF-7KG" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="tdE-a3-HYf"/>
+                            <constraint firstItem="HsM-nv-MF1" firstAttribute="centerY" secondItem="Vqo-4S-qbM" secondAttribute="centerY" type="default" id="zgY-pb-wBx"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Rate This!" id="OPV-re-4wV"/>
+                    <connections>
+                        <outlet property="artistLabel" destination="phh-bC-jQ1" id="y9Y-oP-F6M"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Hf8-Be-OPM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="348" y="241"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="ZZ4-AN-DQH">
@@ -353,7 +448,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iau-vW-TKI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-305" y="-8"/>
+            <point key="canvasLocation" x="-729" y="-132"/>
         </scene>
     </scenes>
     <classes>
@@ -373,6 +468,12 @@
         </class>
         <class className="NSLayoutConstraint" superclassName="NSObject">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+        <class className="RateSetViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/RateSetViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="artistLabel" candidateClass="UILabel"/>
+            </relationships>
         </class>
         <class className="SetTableViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/SetTableViewController.h"/>

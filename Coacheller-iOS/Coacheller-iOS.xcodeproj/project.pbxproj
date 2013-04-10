@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		79173887170F924700A5D750 /* SetTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79173886170F924700A5D750 /* SetTableViewController.m */; };
+		793FB9E41715DD950001C07E /* RateSetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 793FB9E31715DD950001C07E /* RateSetViewController.m */; };
 		7987F68F170EBB4100C23C26 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7987F68E170EBB4100C23C26 /* UIKit.framework */; };
 		7987F691170EBB4100C23C26 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7987F690170EBB4100C23C26 /* Foundation.framework */; };
 		7987F693170EBB4100C23C26 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7987F692170EBB4100C23C26 /* CoreGraphics.framework */; };
@@ -45,6 +46,8 @@
 /* Begin PBXFileReference section */
 		79173885170F924700A5D750 /* SetTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetTableViewController.h; sourceTree = "<group>"; };
 		79173886170F924700A5D750 /* SetTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetTableViewController.m; sourceTree = "<group>"; };
+		793FB9E21715DD950001C07E /* RateSetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RateSetViewController.h; sourceTree = "<group>"; };
+		793FB9E31715DD950001C07E /* RateSetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RateSetViewController.m; sourceTree = "<group>"; };
 		7987F68B170EBB4100C23C26 /* Coacheller.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Coacheller.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7987F68E170EBB4100C23C26 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7987F690170EBB4100C23C26 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -160,6 +163,8 @@
 				79173886170F924700A5D750 /* SetTableViewController.m */,
 				79D97CA61712BC6E00D0B813 /* SwitchDayViewController.h */,
 				79D97CA71712BC6E00D0B813 /* SwitchDayViewController.m */,
+				793FB9E21715DD950001C07E /* RateSetViewController.h */,
+				793FB9E31715DD950001C07E /* RateSetViewController.m */,
 				F6ED20C617126AC10094A99F /* LoginTestViewController.h */,
 				F6ED20C717126AC10094A99F /* LoginTestViewController.m */,
 				7987F6C8170EBD6000C23C26 /* SetDataForTVC.h */,
@@ -319,6 +324,7 @@
 				79D97CA51712B4C600D0B813 /* AppConstants.m in Sources */,
 				79D97CA81712BC6E00D0B813 /* SwitchDayViewController.m in Sources */,
 				F6FD080217140C9A00DE2F75 /* AuthController.m in Sources */,
+				793FB9E41715DD950001C07E /* RateSetViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
