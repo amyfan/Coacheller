@@ -10,4 +10,8 @@
 
 @protocol FacebookDataProtocol <NSObject>
 
+- (NSString*) getUserEmailAddress;
+- (NSString*) getUserFirstName;
+- (NSString*) getUserLastName;
+- (NSString*) getFacebookID;
 @end

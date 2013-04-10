@@ -13,7 +13,7 @@
 
 @end
 
-@implementation AuthController
+@implementation AuthController 
 
 - (id) init {
   self = [super init];
@@ -23,5 +23,28 @@
   
   return self;
 }
+
+
+- (BOOL) isLoggedIn {
+  return [self.facebookAuthController.facebookAuthModel appLoggedIn];
+}
+
+- (NSString*) getUserEmailAddress {
+  return [self.facebookAuthController.facebookAuthModel getUserEmailAddress];
+}
+
+- (NSString*) getUserFirstName {
+  return [self.facebookAuthController.facebookAuthModel getUserFirstName];
+}
+
+- (NSString*) getUserLastName {
+  return [self.facebookAuthController.facebookAuthModel getUserLastName];
+}
+
+- (NSString*) getFacebookID {
+  return [self.facebookAuthController.facebookAuthModel getFacebookID];
+}
+
+
 
 @end

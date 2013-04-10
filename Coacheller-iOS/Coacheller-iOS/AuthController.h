@@ -9,6 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "FacebookAuthController.h"
 
-@interface AuthController : NSObject
+@interface AuthController : NSObject <FacebookDataProtocol>
 @property (strong, nonatomic) FacebookAuthController* facebookAuthController;
+- (BOOL) isLoggedIn;
+
+- (NSString*) getUserEmailAddress;
+- (NSString*) getUserFirstName;
+- (NSString*) getUserLastName;
+- (NSString*) getFacebookID;
+
 @end

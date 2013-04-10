@@ -60,6 +60,10 @@
   [self.loginTestViewHourglass stopAnimating];
 }
 
+- (void)facebookPostDone {
+  NSLog(@"LoginTestViewController: Facebook post attempt completed");
+  [self.loginTestViewHourglass stopAnimating];
+}
 
 
 

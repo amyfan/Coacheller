@@ -113,16 +113,12 @@
          // Did everything come back okay with no errors?
          if (!error && result)
          {
-           NSString *email = [result objectForKey:@"email"];
-           NSLog(@"Facebook ID: %@", result.id);
-           NSLog(@"Email Address: %@", email);
-           NSLog(@"First Name: %@", result.first_name);
-           NSLog(@"User Name: %@", result.username);
+           [self.facebookAuthModel setUserData:result];
            
-           
-           //[result.id longLongValue];
-           
-           //m_nsstrUserName = [[NSString alloc] initWithString:result.first_name];
+           NSLog(@"Facebook ID: %@", [self.facebookAuthModel getFacebookID]);
+           NSLog(@"Email Address: %@", [self.facebookAuthModel getFacebookID]);
+           NSLog(@"First Name: %@", [self.facebookAuthModel getFacebookID]);
+           NSLog(@"User Name: %@", [self.facebookAuthModel getFacebookID]);
            
            // Create a texture from the user's profile picture
            //m_pUserTexture = new System::TextureResource();

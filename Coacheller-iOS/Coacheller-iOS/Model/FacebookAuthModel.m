@@ -10,7 +10,7 @@
 
 @interface FacebookAuthModel ()
 
-
+@property (strong, nonatomic) NSDictionary <FBGraphUser>* storedUserData;
 
 @end
 
@@ -26,6 +26,24 @@
   }
 }
 
+- (void) setUserData:(NSDictionary <FBGraphUser>*)userData {
+  self.storedUserData = userData;
+}
 
+- (NSString*) getUserEmailAddress {
+  return [self.storedUserData objectForKey:@"email"];
+}
+
+- (NSString*) getUserFirstName {
+  return self.storedUserData.first_name;
+}
+
+- (NSString*) getUserLastName {
+  return self.storedUserData.last_name;
+}
+
+- (NSString*) getFacebookID {
+  return self.storedUserData.id;
+}
 
 @end

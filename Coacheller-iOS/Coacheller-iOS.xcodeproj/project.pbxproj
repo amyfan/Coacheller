@@ -40,7 +40,6 @@
 		F6ED20CB17126D310094A99F /* FacebookAuthController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6ED20CA17126D310094A99F /* FacebookAuthController.m */; };
 		F6ED20CE17126D5C0094A99F /* FacebookAuthModel.m in Sources */ = {isa = PBXBuildFile; fileRef = F6ED20CD17126D5C0094A99F /* FacebookAuthModel.m */; };
 		F6FD080217140C9A00DE2F75 /* AuthController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6FD080117140C9A00DE2F75 /* AuthController.m */; };
-		F6FD0805171414B700DE2F75 /* AuthModel.m in Sources */ = {isa = PBXBuildFile; fileRef = F6FD0804171414B700DE2F75 /* AuthModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -95,9 +94,8 @@
 		F6ED20CD17126D5C0094A99F /* FacebookAuthModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FacebookAuthModel.m; path = Model/FacebookAuthModel.m; sourceTree = "<group>"; };
 		F6FD080017140C9A00DE2F75 /* AuthController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthController.h; sourceTree = "<group>"; };
 		F6FD080117140C9A00DE2F75 /* AuthController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthController.m; sourceTree = "<group>"; };
-		F6FD0803171414B700DE2F75 /* AuthModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthModel.h; sourceTree = "<group>"; };
-		F6FD0804171414B700DE2F75 /* AuthModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthModel.m; sourceTree = "<group>"; };
 		F6FD080917141FCE00DE2F75 /* AuthProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AuthProtocol.h; sourceTree = "<group>"; };
+		F6FD080A1714FC5D00DE2F75 /* FacebookDataProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FacebookDataProtocol.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -227,9 +225,8 @@
 				F6ED20CD17126D5C0094A99F /* FacebookAuthModel.m */,
 				F6FD080017140C9A00DE2F75 /* AuthController.h */,
 				F6FD080117140C9A00DE2F75 /* AuthController.m */,
-				F6FD0803171414B700DE2F75 /* AuthModel.h */,
-				F6FD0804171414B700DE2F75 /* AuthModel.m */,
 				F6FD080917141FCE00DE2F75 /* AuthProtocol.h */,
+				F6FD080A1714FC5D00DE2F75 /* FacebookDataProtocol.h */,
 			);
 			name = Auth;
 			sourceTree = "<group>";
@@ -322,7 +319,6 @@
 				79D97CA51712B4C600D0B813 /* AppConstants.m in Sources */,
 				79D97CA81712BC6E00D0B813 /* SwitchDayViewController.m in Sources */,
 				F6FD080217140C9A00DE2F75 /* AuthController.m in Sources */,
-				F6FD0805171414B700DE2F75 /* AuthModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
