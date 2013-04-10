@@ -161,7 +161,7 @@
 - (void)initData {
   self.sets = [[SetDataForTVC alloc] initWithTimeFieldName:JSON_SET_TIME_ONE StageFieldName:JSON_SET_STAGE_ONE AndRatingsHashMap:self.myRatings];
   
-  self.sortMode = SORT_MODE_ARTIST;
+  self.sortMode = SORT_MODE_TIME;
   
   // TODO: create proper file name
   NSString *saveFileName = @"CoachellerData.plist";
@@ -368,7 +368,9 @@
 // TODO: DETERMINE PROPER WEEK:
 
 - (NSString *)timeForRow:(NSUInteger)row {
-  return [self.sets getItemAt:row][JSON_SET_TIME_ONE];
+  // TODO: timeFieldName instead, tho shouldn't matter yet
+  int milTime = [[self.sets getItemAt:row][JSON_SET_TIME_ONE] intValue];
+  return [CalendarUtils militaryToCivilianTime:milTime];
 }
 
 - (NSString *)artistForRow:(NSUInteger)row {
@@ -376,6 +378,7 @@
 }
 
 - (NSString *)stageForRow:(NSUInteger)row {
+  // TODO: timeFieldName instead, tho shouldn't matter yet
   return [self.sets getItemAt:row][JSON_SET_STAGE_ONE];
 }
 
@@ -431,17 +434,17 @@
   
   if (cell) {
     // Configure the cell...
-    UILabel *label = (UILabel *)[cell viewWithTag:0];
-    label.text = [self titleForRow:indexPath.row];
-    label = (UILabel *)[cell viewWithTag:1];
-    label.text = [self artistForRow:indexPath.row];
+    UILabel *label = (UILabel *)[cell viewWithTag:1];
+    label.text = [self timeForRow:indexPath.row];
     label = (UILabel *)[cell viewWithTag:2];
-    label.text = [[self stageForRow:indexPath.row] uppercaseString];
+    label.text = [self artistForRow:indexPath.row];
     label = (UILabel *)[cell viewWithTag:3];
-    label.text = [self avgScoreOneForRow:indexPath.row];
+    label.text = [[self stageForRow:indexPath.row] uppercaseString];
     label = (UILabel *)[cell viewWithTag:4];
-    label.text = [self avgScoreTwoForRow:indexPath.row];
+    label.text = [self avgScoreOneForRow:indexPath.row];
     label = (UILabel *)[cell viewWithTag:5];
+    label.text = [self avgScoreTwoForRow:indexPath.row];
+    label = (UILabel *)[cell viewWithTag:6];
     label.text = [self myRatingsForRow:indexPath.row];
   }
   

@@ -52,6 +52,27 @@
   }
 }
 
-
++ (NSString *) militaryToCivilianTime:(NSInteger) milTime {
+  NSString *ampm;
+  if (milTime < 1200 || milTime >= 2400) {
+    ampm = @"a";
+  } else {
+    ampm = @"p";
+  }
+  
+  if (milTime < 100) {
+    milTime += 1200;
+  }
+  
+  if (milTime >= 1300) {
+    milTime -= 1200;
+  }
+  
+  NSString *milTimeStr = [NSString stringWithFormat:@"%d", milTime];
+  
+  int timeStrLen = milTimeStr.length;
+  NSString *timeStr = [NSString stringWithFormat:@"%@:%@%@", [milTimeStr substringToIndex:timeStrLen - 2], [milTimeStr substringFromIndex:timeStrLen - 2], ampm];
+  return timeStr;
+}
 
 @end

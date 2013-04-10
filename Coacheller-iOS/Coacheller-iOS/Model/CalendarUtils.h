@@ -15,4 +15,6 @@
 + (NSString *)whatDayIsToday;
 + (NSString *)suggestDayToQuery;
 
++ (NSString *) militaryToCivilianTime:(NSInteger) milTime;
+
 @end
