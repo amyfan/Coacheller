@@ -1,5 +1,5 @@
 //
-//  AuthModel.h
+//  FacebookDataProtocol.h
 //  Coacheller-iOS
 //
 //  Created by John Smith on 4/9/13.
@@ -8,6 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AuthModel : NSObject
+@protocol FacebookDataProtocol <NSObject>
 
 @end
