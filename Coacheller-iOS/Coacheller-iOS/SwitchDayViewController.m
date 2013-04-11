@@ -17,10 +17,11 @@
 @property (strong, nonatomic) IBOutlet UILabel *weekendLabel;
 @property (strong, nonatomic) IBOutlet UIPickerView *chooseDay;
 @property (nonatomic, strong) NSArray *daysArray;
-@property (nonatomic, strong) NSString *selectedDay;
 
 - (IBAction)yearStepperAction:(id)sender;
 - (IBAction)weekendStepperAction:(id)sender;
+
+- (IBAction)unwindFromSwitchDay:(UIStoryboardSegue *)segue;
 
 @end
 
@@ -47,7 +48,7 @@
   self.yearStepper.continuous = YES;
   
   self.yearStepper.value = 2013;
-  if (self.defaultYear) self.yearStepper.value = self.defaultYear;
+  if (self.yearToQuery) self.yearStepper.value = self.yearToQuery;
   self.yearLabel.text = [NSString stringWithFormat:@"%.f", self.yearStepper.value];
   
   // TODO: load these values from resource file
@@ -59,7 +60,7 @@
   self.weekendStepper.continuous = YES;
   
   self.weekendStepper.value = 1;
-  if (self.defaultWeek) self.weekendStepper.value = self.defaultWeek;
+  if (self.weekToQuery) self.weekendStepper.value = self.weekToQuery;
   self.weekendLabel.text = [NSString stringWithFormat:@"%.f", self.weekendStepper.value];
   
   // TODO: Only if we want to shrink the picker a tad
@@ -73,8 +74,8 @@
   self.chooseDay.dataSource = self;
   self.daysArray = [[NSArray alloc] initWithObjects:@"Friday", @"Saturday", @"Sunday", nil];
 
-  if (self.defaultDay) {
-    NSInteger indexOfDay = [self.daysArray indexOfObject:self.defaultDay];
+  if (self.dayToQuery) {
+    NSInteger indexOfDay = [self.daysArray indexOfObject:self.dayToQuery];
     [self.chooseDay selectRow:indexOfDay inComponent:0 animated:YES];
   }
 }
@@ -82,11 +83,13 @@
 - (IBAction)yearStepperAction:(id)sender {
   double stepperValue = self.yearStepper.value;
   self.yearLabel.text = [NSString stringWithFormat:@"%.f", stepperValue];
+  self.yearToQuery = [self.yearLabel.text intValue];
 }
 
 - (IBAction)weekendStepperAction:(id)sender {
   double stepperValue = self.weekendStepper.value;
   self.weekendLabel.text = [NSString stringWithFormat:@"%.f", stepperValue];
+  self.weekToQuery = [self.weekendLabel.text intValue];
 }
 
 #pragma mark - UIPickerView DataSource
@@ -117,17 +120,7 @@
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
   //Let's print in the console what the user had chosen;
-  self.selectedDay = [self.daysArray objectAtIndex:row];
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-  if ([sender isKindOfClass:[UIButton class]]) {
-    // button clicked
-    SetTableViewController *setTableViewController = (SetTableViewController *)segue.destinationViewController;
-    setTableViewController.yearToQuery = [self.yearLabel.text intValue];
-    setTableViewController.weekToQuery = [self.weekendLabel.text intValue];
-    setTableViewController.dayToQuery = self.selectedDay;
-  }
+  self.dayToQuery = [self.daysArray objectAtIndex:row];
 }
 
 @end

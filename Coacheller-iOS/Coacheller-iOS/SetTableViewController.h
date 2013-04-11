@@ -31,5 +31,6 @@
 // for AuthProtocol
 - (void)facebookLoggedIn;
 - (void)facebookLoggedOut;
+- (void)facebookPostDone;
 
 @end

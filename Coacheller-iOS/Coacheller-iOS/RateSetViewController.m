@@ -16,10 +16,11 @@
 @property (strong, nonatomic) IBOutlet UILabel *weekendLabel;
 @property (strong, nonatomic) IBOutlet UIStepper *scoreStepper;
 @property (strong, nonatomic) IBOutlet UILabel *scoreLabel;
-@property (strong, nonatomic) IBOutlet UITextView *notesText;
+@property (strong, nonatomic) IBOutlet UITextField *notesText;
 
 - (IBAction)weekendStepperAction:(id)sender;
 - (IBAction)scoreStepperAction:(id)sender;
+- (BOOL)textFieldShouldReturn:(UITextField *)textField;
 
 @end
 
@@ -145,6 +146,12 @@
     
     [setTableViewController submitRating:rating];
   }
+}
+
+// to dismiss the darn keyboard
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+  [textField resignFirstResponder];
+  return YES;
 }
 
 @end

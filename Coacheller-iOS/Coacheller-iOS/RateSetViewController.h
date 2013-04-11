@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "CustomPair.h"
 
-@interface RateSetViewController : UIViewController
+@interface RateSetViewController : UIViewController<UITextFieldDelegate>
 
 // contains set id, stored in setListAdapter
 @property (nonatomic, strong) NSDictionary *set;

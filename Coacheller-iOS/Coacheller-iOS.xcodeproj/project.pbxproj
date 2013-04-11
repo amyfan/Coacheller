@@ -426,6 +426,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Coacheller-iOS/Coacheller-iOS-Prefix.pch";
 				INFOPLIST_FILE = "Coacheller-iOS/Coacheller-iOS-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				OTHER_LDFLAGS = (
 					"-lsqlite3.0",
 					"-ObjC",
@@ -446,6 +447,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Coacheller-iOS/Coacheller-iOS-Prefix.pch";
 				INFOPLIST_FILE = "Coacheller-iOS/Coacheller-iOS-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				OTHER_LDFLAGS = (
 					"-lsqlite3.0",
 					"-ObjC",

@@ -33,8 +33,6 @@
 // contains both week's scores
 @property (nonatomic, strong) CustomPair *lastRatingPair;
 
-@property (nonatomic, strong) NSMutableArray *httpRequests;
-
 @end
 
 @implementation SetTableViewController
@@ -46,7 +44,7 @@
   
   // Add main label
   UILabel* headerLabel = [[UILabel alloc] init];
-  headerLabel.frame = CGRectMake(10, 0, 300, 30);
+  headerLabel.frame = CGRectMake(10, 0, headerView.frame.size.width, 30);
   headerLabel.backgroundColor = [UIColor darkGrayColor];
   headerLabel.textColor = [UIColor whiteColor];
   headerLabel.font = [UIFont boldSystemFontOfSize:18];
@@ -61,14 +59,17 @@
 
   // Add Switch Day button
   UIButton *switchDayButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-  switchDayButton.frame = CGRectMake(10.0, 40, 95, 35.0); // x,y,width,height
-  [switchDayButton setTitle:@"Switch Day" forState:UIControlStateNormal];
+  switchDayButton.frame = CGRectMake(headerView.frame.size.width - 70, 20, 60, 55); // x,y,width,height
+  switchDayButton.titleLabel.font = [UIFont systemFontOfSize:14];
+  switchDayButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+  switchDayButton.titleLabel.numberOfLines = 0;
+  [switchDayButton setTitle:@"Switch Day =>" forState:UIControlStateNormal];
   [switchDayButton addTarget:self action:@selector(switchDayAction) forControlEvents:UIControlEventTouchUpInside];
   [headerView addSubview:switchDayButton];
   
-  // Add Sort Mode Label
+  // Add Sort Mode label
   UILabel* sortLabel = [[UILabel alloc] init];
-  sortLabel.frame = CGRectMake(120, 40, 50, 30);
+  sortLabel.frame = CGRectMake(10, 40, 50, 35);
   sortLabel.backgroundColor = [UIColor darkGrayColor];
   sortLabel.textColor = [UIColor whiteColor];
   sortLabel.font = [UIFont systemFontOfSize:14];
@@ -77,7 +78,8 @@
   
   // Add Sort Mode Day button
   self.sortModeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-  self.sortModeButton.frame = CGRectMake(180, 40, 70, 35.0); // x,y,width,height
+  self.sortModeButton.frame = CGRectMake(70, 40, 55, 35); // x,y,width,height
+  self.sortModeButton.titleLabel.font = [UIFont systemFontOfSize:14];
   NSString *sortModeTitle = @"Time";
   if (self.sortMode) {
     sortModeTitle = [self.sortMode capitalizedString];
@@ -86,17 +88,17 @@
   [self.sortModeButton addTarget:self action:@selector(sortModeAction) forControlEvents:UIControlEventTouchUpInside];
   [headerView addSubview:self.sortModeButton];
   
-  
+  // Only for testing authentication
   UIButton *debugScreenButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
   int buttonWidth = 40;
-  int buttonHeight = 40;
+  int buttonHeight = 35;
   int rightborder = 30;
   int topborder = 0;
   
   debugScreenButton.frame = CGRectMake(headerView.frame.size.width - rightborder - buttonWidth, topborder, buttonWidth, buttonHeight);
   [debugScreenButton setTitle:@"Debug" forState:UIControlStateNormal];
   [debugScreenButton addTarget:self action:@selector(showDebugAction) forControlEvents:UIControlEventTouchUpInside];
-  [headerView addSubview:debugScreenButton];
+  //[headerView addSubview:debugScreenButton];
   
   
   return headerView;
@@ -104,41 +106,6 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
   return 90;
-}
-
-- (IBAction)switchDayAction {
-  NSLog(@"switchDay action called");
-  // perform a segue programmatically
-  [self performSegueWithIdentifier:@"switchDay" sender:self];
-}
-
-- (IBAction)sortModeAction {
-  NSLog(@"sortMode action called");
-
-  int sortModesIndex = [self.sortModeTitles indexOfObject:self.sortMode];
-  sortModesIndex++;
-  if(sortModesIndex >= [self.sortModeTitles count]) sortModesIndex = 0;
-  self.sortMode = self.sortModeTitles[sortModesIndex];
-  [self.sortModeButton setTitle:[self.sortMode capitalizedString] forState:UIControlStateNormal];
-  //[self.sortModeButton setTitle:card.contents forState:UIControlStateSelected|UIControlStateDisabled];
-  [self.sets resortSets:self.sortMode];
-  [self.tableView reloadData];
-}
-
-- (IBAction)showDebugAction {
-  NSLog(@"showDebug action called");
-  
-  // perform a segue programmatically
-  [self performSegueWithIdentifier:@"debugScreen" sender:self];
-}
-
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
 }
 
 - (void)viewDidLoad
@@ -150,6 +117,9 @@
   if (!self.yearToQuery) self.yearToQuery = [CalendarUtils whatYearIsToday];
   if (!self.weekToQuery) self.weekToQuery = [CalendarUtils whichWeekIsToday];
   if (!self.dayToQuery) self.dayToQuery = [CalendarUtils suggestDayToQuery];
+  
+  self.navigationItem.hidesBackButton = YES;
+  self.tableView.bounces = NO;
   
   [self initData];
   
@@ -363,31 +333,41 @@
 }
 
 - (void)getDataFromServer {
-//  NSMutableArray *dataArray = [NSMutableArray array];
-//  [self.httpRequests addObject:[self getSetsRequest]];
-//  [self.httpRequests addObject:[self getRatingsRequest]];
-//  dispatch_queue_t callerQueue = dispatch_get_current_queue();
-//  dispatch_queue_t downloadQueue = dispatch_queue_create("Lots of requests", NULL);
-//  dispatch_async(downloadQueue, ^{
-//    for (NSURLRequest *request in self.httpRequests) {
-//      [dataArray addObject:[NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil]];
-//    }
-//    dispatch_async(callerQueue, ^{
-//      for (id data in dataArray) {
-//        [self processFetchedData:data];
-//      }
-//    });
-//  });
-  
   self.responseData = [NSMutableData data];
-  [[NSURLConnection alloc] initWithRequest:[self getSetsRequest] delegate:self];
   
-  [[NSURLConnection alloc] initWithRequest:[self getRatingsRequest] delegate:self];
+  NSMutableArray *httpRequests = [NSMutableArray array];
+  [httpRequests addObject:[self getSetsRequest]];
+  NSURLRequest *ratingsRequest = [self getRatingsRequest];
+  if(ratingsRequest) {
+    [httpRequests addObject:ratingsRequest];
+  }
+  
+  dispatch_queue_t callerQueue = dispatch_get_current_queue();
+  dispatch_queue_t downloadQueue = dispatch_queue_create("Lots of requests", NULL);
+  
+  dispatch_async(downloadQueue, ^{
+    NSMutableArray *dataArray = [NSMutableArray array];
+    for (NSURLRequest *request in httpRequests) {
+      [dataArray addObject:[NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil]];
+    }
+    
+    dispatch_async(callerQueue, ^{
+      for (id data in dataArray) {
+        [self processFetchedData:data];
+      }
+    });
+  });
+  
+//  [[NSURLConnection alloc] initWithRequest:[self getSetsRequest] delegate:self];
+//  
+//  [[NSURLConnection alloc] initWithRequest:[self getRatingsRequest] delegate:self];
 }
 
 - (NSURLRequest *)getSetsRequest {
   NSMutableString *urlMutableString = [[NSMutableString alloc] init];
-  [urlMutableString appendString:@"https://ratethisfest.appspot.com/coachellerServlet?"];
+  
+  [urlMutableString appendString:SERVER_URL_COACHELLER];
+  [urlMutableString appendString:@"?"];
   [urlMutableString appendString:PARAM_ACTION];
   [urlMutableString appendString:@"="];
   [urlMutableString appendString:ACTION_GET_SETS];
@@ -407,7 +387,8 @@
   if ([self getLoginData]) {
     NSMutableString *urlMutableString = [[NSMutableString alloc] init];
     
-    [urlMutableString appendString:@"https://ratethisfest.appspot.com/coachellerServlet?"];
+    [urlMutableString appendString:SERVER_URL_COACHELLER];
+    [urlMutableString appendString:@"?"];
     [urlMutableString appendString:PARAM_ACTION];
     [urlMutableString appendString:@"="];
     [urlMutableString appendString:ACTION_GET_RATINGS];
@@ -440,6 +421,7 @@
     //NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
   } else {
     [self.myRatings clearRatings];
+    return nil;
   }
 }
 
@@ -475,7 +457,7 @@
 - (void)processFetchedData:(NSData *)responseData {
   // parse out the json data
   NSError *error;
-  NSDictionary* json = [NSJSONSerialization JSONObjectWithData:self.responseData options:kNilOptions error:&error];
+  NSDictionary* json = [NSJSONSerialization JSONObjectWithData:responseData options:kNilOptions error:&error];
   
   NSMutableArray *dataMutableArray = [NSMutableArray array];
   
@@ -507,14 +489,58 @@
   [self.tableView reloadData];
 }
 
+- (IBAction)switchDayAction {
+  NSLog(@"switchDay action called");
+  // perform a segue programmatically
+  [self performSegueWithIdentifier:@"switchDay" sender:self];
+}
+
+- (IBAction)sortModeAction {
+  NSLog(@"sortMode action called");
+  
+  int sortModesIndex = [self.sortModeTitles indexOfObject:self.sortMode];
+  sortModesIndex++;
+  if(sortModesIndex >= [self.sortModeTitles count]) sortModesIndex = 0;
+  self.sortMode = self.sortModeTitles[sortModesIndex];
+  [self.sortModeButton setTitle:[self.sortMode capitalizedString] forState:UIControlStateNormal];
+  //[self.sortModeButton setTitle:card.contents forState:UIControlStateSelected|UIControlStateDisabled];
+  [self.sets resortSets:self.sortMode];
+  [self.tableView reloadData];
+}
+
+- (IBAction)showDebugAction {
+  NSLog(@"showDebug action called");
+  
+  // perform a segue programmatically
+  [self performSegueWithIdentifier:@"debugScreen" sender:self];
+}
+
+- (id)initWithStyle:(UITableViewStyle)style
+{
+  self = [super initWithStyle:style];
+  if (self) {
+    // Custom initialization
+  }
+  return self;
+}
+
+- (IBAction)unwindFromSwitchDay:(UIStoryboardSegue *)segue {
+  SwitchDayViewController *sourceViewController = segue.sourceViewController;
+  self.yearToQuery = sourceViewController.yearToQuery;
+  self.weekToQuery = sourceViewController.weekToQuery;
+  self.dayToQuery = sourceViewController.dayToQuery;
+  
+  [self getDataFromServer];
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
   //if ([sender isKindOfClass:[UIButton class]]) {
   // button clicked
   if ([segue.identifier isEqualToString:@"switchDay"]) {
     SwitchDayViewController *switchDayViewController = (SwitchDayViewController *)segue.destinationViewController;
-    switchDayViewController.defaultYear = self.yearToQuery;
-    switchDayViewController.defaultWeek = self.weekToQuery;
-    switchDayViewController.defaultDay = self.dayToQuery;
+    switchDayViewController.yearToQuery = self.yearToQuery;
+    switchDayViewController.weekToQuery = self.weekToQuery;
+    switchDayViewController.dayToQuery = self.dayToQuery;
   } else if ([segue.identifier isEqualToString:@"rateSet"]) {
     
     RateSetViewController *rateSetViewController = (RateSetViewController *)segue.destinationViewController;
@@ -548,7 +574,7 @@
   NSLog(@"*****SetTableViewController: submitRating");
 
   NSMutableURLRequest *request = [NSMutableURLRequest
-                                  requestWithURL:[NSURL URLWithString:@"https://ratethisfest.appspot.com/coachellerServlet"]];
+                                  requestWithURL:[NSURL URLWithString:SERVER_URL_COACHELLER]];
   [request setHTTPMethod:@"POST"];
   
   NSMutableString *params = [[NSMutableString alloc] init];
@@ -558,10 +584,8 @@
   [params appendString:ACTION_ADD_RATING];
   
   NSDictionary *loginData = [self getLoginData];
-  NSLog(@"SetTableViewController: gimme some login data..................");
   
   if (loginData) {
-    NSLog(@"SetTableViewController: login data there");
     
     [params appendString:[self appendParamWithName:PARAM_AUTH_TYPE AndValue:loginData[LOGIN_TYPE]]];
     
@@ -594,6 +618,35 @@
   }
 }
 
+// this called after awakeFromNib after segue
+- (void)emailRatings {
+  NSLog(@"*****SetTableViewController: emailRatings");
+  
+  NSMutableURLRequest *request = [NSMutableURLRequest
+                                  requestWithURL:[NSURL URLWithString:SERVER_URL_COACHELLER]];
+  [request setHTTPMethod:@"POST"];
+  
+  NSMutableString *params = [[NSMutableString alloc] init];
+  
+  [params appendString:PARAM_ACTION];
+  [params appendString:@"="];
+  [params appendString:ACTION_EMAIL_RATINGS];
+  
+  NSDictionary *loginData = [self getLoginData];
+  
+  if (loginData) {
+    if (loginData[LOGIN_EMAIL]) {
+      [params appendString:[self appendParamWithName:PARAM_EMAIL AndValue:[self getLoginData][LOGIN_EMAIL]]];
+      
+      [request setHTTPBody:[params dataUsingEncoding:NSUTF8StringEncoding]];
+      [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    } else {
+      
+    }
+    
+  }
+}
+
 - (void)facebookLoggedIn {
   NSLog(@"SetTableViewController: Facebook Login Succeeded");
   // save login data
@@ -619,6 +672,10 @@
 - (void)facebookLoggedOut {
   NSLog(@"SetTableViewController: Facebook Login Failed or Logged Out");
   [self clearLoginData];
+}
+
+- (void)facebookPostDone {
+  NSLog(@"SetTableViewController: Facebook Post Done");
 }
 
 // this called after initFromCoder after segue
