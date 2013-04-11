@@ -13,9 +13,15 @@
 
 // contains set id, stored in setListAdapter
 @property (nonatomic, strong) NSDictionary *set;
-// contains actual rating, stored in userRatingsJAHM
-@property (nonatomic, strong) NSDictionary *rating;
-// contains both week's scores
-@property (nonatomic, strong) CustomPair *ratingScorePair;
+// contains both week's ratings
+@property (nonatomic, strong) CustomPair *ratingPair;
+
+// may differ from queried weekend for set list
+@property (nonatomic) NSInteger currentWeekend;
+
+// only stored to pass back to TVC which is entirely refreshed
+@property (nonatomic) NSInteger queriedYear;
+@property (nonatomic) NSInteger queriedWeekend;
+@property (nonatomic) NSString *queriedDay;
 
 @end

@@ -11,9 +11,6 @@
 
 @interface SwitchDayViewController ()
 
-- (IBAction)yearStepperAction:(id)sender;
-- (IBAction)weekendStepperAction:(id)sender;
-
 @property (strong, nonatomic) IBOutlet UIStepper *yearStepper;
 @property (strong, nonatomic) IBOutlet UILabel *yearLabel;
 @property (strong, nonatomic) IBOutlet UIStepper *weekendStepper;
@@ -21,6 +18,9 @@
 @property (strong, nonatomic) IBOutlet UIPickerView *chooseDay;
 @property (nonatomic, strong) NSArray *daysArray;
 @property (nonatomic, strong) NSString *selectedDay;
+
+- (IBAction)yearStepperAction:(id)sender;
+- (IBAction)weekendStepperAction:(id)sender;
 
 @end
 

@@ -101,9 +101,6 @@
     case FBSessionStateOpen: {
       NSLog(@"FacebookAuthController: FBSessionStateOpen");
       self.facebookAuthModel.appLoggedIn = YES;
-      [self.facebookAPICaller facebookLoggedIn];
-      
-  
       
       // Start the sample Facebook request
       [[FBRequest requestForMe]
@@ -131,6 +128,8 @@
            // Create a texture from the user's profile picture
            //m_pUserTexture = new System::TextureResource();
            //m_pUserTexture->CreateFromFBID(m_uPlayerFBID, 256, 256);
+           
+           [self.facebookAPICaller facebookLoggedIn];
          }
        }];    }
       break;

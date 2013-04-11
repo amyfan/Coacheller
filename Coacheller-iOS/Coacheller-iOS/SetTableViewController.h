@@ -25,9 +25,8 @@
 // contains actual rating, stored in userRatingsJAHM
 @property (nonatomic, strong) NSDictionary *lastRating;
 
-- (void)processLoginDataWithLoginType:(NSString *)loginType AccountId:(NSString *)accountId AndAccountToken:(NSString *)accountToken;
-- (LoginData *)getLoginData;
-- (void)clearLoginData;
+// for RateSetVC
+- (void)submitRating:(NSDictionary *)rating;
 
 // for AuthProtocol
 - (void)facebookLoggedIn;

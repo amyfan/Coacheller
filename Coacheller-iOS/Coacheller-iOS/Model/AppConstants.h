@@ -15,6 +15,8 @@ extern NSString * const SORT_MODE_STAGE;
 extern NSString * const SORT_MODE_TIME;
 
 extern NSString * const DATA_LOGIN_INFO_KEY;
+extern NSString * const DATA_SETS;
+extern NSString * const DATA_RATINGS;
 
 extern NSString * const SERVER_URL_COACHELLER;
 extern NSString * const SERVER_URL_LOLLAPALOOZER;
