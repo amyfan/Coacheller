@@ -53,8 +53,12 @@ import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.HttpConstants;
 
-public class CoachellerActivity extends Activity implements View.OnClickListener, OnItemSelectedListener,
-    OnItemClickListener, OnCheckedChangeListener, AuthActivityInt {
+/**
+ * Main Coacheller Activity. Serves as view controller.
+ * 
+ */
+public class CoachellerActivity extends Activity implements View.OnClickListener,
+    OnItemSelectedListener, OnItemClickListener, OnCheckedChangeListener, AuthActivityInt {
 
   private static final int REFRESH_INTERVAL__SECONDS = 15;
 
@@ -489,6 +493,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     super.onPrepareDialog(id, dialog);
     System.out.println("onPrepareDialog");
 
+    // TODO: deprecate?
     if (id == AndroidConstants.DIALOG_GETEMAIL) {
       EditText emailField = (EditText) emailDialog.findViewById(R.id.textField_enterEmail);
       if (_appController.getLoginData().emailAddress == null) {
@@ -683,6 +688,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     launchGetDataThread(); // TODO multithread this
   }
 
+  // TODO: deprecate?
   private void clickDialogConfirmEmailButtonOK() {
     EditText emailField = (EditText) emailDialog.findViewById(R.id.textField_enterEmail);
     String email = emailField.getText().toString();
@@ -856,7 +862,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     new Thread() {
       public void run() {
         try {
-          setListAdapter.setData(_appController.getRatingsFromServer());
+          setListAdapter.setData(_appController.getDataFromServer());
         } catch (JSONException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
@@ -873,7 +879,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     new Thread() {
       public void run() {
         try {
-          setListAdapter.setData(_appController.getRatingsFromServer());
+          setListAdapter.setData(_appController.getDataFromServer());
         } catch (JSONException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();

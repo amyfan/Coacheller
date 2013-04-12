@@ -32,6 +32,7 @@ public class StorageManager {
   public StorageManager(Context context, String saveFileName) {
     _context = context;
     this.saveFileName = saveFileName;
+    load();
   }
 
   public Set<String> getProperties() {
@@ -61,7 +62,7 @@ public class StorageManager {
 
   // File should get loaded from here, if we are all extremely lucky
   // /data/data/com.lollapaloozer/files/CoachellerData.dat
-  public synchronized void load() {
+  private synchronized void load() {
 
     try {
       // fis = _context.openFileInput(saveFile.getName());

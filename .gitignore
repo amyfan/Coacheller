@@ -86,11 +86,13 @@ build/*
 xcuserdata
 profile
 *.moved-aside
+DerivedData
+.idea/
 
 ############################
 # OS generated files #
 ############################
-.DS_Store?
+.DS_Store
 ehthumbs.db
 Icon?
 Thumbs.db
@@ -129,3 +131,4 @@ Thumbs.db
 *.log
 *.sql
 *.sqlite
+Coacheller-iOS/.DS_Store

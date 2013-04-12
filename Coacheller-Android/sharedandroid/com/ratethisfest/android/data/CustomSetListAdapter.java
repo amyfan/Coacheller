@@ -14,8 +14,8 @@ public abstract class CustomSetListAdapter implements ListAdapter {
   protected Context _context;
   protected String _timeFieldName;
   protected String _stageFieldName;
-  protected JSONArray _data;
-  protected JSONArraySortMap _sortMap;
+  protected JSONArray _data; // unsorted sets
+  protected JSONArraySortMap _sortMap; // sorted sets
   protected JSONArrayHashMap _myRatings_JAHM;
 
   public void setContext(Context context) {

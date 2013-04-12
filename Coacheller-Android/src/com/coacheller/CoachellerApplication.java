@@ -12,10 +12,8 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.Application;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.coacheller.ui.ChooseLoginActivity;
 import com.coacheller.ui.CoachellerActivity;
@@ -31,10 +29,13 @@ import com.ratethisfest.android.auth.AuthModel;
 import com.ratethisfest.android.data.JSONArrayHashMap;
 import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.android.log.LogController;
-
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.HttpConstants;
 
+/**
+ * Class to maintain global application state. Serves as controller & model.
+ * 
+ */
 public class CoachellerApplication extends Application implements AppControllerInt {
 
   //An alternate solution has been implemented
@@ -48,7 +49,6 @@ public class CoachellerApplication extends Application implements AppControllerI
   private SearchSetsActivity activitySearchSets = null;
 
   private boolean dataFirstUse = true;
-  private LoginData loginData;
   private StorageManager storageManager;
 
   // CRITICAL that the keys are listed in this order
@@ -127,9 +127,6 @@ public class CoachellerApplication extends Application implements AppControllerI
     dayToQuery = CalendarUtils.suggestDayToQuery();
 
     storageManager = new StorageManager(this, getString(R.string.save_file_name));
-    storageManager.load();
-
-    obtainLoginDataFromStorage();
 
     userRatingsJAHM = new JSONArrayHashMap(AndroidConstants.JSON_KEY_RATINGS__SET_ID,
         AndroidConstants.JSON_KEY_RATINGS__WEEK);
@@ -207,8 +204,6 @@ public class CoachellerApplication extends Application implements AppControllerI
         && !dayToQuery.equals("Sunday")) {
       dayToQuery = "Friday";
     }
-
-    obtainLoginDataFromStorage();
   }
 
   public boolean isDataFirstUse() {
@@ -219,26 +214,24 @@ public class CoachellerApplication extends Application implements AppControllerI
     this.dataFirstUse = dataFirstUse;
   }
 
-  private void obtainLoginDataFromStorage() {
-    loginData = (LoginData) storageManager.getObject(LoginData.DATA_LOGIN_INFO);
-  }
-
   public LoginData getLoginData() {
-    return loginData;
+    if (storageManager.getObject(LoginData.DATA_LOGIN_INFO) != null) {
+      return (LoginData) storageManager.getObject(LoginData.DATA_LOGIN_INFO);
+    }
+    return null;
   }
 
   public void clearLoginData() {
-    this.loginData = null;
-    storageManager.putObject(LoginData.DATA_LOGIN_INFO, loginData);
-    storageManager.save();
+    saveDataLoginInfo(null);
   }
 
+  @Deprecated
   public void setLoginEmail(String email) {
-    loginData.emailAddress = email;
+    // this is deprecated
   }
 
   public boolean getIsLoggedIn() {
-    if (loginData == null) {
+    if (getLoginData() == null) {
       return false;
     } else {
       return true;
@@ -246,7 +239,7 @@ public class CoachellerApplication extends Application implements AppControllerI
   }
 
   public void processLoginData(Bundle results) {
-    loginData = new LoginData();
+    LoginData loginData = new LoginData();
     loginData.timeLoginIssued = System.currentTimeMillis();
     loginData.loginType = results.getString(AuthConstants.INTENT_EXTRA_LOGIN_TYPE);
     loginData.accountIdentifier = results.getString(AuthConstants.INTENT_EXTRA_ACCOUNT_IDENTIFIER);
@@ -267,7 +260,7 @@ public class CoachellerApplication extends Application implements AppControllerI
     saveDataLoginInfo(loginData);
   }
 
-  public void saveDataLoginInfo(LoginData loginData) {
+  private void saveDataLoginInfo(LoginData loginData) {
     storageManager.putObject(LoginData.DATA_LOGIN_INFO, loginData);
     storageManager.save();
   }
@@ -288,13 +281,14 @@ public class CoachellerApplication extends Application implements AppControllerI
     this.userRatingsJAHM = userRatingsJAHM;
   }
 
-  public JSONArray getRatingsFromServer() throws JSONException {
-    if (getIsLoggedIn()) { // Get my ratings
+  public JSONArray getDataFromServer() throws JSONException {
+    // Get my ratings
+    if (getIsLoggedIn()) {
 
       JSONArray myRatings = null;
       try {
         List<NameValuePair> params = AndroidUtils.createGetQueryParamsArrayList(yearToQuery + "",
-            dayToQuery, loginData);
+            dayToQuery, getLoginData());
 
         myRatings = ServiceUtils.getRatings(params, this, HttpConstants.SERVER_URL_COACHELLER);
 
@@ -333,6 +327,7 @@ public class CoachellerApplication extends Application implements AppControllerI
     // needed
     // _setListAdapter.setNewJAHM(_myRatings_JAHM);
 
+    // Get sets
     JSONArray setData = null;
     try {
       // TODO: pass proper values (year can remain hard-coded for now)
@@ -375,7 +370,7 @@ public class CoachellerApplication extends Application implements AppControllerI
         notes = rating.getString(AndroidConstants.JSON_KEY_RATINGS__NOTES);
       }
       List<NameValuePair> nameValuePairs = AndroidUtils.createSubmitRatingParamsArrayList(
-          yearToQuery + "", setId, scoreSelectedValue, notes, loginData, weekNumber + "");
+          yearToQuery + "", setId, scoreSelectedValue, notes, getLoginData(), weekNumber + "");
       ServiceUtils.addRating(nameValuePairs, this, HttpConstants.SERVER_URL_COACHELLER);
 
       // Need this in order to make the new rating appear in real time

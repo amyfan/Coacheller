@@ -78,9 +78,9 @@ public class LollaSetListAdapter extends CustomSetListAdapter {
 
       int milTime = setObj.getInt(_timeFieldName);
       holder.textTime.setText(DateTimeUtils.militaryToCivilianTime(milTime));
-      holder.textArtist.setText(setObj.getString("artist"));
+      holder.textArtist.setText(setObj.getString(AndroidConstants.JSON_KEY_SETS__ARTIST));
       holder.textStage.setText(setObj.getString(_stageFieldName).toUpperCase());
-      String week1Avg = setObj.getString("avg_score_one");
+      String week1Avg = setObj.getString(AndroidConstants.JSON_KEY_SETS__AVG_SCORE_ONE);
 
       if (week1Avg.equals("0")) {
         week1Avg = "";

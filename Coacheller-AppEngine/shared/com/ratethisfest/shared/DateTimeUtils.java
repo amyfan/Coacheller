@@ -4,7 +4,7 @@ public class DateTimeUtils {
 
   public static String militaryToCivilianTime(int milTime) {
     String ampm;
-    if (milTime < 1200 || milTime == 2400) {
+    if (milTime < 1200 || milTime >= 2400) {
       ampm = "a";
     } else {
       ampm = "p";

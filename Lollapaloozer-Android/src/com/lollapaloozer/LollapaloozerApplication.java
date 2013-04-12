@@ -33,7 +33,7 @@ import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.HttpConstants;
 
 /**
- * Class to maintain global application state. Serves as controller.
+ * Class to maintain global application state. Serves as controller & model.
  * 
  */
 public class LollapaloozerApplication extends Application implements AppControllerInt {
@@ -44,7 +44,6 @@ public class LollapaloozerApplication extends Application implements AppControll
   private LollapaloozerActivity _activityLollapaloozer = null;
 
   private boolean dataFirstUse = true;
-  private LoginData loginData;
   private StorageManager storageManager;
 
   private JSONArrayHashMap userRatingsJAHM;
@@ -108,9 +107,6 @@ public class LollapaloozerApplication extends Application implements AppControll
     dayToQuery = CalendarUtils.whatDayIsToday();
 
     storageManager = new StorageManager(this, getString(R.string.save_file_name));
-    storageManager.load();
-
-    obtainLoginDataFromStorage();
 
     // CRITICAL that the keys are listed in this order
     userRatingsJAHM = new JSONArrayHashMap(AndroidConstants.JSON_KEY_RATINGS__SET_ID,
@@ -162,8 +158,6 @@ public class LollapaloozerApplication extends Application implements AppControll
         && !dayToQuery.equals("Sunday")) {
       dayToQuery = "Friday";
     }
-
-    obtainLoginDataFromStorage();
   }
 
   public boolean isDataFirstUse() {
@@ -174,26 +168,23 @@ public class LollapaloozerApplication extends Application implements AppControll
     this.dataFirstUse = dataFirstUse;
   }
 
-  private void obtainLoginDataFromStorage() {
-    loginData = (LoginData) storageManager.getObject(LoginData.DATA_LOGIN_INFO);
-  }
-
   public LoginData getLoginData() {
-    return loginData;
+    if (storageManager.getObject(LoginData.DATA_LOGIN_INFO) != null) {
+      return (LoginData) storageManager.getObject(LoginData.DATA_LOGIN_INFO);
+    }
+    return null;
   }
 
   public void clearLoginData() {
-    this.loginData = null;
-    storageManager.putObject(LoginData.DATA_LOGIN_INFO, loginData);
-    storageManager.save();
+    saveDataLoginInfo(null);
   }
 
+  @Deprecated
   public void setLoginEmail(String email) {
-    loginData.emailAddress = email;
   }
 
   public boolean getIsLoggedIn() {
-    if (loginData == null) {
+    if (getLoginData() == null) {
       return false;
     } else {
       return true;
@@ -201,7 +192,7 @@ public class LollapaloozerApplication extends Application implements AppControll
   }
 
   public void processLoginData(Bundle results) {
-    loginData = new LoginData();
+    LoginData loginData = new LoginData();
     loginData.timeLoginIssued = System.currentTimeMillis();
     loginData.loginType = results.getString(AuthConstants.INTENT_EXTRA_LOGIN_TYPE);
     loginData.accountIdentifier = results.getString(AuthConstants.INTENT_EXTRA_ACCOUNT_IDENTIFIER);
@@ -221,7 +212,7 @@ public class LollapaloozerApplication extends Application implements AppControll
     saveDataLoginInfo(loginData);
   }
 
-  public void saveDataLoginInfo(LoginData loginData) {
+  private void saveDataLoginInfo(LoginData loginData) {
     storageManager.putObject(LoginData.DATA_LOGIN_INFO, loginData);
     storageManager.save();
   }
@@ -251,7 +242,7 @@ public class LollapaloozerApplication extends Application implements AppControll
         // update app in future)
 
         List<NameValuePair> params = AndroidUtils.createGetQueryParamsArrayList("2012", dayToQuery,
-            loginData);
+            getLoginData());
 
         myRatings = ServiceUtils.getRatings(params, this, HttpConstants.SERVER_URL_LOLLAPALOOZER);
 
@@ -331,7 +322,7 @@ public class LollapaloozerApplication extends Application implements AppControll
       }
 
       List<NameValuePair> nameValuePairs = AndroidUtils.createSubmitRatingParamsArrayList("2012",
-          setId, scoreSelectedValue, notes, loginData, "1");
+          setId, scoreSelectedValue, notes, getLoginData(), "1");
       ServiceUtils.addRating(nameValuePairs, this, HttpConstants.SERVER_URL_LOLLAPALOOZER);
 
       // Need this in order to make the new rating appear in real time
