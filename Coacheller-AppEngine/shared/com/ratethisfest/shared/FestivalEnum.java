@@ -17,7 +17,7 @@ public enum FestivalEnum {
 
   public static FestivalEnum fromValue(String value) {
     for (final FestivalEnum element : EnumSet.allOf(FestivalEnum.class)) {
-      if (element.getValue().equals(value)) {
+      if (element.getValue().equalsIgnoreCase(value)) {
         return element;
       }
     }

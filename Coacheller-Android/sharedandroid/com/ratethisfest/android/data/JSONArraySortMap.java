@@ -8,80 +8,73 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 public class JSONArraySortMap {
 
   final public static int VALUE_INTEGER = 0;
   final public static int VALUE_STRING = 1;
 
-  private ArrayList<CustomPair<Integer, Object>> sortedArrayOfPairs = new ArrayList<CustomPair<Integer, Object>>();
-  JSONArray unsortedArray;
-  private String _parameterToSort;
-  private int _valueType;
+  private ArrayList<CustomPair<Integer, JSONObject>> sortedArrayOfPairs = new ArrayList<CustomPair<Integer, JSONObject>>();
 
-  public JSONArraySortMap(JSONArray arrayToSort, String parameterToSort, int valueType)
-      throws JSONException {
-    // init
-    unsortedArray = arrayToSort;
-    _valueType = valueType;
-    _parameterToSort = parameterToSort;
+  public JSONArraySortMap(JSONArray arrayToSort, String parameterToSort, int valueType,
+      String optionalSecondParam, int valueTypeTwo) throws JSONException {
 
-    if (_valueType < 0 || 1 < _valueType) {
-      throw new RuntimeException();
+    ArrayList<CustomPair<Integer, JSONObject>> arrayOfPairs = createArrayOfPairs(arrayToSort);
+    if (optionalSecondParam != null) {
+      arrayOfPairs = sortThePairArray(arrayOfPairs, optionalSecondParam, valueTypeTwo);
     }
+    sortedArrayOfPairs = sortThePairArray(arrayOfPairs, parameterToSort, valueType);
+  }
+
+  private ArrayList<CustomPair<Integer, JSONObject>> createArrayOfPairs(JSONArray arrayToSort)
+      throws JSONException {
+    ArrayList<CustomPair<Integer, JSONObject>> arrayOfPairs = new ArrayList<CustomPair<Integer, JSONObject>>();
 
     // read values in
     for (int i = 0; i < arrayToSort.length(); i++) {
       JSONObject currentObj = arrayToSort.getJSONObject(i);
-      Object value = null;
-
-      if (_valueType == VALUE_INTEGER) {
-        value = currentObj.getInt(_parameterToSort);
-      } else if (_valueType == VALUE_STRING) {
-        value = currentObj.getString(_parameterToSort);
-      }
-
-      CustomPair<Integer, Object> nextPair = new CustomPair<Integer, Object>(i, value);
+      CustomPair<Integer, JSONObject> nextPair = new CustomPair<Integer, JSONObject>(i, currentObj);
       // System.out.println(i + " || " + value.toString());
-      sortedArrayOfPairs.add(nextPair);
+      arrayOfPairs.add(nextPair);
 
     }
 
-    Comparator<CustomPair<Integer, Object>> comparator = new Comparator<CustomPair<Integer, Object>>() {
+    return arrayOfPairs;
+  }
 
-      public int compare(CustomPair<Integer, Object> pairA, CustomPair<Integer, Object> pairB) {
-        if (_valueType == VALUE_INTEGER) {
-          Integer aValue = (Integer) pairA.second;
-          Integer bValue = (Integer) pairB.second;
-          return aValue.compareTo(bValue);
-        } else if (_valueType == VALUE_STRING) {
-          String aValue = (String) (pairA.second);
-          String bValue = (String) (pairB.second);
-          return aValue.toLowerCase().compareTo(bValue.toLowerCase());
-        } else {
+  private ArrayList<CustomPair<Integer, JSONObject>> sortThePairArray(
+      ArrayList<CustomPair<Integer, JSONObject>> arrayToSort, String parameterToSort, int valueType)
+      throws JSONException {
+    final int type = valueType;
+    final String param = parameterToSort;
+
+    Comparator<CustomPair<Integer, JSONObject>> comparator = new Comparator<CustomPair<Integer, JSONObject>>() {
+
+      public int compare(CustomPair<Integer, JSONObject> pairA,
+          CustomPair<Integer, JSONObject> pairB) {
+        try {
+          if (type == VALUE_INTEGER) {
+            Integer aValue = pairA.second.getInt(param);
+            Integer bValue = pairB.second.getInt(param);
+            return aValue.compareTo(bValue);
+          } else if (type == VALUE_STRING) {
+            String aValue = pairA.second.getString(param);
+            String bValue = pairB.second.getString(param);
+            return aValue.toLowerCase().compareTo(bValue.toLowerCase());
+          } else {
+            throw new RuntimeException();
+          }
+        } catch (JSONException e) {
           throw new RuntimeException();
         }
       }
     };
 
-    Collections.sort(sortedArrayOfPairs, comparator);
+    Collections.sort(arrayToSort, comparator);
+
+    return arrayToSort;
   }
 
   public JSONObject getSortedJSONObj(int index) throws JSONException {
-    // if (_valueType != VALUE_INTEGER) {
-    // throw new RuntimeException();
-    // }
-
-    Integer indexToReturn = (Integer) sortedArrayOfPairs.get(index).first;
-    return unsortedArray.getJSONObject(indexToReturn);
+    return sortedArrayOfPairs.get(index).second;
   }
-
-  // Redundant, did not need
-  /*
-   * public JSONObject getSortedStringValue(int index) throws JSONException { if
-   * (_valueType != VALUE_STRING) { throw new RuntimeException(); }
-   * 
-   * Integer indexToReturn = (Integer) _pairs.get(index).first; return
-   * _arrayToSort.getJSONObject(indexToReturn); }
-   */
 }

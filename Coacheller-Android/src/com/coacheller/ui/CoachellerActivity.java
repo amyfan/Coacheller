@@ -76,7 +76,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   // contains actual rating, stored in userRatingsJAHM
   private JSONObject lastRating;
   // contains both week's scores
-  private CustomPair<JSONObject, JSONObject> lastRatingScorePair = new CustomPair<JSONObject, JSONObject>(null, null);
+  private CustomPair<JSONObject, JSONObject> lastRatingPair = new CustomPair<JSONObject, JSONObject>(null, null);
   private HashMap<Integer, Integer> _selectedIdToValue = new HashMap<Integer, Integer>();
   private HashMap<String, Integer> _ratingSelectedValueToId = new HashMap<String, Integer>();
 
@@ -286,14 +286,14 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       JSONObject lastRatingWeek2 = _appController.getUserRatingsJAHM().getJSONObject(setId, "2");
 
       // if (lastRatingWeek1 != null) {
-      lastRatingScorePair.first = lastRatingWeek1;
+      lastRatingPair.first = lastRatingWeek1;
       // .getString(AndroidConstants.JSON_KEY_RATINGS__RATING);
       // } else {
       // lastRatingScorePair.first = null;
       // }
 
       // if (lastRatingWeek2 != null) {
-      lastRatingScorePair.second = lastRatingWeek2;
+      lastRatingPair.second = lastRatingWeek2;
       // .getString(AndroidConstants.JSON_KEY_RATINGS__RATING);
       // } else {
       // lastRatingScorePair.second = null;
@@ -303,8 +303,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       LogController.OTHER.logMessage("JSONException retrieving user's last rating");
       e.printStackTrace();
     }
-    LogController.OTHER.logMessage("You Clicked On: " + obj + " previous ratings " + lastRatingScorePair.first + "/"
-        + lastRatingScorePair.second);
+    LogController.OTHER.logMessage("You Clicked On: " + obj + " previous ratings " + lastRatingPair.first + "/"
+        + lastRatingPair.second);
 
     if (!_appController.getIsLoggedIn()) {
       _beginSigninProcess();
@@ -391,9 +391,9 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         } else {
           JSONObject ratingToCheck = null;;
           if (checkedId == R.id.radio_button_week1) {
-            ratingToCheck = lastRatingScorePair.first;
+            ratingToCheck = lastRatingPair.first;
           } else if (checkedId == R.id.radio_button_week2) {
-            ratingToCheck = lastRatingScorePair.second;
+            ratingToCheck = lastRatingPair.second;
           }
           if (ratingToCheck != null) {
             int buttonIdToCheck = _ratingSelectedValueToId.get(ratingToCheck
