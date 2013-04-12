@@ -416,7 +416,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   protected Dialog onCreateDialog(int id) {
     if (id == AndroidConstants.DIALOG_FIRST_USE) {
       firstUseDialog = new Dialog(this);
-      firstUseDialog.setContentView(R.layout.first_use_dialog);
+      firstUseDialog.setContentView(R.layout.dialog_first_use);
       firstUseDialog.setTitle(AuthConstants.DIALOG_TITLE_FIRST_USE);
 
       Button buttonOK = (Button) firstUseDialog.findViewById(R.id.button_firstuse_ok);
