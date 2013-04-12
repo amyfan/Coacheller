@@ -8,6 +8,10 @@ public class AndroidConstants {
   // Local Storage
   public static final String DATA_SETS = "DATA_SETS";
   public static final String DATA_RATINGS = "DATA_RATINGS";
+  
+  // Alerts feature
+  //Minutes before a set to trigger an alert, default setting
+  public static final Integer ALERT_DEFAULT_REMINDERTIME = 15;
 
   // JSON Hashmap Keys
   public static final String JSON_KEY_SETS__SET_ID = "id";
