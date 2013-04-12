@@ -42,6 +42,7 @@ import com.coacheller.data.CoachSetListAdapter;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.CalendarUtils;
+import com.ratethisfest.android.DaysHashMap;
 import com.ratethisfest.android.ServiceUtils;
 import com.ratethisfest.android.auth.AuthActivityInt;
 import com.ratethisfest.android.auth.AuthModel;
@@ -57,8 +58,8 @@ import com.ratethisfest.shared.HttpConstants;
  * Main Coacheller Activity. Serves as view controller.
  * 
  */
-public class CoachellerActivity extends Activity implements View.OnClickListener,
-    OnItemSelectedListener, OnItemClickListener, OnCheckedChangeListener, AuthActivityInt {
+public class CoachellerActivity extends Activity implements View.OnClickListener, OnItemSelectedListener,
+    OnItemClickListener, OnCheckedChangeListener, AuthActivityInt {
 
   private static final int REFRESH_INTERVAL__SECONDS = 15;
 
@@ -182,7 +183,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     String week = intent.getExtras().getString(SearchSetsActivity.WEEK);
     String day = intent.getExtras().getString(SearchSetsActivity.DAY);
 
-    LogController.OTHER.logMessage("Searching year[" + year + "] week[" + week + "] day[" + day + "]");
+    LogController.OTHER.logMessage("CoachellerActivity setting search suggestion of year[" + year + "] week[" + week + "] day[" + day + "]");
     _appController.setYearToQuery(Integer.valueOf(year));
     _appController.setDayToQuery(day);
     _appController.setWeekToQuery(Integer.valueOf(week));
@@ -194,9 +195,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     super.onResume();
     LogController.LIFECYCLE_ACTIVITY.logMessage(this + " onResume");
 
-    
     _appController.setLastAuthActivity(this);
-    
+
     // TODO: We'll reenable this if we have something significant to say in the
     // beginning
     // if (_appController.isDataFirstUse()) {
@@ -245,6 +245,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       clickDialogSubmitRatingButtonOK();
     } // End rating dialog submitted
 
+    // Submit rating for a set and do Facebook post
     if (viewClicked.getId() == R.id.button_go_fb) {
       try {
         clickDialogSubmitRatingFacebook();
@@ -254,6 +255,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       }
     }
 
+    // Submit rating for a set and do Twitter post
     if (viewClicked.getId() == R.id.button_go_tweet) {
       try {
         clickDialogSubmitRatingTwitter();
@@ -283,28 +285,31 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     try {// TODO Hard coded strings means you are going to hell
       String setId = lastSetSelected.getString(AndroidConstants.JSON_KEY_SETS__SET_ID);
       JSONObject lastRatingWeek1 = _appController.getUserRatingsJAHM().getJSONObject(setId, "1");
-      JSONObject lastRatingWeek2 = _appController.getUserRatingsJAHM().getJSONObject(setId, "2");
-
-      // if (lastRatingWeek1 != null) {
       lastRatingScorePair.first = lastRatingWeek1;
-      // .getString(AndroidConstants.JSON_KEY_RATINGS__RATING);
-      // } else {
-      // lastRatingScorePair.first = null;
-      // }
 
-      // if (lastRatingWeek2 != null) {
-      lastRatingScorePair.second = lastRatingWeek2;
-      // .getString(AndroidConstants.JSON_KEY_RATINGS__RATING);
-      // } else {
-      // lastRatingScorePair.second = null;
-      // }
+      JSONObject lastRatingWeek2 = null;
+      // TODO IF festival has a second week....
+      if (_appController.getFestivalNumberOfWeeks() == 2) {
+        lastRatingWeek2 = _appController.getUserRatingsJAHM().getJSONObject(setId, "2");
+        lastRatingScorePair.second = lastRatingWeek2;
+      }
 
     } catch (JSONException e) {
       LogController.OTHER.logMessage("JSONException retrieving user's last rating");
       e.printStackTrace();
     }
+
+    // Variable setup is done
     LogController.OTHER.logMessage("You Clicked On: " + obj + " previous ratings " + lastRatingScorePair.first + "/"
         + lastRatingScorePair.second);
+
+    // Figure out the time of the currently clicked set
+    LogController.SET_DATA.logMessage("Last set selected:");
+    LogController.SET_DATA.logMessage(lastSetSelected.toString());
+    _appController.getWeekToQuery(); // Week the user is looking at
+    CalendarUtils.whatWeekIsToday();
+
+    isLastSelectedSetInTheFuture();
 
     if (!_appController.getIsLoggedIn()) {
       _beginSigninProcess();
@@ -318,6 +323,34 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       }
       showDialog(AndroidConstants.DIALOG_RATE);
     }
+  }
+
+  // Is clicked set IN THE FUTURE?
+  private boolean isLastSelectedSetInTheFuture() {
+    boolean returnValue = false;
+    int todayInt = CalendarUtils.whatDayIsTodayInt();
+    int selectedDayInt = DaysHashMap.DayStringToJavaCalendar(_appController.getDayToQuery());
+
+    if (CalendarUtils.whatWeekIsToday() < _appController.getWeekToQuery()) {
+      returnValue = false; // If todayWeek < selectedWeek Selection==Future
+
+    } else if (CalendarUtils.whatWeekIsToday() > _appController.getWeekToQuery()) {
+      returnValue = true; // If todayWeek > selectedWeek Selection!=Future
+
+    } else if (CalendarUtils.isFestDayAfter(todayInt, selectedDayInt)) {
+      returnValue = true; // If todayDay < selectedDay Selection==Future
+
+    } else if (CalendarUtils.isFestDayAfter(selectedDayInt, todayInt)) {
+      returnValue = false; // If todayDay > selectedDay Selection!=Future
+
+    } else if (true) {
+      // If currentTime < OR == selectedTime Before
+      
+      
+    } else if (true) {
+      // If currentTime > selectedTime After
+    }
+    return returnValue;
   }
 
   // An item was selected from the list of sets
@@ -389,7 +422,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
           scoreGroup.clearCheck();
           noteWidget.setText("");
         } else {
-          JSONObject ratingToCheck = null;;
+          JSONObject ratingToCheck = null;
+          ;
           if (checkedId == R.id.radio_button_week1) {
             ratingToCheck = lastRatingScorePair.first;
           } else if (checkedId == R.id.radio_button_week2) {
@@ -517,7 +551,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         e.printStackTrace();
       }
 
-      int week = CalendarUtils.whichWeekIsToday();
+      int week = CalendarUtils.whatWeekIsToday();
       RadioGroup weekGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_week);
       RadioButton buttonWeek1 = (RadioButton) rateDialog.findViewById(R.id.radio_button_week1);
       RadioButton buttonWeek2 = (RadioButton) rateDialog.findViewById(R.id.radio_button_week2);
@@ -756,7 +790,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       return;
     }
     rateDialogSubmitRating();
-    
+
     _appController.getAuthModel().ensurePermission(AuthModel.PERMISSION_TWITTER_TWEET);
 
     _queuedTwitterPost = _buildSocialNetworkPost();
@@ -821,7 +855,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   private void rateDialogSubmitRating() {
     // TODO this is in the code in 2 places
-    //RadioGroup weekGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_week);
+    // RadioGroup weekGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_week);
     int weekSelectedId = ((RadioGroup) rateDialog.findViewById(R.id.radio_pick_week)).getCheckedRadioButtonId();
 
     RadioGroup scoreGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_score);

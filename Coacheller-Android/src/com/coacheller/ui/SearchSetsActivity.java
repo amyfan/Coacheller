@@ -84,11 +84,11 @@ public class SearchSetsActivity extends Activity implements OnClickListener {
       }
     });
 
-    if (CalendarUtils.whichWeekIsToday() == 1) {
+    if (CalendarUtils.whatWeekIsToday() == 1) {
       LogController.OTHER.logMessage("Date suggests week 1");
       setUIWeek1();
 
-    } else if (CalendarUtils.whichWeekIsToday() == 2) {
+    } else if (CalendarUtils.whatWeekIsToday() == 2) {
       LogController.OTHER.logMessage("Date suggests week 2");
       setUIWeek2();
     }

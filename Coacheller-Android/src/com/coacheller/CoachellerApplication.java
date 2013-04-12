@@ -18,9 +18,11 @@ import android.os.Bundle;
 import com.coacheller.ui.ChooseLoginActivity;
 import com.coacheller.ui.CoachellerActivity;
 import com.coacheller.ui.SearchSetsActivity;
+import com.ibm.icu.util.Calendar;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.CalendarUtils;
+import com.ratethisfest.android.DaysHashMap;
 import com.ratethisfest.android.ServiceUtils;
 import com.ratethisfest.android.StorageManager;
 import com.ratethisfest.android.auth.AppControllerInt;
@@ -123,8 +125,8 @@ public class CoachellerApplication extends Application implements AppControllerI
     activityCoacheller = act;
 
     yearToQuery = CalendarUtils.whatYearIsToday();
-    weekToQuery = CalendarUtils.whichWeekIsToday();
-    dayToQuery = CalendarUtils.suggestDayToQuery();
+    weekToQuery = CalendarUtils.whatWeekIsToday();
+    dayToQuery = CalendarUtils.suggestDayToQueryString();
 
     storageManager = new StorageManager(this, getString(R.string.save_file_name));
 
@@ -179,6 +181,8 @@ public class CoachellerApplication extends Application implements AppControllerI
     this.dayToQuery = dayToQuery;
   }
 
+  
+  
   public int getWeekToQuery() {
     return weekToQuery;
   }
@@ -194,15 +198,25 @@ public class CoachellerApplication extends Application implements AppControllerI
   public void setYearToQuery(int yearToQuery) {
     this.yearToQuery = yearToQuery;
   }
+  
+  public int getFestivalNumberOfWeeks() {
+    // Coachella
+    return AndroidConstants.FESTIVAL_WEEKS_COACHELLER;
+  }
 
   public void refreshDataFromStorage() {
     // Below here is stuff to be done each refresh
     _networkErrors = false;
 
     // TODO: enumerate
-    if (!dayToQuery.equals("Friday") && !dayToQuery.equals("Saturday")
-        && !dayToQuery.equals("Sunday")) {
-      dayToQuery = "Friday";
+    if (dayToQuery == null) {
+      dayToQuery = CalendarUtils.suggestDayToQueryString();
+    }
+    
+    int dayToQueryInt = DaysHashMap.DayStringToJavaCalendar(dayToQuery);
+    String defaultDayToQueryString = DaysHashMap.DayJavaCalendarToString(Calendar.FRIDAY);
+    if (!(dayToQueryInt == Calendar.FRIDAY) && !(dayToQueryInt == Calendar.SATURDAY) && !(dayToQueryInt == Calendar.SUNDAY)) {
+      dayToQuery = defaultDayToQueryString;
     }
   }
 
