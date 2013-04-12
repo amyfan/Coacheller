@@ -31,33 +31,53 @@
 
 - (void)load {
   NSString *plistPath = [self.rootPath stringByAppendingPathComponent:self.saveFileName];
-  self.data = [[NSDictionary alloc] initWithContentsOfFile:plistPath];
+  NSLog([NSString stringWithFormat:@"StorageManager: loading from %@", plistPath]);
+  self.data = [[NSMutableDictionary alloc] initWithContentsOfFile:plistPath];
+  
+  for (id key in self.data) {
+    NSLog([NSString stringWithFormat:@"StorageManager data key loaded:  %@", key]);
+  }
 
   if(!self.data) {
-    self.data = [[NSDictionary alloc] init];
+    NSLog(@"StorageManager: no data loaded");
+    self.data = [[NSMutableDictionary alloc] init];
   }
 }
 
 - (void)save {
   NSString *plistPath = [self.rootPath stringByAppendingPathComponent:self.saveFileName];
+  NSLog([NSString stringWithFormat:@"StorageManager: saving data to %@", plistPath]);
   
-  [self.data writeToFile:plistPath atomically:YES];
+  //[self.data writeToFile:plistPath atomically:YES];
   
-  // only do the following if want to convert plist->NSData first before writing out, for whatever reason
+  // only do the following if want to convert plist->NSData first before writing out, for whatever reason (logindata preventing this from being property list)
   
-  //NSString *error;
-  //NSData *plistData = [NSPropertyListSerialization dataFromPropertyList:self.data format:NSPropertyListXMLFormat_v1_0 errorDescription:&error];
-  //if(plistData) {
-    //[plistData writeToFile:plistPath atomically:YES];
-  //}
+  NSString *error;
+  NSData *plistData = [NSPropertyListSerialization dataFromPropertyList:self.data format:NSPropertyListXMLFormat_v1_0 errorDescription:&error];
+  if(plistData) {
+    [plistData writeToFile:plistPath atomically:YES];
+  }
 }
 
+- (void)putJSONArray:(NSArray*)array WithName:(NSString *)dataName {
+  [self.data setValue:array forKey:dataName];
+}
+
+- (void)putJSONDictionary:(NSDictionary*)array WithName:(NSString *)dataName {
+  [self.data setValue:array forKey:dataName];
+}
+
+// deprecated; we're keeping this a property list!
 - (void)putObject:(id)object WithName:(NSString *)objectName {
   [self.data setObject:object forKey:objectName];
 }
 
 - (id)getObject:(NSString *)objectName {
   return [self.data objectForKey:objectName];
+}
+
+- (void)removeObjectWithKey:(NSString *)objectName {
+  [self.data removeObjectForKey:objectName];
 }
 
 @end

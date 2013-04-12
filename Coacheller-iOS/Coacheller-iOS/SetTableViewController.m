@@ -11,7 +11,15 @@
 #import "StorageManager.h"
 #import "JSONArrayHashMap.h"
 #import "AppConstants.h"
-#import "CustomPair.h"
+#import "AuthController.h"
+#import "SwitchDayViewController.h"
+#import "RateSetViewController.h"
+#import "CoachellerAppDelegate.h"
+
+#define LOGIN_TYPE @"LOGIN_TYPE"
+#define LOGIN_ACCOUNT_ID @"LOGIN_ACCOUNT_ID"
+#define LOGIN_ACCOUNT_TOKEN @"LOGIN_ACCOUNT_TOKEN"
+#define LOGIN_EMAIL @"LOGIN_EMAIL"
 
 @interface SetTableViewController ()
 
@@ -19,25 +27,24 @@
 @property (nonatomic, strong) StorageManager *storageManager;
 @property (nonatomic, strong) JSONArrayHashMap *myRatings;
 @property (nonatomic, strong) NSString *sortMode;
+@property (nonatomic, strong) UIButton *sortModeButton;
+@property (nonatomic, strong) NSArray *sortModeTitles;
 
-// contains set id, stored in setListAdapter
-@property (nonatomic, strong) NSDictionary *lastSetSelected;
-// contains actual rating, stored in userRatingsJAHM
-@property (nonatomic, strong) NSDictionary *lastRating;
 // contains both week's scores
-@property (nonatomic, strong) CustomPair *lastRatingScorePair;
+@property (nonatomic, strong) CustomPair *lastRatingPair;
 
 @end
 
 @implementation SetTableViewController
 
 -(UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+  NSLog(@"*****SetTableViewController: viewForHeaderInSection");
   UIView* headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 90)];
   headerView.backgroundColor = [UIColor darkGrayColor];
   
-  // Add label
+  // Add main label
   UILabel* headerLabel = [[UILabel alloc] init];
-  headerLabel.frame = CGRectMake(10, 0, 300, 30);
+  headerLabel.frame = CGRectMake(10, 0, headerView.frame.size.width, 30);
   headerLabel.backgroundColor = [UIColor darkGrayColor];
   headerLabel.textColor = [UIColor whiteColor];
   headerLabel.font = [UIFont boldSystemFontOfSize:18];
@@ -52,24 +59,46 @@
 
   // Add Switch Day button
   UIButton *switchDayButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-  switchDayButton.frame = CGRectMake(10.0, 40, 100.0, 35.0); // x,y,width,height
-  [switchDayButton setTitle:@"Switch Day" forState:UIControlStateNormal];
-  [switchDayButton addTarget:self action:@selector(switchDay) forControlEvents:UIControlEventTouchUpInside];
+  switchDayButton.frame = CGRectMake(headerView.frame.size.width - 70, 20, 60, 55); // x,y,width,height
+  switchDayButton.titleLabel.font = [UIFont systemFontOfSize:14];
+  switchDayButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+  switchDayButton.titleLabel.numberOfLines = 0;
+  [switchDayButton setTitle:@"Switch Day =>" forState:UIControlStateNormal];
+  [switchDayButton addTarget:self action:@selector(switchDayAction) forControlEvents:UIControlEventTouchUpInside];
   [headerView addSubview:switchDayButton];
   
-  // TODO Add Sort Mode UIPickerView (oof)
+  // Add Sort Mode label
+  UILabel* sortLabel = [[UILabel alloc] init];
+  sortLabel.frame = CGRectMake(10, 40, 50, 35);
+  sortLabel.backgroundColor = [UIColor darkGrayColor];
+  sortLabel.textColor = [UIColor whiteColor];
+  sortLabel.font = [UIFont systemFontOfSize:14];
+  sortLabel.text = @"Sort By:";
+  [headerView addSubview:sortLabel];
   
+  // Add Sort Mode Day button
+  self.sortModeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+  self.sortModeButton.frame = CGRectMake(70, 40, 55, 35); // x,y,width,height
+  self.sortModeButton.titleLabel.font = [UIFont systemFontOfSize:14];
+  NSString *sortModeTitle = @"Time";
+  if (self.sortMode) {
+    sortModeTitle = [self.sortMode capitalizedString];
+  }
+  [self.sortModeButton setTitle:sortModeTitle forState:UIControlStateNormal];
+  [self.sortModeButton addTarget:self action:@selector(sortModeAction) forControlEvents:UIControlEventTouchUpInside];
+  [headerView addSubview:self.sortModeButton];
   
+  // Only for testing authentication
   UIButton *debugScreenButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
   int buttonWidth = 40;
-  int buttonHeight = 40;
+  int buttonHeight = 35;
   int rightborder = 30;
-  int topborder = 30;
+  int topborder = 0;
   
   debugScreenButton.frame = CGRectMake(headerView.frame.size.width - rightborder - buttonWidth, topborder, buttonWidth, buttonHeight);
   [debugScreenButton setTitle:@"Debug" forState:UIControlStateNormal];
-  [debugScreenButton addTarget:self action:@selector(showDebug) forControlEvents:UIControlEventTouchUpInside];
-  [headerView addSubview:debugScreenButton];
+  [debugScreenButton addTarget:self action:@selector(showDebugAction) forControlEvents:UIControlEventTouchUpInside];
+  //[headerView addSubview:debugScreenButton];
   
   
   return headerView;
@@ -79,68 +108,18 @@
   return 90;
 }
 
-- (IBAction)switchDay {
-  NSLog(@"switchDay action called");
-  // perform a segue programmatically
-  [self performSegueWithIdentifier:@"switchDay" sender:self];
-  
-  // TODO: need to actually create the segue w/ switchDay somewhere in the ether (programmatically)
-}
-
-- (IBAction)showDebug {
-  NSLog(@"showDebug action called");
-  
-  // perform a segue programmatically
-  [self performSegueWithIdentifier:@"debugScreen" sender:self];
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-  if ([sender isKindOfClass:[UIButton class]]) {
-    // button clicked
-    if ([segue.identifier isEqualToString:@"Switch Day"]) {
-      
-    }
-    
-  } else if ([sender isKindOfClass:[UITableViewCell class]]) {
-    // table row selected
-    NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-    if (indexPath) {
-      if ([segue.identifier isEqualToString:@"debugScreen"]) {  //DEBUGGING ONLY
-        if (![self getLoginData]) {
-          // log in user
-        }
-      } else if ([segue.identifier isEqualToString:@"rateSet"]) {
-        if ([segue.destinationViewController respondsToSelector:@selector(rateSet:)]) {
-          // TODO: switch to customsetlistadapter collection
-          NSString *setId = [self.sets getItemAt:indexPath.row][JSON_SET_ID];
-          // TODO: create destination controller
-          //[segue.destinationViewController performSelector:@selector(rateSet:) withSetId:setId];
-        }
-      }
-
-    }
-  }
-}
-
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
   [super viewDidLoad];
   
-  NSLog(@"viewdidload");
+  NSLog(@"*****SetTableViewController: viewdidload");
   
-  // TODO: put this in a place that gets invoked only once??
-  self.yearToQuery = [CalendarUtils whatYearIsToday];
-  self.weekToQuery = [CalendarUtils whichWeekIsToday];
-  self.dayToQuery = [CalendarUtils suggestDayToQuery];
+  if (!self.yearToQuery) self.yearToQuery = [CalendarUtils whatYearIsToday];
+  if (!self.weekToQuery) self.weekToQuery = [CalendarUtils whichWeekIsToday];
+  if (!self.dayToQuery) self.dayToQuery = [CalendarUtils suggestDayToQuery];
+  
+  self.navigationItem.hidesBackButton = YES;
+  self.tableView.bounces = NO;
   
   [self initData];
   
@@ -156,7 +135,8 @@
 - (void)initData {
   self.sets = [[SetDataForTVC alloc] initWithTimeFieldName:JSON_SET_TIME_ONE StageFieldName:JSON_SET_STAGE_ONE AndRatingsHashMap:self.myRatings];
   
-  self.sortMode = SORT_MODE_ARTIST;
+  self.sortMode = SORT_MODE_TIME;
+  self.sortModeTitles = @[SORT_MODE_TIME, SORT_MODE_ARTIST, SORT_MODE_STAGE];
   
   // TODO: create proper file name
   NSString *saveFileName = @"CoachellerData.plist";
@@ -164,179 +144,27 @@
   
   self.myRatings = [[JSONArrayHashMap alloc] initWithKeyName1:JSON_RATING_SET_ID AndKeyName2:JSON_RATING_WEEKEND];
   
+  self.lastRatingPair = [[CustomPair alloc] init];
+  
 }
 
-- (void)processLoginDataWithLoginType:(NSString *)loginType AccountId:(NSString *)accountId AndAccountToken:(NSString *)accountToken {
-  LoginData *loginData = [[LoginData alloc] init];
-  loginData.loginType = loginType;
-  loginData.accountIdentifier = accountId;
-  loginData.accountToken = accountToken;
-  
-  if ([loginData.loginType isEqualToString:LOGIN_TYPE_GOOGLE] || [loginData.loginType isEqualToString:LOGIN_TYPE_FACEBOOK]) {
-    loginData.emailAddress = accountId;
-  }
-  
-  [self saveLoginDataInfo:loginData];
+- (CoachellerAppDelegate*) sharedAppDelegate {
+  return (CoachellerAppDelegate*)[[UIApplication sharedApplication] delegate];
 }
 
-- (LoginData *)getLoginData {
-  return [self.storageManager getObject:DATA_LOGIN_INFO_KEY];
+- (NSDictionary *)getLoginData {
+    return [self.storageManager getObject:DATA_LOGIN_INFO_KEY];
 }
 
 - (void)clearLoginData {
-  [self saveLoginDataInfo:nil];
-}
-
-- (void)saveLoginDataInfo:(LoginData *)loginData {
-  [self.storageManager putObject:loginData WithName:DATA_LOGIN_INFO_KEY];
+  [self.storageManager removeObjectWithKey:DATA_LOGIN_INFO_KEY];
   [self.storageManager save];
 }
 
-- (void)getDataFromServer {
-  self.responseData = [NSMutableData data];
-  
-  // get ratings
-  if ([self getLoginData]) {
-    NSMutableString *urlMutableString = [[NSMutableString alloc] init];
-    
-    [urlMutableString appendString:@"https://ratethisfest.appspot.com/coachellerServlet?action=get_ratings&year="];
-    [urlMutableString appendString:[NSString stringWithFormat:@"%d", self.yearToQuery]];
-    [urlMutableString appendString:@"&day="];
-    [urlMutableString appendString:self.dayToQuery];
-    
-    [urlMutableString appendString:[self appendParamWithName:PARAM_AUTH_TYPE AndValue:[self getLoginData].loginType]];
-    
-    NSString *authId = [self getLoginData].accountIdentifier;
-    NSString *escapedAuthId = [authId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    [urlMutableString appendString:[self appendParamWithName:PARAM_AUTH_ID AndValue:escapedAuthId]];
-    
-    NSString *authToken = [self getLoginData].accountToken;
-    NSString *escapedAuthToken = [authToken stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    [urlMutableString appendString:[self appendParamWithName:PARAM_AUTH_TOKEN AndValue:escapedAuthToken]];
-    
-    if ([self getLoginData].emailAddress) {
-      [urlMutableString appendString:[self appendParamWithName:PARAM_AUTH_TYPE AndValue:[self getLoginData].emailAddress]];
-    }
-    
-    NSString *urlString = [NSString stringWithString:urlMutableString];
-    
-    NSURLRequest *request = [NSURLRequest requestWithURL:
-                             [NSURL URLWithString:urlString]];
-    [[NSURLConnection alloc] initWithRequest:request delegate:self];
-    //NSError *error;
-    //NSURLResponse *response;
-    //NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-  } else {
-    [self.myRatings clearRatings];
-    
-    // TEMPORARY for testing!
-    NSMutableString *urlMutableString = [[NSMutableString alloc] init];
-    
-    [urlMutableString appendString:@"https://ratethisfest.appspot.com/coachellerServlet?action=get_ratings&year="];
-    [urlMutableString appendString:[NSString stringWithFormat:@"%d", self.yearToQuery]];
-    [urlMutableString appendString:@"&day="];
-    [urlMutableString appendString:self.dayToQuery];
-    
-    NSString *authId = @"amyfan@gmail.com";
-    NSString *escapedAuthId = [authId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    // NSString *escapedAuthId2 = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes( NULL,	 (CFStringRef)authId,	 NULL,	 (CFStringRef)@"!’\"();:@&=+$,/?%#[]% ", kCFStringEncodingISOLatin1));
-    
-    [urlMutableString appendString:@"&auth_type="];
-    [urlMutableString appendString:LOGIN_TYPE_GOOGLE];
-    [urlMutableString appendString:@"&auth_id="];
-    [urlMutableString appendString:escapedAuthId];
-    
-    [urlMutableString appendString:@"&auth_token="];
-    
-    NSString *authToken = @"ya29.AHES6ZQ-xDAF0cSVKUgYiAMCnslgfX0ioi0_YT-qP2zImqzcMg";
-    NSString *escapedAuthToken = [authToken stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    // NSString *escapedAuthToken2 = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes( NULL,	 (CFStringRef)authToken,	 NULL,	 (CFStringRef)@"!’\"();:@&=+$,/?%#[]% ", kCFStringEncodingISOLatin1));
-    
-    
-    [urlMutableString appendString:escapedAuthToken];
-    [urlMutableString appendString:@"&email="];
-    [urlMutableString appendString:escapedAuthToken];
-    
-    NSString *urlString = [NSString stringWithString:urlMutableString];
-    
-    NSURLRequest *request = [NSURLRequest requestWithURL:
-                             [NSURL URLWithString:urlString]];
-    [[NSURLConnection alloc] initWithRequest:request delegate:self];
-  }
-  
-  // get sets
-  NSMutableString *urlMutableString = [[NSMutableString alloc] init];
-  [urlMutableString appendString:@"https://ratethisfest.appspot.com/coachellerServlet?action=get_sets&year="];
-  [urlMutableString appendString:[NSString stringWithFormat:@"%d", self.yearToQuery]];
-  [urlMutableString appendString:@"&day="];
-  [urlMutableString appendString:self.dayToQuery];
-  
-  NSString *urlString = [NSString stringWithString:urlMutableString];
-  
-  NSURLRequest *request = [NSURLRequest requestWithURL:
-                           [NSURL URLWithString:urlString]];
-  [[NSURLConnection alloc] initWithRequest:request delegate:self];
-}
-
-- (NSString *)appendParamWithName:(NSString *)name AndValue:(NSString *)value {
-  NSMutableString *urlMutableString = [[NSMutableString alloc] init];
-  [urlMutableString appendString:@"&"];
-  [urlMutableString appendString:name];
-  [urlMutableString appendString:@"="];
-  [urlMutableString appendString:value];
-  return [NSString stringWithString:urlMutableString];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-  NSLog(@"didReceiveResponse");
-  [self.responseData setLength:0];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-  [self.responseData appendData:data];
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-  NSLog(@"didFailWithError");
-  NSLog([NSString stringWithFormat:@"Connection failed: %@", [error description]]);
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-  NSLog(@"connectionDidFinishLoading");
-  NSLog(@"Succeeded! Received %d bytes of data",[self.responseData length]);
-  [self processFetchedData:self.responseData];
-}
-
-- (void)processFetchedData:(NSData *)responseData {
-  // parse out the json data
-  NSError *error;
-  NSDictionary* json = [NSJSONSerialization JSONObjectWithData:self.responseData options:kNilOptions error:&error];
-  
-  NSMutableArray *dataArray = [NSMutableArray array];
-  
-  for (NSDictionary * dataDict in json) {
-    [dataArray addObject:dataDict];
-  }
-  
-  // determine whether sets or ratings
-  if ([dataArray count] > 0) {
-    NSLog(@"ratings: %@", dataArray);
-    if([dataArray objectAtIndex:0][JSON_RATING_SCORE]) {
-      // data is of type rating
-      [self.myRatings rebuildDataWith:dataArray];
-    } else {
-      // data is of type set
-      [self.sets setSetsData:dataArray];
-      [self.sets resortSets:self.sortMode];
-    }
-  }
-  
-  NSLog(@"to reload data");
-  
+- (void)saveLoginDataInfo:(NSMutableDictionary *)loginData {
+  [self.storageManager putJSONDictionary:loginData WithName:DATA_LOGIN_INFO_KEY];
   [self.storageManager save];
-  [self.tableView reloadData];
 }
-
 
 #pragma mark - Table view data source
 
@@ -347,22 +175,12 @@
   return [self.sets getItemCount];
 }
 
-// no longer used
-- (NSString *)titleForRow:(NSUInteger)row {
-  //return [self.sets getItemAt:row][JSON_SET_ARTIST];
-  return nil;
-}
-
-// no longer used
-- (NSString *)subtitleForRow:(NSUInteger)row {
-  //return [self.sets getItemAt:row][JSON_SET_STAGE_ONE];
-  return nil;
-}
-
 // TODO: DETERMINE PROPER WEEK:
 
 - (NSString *)timeForRow:(NSUInteger)row {
-  return [self.sets getItemAt:row][JSON_SET_TIME_ONE];
+  // TODO: timeFieldName instead, tho shouldn't matter yet
+  int milTime = [[self.sets getItemAt:row][JSON_SET_TIME_ONE] intValue];
+  return [CalendarUtils militaryToCivilianTime:milTime];
 }
 
 - (NSString *)artistForRow:(NSUInteger)row {
@@ -370,6 +188,7 @@
 }
 
 - (NSString *)stageForRow:(NSUInteger)row {
+  // TODO: timeFieldName instead, tho shouldn't matter yet
   return [self.sets getItemAt:row][JSON_SET_STAGE_ONE];
 }
 
@@ -425,17 +244,17 @@
   
   if (cell) {
     // Configure the cell...
-    UILabel *label = (UILabel *)[cell viewWithTag:0];
-    label.text = [self titleForRow:indexPath.row];
-    label = (UILabel *)[cell viewWithTag:1];
-    label.text = [self artistForRow:indexPath.row];
+    UILabel *label = (UILabel *)[cell viewWithTag:1];
+    label.text = [self timeForRow:indexPath.row];
     label = (UILabel *)[cell viewWithTag:2];
-    label.text = [[self stageForRow:indexPath.row] uppercaseString];
+    label.text = [self artistForRow:indexPath.row];
     label = (UILabel *)[cell viewWithTag:3];
-    label.text = [self avgScoreOneForRow:indexPath.row];
+    label.text = [[self stageForRow:indexPath.row] uppercaseString];
     label = (UILabel *)[cell viewWithTag:4];
-    label.text = [self avgScoreTwoForRow:indexPath.row];
+    label.text = [self avgScoreOneForRow:indexPath.row];
     label = (UILabel *)[cell viewWithTag:5];
+    label.text = [self avgScoreTwoForRow:indexPath.row];
+    label = (UILabel *)[cell viewWithTag:6];
     label.text = [self myRatingsForRow:indexPath.row];
   }
   
@@ -492,6 +311,378 @@
      // Pass the selected object to the new view controller.
      [self.navigationController pushViewController:detailViewController animated:YES];
      */
+  
+  // first check for login status
+  //if (![self getLoginData]) {
+  //}
+  if (![self getLoginData]) {
+    [[self sharedAppDelegate].authController.facebookAuthController openSession:self];
+  } else {
+    self.lastSetSelected = [self.sets getItemAt:indexPath.row];
+    
+    NSString *setId = self.lastSetSelected[JSON_SET_ID];
+    // Get Ratings for this set Id
+    NSDictionary *ratingWk1 = [self.myRatings getObjectWithKeyOne:setId AndKeyTwo:@"1"];
+    NSDictionary *ratingWk2 = [self.myRatings getObjectWithKeyOne:setId AndKeyTwo:@"2"];
+    
+    self.lastRatingPair.firstObj = ratingWk1;
+    self.lastRatingPair.secondObj = ratingWk2;
+    
+    [self performSegueWithIdentifier:@"rateSet" sender:self];
+  }
+}
+
+- (void)getDataFromServer {
+  self.responseData = [NSMutableData data];
+  
+  NSMutableArray *httpRequests = [NSMutableArray array];
+  [httpRequests addObject:[self getSetsRequest]];
+  NSURLRequest *ratingsRequest = [self getRatingsRequest];
+  if(ratingsRequest) {
+    [httpRequests addObject:ratingsRequest];
+  }
+  
+  dispatch_queue_t callerQueue = dispatch_get_current_queue();
+  dispatch_queue_t downloadQueue = dispatch_queue_create("Lots of requests", NULL);
+  
+  dispatch_async(downloadQueue, ^{
+    NSMutableArray *dataArray = [NSMutableArray array];
+    for (NSURLRequest *request in httpRequests) {
+      [dataArray addObject:[NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil]];
+    }
+    
+    dispatch_async(callerQueue, ^{
+      for (id data in dataArray) {
+        [self processFetchedData:data];
+      }
+    });
+  });
+  
+//  [[NSURLConnection alloc] initWithRequest:[self getSetsRequest] delegate:self];
+//  
+//  [[NSURLConnection alloc] initWithRequest:[self getRatingsRequest] delegate:self];
+}
+
+- (NSURLRequest *)getSetsRequest {
+  NSMutableString *urlMutableString = [[NSMutableString alloc] init];
+  
+  [urlMutableString appendString:SERVER_URL_COACHELLER];
+  [urlMutableString appendString:@"?"];
+  [urlMutableString appendString:PARAM_ACTION];
+  [urlMutableString appendString:@"="];
+  [urlMutableString appendString:ACTION_GET_SETS];
+  
+  [urlMutableString appendString:[self appendParamWithName:PARAM_YEAR AndValue:[NSString stringWithFormat:@"%d", self.yearToQuery]]];
+  [urlMutableString appendString:[self appendParamWithName:PARAM_DAY AndValue:self.dayToQuery]];
+  
+  NSString *urlString = [NSString stringWithString:urlMutableString];
+  
+  NSURLRequest *request = [NSURLRequest requestWithURL:
+                           [NSURL URLWithString:urlString]];
+  return request;
+  //[[NSURLConnection alloc] initWithRequest:request delegate:self];
+}
+
+- (NSURLRequest *)getRatingsRequest {  
+  if ([self getLoginData]) {
+    NSMutableString *urlMutableString = [[NSMutableString alloc] init];
+    
+    [urlMutableString appendString:SERVER_URL_COACHELLER];
+    [urlMutableString appendString:@"?"];
+    [urlMutableString appendString:PARAM_ACTION];
+    [urlMutableString appendString:@"="];
+    [urlMutableString appendString:ACTION_GET_RATINGS];
+    
+    [urlMutableString appendString:[self appendParamWithName:PARAM_YEAR AndValue:[NSString stringWithFormat:@"%d", self.yearToQuery]]];
+    [urlMutableString appendString:[self appendParamWithName:PARAM_DAY AndValue:self.dayToQuery]];
+    
+    [urlMutableString appendString:[self appendParamWithName:PARAM_AUTH_TYPE AndValue:[self getLoginData][LOGIN_TYPE]]];
+    
+    NSString *authId = [self getLoginData][LOGIN_ACCOUNT_ID];
+    NSString *escapedAuthId = [authId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    [urlMutableString appendString:[self appendParamWithName:PARAM_AUTH_ID AndValue:escapedAuthId]];
+    
+    NSString *authToken = [self getLoginData][LOGIN_ACCOUNT_TOKEN];
+    NSString *escapedAuthToken = [authToken stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    [urlMutableString appendString:[self appendParamWithName:PARAM_AUTH_TOKEN AndValue:escapedAuthToken]];
+    
+    if ([self getLoginData][LOGIN_EMAIL]) {
+      [urlMutableString appendString:[self appendParamWithName:PARAM_EMAIL AndValue:[self getLoginData][LOGIN_EMAIL]]];
+    }
+    
+    NSString *urlString = [NSString stringWithString:urlMutableString];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:
+                             [NSURL URLWithString:urlString]];
+    return request;
+    //[[NSURLConnection alloc] initWithRequest:request delegate:self];
+    //NSError *error;
+    //NSURLResponse *response;
+    //NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+  } else {
+    [self.myRatings clearRatings];
+    return nil;
+  }
+}
+
+- (NSString *)appendParamWithName:(NSString *)name AndValue:(NSString *)value {
+  NSMutableString *urlMutableString = [[NSMutableString alloc] init];
+  [urlMutableString appendString:@"&"];
+  [urlMutableString appendString:name];
+  [urlMutableString appendString:@"="];
+  [urlMutableString appendString:value];
+  return [NSString stringWithString:urlMutableString];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+  NSLog(@"didReceiveResponse");
+  [self.responseData setLength:0];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+  [self.responseData appendData:data];
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+  NSLog(@"didFailWithError");
+  NSLog([NSString stringWithFormat:@"Connection failed: %@", [error description]]);
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+  NSLog(@"connectionDidFinishLoading");
+  NSLog(@"Succeeded! Received %d bytes of data",[self.responseData length]);
+  [self processFetchedData:self.responseData];
+}
+
+- (void)processFetchedData:(NSData *)responseData {
+  // parse out the json data
+  NSError *error;
+  NSDictionary* json = [NSJSONSerialization JSONObjectWithData:responseData options:kNilOptions error:&error];
+  
+  NSMutableArray *dataMutableArray = [NSMutableArray array];
+  
+  for (NSDictionary * dataDict in json) {
+    [dataMutableArray addObject:dataDict];
+  }
+  
+  // determine whether sets or ratings
+  if ([dataMutableArray count] > 0) {
+    NSArray *dataArray = [dataMutableArray copy];
+    
+    NSLog(@"%lu items", (unsigned long)dataArray.count);
+    NSLog(@"In format of: %@", [dataArray objectAtIndex:0]);
+    if([dataMutableArray objectAtIndex:0][JSON_RATING_SCORE]) {
+      // data is of type rating
+      [self.storageManager putJSONArray:dataArray WithName:DATA_RATINGS];
+      [self.myRatings rebuildDataWith:dataMutableArray];
+    } else {
+      // data is of type set
+      [self.storageManager putJSONArray:dataArray WithName:DATA_SETS];
+      [self.sets setSetsData:dataMutableArray];
+      [self.sets resortSets:self.sortMode];
+    }
+  }
+  
+  NSLog(@"to reload data");
+  
+  [self.storageManager save];
+  [self.tableView reloadData];
+}
+
+- (IBAction)switchDayAction {
+  NSLog(@"switchDay action called");
+  // perform a segue programmatically
+  [self performSegueWithIdentifier:@"switchDay" sender:self];
+}
+
+- (IBAction)sortModeAction {
+  NSLog(@"sortMode action called");
+  
+  int sortModesIndex = [self.sortModeTitles indexOfObject:self.sortMode];
+  sortModesIndex++;
+  if(sortModesIndex >= [self.sortModeTitles count]) sortModesIndex = 0;
+  self.sortMode = self.sortModeTitles[sortModesIndex];
+  [self.sortModeButton setTitle:[self.sortMode capitalizedString] forState:UIControlStateNormal];
+  //[self.sortModeButton setTitle:card.contents forState:UIControlStateSelected|UIControlStateDisabled];
+  [self.sets resortSets:self.sortMode];
+  [self.tableView reloadData];
+}
+
+- (IBAction)showDebugAction {
+  NSLog(@"showDebug action called");
+  
+  // perform a segue programmatically
+  [self performSegueWithIdentifier:@"debugScreen" sender:self];
+}
+
+- (id)initWithStyle:(UITableViewStyle)style
+{
+  self = [super initWithStyle:style];
+  if (self) {
+    // Custom initialization
+  }
+  return self;
+}
+
+- (IBAction)unwindFromSwitchDay:(UIStoryboardSegue *)segue {
+  SwitchDayViewController *sourceViewController = segue.sourceViewController;
+  self.yearToQuery = sourceViewController.yearToQuery;
+  self.weekToQuery = sourceViewController.weekToQuery;
+  self.dayToQuery = sourceViewController.dayToQuery;
+  
+  [self getDataFromServer];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+  //if ([sender isKindOfClass:[UIButton class]]) {
+  // button clicked
+  if ([segue.identifier isEqualToString:@"switchDay"]) {
+    SwitchDayViewController *switchDayViewController = (SwitchDayViewController *)segue.destinationViewController;
+    switchDayViewController.yearToQuery = self.yearToQuery;
+    switchDayViewController.weekToQuery = self.weekToQuery;
+    switchDayViewController.dayToQuery = self.dayToQuery;
+  } else if ([segue.identifier isEqualToString:@"rateSet"]) {
+    
+    RateSetViewController *rateSetViewController = (RateSetViewController *)segue.destinationViewController;
+    
+    rateSetViewController.set = self.lastSetSelected;
+    rateSetViewController.ratingPair = self.lastRatingPair;
+    rateSetViewController.currentWeekend = self.weekToQuery;
+    
+    rateSetViewController.queriedYear = self.yearToQuery;
+    rateSetViewController.queriedWeekend = self.weekToQuery;
+    rateSetViewController.queriedDay = self.dayToQuery;
+    
+    //if ([segue.destinationViewController respondsToSelector:@selector(rateSet:)]) {
+    //[segue.destinationViewController performSelector:@selector(rateSet:) withSetId:setId];
+    //}
+  }
+  
+  //} else if ([sender isKindOfClass:[UITableViewCell class]]) {
+  // table row selected
+  NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
+  if (indexPath) {
+    if ([segue.identifier isEqualToString:@"debugScreen"]) {  //DEBUGGING ONLY
+    } else {
+    }
+  //}
+  }
+}
+
+// this called after awakeFromNib after segue
+- (void)submitRating:(NSDictionary *)rating {
+  NSLog(@"*****SetTableViewController: submitRating");
+
+  NSMutableURLRequest *request = [NSMutableURLRequest
+                                  requestWithURL:[NSURL URLWithString:SERVER_URL_COACHELLER]];
+  [request setHTTPMethod:@"POST"];
+  
+  NSMutableString *params = [[NSMutableString alloc] init];
+  
+  [params appendString:PARAM_ACTION];
+  [params appendString:@"="];
+  [params appendString:ACTION_ADD_RATING];
+  
+  NSDictionary *loginData = [self getLoginData];
+  
+  if (loginData) {
+    
+    [params appendString:[self appendParamWithName:PARAM_AUTH_TYPE AndValue:loginData[LOGIN_TYPE]]];
+    
+    NSString *authId = loginData[LOGIN_ACCOUNT_ID];
+    NSString *escapedAuthId = [authId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    [params appendString:[self appendParamWithName:PARAM_AUTH_ID AndValue:escapedAuthId]];
+    
+    NSString *authToken = loginData[LOGIN_ACCOUNT_TOKEN];
+    NSString *escapedAuthToken = [authToken stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    [params appendString:[self appendParamWithName:PARAM_AUTH_TOKEN AndValue:escapedAuthToken]];
+    
+    if (loginData[LOGIN_EMAIL]) {
+      [params appendString:[self appendParamWithName:PARAM_EMAIL AndValue:[self getLoginData][LOGIN_EMAIL]]];
+    }
+    
+    [params appendString:[self appendParamWithName:PARAM_SET_ID AndValue:rating[JSON_RATING_SET_ID]]];
+    [params appendString:[self appendParamWithName:PARAM_WEEKEND AndValue:rating[JSON_RATING_WEEKEND]]];
+    [params appendString:[self appendParamWithName:PARAM_SCORE AndValue:rating[PARAM_SCORE]]];
+    if (rating[JSON_RATING_NOTES]) {
+      [params appendString:[self appendParamWithName:PARAM_NOTES AndValue:rating[JSON_RATING_NOTES]]];
+    }
+    
+    [request setHTTPBody:[params dataUsingEncoding:NSUTF8StringEncoding]];
+    [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    
+    // this should get replaced by subsequent server query
+    // [self.myRatings addValues:rating];
+    
+    // viewDidLoad comes next automatically .'. no need to refresh data here
+  }
+}
+
+// this called after awakeFromNib after segue
+- (void)emailRatings {
+  NSLog(@"*****SetTableViewController: emailRatings");
+  
+  NSMutableURLRequest *request = [NSMutableURLRequest
+                                  requestWithURL:[NSURL URLWithString:SERVER_URL_COACHELLER]];
+  [request setHTTPMethod:@"POST"];
+  
+  NSMutableString *params = [[NSMutableString alloc] init];
+  
+  [params appendString:PARAM_ACTION];
+  [params appendString:@"="];
+  [params appendString:ACTION_EMAIL_RATINGS];
+  
+  NSDictionary *loginData = [self getLoginData];
+  
+  if (loginData) {
+    if (loginData[LOGIN_EMAIL]) {
+      [params appendString:[self appendParamWithName:PARAM_EMAIL AndValue:[self getLoginData][LOGIN_EMAIL]]];
+      
+      [request setHTTPBody:[params dataUsingEncoding:NSUTF8StringEncoding]];
+      [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    } else {
+      
+    }
+    
+  }
+}
+
+- (void)facebookLoggedIn {
+  NSLog(@"SetTableViewController: Facebook Login Succeeded");
+  // save login data
+  if ([self sharedAppDelegate].authController.isLoggedIn) {
+    NSLog(@"About to process Login Data!");
+    NSLog(@"Facebook ID: %@", [[self sharedAppDelegate].authController getFacebookID]);
+    NSLog(@"Email Address: %@", [[self sharedAppDelegate].authController getUserEmailAddress]);
+    NSLog(@"First Name: %@", [[self sharedAppDelegate].authController getUserFirstName]);
+    NSLog(@"Last Name: %@", [[self sharedAppDelegate].authController getUserLastName]);
+    
+    
+    NSMutableDictionary *loginDict = [[NSMutableDictionary alloc] init];
+    [loginDict setObject:LOGIN_TYPE_FACEBOOK forKey:LOGIN_TYPE];
+    // storing email as account ID for now (can be changed without affecting account linking on server
+    [loginDict setObject:[[self sharedAppDelegate].authController getUserEmailAddress] forKey:LOGIN_ACCOUNT_ID];
+    [loginDict setObject:@"gibberishTokenFromIos" forKey:LOGIN_ACCOUNT_TOKEN];
+    [loginDict setObject:[[self sharedAppDelegate].authController getUserEmailAddress] forKey:LOGIN_EMAIL];
+    
+    [self saveLoginDataInfo:loginDict];
+  }
+}
+
+- (void)facebookLoggedOut {
+  NSLog(@"SetTableViewController: Facebook Login Failed or Logged Out");
+  [self clearLoginData];
+}
+
+- (void)facebookPostDone {
+  NSLog(@"SetTableViewController: Facebook Post Done");
+}
+
+// this called after initFromCoder after segue
+- (void)awakeFromNib {
+  [super awakeFromNib];
+  NSLog(@"*****SetTableViewController: awake from nib");
+  [self initData];
 }
 
 @end

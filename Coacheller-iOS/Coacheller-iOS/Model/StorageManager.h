@@ -13,8 +13,13 @@
 - (id)initWithSaveFileName:(NSString *)saveFileName;
 
 - (void)save;
-//- (void)putJSONArray:(NSArray*)array WithName:(NSString *)dataName;
-- (void)putObject:(id)object WithName:(NSString *)objectName;
+
+- (void)putJSONArray:(NSArray*)array WithName:(NSString *)dataName;
+
+- (void)putJSONDictionary:(NSDictionary*)array WithName:(NSString *)dataName;
+
 - (id)getObject:(NSString *)objectName;
+
+- (void)removeObjectWithKey:(NSString *)objectName;
 
 @end

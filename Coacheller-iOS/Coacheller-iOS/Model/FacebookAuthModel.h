@@ -8,11 +8,20 @@
 
 #import <Foundation/Foundation.h>
 #import <FacebookSDK/FacebookSDK.h>
+#import "FacebookDataProtocol.h"
 
-@interface FacebookAuthModel : NSObject
+@interface FacebookAuthModel : NSObject <FacebookDataProtocol>
+
+@property BOOL appLoggedIn;
+
+- (BOOL)existingFacebookSession;
+
 
 //Get items from Facebook SDK objects
-@property (strong, nonatomic) id<FBGraphUser> loggedInUser;
-
+- (void) setUserData:(NSDictionary <FBGraphUser>*)userData;
+- (NSString*) getUserEmailAddress;
+- (NSString*) getUserFirstName;
+- (NSString*) getUserLastName;
+- (NSString*) getFacebookID;
 
 @end

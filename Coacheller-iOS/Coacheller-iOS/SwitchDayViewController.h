@@ -8,6 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SwitchDayViewController : UIViewController
+@interface SwitchDayViewController : UIViewController<UIPickerViewDataSource, UIPickerViewDelegate> 
+
+// Deprecated: used to retain data in case of push segue
+//@property (nonatomic) NSInteger defaultYear;
+//@property (nonatomic) NSInteger defaultWeek;
+//@property (nonatomic, strong) NSString *defaultDay;
+
+@property (nonatomic) NSInteger yearToQuery;
+@property (nonatomic) NSInteger weekToQuery;
+@property (nonatomic, strong) NSString *dayToQuery;
 
 @end

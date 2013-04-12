@@ -7,8 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AuthProtocol.h"
+#import "AuthController.h"
 
 @interface CoachellerAppDelegate : UIResponder <UIApplicationDelegate>
+@property (nonatomic, strong) AuthController* authController;
 
 @property (strong, nonatomic) UIWindow *window;
 

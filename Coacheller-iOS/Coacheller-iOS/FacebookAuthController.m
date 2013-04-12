@@ -7,64 +7,208 @@
 //
 
 #import "FacebookAuthController.h"
-#import "LoginTestViewController.h"
+#import "CoachellerAppDelegate.h"
 
 @interface FacebookAuthController ()
 
-
-@property (strong, nonatomic) LoginTestViewController *managedViewController;
+@property (nonatomic, strong) id <AuthProtocol> facebookAPICaller;
 
 - (void)showAlert:(NSString *)message
            result:(id)result
             error:(NSError *)error;
 
-
+- (BOOL)existingFacebookSession;
+- (CoachellerAppDelegate*) sharedAppDelegate;
 
 @end
 
 @implementation FacebookAuthController
 
+- (CoachellerAppDelegate*) sharedAppDelegate {
+  return (CoachellerAppDelegate*)[[UIApplication sharedApplication] delegate];
+}
 
-- (id) initWithViewController:(LoginTestViewController*) viewController {
+- (id) init {
   self = [super init];
   
   if (self) {
-    _fbAuthModel = [[FacebookAuthModel alloc] init];
-    _managedViewController = viewController;
+    _facebookAuthModel = [[FacebookAuthModel alloc] init];
+    
   }
   
+  
+  if ([self existingFacebookSession]) {
+    //Reconnect old session, should be safe to do so
+    NSLog(@"Reopening existing facebook session");
+    
+    
+    [FBSession openActiveSessionWithReadPermissions:nil
+                                       allowLoginUI:YES
+                                  completionHandler:
+     ^(FBSession *session,
+       FBSessionState state, NSError *error) {
+       [self handleSessionStateChanged:session state:state error:error];
+     }];
+    
+  } else {
+    //We probably need this
+    FBSession* session = [[FBSession alloc] init];
+    [FBSession setActiveSession:session];
+  }
   return self;
 }
 
+- (BOOL)existingFacebookSession {
+  if ([self.facebookAuthModel existingFacebookSession]) {
+    NSLog(@"FacebookAuthController: Saved facebook session exists");
+    return YES;
+  } else {
+    NSLog(@"FacebookAuthController: NO previous saved facebook session");
+    return NO;
+  }
+}
+
+//Facebook auth
+- (void) openSession:(UIViewController <AuthProtocol>*)caller {
+  
+  NSArray *permissions = [[NSArray alloc] initWithObjects:
+                          @"email",
+                          nil];
+  
+  [FBSession openActiveSessionWithReadPermissions:permissions
+                                     allowLoginUI:YES
+                                completionHandler:
+   ^(FBSession *session,
+     FBSessionState state, NSError *error) {
+     [self handleSessionStateChanged:session state:state error:error];
+   }];
+  self.facebookAPICaller = caller;
+}
 
 
--(void)postStatusUpdate {
+- (void) killSession:(UIViewController <AuthProtocol>*)caller {
+  [FBSession.activeSession closeAndClearTokenInformation];
+  
+  [caller facebookLoggedOut];
+}
+
+//Facebook auth callback
+- (void)handleSessionStateChanged:(FBSession *)session
+                            state:(FBSessionState) state
+                            error:(NSError *)error
+{
+  switch (state) {
+    case FBSessionStateOpen: {
+      NSLog(@"FacebookAuthController: FBSessionStateOpen");
+      self.facebookAuthModel.appLoggedIn = YES;
+      
+      // Start the sample Facebook request
+      [[FBRequest requestForMe]
+       startWithCompletionHandler:
+       ^(FBRequestConnection *connection, NSDictionary<FBGraphUser> *result, NSError *error)
+       {
+         // Did everything come back okay with no errors?
+         if (!error && result)
+         {
+           [self.facebookAuthModel setUserData:result];
+           
+           NSLog(@"Facebook ID: %@", [self.facebookAuthModel getFacebookID]);
+           NSLog(@"Email Address: %@", [self.facebookAuthModel getUserEmailAddress]);
+           NSLog(@"First Name: %@", [self.facebookAuthModel getUserFirstName]);
+           NSLog(@"Last Name: %@", [self.facebookAuthModel getUserLastName]);
+           
+           //How to get login data
+           //CoachellerAppDelegate* appDelegate = (CoachellerAppDelegate*)[[UIApplication sharedApplication] delegate];
+           //NSLog(@"Facebook ID: %@", [appDelegate.authController getFacebookID]);
+           //NSLog(@"Email Address: %@", [appDelegate.authController getUserEmailAddress]);
+           //NSLog(@"First Name: %@", [appDelegate.authController getUserFirstName]);
+           //NSLog(@"Last Name: %@", [appDelegate.authController getUserLastName]);
+           
+           
+           // Create a texture from the user's profile picture
+           //m_pUserTexture = new System::TextureResource();
+           //m_pUserTexture->CreateFromFBID(m_uPlayerFBID, 256, 256);
+           
+           [self.facebookAPICaller facebookLoggedIn];
+         }
+       }];    }
+      break;
+    case FBSessionStateClosed:
+      NSLog(@"FacebookAuthController: FBSessionStateClosed 'Normally'");
+      self.facebookAuthModel.appLoggedIn = NO;
+      [self.facebookAPICaller facebookLoggedOut];
+      break;
+      
+      
+    case FBSessionStateClosedLoginFailed:
+      self.facebookAuthModel.appLoggedIn = NO;
+      NSLog(@"FacebookAuthController: FBSessionStateClosedLoginFailed");
+      [FBSession.activeSession closeAndClearTokenInformation];
+      [self.facebookAPICaller facebookLoggedOut];
+      
+      //[self showLoginView];
+      break;
+    default:
+      break;
+  }
+  
+  if (error) {
+    UIAlertView *alertView = [[UIAlertView alloc]
+                              initWithTitle:@"Error"
+                              message:error.localizedDescription
+                              delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil];
+    [alertView show];
+  }
+}
+
+
+- (void) postStatusUpdate:(UIViewController*)caller buttonPushed:(UIButton*)postButton {
   // Post a status update to the user's feed via the Graph API, and display an alert view
   // with the results or an error.
   NSLog(@"postStatusUpdate starting, about to attempt FB native dialog");
   
   // if it is available to us, we will post using the native dialog
-  BOOL displayedNativeDialog = [FBNativeDialogs presentShareDialogModallyFrom:(UIViewController*)self.managedViewController
-                                                                  initialText:nil
-                                                                        image:nil
-                                                                          url:nil
-                                                                      handler:nil];
-  NSLog(@"presentShareDialogModallyFrom returned");
+  BOOL displayedNativeDialog =
+  [FBNativeDialogs presentShareDialogModallyFrom:(UIViewController*)caller
+                                     initialText:@"My name is Coacheller, and I approved this message!"
+                                           image:nil
+                                             url:nil
+                                         handler:^(FBNativeDialogResult result, NSError *error){
+                                           NSString *resultString;
+                                           switch (result) {
+                                             case FBNativeDialogResultSucceeded:
+                                               resultString = @"FBNativeDialogResultSucceeded";
+                                               break;
+                                             case FBNativeDialogResultCancelled:
+                                               resultString = @"FBNativeDialogResultCancelled";
+                                               break;
+                                             case FBNativeDialogResultError:
+                                               resultString = @"FBNativeDialogResultError";
+                                               break;
+                                             default:
+                                               resultString = @"UNKNOWN";
+                                               break;
+                                           }
+                                           NSLog(@"FacebookAuthController: Native Dialog result: %@ message: %@", resultString, [error localizedDescription]);
+                                         }];
+  
   if (!displayedNativeDialog) {
-    NSLog(@"presentSharedDialogModallyFrom returned FALSE");
+    NSLog(@"FacebookAuthController: Facebook native dialog failed, posting static message");
     [self performPublishAction:^{
-      NSLog(@"performPublishAction exiting");
+      NSLog(@"performPublishAction starting");
       // otherwise fall back on a request for permissions and a direct post
-      NSString *message = [NSString stringWithFormat:@"Updating status for %@ at %@", self.fbAuthModel.loggedInUser.first_name, [NSDate date]];
+      NSString *message = [NSString stringWithFormat:@"This automatic facebook post was selected at random just for you"];
       
       [FBRequestConnection startForPostStatusUpdate:message
                                   completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                                     NSLog(@"ConnectionHandler Starting");
                                     [self showAlert:message result:result error:error];
-                                    self.managedViewController.buttonPostFacebook.enabled = YES;
+                                    postButton.enabled = YES;
                                   }];
       
-      self.managedViewController.buttonPostFacebook.enabled = NO;
+      postButton.enabled = NO;
       NSLog(@"performPublishAction exiting");
     }];
   }
@@ -77,6 +221,7 @@
 - (void) performPublishAction:(void (^)(void)) action {
   // we defer request for permission to post to the moment of post, then we check for the permission
   if ([FBSession.activeSession.permissions indexOfObject:@"publish_actions"] == NSNotFound) {
+    NSLog(@"FacebookAuthController: Requesting publish_actions permission, it was not found");
     // if we don't already have the permission, then we request it now
     [FBSession.activeSession requestNewPublishPermissions:@[@"publish_actions"]
                                           defaultAudience:FBSessionDefaultAudienceFriends

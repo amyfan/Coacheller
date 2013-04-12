@@ -28,10 +28,6 @@
   self.unsortedSets = setsData;
 }
 
-- (void)sortByField:(NSString *)fieldName {
-  self.sortedSets = [[JSONArraySortMap alloc] initWithArray:self.unsortedSets AndParameterToSort:fieldName];
-}
-
 - (NSDictionary *)getItemAt:(NSInteger)index {
   return [self.sortedSets getSortedJSONObject:index];
 }
@@ -46,9 +42,16 @@
   } else if ([sortMode isEqualToString:SORT_MODE_ARTIST]) {
     [self sortByField:SORT_MODE_ARTIST];
   } else if ([sortMode isEqualToString:SORT_MODE_STAGE]) {
-    [self sortByField:self.stageFieldName];
+    [self sortByFieldOne:self.stageFieldName AndFieldTwo:self.timeFieldName];
   }
 }
 
+- (void)sortByField:(NSString *)fieldName {
+  self.sortedSets = [[JSONArraySortMap alloc] initWithArray:self.unsortedSets AndParameterToSort:fieldName WithOptionalSecondParam:nil];
+}
+
+- (void)sortByFieldOne:(NSString *)fieldNameOne AndFieldTwo:(NSString *)fieldNameTwo {
+  self.sortedSets = [[JSONArraySortMap alloc] initWithArray:self.unsortedSets AndParameterToSort:fieldNameOne WithOptionalSecondParam:fieldNameTwo];
+}
 
 @end

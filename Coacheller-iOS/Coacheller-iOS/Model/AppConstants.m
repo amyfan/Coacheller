@@ -15,6 +15,8 @@ NSString * const SORT_MODE_STAGE = @"stage";
 NSString * const SORT_MODE_TIME = @"time";
 
 NSString * const DATA_LOGIN_INFO_KEY = @"DATA_LOGIN_INFO";
+NSString * const DATA_SETS = @"DATA_SETS";
+NSString * const DATA_RATINGS = @"DATA_RATINGS";
 
 NSString * const SERVER_URL_COACHELLER = @"https://ratethisfest.appspot.com/coachellerServlet";
 NSString * const SERVER_URL_LOLLAPALOOZER = @"https://ratethisfest.appspot.com/lollapaloozerServlet";
