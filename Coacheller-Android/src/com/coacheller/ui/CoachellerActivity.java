@@ -77,7 +77,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   // contains actual rating, stored in userRatingsJAHM
   private JSONObject lastRating;
   // contains both week's scores
-  private CustomPair<JSONObject, JSONObject> lastRatingScorePair = new CustomPair<JSONObject, JSONObject>(null, null);
+  private CustomPair<JSONObject, JSONObject> lastRatingPair = new CustomPair<JSONObject, JSONObject>(null, null);
   private HashMap<Integer, Integer> _selectedIdToValue = new HashMap<Integer, Integer>();
   private HashMap<String, Integer> _ratingSelectedValueToId = new HashMap<String, Integer>();
 
@@ -285,23 +285,26 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     try {// TODO Hard coded strings means you are going to hell
       String setId = lastSetSelected.getString(AndroidConstants.JSON_KEY_SETS__SET_ID);
       JSONObject lastRatingWeek1 = _appController.getUserRatingsJAHM().getJSONObject(setId, "1");
-      lastRatingScorePair.first = lastRatingWeek1;
+
+      lastRatingPair.first = lastRatingWeek1;
 
       JSONObject lastRatingWeek2 = null;
       // TODO IF festival has a second week....
       if (_appController.getFestivalNumberOfWeeks() == 2) {
         lastRatingWeek2 = _appController.getUserRatingsJAHM().getJSONObject(setId, "2");
-        lastRatingScorePair.second = lastRatingWeek2;
+        lastRatingPair.second = lastRatingWeek2;
       }
+
 
     } catch (JSONException e) {
       LogController.OTHER.logMessage("JSONException retrieving user's last rating");
       e.printStackTrace();
     }
-
+    
     // Variable setup is done
-    LogController.OTHER.logMessage("You Clicked On: " + obj + " previous ratings " + lastRatingScorePair.first + "/"
-        + lastRatingScorePair.second);
+    LogController.OTHER.logMessage("You Clicked On: " + obj + " previous ratings " + lastRatingPair.first + "/"
+        + lastRatingPair.second);
+
 
     // Figure out the time of the currently clicked set
     LogController.SET_DATA.logMessage("Last set selected:");
@@ -425,9 +428,9 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
           JSONObject ratingToCheck = null;
           ;
           if (checkedId == R.id.radio_button_week1) {
-            ratingToCheck = lastRatingScorePair.first;
+            ratingToCheck = lastRatingPair.first;
           } else if (checkedId == R.id.radio_button_week2) {
-            ratingToCheck = lastRatingScorePair.second;
+            ratingToCheck = lastRatingPair.second;
           }
           if (ratingToCheck != null) {
             int buttonIdToCheck = _ratingSelectedValueToId.get(ratingToCheck

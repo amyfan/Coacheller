@@ -35,7 +35,12 @@ public abstract class CustomSetListAdapter implements ListAdapter {
   }
 
   public void sortByField(String fieldName, int dataType) throws JSONException {
-    _sortMap = new JSONArraySortMap(_data, fieldName, dataType);
+    _sortMap = new JSONArraySortMap(_data, fieldName, dataType, null, dataType);
+  }
+
+  public void sortByFields(String fieldName, int dataType, String fieldNameTwo, int dataTypeTwo)
+      throws JSONException {
+    _sortMap = new JSONArraySortMap(_data, fieldName, dataType, fieldNameTwo, dataTypeTwo);
   }
 
   @Override
@@ -128,7 +133,8 @@ public abstract class CustomSetListAdapter implements ListAdapter {
     } else if (AndroidConstants.SORT_ARTIST.equals(sortMode)) {
       sortByField(AndroidConstants.SORT_ARTIST, JSONArraySortMap.VALUE_STRING);
     } else if (AndroidConstants.SORT_STAGE.equals(sortMode)) {
-      sortByField(_stageFieldName, JSONArraySortMap.VALUE_STRING);
+      sortByFields(_stageFieldName, JSONArraySortMap.VALUE_STRING, _timeFieldName,
+          JSONArraySortMap.VALUE_INTEGER);
     }
   }
 }

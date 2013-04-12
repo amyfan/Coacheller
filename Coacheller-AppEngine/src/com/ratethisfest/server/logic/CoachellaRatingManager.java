@@ -64,6 +64,7 @@ public class CoachellaRatingManager extends RatingManager {
     String resp = null;
 
     Key<Set> setKey = setDao.findSetKeyById(setId);
+    // TODO: put in check for authId too!!
     List<Rating> ratings = findRatingsBySetKeyAndUser(setKey, email);
     if (ratings == null || ratings.size() == 0) {
       // add new rating

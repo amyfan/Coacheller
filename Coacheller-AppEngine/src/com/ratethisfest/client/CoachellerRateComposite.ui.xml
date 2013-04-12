@@ -50,8 +50,8 @@
 				<div class="buttoncell">
 					Temporary Test Buttons:
 					<g:Button ui:field="updateSetButton" text="Update Sets" />
-					<!--
 					<g:Button ui:field="recalculateButton" text="Recalculate Scores" />
+					<!--
 					<g:Button ui:field="clearMyRatingButton" text="Clear 
 					My Ratings" />
 					 -->
