@@ -39,4 +39,5 @@ public class AndroidConstants {
   public static final int DIALOG_GETEMAIL = 2;
   public static final int DIALOG_NETWORK_ERROR = 3;
   public static final int DIALOG_FIRST_USE = 4;
+  public static final int DIALOG_ALERTS = 5;
 }

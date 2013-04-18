@@ -439,5 +439,26 @@ public class CoachellerApplication extends Application implements AppControllerI
     AlertDialog alert = builder.create();
     alert.show();
   }
+  
+  
+  public boolean alertExistsForSet(JSONObject setData, int week) {
+    //Belongs in its own class
+    if (Math.random()> 0.5) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  //Consider only setId as input
+  public void addAlertForSet(JSONObject setData, int week, int minutesBefore) {
+    //Belongs in its own class
+  }
+  
+  public void removeAlertForSet(JSONObject setData, int week) {
+    //Belongs in its own class
+  }
+  
+  
 
 }

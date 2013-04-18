@@ -66,10 +66,11 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   private String sortMode;
   private long _lastRefresh = 0;
 
-  private Dialog rateDialog;
-  private Dialog emailDialog;
-  private Dialog networkErrorDialog;
-  private Dialog firstUseDialog;
+  private Dialog dialogRate;
+  private Dialog dialogEmail;
+  private Dialog dialogAlerts;
+  private Dialog dialogNetworkError;
+  private Dialog dialogFirstUse;
 
   private CoachSetListAdapter setListAdapter;
   // contains set id, stored in setListAdapter
@@ -154,7 +155,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
             // findViewById(R.id.viewSetsList);
             // viewSetsList.invalidateViews();
 
-            // If this is removed, uncomment ListView and invalidate above ^^^
+            // If this is removed, uncomment ListView and invalidate
+            // above ^^^
             refreshData();
 
           } catch (JSONException je) {
@@ -183,7 +185,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     String week = intent.getExtras().getString(SearchSetsActivity.WEEK);
     String day = intent.getExtras().getString(SearchSetsActivity.DAY);
 
-    LogController.OTHER.logMessage("CoachellerActivity setting search suggestion of year[" + year + "] week[" + week + "] day[" + day + "]");
+    LogController.OTHER.logMessage("CoachellerActivity setting search suggestion of year[" + year + "] week[" + week
+        + "] day[" + day + "]");
     _appController.setYearToQuery(Integer.valueOf(year));
     _appController.setDayToQuery(day);
     _appController.setWeekToQuery(Integer.valueOf(week));
@@ -197,7 +200,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     _appController.setLastAuthActivity(this);
 
-    // TODO: We'll reenable this if we have something significant to say in the
+    // TODO: We'll reenable this if we have something significant to say in
+    // the
     // beginning
     // if (_appController.isDataFirstUse()) {
     // showDialog(DIALOG_FIRST_USE);
@@ -225,7 +229,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     }
 
     if (viewClicked.getId() == R.id.button_declineEmail) {
-      emailDialog.dismiss();
+      dialogEmail.dismiss();
     }
 
     if (viewClicked.getId() == R.id.buttonChangeToSearchSets) {
@@ -267,11 +271,33 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     if (viewClicked.getId() == R.id.button_network_error_ok) {
       System.out.println("Clicked dismiss network error dialog");
-      networkErrorDialog.dismiss();
+      dialogNetworkError.dismiss();
     }
 
     if (viewClicked.getId() == R.id.button_network_error_ok) {
-      networkErrorDialog.dismiss();
+      dialogNetworkError.dismiss();
+    }
+
+    if (dialogAlerts.isShowing()) {
+      // This should work instead of having to give a globally unique ID to each button
+      if (viewClicked.getId() == R.id.button_ok) {
+        LogController.USER_ACTION_UI.logMessage("Alert Dialog - OK Clicked");
+
+      } else if (viewClicked.getId() == R.id.radioNearNumberfield) {
+        LogController.USER_ACTION_UI.logMessage("Alert Dialog - Radio near number field Clicked");
+        RadioButton otherButton = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
+        otherButton.setChecked(false);
+
+      } else if (viewClicked.getId() == R.id.radioWithText) {
+        LogController.USER_ACTION_UI.logMessage("Alert Dialog - Radio near textonly field Clicked");
+        RadioButton otherButton = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
+        otherButton.setChecked(false);
+
+      } else if (viewClicked.getId() == R.id.button_cancel) {
+        LogController.USER_ACTION_UI.logMessage("Alert Dialog - Cancel Clicked");
+        dialogAlerts.dismiss();
+      }
+
     }
 
   }
@@ -295,65 +321,45 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         lastRatingPair.second = lastRatingWeek2;
       }
 
-
     } catch (JSONException e) {
       LogController.OTHER.logMessage("JSONException retrieving user's last rating");
       e.printStackTrace();
     }
-    
+
     // Variable setup is done
     LogController.OTHER.logMessage("You Clicked On: " + obj + " previous ratings " + lastRatingPair.first + "/"
         + lastRatingPair.second);
-
 
     // Figure out the time of the currently clicked set
     LogController.SET_DATA.logMessage("Last set selected:");
     LogController.SET_DATA.logMessage(lastSetSelected.toString());
     _appController.getWeekToQuery(); // Week the user is looking at
-    CalendarUtils.whatWeekIsToday();
 
-    isLastSelectedSetInTheFuture();
+    boolean lastSelectedSetInFuture = isLastSelectedSetInTheFuture();
+    LogController.SET_DATA.logMessage("Selected set in the future?:" + lastSelectedSetInFuture);
+    if (lastSelectedSetInFuture) {
+      // Ask to set alarm
+      showDialog(AndroidConstants.DIALOG_ALERTS);
 
-    if (!_appController.getIsLoggedIn()) {
-      _beginSigninProcess();
+    } else if (!_appController.getIsLoggedIn()) {
+      _beginSigninProcess(); // Get the user logged in, cannot rate any sets right now
+
     } else {
-      LogController.OTHER.logMessage(this.toString() + "About to launch Dialog!  _lastSetSelected was "
-          + lastSetSelected);
+      // User is logged in, go ahead and rate something
       if (lastSetSelected == null) {
-        LogController.OTHER.logMessage(this.toString() + " NULL MEMBER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-      } else {
-        LogController.OTHER.logMessage(this.toString() + " OK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        LogController.ERROR.logMessage(this.toString() + " UNEXPECTED: lastSetSelected is null");
       }
+
+      LogController.LIFECYCLE_ACTIVITY.logMessage(this.toString() + " About to launch Dialog!");
       showDialog(AndroidConstants.DIALOG_RATE);
     }
   }
 
   // Is clicked set IN THE FUTURE?
   private boolean isLastSelectedSetInTheFuture() {
-    boolean returnValue = false;
-    int todayInt = CalendarUtils.whatDayIsTodayInt();
-    int selectedDayInt = DaysHashMap.DayStringToJavaCalendar(_appController.getDayToQuery());
+    return CalendarUtils.isSetInTheFuture(lastSetSelected, _appController.getWeekToQuery(),
+        _appController.getDayToQuery());
 
-    if (CalendarUtils.whatWeekIsToday() < _appController.getWeekToQuery()) {
-      returnValue = false; // If todayWeek < selectedWeek Selection==Future
-
-    } else if (CalendarUtils.whatWeekIsToday() > _appController.getWeekToQuery()) {
-      returnValue = true; // If todayWeek > selectedWeek Selection!=Future
-
-    } else if (CalendarUtils.isFestDayAfter(todayInt, selectedDayInt)) {
-      returnValue = true; // If todayDay < selectedDay Selection==Future
-
-    } else if (CalendarUtils.isFestDayAfter(selectedDayInt, todayInt)) {
-      returnValue = false; // If todayDay > selectedDay Selection!=Future
-
-    } else if (true) {
-      // If currentTime < OR == selectedTime Before
-      
-      
-    } else if (true) {
-      // If currentTime > selectedTime After
-    }
-    return returnValue;
   }
 
   // An item was selected from the list of sets
@@ -414,11 +420,11 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   @Override
   public void onCheckedChanged(RadioGroup clickedGroup, int checkedId) {
     // todo should use switch
-    RadioGroup scoreGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_score);
-    EditText noteWidget = (EditText) rateDialog.findViewById(R.id.editText_commentsForSet);
+    RadioGroup scoreGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_score);
+    EditText noteWidget = (EditText) dialogRate.findViewById(R.id.editText_commentsForSet);
 
     // Selection changed week 1<->2
-    if (clickedGroup == rateDialog.findViewById(R.id.radio_pick_week)) {
+    if (clickedGroup == dialogRate.findViewById(R.id.radio_pick_week)) {
       try {
         if (checkedId != R.id.radio_button_week1 && checkedId != R.id.radio_button_week2) {
           // Not sure what is selected, clear rating check
@@ -435,7 +441,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
           if (ratingToCheck != null) {
             int buttonIdToCheck = _ratingSelectedValueToId.get(ratingToCheck
                 .getString(AndroidConstants.JSON_KEY_RATINGS__SCORE));
-            RadioButton buttonToCheck = (RadioButton) rateDialog.findViewById(buttonIdToCheck);
+            RadioButton buttonToCheck = (RadioButton) dialogRate.findViewById(buttonIdToCheck);
             buttonToCheck.setChecked(true);
             noteWidget.setText(ratingToCheck.getString(AndroidConstants.JSON_KEY_RATINGS__NOTES));
           } else {
@@ -451,73 +457,95 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     }
   }
 
-  // Dialog handling, called once the first time this activity displays (a/each
+  // Dialog handling, called once the first time this activity displays
+  // (a/each
   // type of)? dialog
   @Override
   protected Dialog onCreateDialog(int id) {
     if (id == AndroidConstants.DIALOG_FIRST_USE) {
-      firstUseDialog = new Dialog(this);
-      firstUseDialog.setContentView(R.layout.dialog_first_use);
-      firstUseDialog.setTitle(AuthConstants.DIALOG_TITLE_FIRST_USE);
+      dialogFirstUse = new Dialog(this);
+      dialogFirstUse.setContentView(R.layout.dialog_first_use);
+      dialogFirstUse.setTitle(AuthConstants.DIALOG_TITLE_FIRST_USE);
 
-      Button buttonOK = (Button) firstUseDialog.findViewById(R.id.button_firstuse_ok);
+      Button buttonOK = (Button) dialogFirstUse.findViewById(R.id.button_firstuse_ok);
       buttonOK.setOnClickListener(this);
-      return firstUseDialog;
+      return dialogFirstUse;
     }
 
     if (id == AndroidConstants.DIALOG_GETEMAIL) {
-      emailDialog = new Dialog(this);
-      emailDialog.setContentView(R.layout.get_email_address);
-      emailDialog.setTitle(AuthConstants.DIALOG_TITLE_GET_EMAIL);
+      dialogEmail = new Dialog(this);
+      dialogEmail.setContentView(R.layout.get_email_address);
+      dialogEmail.setTitle(AuthConstants.DIALOG_TITLE_GET_EMAIL);
 
-      Button buttonOK = (Button) emailDialog.findViewById(R.id.button_provideEmail);
+      Button buttonOK = (Button) dialogEmail.findViewById(R.id.button_provideEmail);
       buttonOK.setOnClickListener(this);
 
-      Button buttonCancel = (Button) emailDialog.findViewById(R.id.button_declineEmail);
+      Button buttonCancel = (Button) dialogEmail.findViewById(R.id.button_declineEmail);
       buttonCancel.setOnClickListener(this);
 
-      return emailDialog;
+      return dialogEmail;
+    }
+
+    if (id == AndroidConstants.DIALOG_ALERTS) {
+      dialogAlerts = new Dialog(this);
+      dialogAlerts.setContentView(R.layout.dialog_alert_multipurpose);
+      // alertsDialog.setTitle(AuthConstants.DIALOG_TITLE_GET_EMAIL);
+      dialogAlerts.setTitle("Alert Dialog Title");
+
+      Button buttonOK = (Button) dialogAlerts.findViewById(R.id.button_ok);
+      buttonOK.setOnClickListener(this);
+
+      Button buttonCancel = (Button) dialogAlerts.findViewById(R.id.button_cancel);
+      buttonCancel.setOnClickListener(this);
+
+      RadioButton radioNearNumbers = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
+      radioNearNumbers.setOnClickListener(this);
+
+      RadioButton radioWithText = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
+      radioWithText.setOnClickListener(this);
+
+      return dialogAlerts;
     }
 
     if (id == AndroidConstants.DIALOG_RATE) {
-      rateDialog = new Dialog(this);
-      rateDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-      rateDialog.setContentView(R.layout.dialog_rate_set);
+      dialogRate = new Dialog(this);
+      dialogRate.requestWindowFeature(Window.FEATURE_NO_TITLE);
+      dialogRate.setContentView(R.layout.dialog_rate_set);
 
-      RadioGroup weekGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_week);
+      RadioGroup weekGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_week);
       weekGroup.setOnCheckedChangeListener(this);
 
       // Setup 'X' close widget
-      ImageView close_dialog = (ImageView) rateDialog.findViewById(R.id.imageView_custom_dialog_close);
+      ImageView close_dialog = (ImageView) dialogRate.findViewById(R.id.imageView_custom_dialog_close);
       close_dialog.setOnClickListener(new View.OnClickListener() {
         public void onClick(View v) {
-          rateDialog.dismiss();
+          dialogRate.dismiss();
         }
       });
 
-      Button buttonRateAbove = (Button) rateDialog.findViewById(R.id.button_go_rate_above);
+      Button buttonRateAbove = (Button) dialogRate.findViewById(R.id.button_go_rate_above);
       buttonRateAbove.setOnClickListener(this);
 
-      Button buttonRateInline = (Button) rateDialog.findViewById(R.id.button_go_rate_inline);
+      Button buttonRateInline = (Button) dialogRate.findViewById(R.id.button_go_rate_inline);
       buttonRateInline.setOnClickListener(this);
 
-      ImageButton buttonFB = (ImageButton) rateDialog.findViewById(R.id.button_go_fb);
+      ImageButton buttonFB = (ImageButton) dialogRate.findViewById(R.id.button_go_fb);
       buttonFB.setOnClickListener(this);
 
-      ImageButton buttonTweet = (ImageButton) rateDialog.findViewById(R.id.button_go_tweet);
+      ImageButton buttonTweet = (ImageButton) dialogRate.findViewById(R.id.button_go_tweet);
       buttonTweet.setOnClickListener(this);
 
-      return rateDialog;
+      return dialogRate;
     }
 
     if (id == AndroidConstants.DIALOG_NETWORK_ERROR) {
-      networkErrorDialog = new Dialog(this);
-      networkErrorDialog.setContentView(R.layout.dialog_network_error);
-      networkErrorDialog.setTitle("Network Error");
+      dialogNetworkError = new Dialog(this);
+      dialogNetworkError.setContentView(R.layout.dialog_network_error);
+      dialogNetworkError.setTitle("Network Error");
 
-      Button buttonOK = (Button) networkErrorDialog.findViewById(R.id.button_network_error_ok);
+      Button buttonOK = (Button) dialogNetworkError.findViewById(R.id.button_network_error_ok);
       buttonOK.setOnClickListener(this);
-      return networkErrorDialog;
+      return dialogNetworkError;
 
     }
 
@@ -532,7 +560,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     // TODO: deprecate?
     if (id == AndroidConstants.DIALOG_GETEMAIL) {
-      EditText emailField = (EditText) emailDialog.findViewById(R.id.textField_enterEmail);
+      EditText emailField = (EditText) dialogEmail.findViewById(R.id.textField_enterEmail);
       if (_appController.getLoginData().emailAddress == null) {
         emailField.setText("");
       } else {
@@ -546,8 +574,10 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
       // _lastRateDialog.setTitle("Rate this Set!");
       try {
-        TextView subtitleText = (TextView) rateDialog.findViewById(R.id.text_rateBand_subtitle);
-        subtitleText.setText(lastSetSelected.getString("artist")); // TODO NPE Here
+        TextView subtitleText = (TextView) dialogRate.findViewById(R.id.text_rateBand_subtitle);
+        subtitleText.setText(lastSetSelected.getString("artist")); // TODO
+        // NPE
+        // Here
 
       } catch (JSONException e) {
         LogController.OTHER.logMessage("JSONException assigning Artist name to Rating dialog");
@@ -555,9 +585,9 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       }
 
       int week = CalendarUtils.whatWeekIsToday();
-      RadioGroup weekGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_week);
-      RadioButton buttonWeek1 = (RadioButton) rateDialog.findViewById(R.id.radio_button_week1);
-      RadioButton buttonWeek2 = (RadioButton) rateDialog.findViewById(R.id.radio_button_week2);
+      RadioGroup weekGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_week);
+      RadioButton buttonWeek1 = (RadioButton) dialogRate.findViewById(R.id.radio_button_week1);
+      RadioButton buttonWeek2 = (RadioButton) dialogRate.findViewById(R.id.radio_button_week2);
 
       int idChanged = -1;
 
@@ -583,7 +613,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       onCheckedChanged(weekGroup, idChanged);
 
       if (_appController.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)) {
-        ImageButton buttonFB = (ImageButton) rateDialog.findViewById(R.id.button_go_fb);
+        ImageButton buttonFB = (ImageButton) dialogRate.findViewById(R.id.button_go_fb);
         buttonFB.setImageResource(R.drawable.post_facebook_large);
         System.out.println(buttonFB.getPaddingTop() + " " + buttonFB.getPaddingLeft() + " "
             + buttonFB.getPaddingBottom() + " " + buttonFB.getPaddingRight());
@@ -592,7 +622,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       }
 
       if (_appController.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
-        ImageButton buttonTweet = (ImageButton) rateDialog.findViewById(R.id.button_go_tweet);
+        ImageButton buttonTweet = (ImageButton) dialogRate.findViewById(R.id.button_go_tweet);
         buttonTweet.setImageResource(R.drawable.post_twitter_large);
         buttonTweet.setPadding(7, 3, 7, 10);
       }
@@ -600,11 +630,41 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       if (_appController.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)
           && _appController.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
 
-        Button buttonRateAbove = (Button) rateDialog.findViewById(R.id.button_go_rate_above);
+        Button buttonRateAbove = (Button) dialogRate.findViewById(R.id.button_go_rate_above);
         buttonRateAbove.setVisibility(View.VISIBLE);
 
-        Button buttonRateInline = (Button) rateDialog.findViewById(R.id.button_go_rate_inline);
+        Button buttonRateInline = (Button) dialogRate.findViewById(R.id.button_go_rate_inline);
         buttonRateInline.setVisibility(View.GONE);
+      }
+
+    }
+
+    if (id == AndroidConstants.DIALOG_ALERTS) {
+      boolean alertExists = _appController.alertExistsForSet(lastSetSelected, _appController.getWeekToQuery());
+
+      RadioButton radioNearNumbers = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
+      radioNearNumbers.setChecked(true);
+      
+
+      
+      
+      
+      RadioButton radioWithText = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
+      radioWithText.setChecked(false);
+      
+      if (alertExists) {
+        // -> Prepare dialog 1) Edit current alert (minutes before set) 2) Cancel existing alert
+        radioWithText.setText("Cancel this alert");
+        //TODO need to get the number of minutes value on this alert and populate the number box
+        EditText numberBox = (EditText) dialogAlerts.findViewById(R.id.numberBox);
+        
+        Integer value = (int) (Math.random()*10);
+        numberBox.setText(value+"");
+        
+      } else {
+        // -> Prepare dialog 1) Set alert for x minutes before set 2) Cancel, nevermind
+        radioWithText.setText("Go Back");
+        
       }
 
     }
@@ -665,7 +725,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
     setIntent(intent);// must store the new intent unless getIntent() will
-                      // return the old one
+    // return the old one
     checkForExtraData();
   }
 
@@ -727,7 +787,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   // TODO: deprecate?
   private void clickDialogConfirmEmailButtonOK() {
-    EditText emailField = (EditText) emailDialog.findViewById(R.id.textField_enterEmail);
+    EditText emailField = (EditText) dialogEmail.findViewById(R.id.textField_enterEmail);
     String email = emailField.getText().toString();
 
     LogController.OTHER.logMessage("User provided email address: " + email);
@@ -745,7 +805,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         showDialog(AndroidConstants.DIALOG_NETWORK_ERROR);
       }
 
-      emailDialog.dismiss();
+      dialogEmail.dismiss();
       try {
 
         System.out.println("Requesting ratings email.");
@@ -773,7 +833,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   private void clickDialogFirstUseButtonOK() {
     _appController.setDataFirstUse(false);
     // TODO _storageManager.save();
-    firstUseDialog.dismiss();
+    dialogFirstUse.dismiss();
     _showClickToRate(); // display 'tap set to rate it' toast
   }
 
@@ -784,7 +844,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     }
 
     rateDialogSubmitRating();
-    rateDialog.dismiss();
+    dialogRate.dismiss();
   }
 
   private void clickDialogSubmitRatingTwitter() throws JSONException {
@@ -806,7 +866,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       System.out.println("Twitter Auth not ready, posting later");
     }
 
-    rateDialog.dismiss();
+    dialogRate.dismiss();
   }
 
   private void clickDialogSubmitRatingFacebook() throws JSONException {
@@ -825,17 +885,17 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       System.out.println("FB Auth not ready, posting later");
     }
 
-    rateDialog.dismiss();
+    dialogRate.dismiss();
   }
 
   private SocialNetworkPost _buildSocialNetworkPost() throws JSONException {
     SocialNetworkPost post = new SocialNetworkPost();
     // Build data from dialog here
     // TODO this is in the code in 2 places
-    RadioGroup scoreGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_score);
+    RadioGroup scoreGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_score);
     String submittedRating = _selectedIdToValue.get(scoreGroup.getCheckedRadioButtonId()).toString();
 
-    EditText noteWidget = (EditText) rateDialog.findViewById(R.id.editText_commentsForSet);
+    EditText noteWidget = (EditText) dialogRate.findViewById(R.id.editText_commentsForSet);
     String submittedNote = noteWidget.getText().toString();
     String artistName = lastSetSelected.getString("artist");
 
@@ -846,7 +906,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   }
 
   private boolean _lastRateDialogVerify() {
-    RadioGroup scoreGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_score);
+    RadioGroup scoreGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_score);
     int scoreSelectedId = scoreGroup.getCheckedRadioButtonId();
     if (scoreSelectedId == -1) {
       Toast selectEverything = Toast.makeText(this, "Please select a rating for this Set", 25);
@@ -858,17 +918,18 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   private void rateDialogSubmitRating() {
     // TODO this is in the code in 2 places
-    // RadioGroup weekGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_week);
-    int weekSelectedId = ((RadioGroup) rateDialog.findViewById(R.id.radio_pick_week)).getCheckedRadioButtonId();
+    // RadioGroup weekGroup = (RadioGroup)
+    // rateDialog.findViewById(R.id.radio_pick_week);
+    int weekSelectedId = ((RadioGroup) dialogRate.findViewById(R.id.radio_pick_week)).getCheckedRadioButtonId();
 
-    RadioGroup scoreGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_score);
+    RadioGroup scoreGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_score);
     int scoreSelectedId = scoreGroup.getCheckedRadioButtonId();
     String submittedRating = _selectedIdToValue.get(scoreSelectedId).toString();
 
-    EditText noteWidget = (EditText) rateDialog.findViewById(R.id.editText_commentsForSet);
+    EditText noteWidget = (EditText) dialogRate.findViewById(R.id.editText_commentsForSet);
     String submittedNote = noteWidget.getText().toString();
 
-    rateDialog.dismiss();
+    dialogRate.dismiss();
 
     String weekNumber = _selectedIdToValue.get(weekSelectedId) + "";
 
