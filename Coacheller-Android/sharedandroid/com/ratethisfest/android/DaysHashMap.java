@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import com.ibm.icu.util.Calendar;
+import com.ratethisfest.android.log.LogController;
 
 //Meant to be used by static methods
 public class DaysHashMap {
@@ -70,7 +71,7 @@ public class DaysHashMap {
   
   public static int DayStringToJavaCalendar(String stringValue) {
     DaysHashMap.init();
-    System.out.println("Looking up "+ stringValue);
+    LogController.SET_DATA.logMessage("Looking up "+ stringValue);
     return DaysHashMap.stringToJavaCalendarMap.get(stringValue);
   }
 

@@ -10,13 +10,13 @@
         android:layout_height="wrap_content" >
 
         <RadioButton
-            android:id="@+id/radioButton1"
+            android:id="@+id/radioNearNumberfield"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Alert me " />
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/numberBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="number"
@@ -51,9 +51,30 @@
     </LinearLayout>
 
     <RadioButton
-        android:id="@+id/radioButton2"
+        android:id="@+id/radioWithText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Custom choice option" />
+
+    <LinearLayout
+        android:id="@+id/layout_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/button_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="OK" />
+
+        <Button
+            android:id="@+id/button_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Go Back" />
+
+    </LinearLayout>
 
 </LinearLayout>
