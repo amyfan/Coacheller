@@ -32,7 +32,7 @@ public abstract class SetDataLoader {
     }
   }
 
-  public void recalculateSetRatingAverages() {
+  public void recalculateAllSetRatingAverages() {
     List<Set> sets = ratingMgr.findAllSets();
     for (Set set : sets) {
       List<Rating> ratings = ratingMgr.findRatingsBySetId(set.getId());
@@ -52,16 +52,24 @@ public abstract class SetDataLoader {
         }
       }
       if (wkndOneCount > 0 || (set.getAvgScoreOne() != null && set.getAvgScoreOne() > 0)) {
-        double average = wkndOneTotal;
-        average = average / wkndOneCount;
+        double average;
+        if (wkndOneCount > 0) {
+          average = wkndOneTotal / wkndOneCount;
+        } else {
+          average = 0;
+        }
         set.setNumRatingsOne(wkndOneCount);
         set.setScoreSumOne(wkndOneTotal);
         set.setAvgScoreOne(MathUtils.roundTwoDecimals(average));
         ratingMgr.updateSet(set);
       }
       if (wkndTwoCount > 0 || (set.getAvgScoreTwo() != null && set.getAvgScoreTwo() > 0)) {
-        double average = wkndTwoTotal;
-        average = average / wkndTwoCount;
+        double average;
+        if (wkndTwoCount > 0) {
+          average = wkndTwoTotal / wkndTwoCount;
+        } else {
+          average = 0;
+        }
         set.setNumRatingsTwo(wkndTwoCount);
         set.setScoreSumTwo(wkndTwoTotal);
         set.setAvgScoreTwo(MathUtils.roundTwoDecimals(average));
