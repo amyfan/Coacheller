@@ -46,6 +46,7 @@
             android:name=".ui.TwitterAuthWebpageActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <receiver android:name="com.ratethisfest.android.Alert"></receiver>
     </application>
 
 </manifest>

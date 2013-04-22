@@ -20,6 +20,7 @@ public class AndroidConstants {
   public static final String JSON_KEY_SETS__SET_ID = "id";
   public static final String JSON_KEY_SETS__ARTIST = "artist";
   public static final String JSON_KEY_SETS__DAY = "day";
+  public static final String JSON_KEY_SETS__YEAR = "year";
   public static final String JSON_KEY_SETS__TIME_ONE = "time_one";
   public static final String JSON_KEY_SETS__TIME_TWO = "time_two";
   public static final String JSON_KEY_SETS__STAGE_ONE = "stage_one";

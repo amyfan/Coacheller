@@ -19,6 +19,7 @@ import com.coacheller.ui.ChooseLoginActivity;
 import com.coacheller.ui.CoachellerActivity;
 import com.coacheller.ui.SearchSetsActivity;
 import com.ibm.icu.util.Calendar;
+import com.ratethisfest.android.AlertManager;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.CalendarUtils;
@@ -46,6 +47,7 @@ public class CoachellerApplication extends Application implements AppControllerI
 
 
   private AuthModel authModel;
+  private AlertManager alertManager = new AlertManager(this);
   private ChooseLoginActivity activityChooseLogin = null;
   private CoachellerActivity activityCoacheller = null;
   private SearchSetsActivity activitySearchSets = null;
@@ -440,24 +442,11 @@ public class CoachellerApplication extends Application implements AppControllerI
     alert.show();
   }
   
-  
-  public boolean alertExistsForSet(JSONObject setData, int week) {
-    //Belongs in its own class
-    if (Math.random()> 0.5) {
-      return true;
-    } else {
-      return false;
-    }
+  public AlertManager getAlertManager() {
+    return this.alertManager;
   }
-  
-  //Consider only setId as input
-  public void addAlertForSet(JSONObject setData, int week, int minutesBefore) {
-    //Belongs in its own class
-  }
-  
-  public void removeAlertForSet(JSONObject setData, int week) {
-    //Belongs in its own class
-  }
+
+
   
   
 
