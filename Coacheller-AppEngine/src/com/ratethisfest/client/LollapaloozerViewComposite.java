@@ -119,7 +119,6 @@ public class LollapaloozerViewComposite extends Composite {
     Runnable onLoadCallback = new Runnable() {
       public void run() {
         // Create a bar chart
-        // TODO
         setsChartPanel.add(createChart());
       }
     };
@@ -187,7 +186,6 @@ public class LollapaloozerViewComposite extends Composite {
         Runnable onLoadCallback = new Runnable() {
           public void run() {
             // Create a bar chart
-            // TODO
             setsChartPanel.clear();
             setsChartPanel.add(createChart());
           }
@@ -255,7 +253,6 @@ public class LollapaloozerViewComposite extends Composite {
         Runnable onLoadCallback = new Runnable() {
           public void run() {
             // Create a bar chart
-            // TODO
             setsChartPanel.clear();
             setsChartPanel.add(createChart());
           }

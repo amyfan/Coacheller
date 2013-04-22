@@ -175,7 +175,7 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
   }
 
   public String recalculateSetRatingAverages() {
-    LollaSetDataLoader.getInstance().recalculateSetRatingAverages();
+    LollaSetDataLoader.getInstance().recalculateAllSetRatingAverages();
     return "success i believe";
   }
 
