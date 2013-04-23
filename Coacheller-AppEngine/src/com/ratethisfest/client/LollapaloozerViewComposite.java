@@ -121,7 +121,6 @@ public class LollapaloozerViewComposite extends Composite {
       @Override
       public void run() {
         // Create a bar chart
-        // TODO
         setsChartPanel.add(createChart());
       }
     };
@@ -190,7 +189,6 @@ public class LollapaloozerViewComposite extends Composite {
           @Override
           public void run() {
             // Create a bar chart
-            // TODO
             setsChartPanel.clear();
             setsChartPanel.add(createChart());
           }
@@ -261,7 +259,6 @@ public class LollapaloozerViewComposite extends Composite {
           @Override
           public void run() {
             // Create a bar chart
-            // TODO
             setsChartPanel.clear();
             setsChartPanel.add(createChart());
           }

@@ -1,7 +1,12 @@
 package com.ratethisfest.client;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.moxieapps.gwt.highcharts.client.Chart;
+import org.moxieapps.gwt.highcharts.client.Point;
+import org.moxieapps.gwt.highcharts.client.Series;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.cell.client.TextCell;
@@ -57,19 +62,22 @@ public class CoachellerViewComposite extends Composite {
   private List<Set> setsList;
 
   @UiField
-  Label title;
-
-  @UiField
-  Label beta;
+  Label subtitle;
 
   @UiField
   Anchor android;
+
+  @UiField
+  Anchor ios;
 
   @UiField
   Label infoBox;
 
   @UiField
   ListBox dayInput;
+
+  @UiField
+  ListBox yearInput;
 
   @UiField
   ListBox chartTypeInput;
@@ -103,11 +111,14 @@ public class CoachellerViewComposite extends Composite {
   }
 
   private void initUiElements() {
-    title.setText("COACHELLER 2012");
-    beta.setText("beta");
+    subtitle.setText("Your unofficial Coachella ratings guide");
     android.setHref("http://play.google.com/store/apps/details?id=com.coacheller");
-    android.setText("Download Coacheller for Android");
+    android.setText("Download Coacheller for Android!");
     android.setTarget("_blank");
+    
+    ios.setHref("https://itunes.apple.com/us/app/coacheller-unofficial/id634889261?ls=1&mt=8");
+    ios.setText("Download Coacheller for iPhone!");
+    ios.setTarget("_blank");
 
     ListDataProvider<Set> listDataProvider = new ListDataProvider<Set>();
     listDataProvider.addDataDisplay(setsTable);
@@ -118,9 +129,8 @@ public class CoachellerViewComposite extends Composite {
     Runnable onLoadCallback = new Runnable() {
       @Override
       public void run() {
-        // Create a pie chart visualization.
-        BarChart chart = new BarChart(createChartDataTable(), createOptions());
-        setsChartPanel.add(chart);
+        // Create a bar chart
+        setsChartPanel.add(createChart());
       }
     };
 
@@ -173,6 +183,17 @@ public class CoachellerViewComposite extends Composite {
       }
     });
 
+    yearInput.addItem("2013");
+    yearInput.addItem("2012");
+
+    yearInput.addChangeHandler(new ChangeHandler() {
+      @Override
+      public void onChange(ChangeEvent event) {
+        retrieveSets();
+        // androidAnimation.run(400);
+      }
+    });
+
     chartTypeInput.addItem("Score");
     chartTypeInput.addItem("Set Time");
     chartTypeInput.addItem("Artist Name");
@@ -187,10 +208,9 @@ public class CoachellerViewComposite extends Composite {
         Runnable onLoadCallback = new Runnable() {
           @Override
           public void run() {
-            // Create a pie chart visualization.
-            BarChart chart = new BarChart(dataTable, createOptions());
+            // Create a bar chart
             setsChartPanel.clear();
-            setsChartPanel.add(chart);
+            setsChartPanel.add(createChart());
           }
         };
 
@@ -238,7 +258,8 @@ public class CoachellerViewComposite extends Composite {
   private void retrieveSets() {
     infoBox.setText("");
     String day = dayInput.getItemText(dayInput.getSelectedIndex());
-    coachellerService.getSets("2012", day, new AsyncCallback<List<Set>>() {
+    String year = yearInput.getItemText(yearInput.getSelectedIndex());
+    coachellerService.getSets(year, day, new AsyncCallback<List<Set>>() {
 
       @Override
       public void onFailure(Throwable caught) {
@@ -251,17 +272,16 @@ public class CoachellerViewComposite extends Composite {
         setsList.clear();
         setsList.addAll(result);
 
-        final DataTable dataTable = (DataTable) createChartDataTable();
+        // final DataTable dataTable = (DataTable) createChartDataTable();
 
         // Create a callback to be called when the visualization API
         // has been loaded.
         Runnable onLoadCallback = new Runnable() {
           @Override
           public void run() {
-            // Create a pie chart visualization.
-            BarChart chart = new BarChart(dataTable, createOptions());
+            // Create a bar chart
             setsChartPanel.clear();
-            setsChartPanel.add(chart);
+            setsChartPanel.add(createChart());
           }
         };
 
@@ -273,6 +293,7 @@ public class CoachellerViewComposite extends Composite {
     });
   }
 
+  @Deprecated
   private Options createOptions() {
     Options options = Options.create();
     options.setHeight((setsList.size() * 25) + 20);
@@ -289,6 +310,7 @@ public class CoachellerViewComposite extends Composite {
     return options;
   }
 
+  @Deprecated
   private AbstractDataTable createChartDataTable() {
     DataTable data = DataTable.create();
     if (setsList == null) {
@@ -338,6 +360,72 @@ public class CoachellerViewComposite extends Composite {
       }
     }
     return data;
+  }
+
+  private Chart createChart() {
+    Chart chart = new Chart().setType(Series.Type.BAR)
+        .setChartTitleText(yearInput.getItemText(yearInput.getSelectedIndex()) + " RATING RESULTS")
+        .setMarginRight(10);
+    chart.getXAxis().setAxisTitleText("Artist");
+    chart.getYAxis().setAxisTitleText("Score").setMin(0).setMax(5);
+    Series series = chart.createSeries().setName("Average Score");
+    if (setsList != null) {
+      chart.setHeight(setsList.size() * 35);
+      List<String> artistsList = new ArrayList<String>();
+      List<Point> pointsList = new ArrayList<Point>();
+
+      if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Artist Name")) {
+        // sort first
+        Collections.sort(setsList, ComparatorUtils.SET_NAME_COMPARATOR);
+
+        for (Set set : setsList) {
+          artistsList.add(set.getArtistName() + "- 1");
+          artistsList.add("2");
+          Point point = new Point(set.getArtistName(), set.getAvgScoreOne()).setColor("#000033");
+          pointsList.add(point);
+          point = new Point(set.getArtistName(), set.getAvgScoreTwo()).setColor("#900070");
+          pointsList.add(point);
+        }
+      } else if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Score")) {
+        // sort first
+        Collections.sort(setsList, ComparatorUtils.SET_SCORE_COMPARATOR);
+
+        for (Set set : setsList) {
+          artistsList.add(set.getArtistName() + "- 1");
+          artistsList.add("2");
+          Point point = new Point(set.getArtistName(), set.getAvgScoreOne()).setColor("#000033");
+          pointsList.add(point);
+          point = new Point(set.getArtistName(), set.getAvgScoreTwo()).setColor("#900070");
+          pointsList.add(point);
+        }
+      } else {
+        // sort first
+        Collections.sort(setsList, ComparatorUtils.SET_TIME_COMPARATOR);
+
+        for (Set set : setsList) {
+          String timeString = DateTimeUtils.militaryToCivilianTime(set.getTimeOne());
+          String nameCombo = timeString + ": " + set.getArtistName() + " - 1";
+          artistsList.add(nameCombo);
+          timeString = DateTimeUtils.militaryToCivilianTime(set.getTimeTwo());
+          nameCombo = timeString + ": " + set.getArtistName() + " - 2";
+          // artistsList.add(nameCombo);
+          artistsList.add("2");
+          Point point = new Point(set.getArtistName(), set.getAvgScoreOne()).setColor("#000033");
+          pointsList.add(point);
+          point = new Point(set.getArtistName(), set.getAvgScoreTwo()).setColor("#900070");
+          pointsList.add(point);
+        }
+      }
+
+      String[] artistsArray = artistsList.toArray(new String[artistsList.size()]);
+      chart.getXAxis().setCategories(artistsArray);
+
+      Point[] pointsArray = pointsList.toArray(new Point[pointsList.size()]);
+      series.setPoints(pointsArray);
+
+      chart.addSeries(series);
+    }
+    return chart;
   }
 
   public static class SetsTable extends CellTable<Set> {

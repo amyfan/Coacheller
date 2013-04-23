@@ -68,10 +68,11 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   private String sortMode;
   private long _lastRefresh = 0;
 
-  private Dialog rateDialog;
-  private Dialog emailDialog;
-  private Dialog networkErrorDialog;
-  private Dialog firstUseDialog;
+  private Dialog dialogRate;
+  private Dialog dialogEmail;
+  private Dialog dialogAlerts;
+  private Dialog dialogNetworkError;
+  private Dialog dialogFirstUse;
 
   private CoachSetListAdapter setListAdapter;
   // contains set id, stored in setListAdapter
@@ -156,7 +157,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
             // findViewById(R.id.viewSetsList);
             // viewSetsList.invalidateViews();
 
-            // If this is removed, uncomment ListView and invalidate above ^^^
+            // If this is removed, uncomment ListView and invalidate
+            // above ^^^
             refreshData();
 
           } catch (JSONException je) {
@@ -185,7 +187,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     String week = intent.getExtras().getString(SearchSetsActivity.WEEK);
     String day = intent.getExtras().getString(SearchSetsActivity.DAY);
 
-    LogController.OTHER.logMessage("CoachellerActivity setting search suggestion of year[" + year + "] week[" + week + "] day[" + day + "]");
+    LogController.OTHER.logMessage("CoachellerActivity setting search suggestion of year[" + year + "] week[" + week
+        + "] day[" + day + "]");
     _appController.setYearToQuery(Integer.valueOf(year));
     _appController.setDayToQuery(day);
     _appController.setWeekToQuery(Integer.valueOf(week));
@@ -199,7 +202,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     LogController.LIFECYCLE_ACTIVITY.logMessage(this + " onResume");
     _appController.setLastAuthActivity(this);
 
-    // TODO: We'll reenable this if we have something significant to say in the
+    // TODO: We'll reenable this if we have something significant to say in
+    // the
     // beginning
     // if (_appController.isDataFirstUse()) {
     // showDialog(DIALOG_FIRST_USE);
@@ -217,72 +221,6 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     //ImmutableMap<Integer, String> column = festTable.column("Coachella");
     
     
-  }
-
-  // Any button in any view or dialog was clicked
-  @Override
-  public void onClick(View viewClicked) {
-
-    // OK clicked on first use dialog
-    if (viewClicked.getId() == R.id.button_firstuse_ok) {
-      clickDialogFirstUseButtonOK();
-    }
-
-    // "OK" clicked to submit email address
-    if (viewClicked.getId() == R.id.button_provideEmail) {
-      clickDialogConfirmEmailButtonOK();
-    }
-
-    if (viewClicked.getId() == R.id.button_declineEmail) {
-      emailDialog.dismiss();
-    }
-
-    if (viewClicked.getId() == R.id.buttonChangeToSearchSets) {
-      System.out.println("Button: Switch Day");
-      Intent intent = new Intent();
-      intent.setClass(this, SearchSetsActivity.class);
-      startActivity(intent);
-    }
-
-    // Submit rating for a set
-    if (viewClicked.getId() == R.id.button_go_rate_inline) { // Selections
-      clickDialogSubmitRatingButtonOK();
-    } // End rating dialog submitted
-
-    // Submit rating for a set
-    if (viewClicked.getId() == R.id.button_go_rate_above) { // Selections
-      clickDialogSubmitRatingButtonOK();
-    } // End rating dialog submitted
-
-    // Submit rating for a set and do Facebook post
-    if (viewClicked.getId() == R.id.button_go_fb) {
-      try {
-        clickDialogSubmitRatingFacebook();
-      } catch (JSONException e) {
-        System.out.println("JSONException gathering data for Facebook post");
-        e.printStackTrace();
-      }
-    }
-
-    // Submit rating for a set and do Twitter post
-    if (viewClicked.getId() == R.id.button_go_tweet) {
-      try {
-        clickDialogSubmitRatingTwitter();
-      } catch (JSONException e) {
-        System.out.println("JSONException gathering data for Twitter post");
-        e.printStackTrace();
-      }
-    }
-
-    if (viewClicked.getId() == R.id.button_network_error_ok) {
-      System.out.println("Clicked dismiss network error dialog");
-      networkErrorDialog.dismiss();
-    }
-
-    if (viewClicked.getId() == R.id.button_network_error_ok) {
-      networkErrorDialog.dismiss();
-    }
-
   }
 
   // An item in the ListView of sets is clicked
@@ -304,35 +242,36 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         lastRatingPair.second = lastRatingWeek2;
       }
 
-
     } catch (JSONException e) {
       LogController.OTHER.logMessage("JSONException retrieving user's last rating");
       e.printStackTrace();
     }
-    
+
     // Variable setup is done
     LogController.OTHER.logMessage("You Clicked On: " + obj + " previous ratings " + lastRatingPair.first + "/"
         + lastRatingPair.second);
-
 
     // Figure out the time of the currently clicked set
     LogController.SET_DATA.logMessage("Last set selected:");
     LogController.SET_DATA.logMessage(lastSetSelected.toString());
     _appController.getWeekToQuery(); // Week the user is looking at
-    CalendarUtils.whatWeekIsToday();
 
-    isLastSelectedSetInTheFuture();
+    boolean lastSelectedSetInFuture = isLastSelectedSetInTheFuture();
+    LogController.SET_DATA.logMessage("Selected set in the future?:" + lastSelectedSetInFuture);
+    if (lastSelectedSetInFuture) {
+      // Ask to set alarm
+      showDialog(AndroidConstants.DIALOG_ALERTS);
 
-    if (!_appController.getIsLoggedIn()) {
-      _beginSigninProcess();
+    } else if (!_appController.getIsLoggedIn()) {
+      _beginSigninProcess(); // Get the user logged in, cannot rate any sets right now
+
     } else {
-      LogController.OTHER.logMessage(this.toString() + "About to launch Dialog!  _lastSetSelected was "
-          + lastSetSelected);
+      // User is logged in, go ahead and rate something
       if (lastSetSelected == null) {
-        LogController.OTHER.logMessage(this.toString() + " NULL MEMBER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-      } else {
-        LogController.OTHER.logMessage(this.toString() + " OK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        LogController.ERROR.logMessage(this.toString() + " UNEXPECTED: lastSetSelected is null");
       }
+
+      LogController.LIFECYCLE_ACTIVITY.logMessage(this.toString() + " About to launch Dialog!");
       showDialog(AndroidConstants.DIALOG_RATE);
     }
   }
@@ -375,15 +314,18 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     } else if (CalendarUtils.isFestDayAfter(selectedDayInt, todayInt)) {
       returnValue = false; // If todayDay > selectedDay Selection!=Future
 
-    } else if (true) {
-      // If currentTime < OR == selectedTime Before
-      
-      
-      
-    } else if (true) {
-      // If currentTime > selectedTime After
     }
-    return returnValue;
+      
+
+    try {
+      return CalendarUtils.isSetInTheFuture(lastSetSelected, _appController.getWeekToQuery(),
+          _appController.getDayToQuery());
+    } catch (JSONException e) {
+      LogController.ERROR.logMessage(e.getClass().getSimpleName() + " parsing selected set time");
+      e.printStackTrace();
+      return false;
+    }
+
   }
 
   // An item was selected from the list of sets
@@ -444,11 +386,11 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   @Override
   public void onCheckedChanged(RadioGroup clickedGroup, int checkedId) {
     // todo should use switch
-    RadioGroup scoreGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_score);
-    EditText noteWidget = (EditText) rateDialog.findViewById(R.id.editText_commentsForSet);
+    RadioGroup scoreGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_score);
+    EditText noteWidget = (EditText) dialogRate.findViewById(R.id.editText_commentsForSet);
 
     // Selection changed week 1<->2
-    if (clickedGroup == rateDialog.findViewById(R.id.radio_pick_week)) {
+    if (clickedGroup == dialogRate.findViewById(R.id.radio_pick_week)) {
       try {
         if (checkedId != R.id.radio_button_week1 && checkedId != R.id.radio_button_week2) {
           // Not sure what is selected, clear rating check
@@ -465,7 +407,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
           if (ratingToCheck != null) {
             int buttonIdToCheck = _ratingSelectedValueToId.get(ratingToCheck
                 .getString(AndroidConstants.JSON_KEY_RATINGS__SCORE));
-            RadioButton buttonToCheck = (RadioButton) rateDialog.findViewById(buttonIdToCheck);
+            RadioButton buttonToCheck = (RadioButton) dialogRate.findViewById(buttonIdToCheck);
             buttonToCheck.setChecked(true);
             noteWidget.setText(ratingToCheck.getString(AndroidConstants.JSON_KEY_RATINGS__NOTES));
           } else {
@@ -479,167 +421,6 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       }
       scoreGroup.invalidate();
     }
-  }
-
-  // Dialog handling, called once the first time this activity displays (a/each
-  // type of)? dialog
-  @Override
-  protected Dialog onCreateDialog(int id) {
-    if (id == AndroidConstants.DIALOG_FIRST_USE) {
-      firstUseDialog = new Dialog(this);
-      firstUseDialog.setContentView(R.layout.dialog_first_use);
-      firstUseDialog.setTitle(AuthConstants.DIALOG_TITLE_FIRST_USE);
-
-      Button buttonOK = (Button) firstUseDialog.findViewById(R.id.button_firstuse_ok);
-      buttonOK.setOnClickListener(this);
-      return firstUseDialog;
-    }
-
-    if (id == AndroidConstants.DIALOG_GETEMAIL) {
-      emailDialog = new Dialog(this);
-      emailDialog.setContentView(R.layout.get_email_address);
-      emailDialog.setTitle(AuthConstants.DIALOG_TITLE_GET_EMAIL);
-
-      Button buttonOK = (Button) emailDialog.findViewById(R.id.button_provideEmail);
-      buttonOK.setOnClickListener(this);
-
-      Button buttonCancel = (Button) emailDialog.findViewById(R.id.button_declineEmail);
-      buttonCancel.setOnClickListener(this);
-
-      return emailDialog;
-    }
-
-    if (id == AndroidConstants.DIALOG_RATE) {
-      rateDialog = new Dialog(this);
-      rateDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-      rateDialog.setContentView(R.layout.dialog_rate_set);
-
-      RadioGroup weekGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_week);
-      weekGroup.setOnCheckedChangeListener(this);
-
-      // Setup 'X' close widget
-      ImageView close_dialog = (ImageView) rateDialog.findViewById(R.id.imageView_custom_dialog_close);
-      close_dialog.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          rateDialog.dismiss();
-        }
-      });
-
-      Button buttonRateAbove = (Button) rateDialog.findViewById(R.id.button_go_rate_above);
-      buttonRateAbove.setOnClickListener(this);
-
-      Button buttonRateInline = (Button) rateDialog.findViewById(R.id.button_go_rate_inline);
-      buttonRateInline.setOnClickListener(this);
-
-      ImageButton buttonFB = (ImageButton) rateDialog.findViewById(R.id.button_go_fb);
-      buttonFB.setOnClickListener(this);
-
-      ImageButton buttonTweet = (ImageButton) rateDialog.findViewById(R.id.button_go_tweet);
-      buttonTweet.setOnClickListener(this);
-
-      return rateDialog;
-    }
-
-    if (id == AndroidConstants.DIALOG_NETWORK_ERROR) {
-      networkErrorDialog = new Dialog(this);
-      networkErrorDialog.setContentView(R.layout.dialog_network_error);
-      networkErrorDialog.setTitle("Network Error");
-
-      Button buttonOK = (Button) networkErrorDialog.findViewById(R.id.button_network_error_ok);
-      buttonOK.setOnClickListener(this);
-      return networkErrorDialog;
-
-    }
-
-    return super.onCreateDialog(id);
-  }
-
-  // Dialog handling, called before any dialog is shown
-  @Override
-  protected void onPrepareDialog(int id, Dialog dialog) {
-    super.onPrepareDialog(id, dialog);
-    System.out.println("onPrepareDialog");
-
-    // TODO: deprecate?
-    if (id == AndroidConstants.DIALOG_GETEMAIL) {
-      EditText emailField = (EditText) emailDialog.findViewById(R.id.textField_enterEmail);
-      if (_appController.getLoginData().emailAddress == null) {
-        emailField.setText("");
-      } else {
-        emailField.setText(_appController.getLoginData().emailAddress);
-        emailField.selectAll();
-        emailField.requestFocus();
-      }
-    }
-
-    if (id == AndroidConstants.DIALOG_RATE) {
-
-      // _lastRateDialog.setTitle("Rate this Set!");
-      try {
-        TextView subtitleText = (TextView) rateDialog.findViewById(R.id.text_rateBand_subtitle);
-        subtitleText.setText(lastSetSelected.getString("artist")); // TODO NPE Here
-
-      } catch (JSONException e) {
-        LogController.OTHER.logMessage("JSONException assigning Artist name to Rating dialog");
-        e.printStackTrace();
-      }
-
-      int week = CalendarUtils.whatWeekIsToday();
-      RadioGroup weekGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_week);
-      RadioButton buttonWeek1 = (RadioButton) rateDialog.findViewById(R.id.radio_button_week1);
-      RadioButton buttonWeek2 = (RadioButton) rateDialog.findViewById(R.id.radio_button_week2);
-
-      int idChanged = -1;
-
-      if (week == 1) {
-        buttonWeek1.setClickable(true);
-        buttonWeek2.setClickable(false);
-        buttonWeek1.setChecked(true);
-        idChanged = buttonWeek1.getId();
-
-      } else if (week == 2) {
-
-        buttonWeek1.setClickable(true);
-        buttonWeek2.setClickable(true);
-        buttonWeek2.setChecked(true);
-        idChanged = buttonWeek2.getId();
-
-      } else {
-        // Don't suggest a week
-        weekGroup.clearCheck();
-      }
-
-      // TODO pick user's last rating
-      onCheckedChanged(weekGroup, idChanged);
-
-      if (_appController.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)) {
-        ImageButton buttonFB = (ImageButton) rateDialog.findViewById(R.id.button_go_fb);
-        buttonFB.setImageResource(R.drawable.post_facebook_large);
-        System.out.println(buttonFB.getPaddingTop() + " " + buttonFB.getPaddingLeft() + " "
-            + buttonFB.getPaddingBottom() + " " + buttonFB.getPaddingRight());
-        buttonFB.setPadding(7, 3, 7, 10);
-
-      }
-
-      if (_appController.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
-        ImageButton buttonTweet = (ImageButton) rateDialog.findViewById(R.id.button_go_tweet);
-        buttonTweet.setImageResource(R.drawable.post_twitter_large);
-        buttonTweet.setPadding(7, 3, 7, 10);
-      }
-
-      if (_appController.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)
-          && _appController.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
-
-        Button buttonRateAbove = (Button) rateDialog.findViewById(R.id.button_go_rate_above);
-        buttonRateAbove.setVisibility(View.VISIBLE);
-
-        Button buttonRateInline = (Button) rateDialog.findViewById(R.id.button_go_rate_inline);
-        buttonRateInline.setVisibility(View.GONE);
-      }
-
-    }
-
   }
 
   @Override
@@ -697,69 +478,372 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
     setIntent(intent);// must store the new intent unless getIntent() will
-                      // return the old one
+    // return the old one
     checkForExtraData();
   }
 
-  protected void redrawUI() {
+  // Dialog handling, called once the first time this activity displays
+  // (a/each
+  // type of)? dialog
+  @Override
+  protected Dialog onCreateDialog(int id) {
+    if (id == AndroidConstants.DIALOG_FIRST_USE) {
+      return createDialogfirstUse();
+    }
+
+    if (id == AndroidConstants.DIALOG_GETEMAIL) {
+      return createDialogGetEmail();
+    }
+
+    if (id == AndroidConstants.DIALOG_ALERTS) {
+      return createDialogAlerts();
+    }
+
+    if (id == AndroidConstants.DIALOG_RATE) {
+      return createDialogRate();
+    }
+
+    if (id == AndroidConstants.DIALOG_NETWORK_ERROR) {
+      return createDialogNetworkError();
+    }
+
+    return super.onCreateDialog(id);
+  }
+
+  private Dialog createDialogfirstUse() {
+    dialogFirstUse = new Dialog(this);
+    dialogFirstUse.setContentView(R.layout.dialog_first_use);
+    dialogFirstUse.setTitle(AuthConstants.DIALOG_TITLE_FIRST_USE);
+
+    Button buttonOK = (Button) dialogFirstUse.findViewById(R.id.button_firstuse_ok);
+    buttonOK.setOnClickListener(this);
+    return dialogFirstUse;
+  }
+
+  private Dialog createDialogGetEmail() {
+    dialogEmail = new Dialog(this);
+    dialogEmail.setContentView(R.layout.get_email_address);
+    dialogEmail.setTitle(AuthConstants.DIALOG_TITLE_GET_EMAIL);
+
+    Button buttonOK = (Button) dialogEmail.findViewById(R.id.button_provideEmail);
+    buttonOK.setOnClickListener(this);
+
+    Button buttonCancel = (Button) dialogEmail.findViewById(R.id.button_declineEmail);
+    buttonCancel.setOnClickListener(this);
+
+    return dialogEmail;
+  }
+
+  private Dialog createDialogAlerts() {
+    dialogAlerts = new Dialog(this);
+    dialogAlerts.setContentView(R.layout.dialog_alert_multipurpose);
+    // alertsDialog.setTitle(AuthConstants.DIALOG_TITLE_GET_EMAIL);
+    dialogAlerts.setTitle("Alert Dialog Title");
+
+    Button buttonOK = (Button) dialogAlerts.findViewById(R.id.button_ok);
+    buttonOK.setOnClickListener(this);
+
+    Button buttonCancel = (Button) dialogAlerts.findViewById(R.id.button_cancel);
+    buttonCancel.setOnClickListener(this);
+
+    RadioButton radioNearNumbers = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
+    radioNearNumbers.setOnClickListener(this);
+
+    RadioButton radioWithText = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
+    radioWithText.setOnClickListener(this);
+
+    return dialogAlerts;
+  }
+
+  private Dialog createDialogRate() {
+    dialogRate = new Dialog(this);
+    dialogRate.requestWindowFeature(Window.FEATURE_NO_TITLE);
+    dialogRate.setContentView(R.layout.dialog_rate_set);
+
+    RadioGroup weekGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_week);
+    weekGroup.setOnCheckedChangeListener(this);
+
+    // Setup 'X' close widget
+    ImageView close_dialog = (ImageView) dialogRate.findViewById(R.id.imageView_custom_dialog_close);
+    close_dialog.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        dialogRate.dismiss();
+      }
+    });
+
+    Button buttonRateAbove = (Button) dialogRate.findViewById(R.id.button_go_rate_above);
+    buttonRateAbove.setOnClickListener(this);
+
+    Button buttonRateInline = (Button) dialogRate.findViewById(R.id.button_go_rate_inline);
+    buttonRateInline.setOnClickListener(this);
+
+    ImageButton buttonFB = (ImageButton) dialogRate.findViewById(R.id.button_go_fb);
+    buttonFB.setOnClickListener(this);
+
+    ImageButton buttonTweet = (ImageButton) dialogRate.findViewById(R.id.button_go_tweet);
+    buttonTweet.setOnClickListener(this);
+
+    return dialogRate;
+  }
+
+  private Dialog createDialogNetworkError() {
+    dialogNetworkError = new Dialog(this);
+    dialogNetworkError.setContentView(R.layout.dialog_network_error);
+    dialogNetworkError.setTitle("Network Error");
+
+    Button buttonOK = (Button) dialogNetworkError.findViewById(R.id.button_network_error_ok);
+    buttonOK.setOnClickListener(this);
+    return dialogNetworkError;
+  }
+
+  // Dialog handling, called before any dialog is shown
+  @Override
+  protected void onPrepareDialog(int id, Dialog dialog) {
+    super.onPrepareDialog(id, dialog);
+    LogController.USER_ACTION_UI.logMessage("onPrepareDialog");
+
+    if (id == AndroidConstants.DIALOG_GETEMAIL) {
+      prepareDialogGetEmail();
+    }
+
+    if (id == AndroidConstants.DIALOG_RATE) {
+      prepareDialogRateSet();
+    }
+
+    if (id == AndroidConstants.DIALOG_ALERTS) {
+      prepareDialogAlerts();
+    }
+  }
+
+  private void prepareDialogAlerts() {
+
+    boolean alertExists = false;
+
+    alertExists = _appController.getAlertManager().alertExistsForSet(lastSetSelected, _appController.getWeekToQuery());
+
+    RadioButton radioNearNumbers = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
+    RadioButton radioWithText = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
+    EditText numberBox = (EditText) dialogAlerts.findViewById(R.id.numberBox);
+
+    // This is the pattern we want the dialog to present in each time.
+    radioNearNumbers.setChecked(true);
+    radioWithText.setChecked(false);
+    numberBox.selectAll();
+
+    // Still don't know how to keep the keyboard from popping up
+
+    if (alertExists) {
+      // -> Prepare dialog 1) Edit current alert (minutes before set) 2) Cancel existing alert
+      radioWithText.setText("Cancel this alert");
+      // TODO need to get the number of minutes value on this alert and populate the number box
+
+      Integer value = (int) (Math.random() * 10);
+      numberBox.setText(value + "");
+
+    } else {
+      // -> Prepare dialog 1) Set alert for x minutes before set 2) Cancel, nevermind
+      radioWithText.setText("Go Back");
+
+    }
+  }
+
+  private void prepareDialogRateSet() {
+    // _lastRateDialog.setTitle("Rate this Set!");
     try {
-      setListAdapter.resortSetList(sortMode);
+      TextView subtitleText = (TextView) dialogRate.findViewById(R.id.text_rateBand_subtitle);
+      subtitleText.setText(lastSetSelected.getString("artist")); // TODO
+      // NPE
+      // Here
 
     } catch (JSONException e) {
-      // TODO Auto-generated catch block
+      LogController.OTHER.logMessage("JSONException assigning Artist name to Rating dialog");
       e.printStackTrace();
     }
 
-    ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
-    viewSetsList.invalidateViews();
+    int week = CalendarUtils.whatWeekIsToday();
+    RadioGroup weekGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_week);
+    RadioButton buttonWeek1 = (RadioButton) dialogRate.findViewById(R.id.radio_button_week1);
+    RadioButton buttonWeek2 = (RadioButton) dialogRate.findViewById(R.id.radio_button_week2);
 
-    LogController.OTHER.logMessage("Data Refresh is complete");
-    _lastRefresh = System.currentTimeMillis();
+    int idChanged = -1;
 
-    if (!_appController.saveData()) {
-      showDialog(AndroidConstants.DIALOG_NETWORK_ERROR);
+    if (week == 1) {
+      buttonWeek1.setClickable(true);
+      buttonWeek2.setClickable(false);
+      buttonWeek1.setChecked(true);
+      idChanged = buttonWeek1.getId();
+
+    } else if (week == 2) {
+
+      buttonWeek1.setClickable(true);
+      buttonWeek2.setClickable(true);
+      buttonWeek2.setChecked(true);
+      idChanged = buttonWeek2.getId();
+
+    } else {
+      // Don't suggest a week
+      weekGroup.clearCheck();
+    }
+
+    // TODO pick user's last rating
+    onCheckedChanged(weekGroup, idChanged);
+
+    if (_appController.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)) {
+      ImageButton buttonFB = (ImageButton) dialogRate.findViewById(R.id.button_go_fb);
+      buttonFB.setImageResource(R.drawable.post_facebook_large);
+      System.out.println(buttonFB.getPaddingTop() + " " + buttonFB.getPaddingLeft() + " " + buttonFB.getPaddingBottom()
+          + " " + buttonFB.getPaddingRight());
+      buttonFB.setPadding(7, 3, 7, 10);
+
+    }
+
+    if (_appController.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
+      ImageButton buttonTweet = (ImageButton) dialogRate.findViewById(R.id.button_go_tweet);
+      buttonTweet.setImageResource(R.drawable.post_twitter_large);
+      buttonTweet.setPadding(7, 3, 7, 10);
+    }
+
+    if (_appController.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)
+        && _appController.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
+
+      Button buttonRateAbove = (Button) dialogRate.findViewById(R.id.button_go_rate_above);
+      buttonRateAbove.setVisibility(View.VISIBLE);
+
+      Button buttonRateInline = (Button) dialogRate.findViewById(R.id.button_go_rate_inline);
+      buttonRateInline.setVisibility(View.GONE);
     }
   }
 
-  private void _showClickToRate() {
-    Toast clickToRate = Toast.makeText(this, "Tap any set to rate it!", 20);
-    clickToRate.show();
-  }
-
-  private void _beginSigninProcess() {
-    Toast featureRequiresSignin = Toast.makeText(this, AuthConstants.MSG_SIGNIN_REQUIRED, 25);
-    featureRequiresSignin.show();
-
-    // This shows the 'enter email' dialog, no longer needed
-    // showDialog(DIALOG_GETEMAIL);
-
-    Intent lollapaloozerAuthIntent = new Intent(this, ChooseLoginActivity.class);
-    startActivityForResult(lollapaloozerAuthIntent, AuthConstants.INTENT_CHOOSE_LOGIN_TYPE);
-  }
-
-  public void refreshData() {
-    if (_appController.getWeekToQuery() == 1) {
-      setListAdapter.setTimeFieldName(AndroidConstants.JSON_KEY_SETS__TIME_ONE);
-      setListAdapter.setStageFieldName(AndroidConstants.JSON_KEY_SETS__STAGE_ONE);
-    } else if (_appController.getWeekToQuery() == 2) {
-      setListAdapter.setTimeFieldName(AndroidConstants.JSON_KEY_SETS__TIME_TWO);
-      setListAdapter.setStageFieldName(AndroidConstants.JSON_KEY_SETS__STAGE_TWO);
+  private void prepareDialogGetEmail() {
+    EditText emailField = (EditText) dialogEmail.findViewById(R.id.textField_enterEmail);
+    if (_appController.getLoginData().emailAddress == null) {
+      emailField.setText("");
+    } else {
+      emailField.setText(_appController.getLoginData().emailAddress);
+      emailField.selectAll();
+      emailField.requestFocus();
     }
+  }
 
-    TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
-    // TODO: add year
-    titleView.setText(_appController.getYearToQuery() + " - " + _appController.getDayToQuery() + ", Weekend "
-        + _appController.getWeekToQuery());
-    // +" "+ weekString);
+  // Any button in any view or dialog was clicked
+  @Override
+  public void onClick(View viewClicked) {
+  
+    // OK clicked on first use dialog
+    if (viewClicked.getId() == R.id.button_firstuse_ok) {
+      clickDialogFirstUseButtonOK();
+    }
+  
+    // "OK" clicked to submit email address
+    if (viewClicked.getId() == R.id.button_provideEmail) {
+      clickDialogConfirmEmailButtonOK();
+    }
+  
+    if (viewClicked.getId() == R.id.button_declineEmail) {
+      dialogEmail.dismiss();
+    }
+  
+    if (viewClicked.getId() == R.id.buttonChangeToSearchSets) {
+      System.out.println("Button: Switch Day");
+      Intent intent = new Intent();
+      intent.setClass(this, SearchSetsActivity.class);
+      startActivity(intent);
+    }
+  
+    // Submit rating for a set
+    if (viewClicked.getId() == R.id.button_go_rate_inline) { // Selections
+      clickDialogSubmitRatingButtonOK();
+    } // End rating dialog submitted
+  
+    // Submit rating for a set
+    if (viewClicked.getId() == R.id.button_go_rate_above) { // Selections
+      clickDialogSubmitRatingButtonOK();
+    } // End rating dialog submitted
+  
+    // Submit rating for a set and do Facebook post
+    if (viewClicked.getId() == R.id.button_go_fb) {
+      try {
+        clickDialogSubmitRatingFacebook();
+      } catch (JSONException e) {
+        System.out.println("JSONException gathering data for Facebook post");
+        e.printStackTrace();
+      }
+    }
+  
+    // Submit rating for a set and do Twitter post
+    if (viewClicked.getId() == R.id.button_go_tweet) {
+      try {
+        clickDialogSubmitRatingTwitter();
+      } catch (JSONException e) {
+        System.out.println("JSONException gathering data for Twitter post");
+        e.printStackTrace();
+      }
+    }
+  
+    if (viewClicked.getId() == R.id.button_network_error_ok) {
+      System.out.println("Clicked dismiss network error dialog");
+      dialogNetworkError.dismiss();
+    }
+  
+    if (viewClicked.getId() == R.id.button_network_error_ok) {
+      dialogNetworkError.dismiss();
+    }
+  
+    if (dialogAlerts.isShowing()) {
+      // This should work instead of having to give a globally unique ID to each button
+      if (viewClicked.getId() == R.id.button_ok) {
+        LogController.USER_ACTION_UI.logMessage("Alert Dialog - OK Clicked");
+        
+        RadioButton radioNearNumbers = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
+        RadioButton radioWithText = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
+        EditText numberBox = (EditText) dialogAlerts.findViewById(R.id.numberBox);
+        //Get integer value of numberbox text
+        int minutesBefore = 20;
+        
+        boolean alertExists = false;
 
-    _appController.refreshDataFromStorage();
+          alertExists = _appController.getAlertManager().alertExistsForSet(lastSetSelected, _appController.getWeekToQuery());
 
-    launchGetDataThread(); // TODO multithread this
+
+        
+        if (radioNearNumbers.isChecked()) {
+          if (alertExists) {
+            //Update Alert
+            _appController.getAlertManager().addAlertForSet(lastSetSelected, CalendarUtils.whatWeekIsToday(), minutesBefore); 
+          } else {
+            //Create new alert
+          }
+        } else if (radioWithText.isChecked()) {
+          if (alertExists) {
+            //Cancel and delete alert
+            _appController.getAlertManager().removeAlertForSet(lastSetSelected, CalendarUtils.whatWeekIsToday());
+          } else {
+            //Nothing to do
+          }
+        }
+        
+        dialogAlerts.dismiss();
+        
+      } else if (viewClicked.getId() == R.id.button_cancel) {
+        LogController.USER_ACTION_UI.logMessage("Alert Dialog - Cancel Clicked");
+        dialogAlerts.dismiss();
+        
+      } else if (viewClicked.getId() == R.id.radioNearNumberfield) {
+        LogController.USER_ACTION_UI.logMessage("Alert Dialog - Radio near number field Clicked");
+        RadioButton otherButton = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
+        otherButton.setChecked(false);
+  
+      } else if (viewClicked.getId() == R.id.radioWithText) {
+        LogController.USER_ACTION_UI.logMessage("Alert Dialog - Radio near textonly field Clicked");
+        RadioButton otherButton = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
+        otherButton.setChecked(false);
+      }
+    }
   }
 
   // TODO: deprecate?
   private void clickDialogConfirmEmailButtonOK() {
-    EditText emailField = (EditText) emailDialog.findViewById(R.id.textField_enterEmail);
+    EditText emailField = (EditText) dialogEmail.findViewById(R.id.textField_enterEmail);
     String email = emailField.getText().toString();
 
     LogController.OTHER.logMessage("User provided email address: " + email);
@@ -777,7 +861,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         showDialog(AndroidConstants.DIALOG_NETWORK_ERROR);
       }
 
-      emailDialog.dismiss();
+      dialogEmail.dismiss();
       try {
 
         System.out.println("Requesting ratings email.");
@@ -805,7 +889,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   private void clickDialogFirstUseButtonOK() {
     _appController.setDataFirstUse(false);
     // TODO _storageManager.save();
-    firstUseDialog.dismiss();
+    dialogFirstUse.dismiss();
     _showClickToRate(); // display 'tap set to rate it' toast
   }
 
@@ -816,7 +900,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     }
 
     rateDialogSubmitRating();
-    rateDialog.dismiss();
+    dialogRate.dismiss();
   }
 
   private void clickDialogSubmitRatingTwitter() throws JSONException {
@@ -838,7 +922,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       System.out.println("Twitter Auth not ready, posting later");
     }
 
-    rateDialog.dismiss();
+    dialogRate.dismiss();
   }
 
   private void clickDialogSubmitRatingFacebook() throws JSONException {
@@ -857,17 +941,73 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       System.out.println("FB Auth not ready, posting later");
     }
 
-    rateDialog.dismiss();
+    dialogRate.dismiss();
+  }
+
+  protected void redrawUI() {
+    try {
+      setListAdapter.resortSetList(sortMode);
+
+    } catch (JSONException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
+    viewSetsList.invalidateViews();
+
+    LogController.OTHER.logMessage("Data Refresh is complete");
+    _lastRefresh = System.currentTimeMillis();
+
+    if (!_appController.saveData()) {
+      showDialog(AndroidConstants.DIALOG_NETWORK_ERROR);
+    }
+  }
+
+  public void refreshData() {
+    if (_appController.getWeekToQuery() == 1) {
+      setListAdapter.setTimeFieldName(AndroidConstants.JSON_KEY_SETS__TIME_ONE);
+      setListAdapter.setStageFieldName(AndroidConstants.JSON_KEY_SETS__STAGE_ONE);
+    } else if (_appController.getWeekToQuery() == 2) {
+      setListAdapter.setTimeFieldName(AndroidConstants.JSON_KEY_SETS__TIME_TWO);
+      setListAdapter.setStageFieldName(AndroidConstants.JSON_KEY_SETS__STAGE_TWO);
+    }
+
+    TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
+    // TODO: add year
+    titleView.setText(_appController.getYearToQuery() + " - " + _appController.getDayToQuery() + ", Weekend "
+        + _appController.getWeekToQuery());
+    // +" "+ weekString);
+
+    _appController.refreshDataFromStorage();
+
+    launchGetDataThread(); // TODO multithread this
+  }
+
+  private void _showClickToRate() {
+    Toast clickToRate = Toast.makeText(this, "Tap any set to rate it!", 20);
+    clickToRate.show();
+  }
+
+  private void _beginSigninProcess() {
+    Toast featureRequiresSignin = Toast.makeText(this, AuthConstants.MSG_SIGNIN_REQUIRED, 25);
+    featureRequiresSignin.show();
+
+    // This shows the 'enter email' dialog, no longer needed
+    // showDialog(DIALOG_GETEMAIL);
+
+    Intent lollapaloozerAuthIntent = new Intent(this, ChooseLoginActivity.class);
+    startActivityForResult(lollapaloozerAuthIntent, AuthConstants.INTENT_CHOOSE_LOGIN_TYPE);
   }
 
   private SocialNetworkPost _buildSocialNetworkPost() throws JSONException {
     SocialNetworkPost post = new SocialNetworkPost();
     // Build data from dialog here
     // TODO this is in the code in 2 places
-    RadioGroup scoreGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_score);
+    RadioGroup scoreGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_score);
     String submittedRating = _selectedIdToValue.get(scoreGroup.getCheckedRadioButtonId()).toString();
 
-    EditText noteWidget = (EditText) rateDialog.findViewById(R.id.editText_commentsForSet);
+    EditText noteWidget = (EditText) dialogRate.findViewById(R.id.editText_commentsForSet);
     String submittedNote = noteWidget.getText().toString();
     String artistName = lastSetSelected.getString("artist");
 
@@ -878,7 +1018,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   }
 
   private boolean _lastRateDialogVerify() {
-    RadioGroup scoreGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_score);
+    RadioGroup scoreGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_score);
     int scoreSelectedId = scoreGroup.getCheckedRadioButtonId();
     if (scoreSelectedId == -1) {
       Toast selectEverything = Toast.makeText(this, "Please select a rating for this Set", 25);
@@ -890,17 +1030,18 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   private void rateDialogSubmitRating() {
     // TODO this is in the code in 2 places
-    // RadioGroup weekGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_week);
-    int weekSelectedId = ((RadioGroup) rateDialog.findViewById(R.id.radio_pick_week)).getCheckedRadioButtonId();
+    // RadioGroup weekGroup = (RadioGroup)
+    // rateDialog.findViewById(R.id.radio_pick_week);
+    int weekSelectedId = ((RadioGroup) dialogRate.findViewById(R.id.radio_pick_week)).getCheckedRadioButtonId();
 
-    RadioGroup scoreGroup = (RadioGroup) rateDialog.findViewById(R.id.radio_pick_score);
+    RadioGroup scoreGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_score);
     int scoreSelectedId = scoreGroup.getCheckedRadioButtonId();
     String submittedRating = _selectedIdToValue.get(scoreSelectedId).toString();
 
-    EditText noteWidget = (EditText) rateDialog.findViewById(R.id.editText_commentsForSet);
+    EditText noteWidget = (EditText) dialogRate.findViewById(R.id.editText_commentsForSet);
     String submittedNote = noteWidget.getText().toString();
 
-    rateDialog.dismiss();
+    dialogRate.dismiss();
 
     String weekNumber = _selectedIdToValue.get(weekSelectedId) + "";
 
@@ -965,6 +1106,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   private SocialNetworkPost _queuedTwitterPost;
 
+  private SocialNetworkPost _queuedFacebookPost;
+
   @Override
   public synchronized void doTwitterPost() {
     if (_queuedTwitterPost == null) {
@@ -981,8 +1124,6 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     System.out.println(result);
     _queuedTwitterPost = null;
   }
-
-  private SocialNetworkPost _queuedFacebookPost;
 
   @Override
   public synchronized void doFacebookPost() {
@@ -1003,6 +1144,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   @Override
   public void modelChanged() {
+    // Something is wrong with this...
   }
 
   @Override

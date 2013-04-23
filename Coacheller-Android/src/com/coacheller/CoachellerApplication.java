@@ -46,6 +46,7 @@ public class CoachellerApplication extends Application implements AppControllerI
 
 
   private AuthModel authModel;
+  private AlertManager alertManager = new AlertManager(this);
   private ChooseLoginActivity activityChooseLogin = null;
   private CoachellerActivity activityCoacheller = null;
   private SearchSetsActivity activitySearchSets = null;
@@ -440,5 +441,13 @@ public class CoachellerApplication extends Application implements AppControllerI
     AlertDialog alert = builder.create();
     alert.show();
   }
+  
+  public AlertManager getAlertManager() {
+    return this.alertManager;
+  }
+
+
+  
+  
 
 }
