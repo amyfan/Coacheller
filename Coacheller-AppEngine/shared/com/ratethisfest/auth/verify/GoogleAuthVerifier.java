@@ -6,7 +6,6 @@ import java.net.MalformedURLException;
 import org.json.JSONException;
 
 import com.ratethisfest.auth.OAuthHTTP;
-import com.ratethisfest.shared.AuthConstants;
 
 public class GoogleAuthVerifier implements AuthVerifier {
   private static int _failuresToSimulate;
@@ -26,6 +25,7 @@ public class GoogleAuthVerifier implements AuthVerifier {
     CLIENT_SECRET = client_secret;
   }
 
+  @Override
   public boolean verify(String authToken, String identifier) {
 
     System.out.println("Verifying Google token: " + authToken + " identifier: " + identifier);

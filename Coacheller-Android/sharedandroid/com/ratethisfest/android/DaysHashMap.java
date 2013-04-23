@@ -1,9 +1,8 @@
 package com.ratethisfest.android;
 
+import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
 
-import com.ibm.icu.util.Calendar;
 
 //Meant to be used by static methods
 public class DaysHashMap {

@@ -1,7 +1,5 @@
 package com.ratethisfest.client.auth;
 
-import com.ratethisfest.shared.AuthConstants;
-
 public class GoogleAuthUtils {
 
   public static String getRequestUrl(String clientId, String redirectUri) {

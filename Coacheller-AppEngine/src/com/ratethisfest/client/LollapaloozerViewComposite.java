@@ -34,6 +34,7 @@ import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.corechart.AxisOptions;
 import com.google.gwt.visualization.client.visualizations.corechart.BarChart;
+import com.google.gwt.visualization.client.visualizations.corechart.CoreChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
 import com.ratethisfest.shared.DateTimeUtils;
 import com.ratethisfest.shared.Set;
@@ -117,6 +118,7 @@ public class LollapaloozerViewComposite extends Composite {
     // Create a callback to be called when the visualization API
     // has been loaded.
     Runnable onLoadCallback = new Runnable() {
+      @Override
       public void run() {
         // Create a bar chart
         // TODO
@@ -126,7 +128,7 @@ public class LollapaloozerViewComposite extends Composite {
 
     // Load the visualization api, passing the onLoadCallback to be called
     // when loading is done.
-    VisualizationUtils.loadVisualizationApi(onLoadCallback, BarChart.PACKAGE);
+    VisualizationUtils.loadVisualizationApi(onLoadCallback, CoreChart.PACKAGE);
 
     Element androidElement = getElement().getFirstChildElement().getFirstChildElement();
     final Animation androidAnimation = new AndroidAnimation(androidElement);
@@ -185,6 +187,7 @@ public class LollapaloozerViewComposite extends Composite {
         // Create a callback to be called when the visualization API
         // has been loaded.
         Runnable onLoadCallback = new Runnable() {
+          @Override
           public void run() {
             // Create a bar chart
             // TODO
@@ -195,7 +198,7 @@ public class LollapaloozerViewComposite extends Composite {
 
         // Load the visualization api, passing the onLoadCallback to be called
         // when loading is done.
-        VisualizationUtils.loadVisualizationApi(onLoadCallback, BarChart.PACKAGE);
+        VisualizationUtils.loadVisualizationApi(onLoadCallback, CoreChart.PACKAGE);
       }
     });
 
@@ -239,11 +242,13 @@ public class LollapaloozerViewComposite extends Composite {
     String day = dayInput.getItemText(dayInput.getSelectedIndex());
     lollapaloozerService.getSets("2012", day, new AsyncCallback<List<Set>>() {
 
+      @Override
       public void onFailure(Throwable caught) {
         // Show the RPC error message to the user
         infoBox.setText(SERVER_ERROR);
       }
 
+      @Override
       public void onSuccess(List<Set> result) {
         setsList.clear();
         setsList.addAll(result);
@@ -253,6 +258,7 @@ public class LollapaloozerViewComposite extends Composite {
         // Create a callback to be called when the visualization API
         // has been loaded.
         Runnable onLoadCallback = new Runnable() {
+          @Override
           public void run() {
             // Create a bar chart
             // TODO
@@ -263,7 +269,7 @@ public class LollapaloozerViewComposite extends Composite {
 
         // Load the visualization api, passing the onLoadCallback to be called
         // when loading is done.
-        VisualizationUtils.loadVisualizationApi(onLoadCallback, BarChart.PACKAGE);
+        VisualizationUtils.loadVisualizationApi(onLoadCallback, CoreChart.PACKAGE);
 
       }
     });
@@ -395,6 +401,7 @@ public class LollapaloozerViewComposite extends Composite {
     public Column<Set, String> stageOneColumn;
 
     interface TasksTableResources extends CellTable.Resources {
+      @Override
       @Source("SetsTable.css")
       TableStyle cellTableStyle();
     }

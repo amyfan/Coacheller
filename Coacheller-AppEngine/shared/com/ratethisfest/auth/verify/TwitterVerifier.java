@@ -6,7 +6,6 @@ import org.scribe.model.Response;
 import org.scribe.model.Verb;
 
 import com.ratethisfest.auth.TwitterAuthProviderOAuth;
-import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.Helper;
 
 public class TwitterVerifier implements AuthVerifier {

@@ -7,7 +7,6 @@ import android.content.Intent;
 
 import com.facebook.android.Facebook;
 import com.ratethisfest.android.data.SocialNetworkPost;
-import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.shared.AuthConstants;
 
 public class AuthModel {

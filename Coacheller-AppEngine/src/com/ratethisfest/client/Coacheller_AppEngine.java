@@ -15,6 +15,7 @@ public class Coacheller_AppEngine implements EntryPoint, ValueChangeHandler<Stri
   /**
    * This is the entry point method.
    */
+  @Override
   public void onModuleLoad() {
     // AppUserWidget widget = new AppUserWidget();
     // RootPanel.get().add(widget);
@@ -47,6 +48,7 @@ public class Coacheller_AppEngine implements EntryPoint, ValueChangeHandler<Stri
     FlowControl.go(c);
   }
 
+  @Override
   public void onValueChange(ValueChangeEvent<String> e) {
     FlowControl.go(History.getToken());
   }

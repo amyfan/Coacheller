@@ -1,6 +1,7 @@
 package com.coacheller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,7 +19,6 @@ import android.os.Bundle;
 import com.coacheller.ui.ChooseLoginActivity;
 import com.coacheller.ui.CoachellerActivity;
 import com.coacheller.ui.SearchSetsActivity;
-import com.ibm.icu.util.Calendar;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.CalendarUtils;
@@ -424,6 +424,7 @@ public class CoachellerApplication extends Application implements AppControllerI
     builder.setTitle(title);
     builder.setMessage(errorString).setCancelable(true)
         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+          @Override
           public void onClick(DialogInterface dialog, int id) {
           }
         }

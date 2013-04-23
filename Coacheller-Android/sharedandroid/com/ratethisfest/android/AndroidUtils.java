@@ -5,14 +5,10 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.ratethisfest.android.data.CustomSetListAdapter;
-import com.ratethisfest.android.data.JSONArraySortMap;
 import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.shared.HttpConstants;
 

@@ -97,6 +97,7 @@ public class CoachellaEmailSender {
   }
 
   public static final Comparator<? super String> STRING_NAME_COMPARATOR = new Comparator<String>() {
+    @Override
     public int compare(String t0, String t1) {
       return t0.compareToIgnoreCase(t1);
     }

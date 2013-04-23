@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.data.CustomSetListAdapter;

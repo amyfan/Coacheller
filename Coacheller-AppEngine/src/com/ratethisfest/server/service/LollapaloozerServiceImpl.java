@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ratethisfest.client.LollapaloozerService;
 import com.ratethisfest.server.domain.Rating;
@@ -29,6 +27,7 @@ import com.ratethisfest.shared.Set;
 public class LollapaloozerServiceImpl extends RemoteServiceServlet implements LollapaloozerService {
   private static final Logger log = Logger.getLogger(LollapaloozerServiceImpl.class.getName());
 
+  @Override
   public String greetServer(String input) throws IllegalArgumentException {
     // Verify that the input is valid.
     if (!FieldVerifier.isValidName(input)) {
@@ -60,6 +59,7 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     }
   }
 
+  @Override
   public List<Set> getSets(String yearString, String day) {
     List<Set> sets = null;
 
@@ -73,6 +73,7 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     return sets;
   }
 
+  @Override
   public String addRating(String email, Long setId, String score, String notes) {
 
     String resp = null;
@@ -93,6 +94,7 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     return resp;
   }
 
+  @Override
   public List<RatingGwt> getRatingsByUserEmail(String email, Integer year) {
 
     List<RatingGwt> ratingGwts = null;
@@ -108,6 +110,7 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     return ratingGwts;
   }
 
+  @Override
   public String deleteRating(Long ratingId) {
     String resp = "fail";
     if (ratingId != null) {
@@ -117,6 +120,7 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     return resp;
   }
 
+  @Override
   public String deleteRatingsByUser(String email) {
     String resp = "fail";
     LollaRatingManager.getInstance().deleteRatingsByUser(email);
@@ -130,6 +134,7 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
    * @param year
    * @return
    */
+  @Override
   public String deleteRatingsByYear(Integer year) {
     String resp = "fail";
     LollaRatingManager.getInstance().deleteRatingsByYear(year);
@@ -137,6 +142,7 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     return resp;
   }
 
+  @Override
   public String emailRatingsToUser(String email) {
     // TODO
     // String resp = CoachellaEmailSender.emailRatings(email);
@@ -147,6 +153,7 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
   /**
    * THIS SHOULD BE CALLED SPARINGLY
    */
+  @Override
   public String insertSetData() {
     String success = "something happened";
     // LollaRatingManager.getInstance().deleteSetsByYear(2012);
@@ -155,6 +162,7 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     return success;
   }
 
+  @Override
   public String updateSetData() {
     String success;
     String url;
@@ -174,6 +182,7 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     return success;
   }
 
+  @Override
   public String recalculateSetRatingAverages() {
     LollaSetDataLoader.getInstance().recalculateSetRatingAverages();
     return "success i believe";

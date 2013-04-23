@@ -169,8 +169,9 @@ public class LollapaloozerRateComposite extends Composite {
     final Animation androidAnimation = new AndroidAnimation(androidElement);
 
     notesInput.addKeyPressHandler(new KeyPressHandler() {
+      @Override
       public void onKeyPress(KeyPressEvent event) {
-        if (((int) event.getCharCode()) == 13) {
+        if ((event.getCharCode()) == 13) {
           addRating();
 
           androidAnimation.run(400);
@@ -192,11 +193,13 @@ public class LollapaloozerRateComposite extends Composite {
       public void onClick(ClickEvent event) {
         infoBox.setText("");
         lollapaloozerService.emailRatingsToUser(ownerEmail, new AsyncCallback<String>() {
+          @Override
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             infoBox.setText(SERVER_ERROR);
           }
 
+          @Override
           public void onSuccess(String result) {
             infoBox.setText(result);
           }
@@ -218,12 +221,14 @@ public class LollapaloozerRateComposite extends Composite {
           infoBox.setText("");
           lollapaloozerService.insertSetData(new AsyncCallback<String>() {
 
+            @Override
             public void onFailure(Throwable caught) {
               // Show the RPC error message to the user
               // infoBox.setText(SERVER_ERROR);
               infoBox.setText(caught.getMessage());
             }
 
+            @Override
             public void onSuccess(String result) {
               infoBox.setText(result);
             }
@@ -243,12 +248,14 @@ public class LollapaloozerRateComposite extends Composite {
           infoBox.setText("");
           lollapaloozerService.recalculateSetRatingAverages(new AsyncCallback<String>() {
 
+            @Override
             public void onFailure(Throwable caught) {
               // Show the RPC error message to the user
               // infoBox.setText(SERVER_ERROR);
               infoBox.setText(caught.getMessage());
             }
 
+            @Override
             public void onSuccess(String result) {
               infoBox.setText(result);
             }
@@ -266,12 +273,14 @@ public class LollapaloozerRateComposite extends Composite {
       public void onClick(ClickEvent event) {
         infoBox.setText("");
         lollapaloozerService.deleteRatingsByUser(ownerEmail, new AsyncCallback<String>() {
+          @Override
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             // infoBox.setText(SERVER_ERROR);
             infoBox.setText(caught.getMessage());
           }
 
+          @Override
           public void onSuccess(String result) {
             infoBox.setText(result);
           }
@@ -286,12 +295,14 @@ public class LollapaloozerRateComposite extends Composite {
         if (ownerEmail.equals(ADMIN_EMAIL)) {
           infoBox.setText("");
           lollapaloozerService.deleteRatingsByYear(2012, new AsyncCallback<String>() {
+            @Override
             public void onFailure(Throwable caught) {
               // Show the RPC error message to the user
               // infoBox.setText(SERVER_ERROR);
               infoBox.setText(caught.getMessage());
             }
 
+            @Override
             public void onSuccess(String result) {
               infoBox.setText(result);
             }
@@ -304,6 +315,7 @@ public class LollapaloozerRateComposite extends Composite {
     });
 
     ratingsTable.deleteColumn.setFieldUpdater(new FieldUpdater<RatingGwt, String>() {
+      @Override
       public void update(int index, RatingGwt rating, String value) {
         deleteRating(rating);
       }
@@ -319,11 +331,13 @@ public class LollapaloozerRateComposite extends Composite {
     infoBox.setText("");
     lollapaloozerService.getSets("2012", null, new AsyncCallback<List<Set>>() {
 
+      @Override
       public void onFailure(Throwable caught) {
         // Show the RPC error message to the user
         infoBox.setText(SERVER_ERROR);
       }
 
+      @Override
       public void onSuccess(List<Set> result) {
         ArrayList<Set> sortedItems = new ArrayList<Set>(result);
         Collections.sort(sortedItems, ComparatorUtils.SET_NAME_COMPARATOR);
@@ -344,11 +358,13 @@ public class LollapaloozerRateComposite extends Composite {
     lollapaloozerService.getRatingsByUserEmail(ownerEmail, 2012,
         new AsyncCallback<List<RatingGwt>>() {
 
+          @Override
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             infoBox.setText(SERVER_ERROR);
           }
 
+          @Override
           public void onSuccess(List<RatingGwt> result) {
             ratingsList.clear();
             ratingsList.addAll(result);
@@ -409,11 +425,13 @@ public class LollapaloozerRateComposite extends Composite {
     // Then, we send the input to the server.
     lollapaloozerService.addRating(ownerEmail, set.getId(), score, notes,
         new AsyncCallback<String>() {
+          @Override
           public void onFailure(Throwable caught) {
             // Show the RPC error message to the user
             infoBox.setText(SERVER_ERROR);
           }
 
+          @Override
           public void onSuccess(String result) {
             infoBox.setText(result);
             retrieveRatings();
@@ -424,11 +442,13 @@ public class LollapaloozerRateComposite extends Composite {
   private void deleteRating(RatingGwt rating) {
     infoBox.setText("");
     lollapaloozerService.deleteRating(rating.getId(), new AsyncCallback<String>() {
+      @Override
       public void onFailure(Throwable caught) {
         // Show the RPC error message to the user
         infoBox.setText(SERVER_ERROR);
       }
 
+      @Override
       public void onSuccess(String result) {
         infoBox.setText(result);
         retrieveRatings();
@@ -446,6 +466,7 @@ public class LollapaloozerRateComposite extends Composite {
     public Column<RatingGwt, String> deleteColumn;
 
     interface TasksTableResources extends CellTable.Resources {
+      @Override
       @Source("RatingsTable.css")
       TableStyle cellTableStyle();
     }
@@ -513,10 +534,12 @@ public class LollapaloozerRateComposite extends Composite {
       addColumnStyleName(3, resources.cellTableStyle().columnName());
 
       ButtonCell buttonCell = new ButtonCell(new SafeHtmlRenderer<String>() {
+        @Override
         public SafeHtml render(String object) {
           return SafeHtmlUtils.fromTrustedString("<img src=\"delete.png\"></img>");
         }
 
+        @Override
         public void render(String object, SafeHtmlBuilder builder) {
           builder.append(render(object));
         }

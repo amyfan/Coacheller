@@ -116,7 +116,7 @@ public class StorageManager {
   }
 
   public synchronized Object getObject(String objectName) {
-    return (Object) _data.get(objectName);
+    return _data.get(objectName);
   }
 
 }

@@ -23,6 +23,7 @@ public class TwitterAuthWebpageActivity extends Activity {
     // Setup 'X' close widget
     ImageView close_dialog = (ImageView) findViewById(R.id.imageView_custom_dialog_close);
     close_dialog.setOnClickListener(new View.OnClickListener() {
+      @Override
       public void onClick(View v) {
         setResult(Activity.RESULT_CANCELED);
         finish();

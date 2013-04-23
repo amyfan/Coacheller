@@ -68,11 +68,13 @@ public class LollapaloozerLoginFacebookComposite extends Composite {
     RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(requestUrl));
     try {
       Request request = builder.sendRequest(null, new RequestCallback() {
+        @Override
         public void onError(Request request, Throwable exception) {
           // Couldn't connect to server (could be timeout, SOP violation, etc.)
           title.setText("Couldn't connect to server");
         }
 
+        @Override
         public void onResponseReceived(Request request, Response response) {
           if (200 == response.getStatusCode()) {
             String token = parseToken(response.getText());
@@ -100,11 +102,13 @@ public class LollapaloozerLoginFacebookComposite extends Composite {
     RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(requestUrl));
     try {
       Request request = builder.sendRequest(null, new RequestCallback() {
+        @Override
         public void onError(Request request, Throwable exception) {
           // Couldn't connect to server (could be timeout, SOP violation, etc.)
           title.setText("getData: Couldn't connect to server");
         }
 
+        @Override
         public void onResponseReceived(Request request, Response response) {
           if (200 == response.getStatusCode()) {
             title.setText(response.getText());

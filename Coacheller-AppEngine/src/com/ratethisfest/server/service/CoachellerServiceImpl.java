@@ -28,6 +28,7 @@ import com.ratethisfest.shared.Set;
 public class CoachellerServiceImpl extends RemoteServiceServlet implements CoachellerService {
   private static final Logger log = Logger.getLogger(CoachellerServiceImpl.class.getName());
 
+  @Override
   public String greetServer(String input) throws IllegalArgumentException {
     // Verify that the input is valid.
     if (!FieldVerifier.isValidName(input)) {
@@ -47,6 +48,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
         + ".<br><br>It looks like you are using:<br>" + userAgent;
   }
 
+  @Override
   public List<Set> getSets(String yearString, String day) {
     List<Set> sets = null;
 
@@ -61,6 +63,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     return sets;
   }
 
+  @Override
   public String addRating(String email, Long setId, String weekend, String score, String notes) {
 
     String resp = null;
@@ -84,6 +87,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     return resp;
   }
 
+  @Override
   public List<RatingGwt> getRatingsByUserEmail(String email, Integer year) {
 
     List<RatingGwt> ratingGwts = null;
@@ -99,6 +103,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     return ratingGwts;
   }
 
+  @Override
   public String deleteRating(Long ratingId) {
     String resp = "fail";
     if (ratingId != null) {
@@ -108,6 +113,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     return resp;
   }
 
+  @Override
   public String deleteRatingsByUser(String email) {
     String resp = "fail";
     CoachellaRatingManager.getInstance().deleteRatingsByUser(email);
@@ -115,11 +121,13 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     return resp;
   }
 
+  @Override
   public String emailRatingsToUser(String email) {
     String resp = CoachellaEmailSender.emailRatings(email);
     return resp;
   }
 
+  @Override
   public String updateSetData() {
     String success;
     String url;
@@ -138,6 +146,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     return success;
   }
 
+  @Override
   public String recalculateSetRatingAverages() {
     CoachellaSetDataLoader.getInstance().recalculateSetRatingAverages();
     return "success i believe";

@@ -87,14 +87,17 @@ public class GoogleAuthProvider implements AuthProviderInt {
     _verifiedAccountName = null;
   }
 
+  @Override
   public String getAuthToken() {
     return _currentGoogleLoginTokenBundle.getString(AccountManager.KEY_AUTHTOKEN);
   }
 
+  @Override
   public String getAccountType() {
     return _currentGoogleLoginTokenBundle.getString(AccountManager.KEY_ACCOUNT_TYPE);
   }
 
+  @Override
   public String getLocalAccountName() {
     return _currentGoogleLoginTokenBundle.getString(AccountManager.KEY_ACCOUNT_NAME);
   }
@@ -114,6 +117,7 @@ public class GoogleAuthProvider implements AuthProviderInt {
   }
 
   private final class GoogleAuthAccountManagerCallback implements AccountManagerCallback<Bundle> {
+    @Override
     public void run(AccountManagerFuture<Bundle> future) {
       System.out.println("AccountManagerCallback executing");
       try {

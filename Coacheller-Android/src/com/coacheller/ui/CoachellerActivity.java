@@ -39,6 +39,7 @@ import android.widget.Toast;
 import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
 import com.coacheller.data.CoachSetListAdapter;
+
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.CalendarUtils;
@@ -50,6 +51,7 @@ import com.ratethisfest.android.data.CustomPair;
 import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.android.data.SocialNetworkPost;
 import com.ratethisfest.android.log.LogController;
+import com.ratethisfest.data.FestData;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.HttpConstants;
@@ -191,10 +193,10 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   }
 
   /** Called by Android Framework when activity (re)gains foreground status */
+  @Override
   public void onResume() {
     super.onResume();
     LogController.LIFECYCLE_ACTIVITY.logMessage(this + " onResume");
-
     _appController.setLastAuthActivity(this);
 
     // TODO: We'll reenable this if we have something significant to say in the
@@ -205,9 +207,16 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     _showClickToRate();
     // }
 
-    if ((System.currentTimeMillis() - _lastRefresh) / 1000 > REFRESH_INTERVAL__SECONDS) {
+    long sinceLastRefresh = System.currentTimeMillis() - _lastRefresh;
+    if (sinceLastRefresh / 1000 > REFRESH_INTERVAL__SECONDS) {
+      LogController.OTHER.logMessage(sinceLastRefresh +"ms since last data refresh, calling refreshData");
       refreshData(); // TODO multi-thread this
     }
+    
+    //ImmutableTable<Integer, String, String> festTable = FestData.getTable();
+    //ImmutableMap<Integer, String> column = festTable.column("Coachella");
+    
+    
   }
 
   // Any button in any view or dialog was clicked
@@ -331,13 +340,33 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   // Is clicked set IN THE FUTURE?
   private boolean isLastSelectedSetInTheFuture() {
     boolean returnValue = false;
-    int todayInt = CalendarUtils.whatDayIsTodayInt();
-    int selectedDayInt = DaysHashMap.DayStringToJavaCalendar(_appController.getDayToQuery());
+    final int todayInt = CalendarUtils.whatDayIsTodayInt();
+    final int selectedWeekInt = _appController.getWeekToQuery();
+    final int selectedDayInt = DaysHashMap.DayStringToJavaCalendar(_appController.getDayToQuery());
+    final int selectedTime;
 
-    if (CalendarUtils.whatWeekIsToday() < _appController.getWeekToQuery()) {
+    final String setTimeKey;
+    
+    if (selectedWeekInt == 1) {
+      setTimeKey = AndroidConstants.JSON_KEY_SETS__TIME_ONE;
+    } else if (selectedWeekInt == 2) {
+      setTimeKey = AndroidConstants.JSON_KEY_SETS__TIME_TWO;
+    } else {
+      setTimeKey = "";
+    }
+    
+    try {
+      lastSetSelected.get(setTimeKey);
+    } catch (JSONException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+    
+    if (CalendarUtils.whatWeekIsToday() < selectedWeekInt) {
       returnValue = false; // If todayWeek < selectedWeek Selection==Future
 
-    } else if (CalendarUtils.whatWeekIsToday() > _appController.getWeekToQuery()) {
+    } else if (CalendarUtils.whatWeekIsToday() > selectedWeekInt) {
       returnValue = true; // If todayWeek > selectedWeek Selection!=Future
 
     } else if (CalendarUtils.isFestDayAfter(todayInt, selectedDayInt)) {
@@ -348,6 +377,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     } else if (true) {
       // If currentTime < OR == selectedTime Before
+      
       
       
     } else if (true) {
@@ -490,6 +520,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       // Setup 'X' close widget
       ImageView close_dialog = (ImageView) rateDialog.findViewById(R.id.imageView_custom_dialog_close);
       close_dialog.setOnClickListener(new View.OnClickListener() {
+        @Override
         public void onClick(View v) {
           rateDialog.dismiss();
         }
@@ -662,6 +693,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     return true;
   }
 
+  @Override
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
     setIntent(intent);// must store the new intent unless getIntent() will
@@ -897,6 +929,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     LogController.LIFECYCLE_THREAD.logMessage("Launching getData thread");
 
     new Thread() {
+      @Override
       public void run() {
         try {
           setListAdapter.setData(_appController.getDataFromServer());
@@ -914,6 +947,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     LogController.LIFECYCLE_THREAD.logMessage("Launching Submit Rating thread");
 
     new Thread() {
+      @Override
       public void run() {
         try {
           setListAdapter.setData(_appController.getDataFromServer());

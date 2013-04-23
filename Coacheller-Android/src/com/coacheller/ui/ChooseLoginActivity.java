@@ -77,6 +77,7 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
 
     _gestureDetector = new GestureDetector(new MyGestureDetector());
     _gestureListener = new View.OnTouchListener() {
+      @Override
       public boolean onTouch(View v, MotionEvent event) {
         return _gestureDetector.onTouchEvent(event);
       }
@@ -276,18 +277,22 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
     }
   }
 
+  @Override
   public synchronized void doTwitterPost() {
     LogController.OTHER.logMessage("WARNING: ChooseLoginActivity Empty interface method has been called");
   }
 
+  @Override
   public synchronized void doFacebookPost() {
     LogController.OTHER.logMessage("WARNING: ChooseLoginActivity Empty interface method has been called");
   }
 
+  @Override
   public void modelChanged() {
     // Run method in main UI thread
     View v = findViewById(android.R.id.content);
     v.post(new Runnable() {
+      @Override
       public void run() {
         _updateUI();
       }

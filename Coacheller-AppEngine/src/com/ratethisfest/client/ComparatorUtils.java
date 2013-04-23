@@ -8,12 +8,14 @@ import com.ratethisfest.shared.Set;
 public class ComparatorUtils {
 
   public static final Comparator<? super Set> SET_NAME_COMPARATOR = new Comparator<Set>() {
+    @Override
     public int compare(Set t0, Set t1) {
       return t0.getArtistName().compareToIgnoreCase(t1.getArtistName());
     }
   };
 
   public static final Comparator<? super Set> SET_SCORE_COMPARATOR = new Comparator<Set>() {
+    @Override
     public int compare(Set t0, Set t1) {
       // Sort by cumulative scores first
       if (t0.getAvgScoreOne() < t1.getAvgScoreOne()) {
@@ -28,6 +30,7 @@ public class ComparatorUtils {
   };
 
   public static final Comparator<? super Set> DOUBLE_SET_SCORE_COMPARATOR = new Comparator<Set>() {
+    @Override
     public int compare(Set t0, Set t1) {
       // Sort by cumulative scores first
       if (averageScore(t0) < averageScore(t1)) {
@@ -52,6 +55,7 @@ public class ComparatorUtils {
   };
 
   public static final Comparator<? super Set> SET_TIME_COMPARATOR = new Comparator<Set>() {
+    @Override
     public int compare(Set t0, Set t1) {
       // Sort by set time first
       if (t0.getTimeOne() > t1.getTimeOne()) {
@@ -66,12 +70,14 @@ public class ComparatorUtils {
   };
 
   public static final Comparator<? super String> STRING_NAME_COMPARATOR = new Comparator<String>() {
+    @Override
     public int compare(String t0, String t1) {
       return t0.compareToIgnoreCase(t1);
     }
   };
 
   public static final Comparator<? super RatingGwt> RATING_NAME_COMPARATOR = new Comparator<RatingGwt>() {
+    @Override
     public int compare(RatingGwt t0, RatingGwt t1) {
       // Sort by set time first
       if (t0.getScore() < t1.getScore()) {

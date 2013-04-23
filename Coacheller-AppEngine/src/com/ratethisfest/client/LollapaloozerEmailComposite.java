@@ -51,8 +51,9 @@ public class LollapaloozerEmailComposite extends Composite {
     userEmailAddressInput.getElement().setPropertyString("placeholder", "Enter email address here");
 
     userEmailAddressInput.addKeyPressHandler(new KeyPressHandler() {
+      @Override
       public void onKeyPress(KeyPressEvent event) {
-        if (((int) event.getCharCode()) == 13) {
+        if ((event.getCharCode()) == 13) {
           submitEmail();
         }
       }

@@ -168,6 +168,7 @@ public class SearchSetsActivity extends Activity implements OnClickListener {
    * @param v
    */
 
+  @Override
   public void onClick(View v) {
     if (v.getId() == R.id.sets_search_button_search) {
       LogController.USER_ACTION_UI.logMessage("Search button pressed");

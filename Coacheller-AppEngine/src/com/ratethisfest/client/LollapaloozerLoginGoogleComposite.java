@@ -61,11 +61,13 @@ public class LollapaloozerLoginGoogleComposite extends Composite {
 
     try {
       Request request = builder.sendRequest(null, new RequestCallback() {
+        @Override
         public void onError(Request request, Throwable exception) {
           // Couldn't connect to server (could be timeout, SOP violation, etc.)
           title.setText("Couldn't connect to server");
         }
 
+        @Override
         public void onResponseReceived(Request request, Response response) {
           if (200 == response.getStatusCode()) {
             // TODO: parse access token

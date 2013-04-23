@@ -49,6 +49,7 @@ public class JSONArraySortMap {
 
     Comparator<CustomPair<Integer, JSONObject>> comparator = new Comparator<CustomPair<Integer, JSONObject>>() {
 
+      @Override
       public int compare(CustomPair<Integer, JSONObject> pairA,
           CustomPair<Integer, JSONObject> pairB) {
         try {

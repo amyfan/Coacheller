@@ -1,19 +1,5 @@
 package com.ratethisfest.android.auth;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.scribe.model.Response;
-import org.scribe.model.Verb;
-
-import android.app.Activity;
-import android.content.Intent;
-
-import com.ratethisfest.auth.TwitterAuthProviderOAuth;
-import com.ratethisfest.auth.verify.TwitterVerifier;
-import com.ratethisfest.shared.AuthConstants;
-import com.ratethisfest.shared.Helper;
-
 public abstract class FacebookWebAuthProvider implements AuthProviderInt {
 /*//Never implemented
   // private ChooseLoginActivity _activity;

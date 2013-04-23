@@ -8,7 +8,6 @@ import com.ratethisfest.server.domain.AppUser;
 import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.server.persistence.RatingDAO;
 import com.ratethisfest.server.persistence.SetDAO;
-import com.ratethisfest.shared.DayEnum;
 import com.ratethisfest.shared.FestivalEnum;
 import com.ratethisfest.shared.Set;
 
