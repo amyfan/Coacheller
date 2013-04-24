@@ -1,8 +1,10 @@
 package com.coacheller.ui;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -39,7 +41,11 @@ import android.widget.Toast;
 import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
 import com.coacheller.data.CoachSetListAdapter;
-
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Maps;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.CalendarUtils;
@@ -217,9 +223,21 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       refreshData(); // TODO multi-thread this
     }
     
-    //ImmutableTable<Integer, String, String> festTable = FestData.getTable();
-    //ImmutableMap<Integer, String> column = festTable.column("Coachella");
+    ImmutableTable<Integer, String, String> festTable = FestData.getTable();
     
+    ImmutableMap<Integer, String> rowToFestName = festTable.column(FestData.FEST_NAME);
+    
+    Predicate<String> equalsCoachella = Predicates.equalTo("Coachella");
+    
+    Map<Integer, String> filteredValues = Maps.filterValues(rowToFestName, equalsCoachella);
+    
+    System.out.println("Results:");
+    
+    
+    for (Integer key : filteredValues.keySet()) {
+      
+      System.out.println(key +":"+ rowToFestName.get(key));
+    }
     
   }
 
