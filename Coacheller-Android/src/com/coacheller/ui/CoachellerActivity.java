@@ -223,22 +223,30 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       refreshData(); // TODO multi-thread this
     }
     
+    //testFestData();  //Just prints some stuff
+  }
+
+  private void testFestData() {
     ImmutableTable<Integer, String, String> festTable = FestData.getTable();
-    
     ImmutableMap<Integer, String> rowToFestName = festTable.column(FestData.FEST_NAME);
-    
     Predicate<String> equalsCoachella = Predicates.equalTo("Coachella");
-    
     Map<Integer, String> filteredValues = Maps.filterValues(rowToFestName, equalsCoachella);
-    
-    System.out.println("Results:");
-    
+    System.out.println("Results 1:");
     
     for (Integer key : filteredValues.keySet()) {
-      
       System.out.println(key +":"+ rowToFestName.get(key));
     }
     
+    System.out.println("Raw Table:");
+    for (Integer key : FestData.getTable().rowKeySet()) {
+      System.out.println(key +":"+ FestData.getTable().row(key));
+    }
+    
+    System.out.println("Search Results:");
+    Map<Integer, Map<String, String>> resultRows = FestData.searchForRows(FestData.FEST_NAME, "Lollapalooza");
+    for (Integer key: resultRows.keySet()) {
+      System.out.println(key +":"+ resultRows.get(key));
+    }
   }
 
   // An item in the ListView of sets is clicked
