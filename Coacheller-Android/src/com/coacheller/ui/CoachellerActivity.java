@@ -295,6 +295,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     boolean lastSelectedSetInFuture = false;
     try {
+      //Issue here with weekToQuery returning 0;
       lastSelectedSetInFuture = CalendarUtils.isSetInTheFuture(lastSetSelected, _appController.getWeekToQuery(), _appController.getFestivalName());
     } catch (JSONException e) {
       LogController.ERROR.logMessage("CoachellerActivity - JSONException calling CalendarUtils.isSetInTheFuture");
@@ -783,7 +784,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       dialogNetworkError.dismiss();
     }
 
-    if (dialogAlerts.isShowing()) {
+    if (dialogAlerts != null && dialogAlerts.isShowing()) {
       // This should work instead of having to give a globally unique ID to each button
       if (viewClicked.getId() == R.id.button_ok) {
         LogController.USER_ACTION_UI.logMessage("Alert Dialog - OK Clicked");

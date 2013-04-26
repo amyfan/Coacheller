@@ -103,8 +103,8 @@ public class LollapaloozerApplication extends Application implements AppControll
     }
     _activityLollapaloozer = act;
 
-    yearToQuery = CalendarUtils.whatYearIsToday();
-    dayToQuery = CalendarUtils.whatDayIsTodayString();
+    yearToQuery = CalendarUtils.currentYear();
+    dayToQuery = CalendarUtils.currentDayName();
 
     storageManager = new StorageManager(this, getString(R.string.save_file_name));
 

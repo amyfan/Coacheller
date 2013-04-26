@@ -61,9 +61,9 @@ public class CoachellerApplication extends Application implements AppControllerI
       AndroidConstants.JSON_KEY_RATINGS__SET_ID, AndroidConstants.JSON_KEY_RATINGS__WEEK);
   private boolean _networkErrors;
 
-  private int yearToQuery;
-  private int weekToQuery;
-  private String dayToQuery;
+  private int queryYear;
+  private int queryWeek;
+  private String queryDay;
 
   public CoachellerApplication() {
     System.out.println("Application Object Instantiated");  //Keep this first
@@ -127,9 +127,9 @@ public class CoachellerApplication extends Application implements AppControllerI
     }
     activityCoacheller = act;
 
-    yearToQuery = CalendarUtils.whatYearIsToday();
-    weekToQuery = CalendarUtils.suggestWeekToQuery(getFestivalName());
-    dayToQuery = CalendarUtils.suggestDayToQueryString();
+    queryYear = CalendarUtils.currentYear();
+    queryWeek = CalendarUtils.suggestWeekToQuery(getFestivalName());
+    queryDay = CalendarUtils.suggestDayToQueryString();
 
     storageManager = new StorageManager(this, getString(R.string.save_file_name));
 
@@ -177,29 +177,29 @@ public class CoachellerApplication extends Application implements AppControllerI
   }
 
   public String getDayToQuery() {
-    return dayToQuery;
+    return queryDay;
   }
 
   public void setDayToQuery(String dayToQuery) {
-    this.dayToQuery = dayToQuery;
+    this.queryDay = dayToQuery;
   }
 
   
   
   public int getWeekToQuery() {
-    return weekToQuery;
+    return queryWeek;
   }
 
   public void setWeekToQuery(int weekToQuery) {
-    this.weekToQuery = weekToQuery;
+    this.queryWeek = weekToQuery;
   }
 
   public int getYearToQuery() {
-    return yearToQuery;
+    return queryYear;
   }
 
   public void setYearToQuery(int yearToQuery) {
-    this.yearToQuery = yearToQuery;
+    this.queryYear = yearToQuery;
   }
   
   public FestivalEnum getFestivalName() {
@@ -216,14 +216,14 @@ public class CoachellerApplication extends Application implements AppControllerI
     _networkErrors = false;
 
     // TODO: enumerate
-    if (dayToQuery == null) {
-      dayToQuery = CalendarUtils.suggestDayToQueryString();
+    if (queryDay == null) {
+      queryDay = CalendarUtils.suggestDayToQueryString();
     }
     
-    int dayToQueryInt = DaysHashMap.DayStringToJavaCalendar(dayToQuery);
+    int dayToQueryInt = DaysHashMap.DayStringToJavaCalendar(queryDay);
     String defaultDayToQueryString = DaysHashMap.DayJavaCalendarToString(Calendar.FRIDAY);
     if (!(dayToQueryInt == Calendar.FRIDAY) && !(dayToQueryInt == Calendar.SATURDAY) && !(dayToQueryInt == Calendar.SUNDAY)) {
-      dayToQuery = defaultDayToQueryString;
+      queryDay = defaultDayToQueryString;
     }
   }
 
@@ -308,8 +308,8 @@ public class CoachellerApplication extends Application implements AppControllerI
 
       JSONArray myRatings = null;
       try {
-        List<NameValuePair> params = AndroidUtils.createGetQueryParamsArrayList(yearToQuery + "",
-            dayToQuery, getLoginData());
+        List<NameValuePair> params = AndroidUtils.createGetQueryParamsArrayList(queryYear + "",
+            queryDay, getLoginData());
 
         myRatings = ServiceUtils.getRatings(params, this, HttpConstants.SERVER_URL_COACHELLER);
 
@@ -353,8 +353,8 @@ public class CoachellerApplication extends Application implements AppControllerI
     try {
       // TODO: pass proper values (year can remain hard-coded for now)
       List<NameValuePair> params = new ArrayList<NameValuePair>();
-      params.add(new BasicNameValuePair(HttpConstants.PARAM_YEAR, yearToQuery + ""));
-      params.add(new BasicNameValuePair(HttpConstants.PARAM_DAY, dayToQuery));
+      params.add(new BasicNameValuePair(HttpConstants.PARAM_YEAR, queryYear + ""));
+      params.add(new BasicNameValuePair(HttpConstants.PARAM_DAY, queryDay));
       setData = ServiceUtils.getSets(params, this, HttpConstants.SERVER_URL_COACHELLER);
 
       storageManager.putJSONArray(AndroidConstants.DATA_SETS, setData);
@@ -391,7 +391,7 @@ public class CoachellerApplication extends Application implements AppControllerI
         notes = rating.getString(AndroidConstants.JSON_KEY_RATINGS__NOTES);
       }
       List<NameValuePair> nameValuePairs = AndroidUtils.createSubmitRatingParamsArrayList(
-          yearToQuery + "", setId, scoreSelectedValue, notes, getLoginData(), weekNumber + "");
+          queryYear + "", setId, scoreSelectedValue, notes, getLoginData(), weekNumber + "");
       ServiceUtils.addRating(nameValuePairs, this, HttpConstants.SERVER_URL_COACHELLER);
 
       // Need this in order to make the new rating appear in real time

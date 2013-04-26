@@ -10,6 +10,7 @@ public enum FestivalEnum {
 
   private FestivalEnum(String value, int numberOfWeeks) {
     this.value = value;
+    this.numberOfWeeks = numberOfWeeks;
   }
 
   
