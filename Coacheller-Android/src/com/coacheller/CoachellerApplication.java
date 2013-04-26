@@ -33,6 +33,7 @@ import com.ratethisfest.android.data.JSONArrayHashMap;
 import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.shared.AuthConstants;
+import com.ratethisfest.shared.FestivalEnum;
 import com.ratethisfest.shared.HttpConstants;
 
 /**
@@ -127,7 +128,7 @@ public class CoachellerApplication extends Application implements AppControllerI
     activityCoacheller = act;
 
     yearToQuery = CalendarUtils.whatYearIsToday();
-    weekToQuery = CalendarUtils.whatWeekIsToday();
+    weekToQuery = CalendarUtils.suggestWeekToQuery(getFestivalName());
     dayToQuery = CalendarUtils.suggestDayToQueryString();
 
     storageManager = new StorageManager(this, getString(R.string.save_file_name));
@@ -199,6 +200,10 @@ public class CoachellerApplication extends Application implements AppControllerI
 
   public void setYearToQuery(int yearToQuery) {
     this.yearToQuery = yearToQuery;
+  }
+  
+  public FestivalEnum getFestivalName() {
+    return FestivalEnum.COACHELLA;
   }
   
   public int getFestivalNumberOfWeeks() {

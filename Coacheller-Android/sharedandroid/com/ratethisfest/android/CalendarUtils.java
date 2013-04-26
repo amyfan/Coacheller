@@ -5,11 +5,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.ratethisfest.android.log.LogController;
+import com.ratethisfest.data.FestData;
+import com.ratethisfest.shared.FestivalEnum;
 
 import android.app.Application;
 
@@ -20,31 +25,17 @@ public class CalendarUtils extends Application {
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     String timeValueStr = sdf.format(new Date());
     Integer timeValueInteger = Integer.valueOf(timeValueStr);
+
     return timeValueInteger;
-  }
-
-  public static boolean isFestDayAfter(int comparedTo, int thisDay) {
-    int comparedToFestValue = comparedTo;
-    int thisDayFestValue = thisDay;
-
-    // This gives Sunday a value of 8 within this function
-    // Making it the last day of the week after Saturday(7)
-    if (comparedToFestValue == Calendar.SUNDAY) {
-      comparedToFestValue += 7;
-    }
-    if (thisDayFestValue == Calendar.SUNDAY) {
-      thisDayFestValue += 7;
-    }
-
-    if (thisDayFestValue > comparedToFestValue) {
-      return true; // AFTER
-    } else {
-      return false; // Not After
-    }
   }
 
   public static int whatYearIsToday() {
     return Calendar.getInstance().get(Calendar.YEAR);
+  }
+
+  public static int whatMonthIsTodayInt() {
+    Calendar cal = Calendar.getInstance();
+    return cal.get(Calendar.MONTH);
   }
 
   // Allows operations to be simplified in code
@@ -70,8 +61,29 @@ public class CalendarUtils extends Application {
     } else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
       return DaysHashMap.DayJavaCalendarToString(Calendar.SATURDAY);
     } else {
-      return whatDayIsTodayString();
+      return DaysHashMap.DayJavaCalendarToString(Calendar.FRIDAY);
     }
+  }
+  
+  public static int suggestWeekToQuery(FestivalEnum fest) {
+    final int maximumWeeks = fest.getNumberOfWeeks();
+    final int lastWeekExpired = CalendarUtils.getlastFestWeekExpired(fest);
+    
+    if (lastWeekExpired +1 > maximumWeeks) {
+          //After week 1 is over and there is no week 2
+       //After week 2 is over and there is no week 3
+      return lastWeekExpired;
+    } else {
+      // Before week 1 starts (return 0+1)
+      // During week 1 before it ends (return 0+1)
+      // After week 1 is over and during week 2 (return 1+1)
+      return lastWeekExpired+1;
+    }
+    
+    
+
+ 
+    
   }
 
   // Use this to compare days WITHIN A COACHELLA WEEK
@@ -83,38 +95,54 @@ public class CalendarUtils extends Application {
    * 
    * @return
    */
-  // The last day of a COACHELLA WEEK is SUNDAY
-  public static int whatWeekIsToday() {
-    Calendar cal = Calendar.getInstance();
-    if (cal.get(Calendar.MONTH) > 4) {
-      LogController.MULTIWEEK.logMessage("CalendarUtils - UGLY HACK");
-      return 3;
-    }
-    if (cal.get(Calendar.DAY_OF_MONTH) < 16) {
-      return 1;
-    } else if (cal.get(Calendar.DAY_OF_MONTH) < 23) {
-      return 2;
-    } else {
-      LogController.MULTIWEEK.logMessage("CalendarUtils - UGLY HACK");
-      return 3;
-    }
-  }
+  // We are better off to be rid of this function
 
-  // Compared to the current time, is the specified set in the future?
-  public static boolean isSetInTheFuture(JSONObject lastSetSelected, int weekToQuery, String dayToQuery)
+  // public static int whatWeekIsToday() {
+  // The last day of a COACHELLA WEEK is SUNDAY
+  // Calendar cal = Calendar.getInstance();
+  // if (cal.get(Calendar.MONTH) > 4) {
+  // LogController.MULTIWEEK.logMessage("CalendarUtils - UGLY HACK");
+  // return 3;
+  // }
+  // if (cal.get(Calendar.DAY_OF_MONTH) < 16) {
+  // return 1;
+  // } else if (cal.get(Calendar.DAY_OF_MONTH) < 23) {
+  // return 2;
+  // } else {
+  // LogController.MULTIWEEK.logMessage("CalendarUtils - UGLY HACK");
+  // return 3;
+  // }
+  // }
+
+  public static boolean isSetInTheFuture(JSONObject lastSetSelected, int weekToQuery, FestivalEnum fest)
       throws JSONException {
     int currentYear = CalendarUtils.whatYearIsToday();
-    int selectedYear = (Integer) lastSetSelected.get(AndroidConstants.JSON_KEY_SETS__YEAR);
-    int currentWeek = CalendarUtils.whatWeekIsToday();
-    int selectedWeek = weekToQuery;
+
     int currentDay = CalendarUtils.whatDayIsTodayInt();
-    int selectedDay = DaysHashMap.DayStringToJavaCalendar(dayToQuery);
-    
-    if (currentYear < selectedYear) {
-      return true;
-    } else if (currentYear > selectedYear) {
+    String currentDayName = CalendarUtils.whatDayIsTodayString();
+
+    int selectedYear = (Integer) lastSetSelected.get(AndroidConstants.JSON_KEY_SETS__YEAR);
+    int selectedWeek = weekToQuery;
+    String selectedDayName = (String) lastSetSelected.get(AndroidConstants.JSON_KEY_SETS__DAY);
+
+    // Get the numeric date of the selected set using year, week, dayname
+    HashMap<String, String> searchCriteria = new HashMap<String, String>();
+    searchCriteria.put(FestData.FEST_NAME, fest.getName());
+    searchCriteria.put(FestData.FEST_YEAR, selectedYear + "");
+    searchCriteria.put(FestData.FEST_WEEK, selectedWeek + "");
+    searchCriteria.put(FestData.FEST_DAYNAME, selectedDayName);
+    Map<Integer, Map<String, String>> rowsMatchingMap = FestData.rowsMatchingAll(searchCriteria);
+
+    int numberOfResults = rowsMatchingMap.values().size();
+    if (numberOfResults > 1) {
+      LogController.ERROR.logMessage("CalendarUtils - Error, more than one fest day returned");
       return false;
     }
+
+    Integer rowIndex = rowsMatchingMap.keySet().iterator().next();
+    Map<String, String> rowMatched = rowsMatchingMap.get(rowIndex);
+    String selectedFestDayOfMonth = rowMatched.get(FestData.FEST_DAYOFMONTH);
+    String selectedFestMonth = rowMatched.get(FestData.FEST_MONTH);
 
     // Determine if we should read the first or second week's set time
     String selectedSetTimeKey;
@@ -128,65 +156,76 @@ public class CalendarUtils extends Application {
     // Read the chosen set time
     Integer selectedSetTime = (Integer) lastSetSelected.get(selectedSetTimeKey);
 
-    LogController.SET_TIME_OPERATIONS.logMessage("Current week:" + currentWeek + " selected set week:" + selectedWeek);
-    if (currentWeek < selectedWeek) {
-      // CurrentWeek < SelectedWeek -> Selected set must be in the future
-      LogController.SET_TIME_OPERATIONS.logMessage("Selected week in the future?: YES");
-      return true;
+    String currentDateTime = "" + currentYear + padStringZero(whatMonthIsTodayInt(), 2)
+        + padStringZero(whatDayIsTodayInt(), 2) + padStringZero(whatTimeisNow24(), 4);
+    String selectedDateTime = "" + selectedYear + padStringZero(selectedFestMonth, 2)
+        + padStringZero(selectedFestDayOfMonth, 2) + padStringZero(selectedSetTime, 4);
+    LogController.SET_TIME_OPERATIONS.logMessage("Comparing " + currentDateTime);
+    LogController.SET_TIME_OPERATIONS.logMessage("Against " + selectedDateTime);
 
-    } else if (currentWeek > selectedWeek) {
-      // CurrentWeek > SelectedWeek -> Selected set must be in the past
-      LogController.SET_TIME_OPERATIONS.logMessage("Selected week in the future?: NO");
-      return false;
-
-    }
-
-    // Week is the same -> Selected set may or may not be in the future, do more checks
-    LogController.SET_TIME_OPERATIONS.logMessage("Current day:" + currentDay + " selected set day:" + selectedDay);
-    if (CalendarUtils.isFestDayAfter(currentDay, selectedDay)) {
-      // Selected Day is after today, selected set must be in the future
-      LogController.SET_TIME_OPERATIONS.logMessage("Selected day in the future?: YES");
-      return true;
-
-    } else if (CalendarUtils.isFestDayAfter(selectedDay, currentDay)) {
-      // Selected day is before today, selected set must be in the past
-      LogController.SET_TIME_OPERATIONS.logMessage("Selected day in the future?: NO");
-      return false;
-    }
-
-    // Day is the same, compare times
-    LogController.SET_TIME_OPERATIONS.logMessage("Current time:" + CalendarUtils.whatTimeisNow24()
-        + " selected set time:" + selectedSetTime);
-    if (CalendarUtils.whatTimeisNow24() < selectedSetTime) {
-      LogController.SET_TIME_OPERATIONS.logMessage("Selected time in the future?: YES");
-      return true;
-    } else if (CalendarUtils.whatTimeisNow24() >= selectedSetTime) {
-      LogController.SET_TIME_OPERATIONS.logMessage("Selected time in the future?: NO");
-      return false;
-    }
-
-    // If currentTime < OR == selectedTime Before
-    LogController.ERROR.logMessage("Could not determine if selected set is in the future");
-    return false;
+    return true;
   }
 
-  // Used to find for the next day of the week (i.e. "Sunday") on or after a specified day of the month (i.e. "15")
-  public static int getDateOfDayAfter(int year, int month, int dayToStart, int dayToFind) {
-    Calendar mycal = new GregorianCalendar(year, month, 1);
-    int daysInMonth = mycal.getActualMaximum(Calendar.DAY_OF_MONTH); // 28
+  //For a given fest, see what weeks of that fest are already over
+  //If the fest has not started this year or week 1 is still in progress, returns 0
+  //During week 2 of a fest, returns 1
+  //When a fest with 2 weeks is completely over, returns 2
+  public static int getlastFestWeekExpired(FestivalEnum fest) {
+    final int numWeeks = fest.getNumberOfWeeks();
+    final int currentYear = CalendarUtils.whatYearIsToday();
+    
+    int lastWeekExpired = 0;
+    Calendar today = Calendar.getInstance();
 
-    Calendar c = Calendar.getInstance();
-    for (int i = dayToStart; i <= daysInMonth; i++) {
-      c.set(year, month, i);
+    for (int checkWeek = 1; checkWeek <= numWeeks; checkWeek++) {    
+      Map<String, String> lastDayOfWeek = getLastDayOfFestWeek(fest, ""+currentYear, ""+checkWeek); 
+      String festMonth = lastDayOfWeek.get(FestData.FEST_MONTH);
+      String festDay = lastDayOfWeek.get(FestData.FEST_DAYOFMONTH);
 
-      int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
-      // LogController.OTHER.logMessage(i + " = " + dayOfWeek);
-
-      if (dayOfWeek == dayToFind) {
-        return i;
+      Calendar endOfThatWeek = Calendar.getInstance();
+      endOfThatWeek.set(Calendar.MONTH, Integer.valueOf(festMonth));
+      endOfThatWeek.set(Calendar.DAY_OF_MONTH, Integer.valueOf(festDay));
+      if (today.after(endOfThatWeek)) {
+        lastWeekExpired = checkWeek;
       }
     }
-    return 0;
+
+    return lastWeekExpired;
+  }
+
+  public static Map<String, String> getLastDayOfFestWeek(FestivalEnum fest, String year, String week) {
+    HashMap<String, String> criteria = new HashMap<String, String>();
+    criteria.put(FestData.FEST_NAME, fest.getName());
+    criteria.put(FestData.FEST_YEAR, year);
+    criteria.put(FestData.FEST_WEEK, week);
+
+    Map<Integer, Map<String, String>> rowsMatchingAll = FestData.rowsMatchingAll(criteria);
+
+    Iterator<Map<String, String>> rowIterator = rowsMatchingAll.values().iterator();
+    Map<String, String> biggestRow = rowIterator.next();
+
+    while (rowIterator.hasNext()) {
+      Map<String, String> currentRow = rowIterator.next();
+      
+      String biggestRowMonthDay = ""+ biggestRow.get(FestData.FEST_MONTH) + biggestRow.get(FestData.FEST_DAYOFMONTH);
+      String currentRowMonthDay = ""+ currentRow.get(FestData.FEST_MONTH) + currentRow.get(FestData.FEST_DAYOFMONTH);
+      
+      //Might have this backwards...
+      if (biggestRowMonthDay.compareTo(currentRowMonthDay) < 0) {
+        biggestRow = currentRow;
+      }
+    }
+    
+    return biggestRow;
+  }
+
+  public static String padStringZero(Integer intInput, int numChars) {
+    String input = intInput + "";
+    return padStringZero(input, numChars);
+  }
+
+  public static String padStringZero(String input, int numChars) {
+    return String.format("%" + numChars + "s", input).replace(" ", "0");
   }
 
 }

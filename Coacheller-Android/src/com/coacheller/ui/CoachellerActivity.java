@@ -1,6 +1,5 @@
 package com.coacheller.ui;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +58,7 @@ import com.ratethisfest.android.data.SocialNetworkPost;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.data.FestData;
 import com.ratethisfest.shared.AuthConstants;
+import com.ratethisfest.shared.FestivalEnum;
 import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.HttpConstants;
 
@@ -219,34 +219,45 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     long sinceLastRefresh = System.currentTimeMillis() - _lastRefresh;
     if (sinceLastRefresh / 1000 > REFRESH_INTERVAL__SECONDS) {
-      LogController.OTHER.logMessage(sinceLastRefresh +"ms since last data refresh, calling refreshData");
+      LogController.OTHER.logMessage(sinceLastRefresh + "ms since last data refresh, calling refreshData");
       refreshData(); // TODO multi-thread this
     }
-    
-    //testFestData();  //Just prints some stuff
+
+    //testFestData(); // Just prints some stuff
   }
 
   private void testFestData() {
-    ImmutableTable<Integer, String, String> festTable = FestData.getTable();
-    ImmutableMap<Integer, String> rowToFestName = festTable.column(FestData.FEST_NAME);
-    Predicate<String> equalsCoachella = Predicates.equalTo("Coachella");
-    Map<Integer, String> filteredValues = Maps.filterValues(rowToFestName, equalsCoachella);
-    System.out.println("Results 1:");
-    
-    for (Integer key : filteredValues.keySet()) {
-      System.out.println(key +":"+ rowToFestName.get(key));
-    }
-    
-    System.out.println("Raw Table:");
-    for (Integer key : FestData.getTable().rowKeySet()) {
-      System.out.println(key +":"+ FestData.getTable().row(key));
-    }
-    
-    System.out.println("Search Results:");
-    Map<Integer, Map<String, String>> resultRows = FestData.searchForRows(FestData.FEST_NAME, "Lollapalooza");
-    for (Integer key: resultRows.keySet()) {
-      System.out.println(key +":"+ resultRows.get(key));
-    }
+    // ImmutableTable<Integer, String, String> festTable = FestData.getTable();
+    // ImmutableMap<Integer, String> rowToFestName = festTable.column(FestData.FEST_NAME);
+    // Predicate<String> equalsCoachella = Predicates.equalTo("Coachella");
+    // Map<Integer, String> filteredValues = Maps.filterValues(rowToFestName, equalsCoachella);
+    // System.out.println("Results 1:");
+    //
+    // for (Integer key : filteredValues.keySet()) {
+    // System.out.println(key +":"+ rowToFestName.get(key));
+    // }
+    //
+    // System.out.println("Raw Table:");
+    // for (Integer key : FestData.getTable().rowKeySet()) {
+    // System.out.println(key +":"+ FestData.getTable().row(key));
+    // }
+    //
+    // System.out.println("Search Results:");
+    // Map<Integer, Map<String, String>> resultRows = FestData.searchForRows(FestData.FEST_NAME, "Lollapalooza");
+    // for (Integer key: resultRows.keySet()) {
+    // System.out.println(key +":"+ resultRows.get(key));
+    // }
+
+//    HashMap<String, String> criteria = new HashMap<String, String>();
+//    criteria.put(FestData.FEST_WEEK, "1");  //Any day in week 1 of any fest
+//    criteria.put(FestData.FEST_YEAR, "2013");  //Restrict to days in 2013
+//    criteria.put(FestData.FEST_DAYOFMONTH, "3");  //Restrict to days on the 3rd of any month
+//
+//    Map<Integer, Map<String, String>> rowsMatchingAll = FestData.rowsMatchingAll(criteria);
+//    System.out.println("Search Results:");
+//    for (Integer key : rowsMatchingAll.keySet()) {
+//      System.out.println(key + ":" + rowsMatchingAll.get(key));
+//    }
   }
 
   // An item in the ListView of sets is clicked
@@ -282,7 +293,13 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     LogController.SET_DATA.logMessage(lastSetSelected.toString());
     _appController.getWeekToQuery(); // Week the user is looking at
 
-    boolean lastSelectedSetInFuture = isLastSelectedSetInTheFuture();
+    boolean lastSelectedSetInFuture = false;
+    try {
+      lastSelectedSetInFuture = CalendarUtils.isSetInTheFuture(lastSetSelected, _appController.getWeekToQuery(), _appController.getFestivalName());
+    } catch (JSONException e) {
+      LogController.ERROR.logMessage("CoachellerActivity - JSONException calling CalendarUtils.isSetInTheFuture");
+      e.printStackTrace();
+    }
     LogController.SET_DATA.logMessage("Selected set in the future?:" + lastSelectedSetInFuture);
     if (lastSelectedSetInFuture) {
       // Ask to set alarm
@@ -302,57 +319,6 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     }
   }
 
-  // Is clicked set IN THE FUTURE?
-  private boolean isLastSelectedSetInTheFuture() {
-    boolean returnValue = false;
-    final int todayInt = CalendarUtils.whatDayIsTodayInt();
-    final int selectedWeekInt = _appController.getWeekToQuery();
-    final int selectedDayInt = DaysHashMap.DayStringToJavaCalendar(_appController.getDayToQuery());
-    final int selectedTime;
-
-    final String setTimeKey;
-    
-    if (selectedWeekInt == 1) {
-      setTimeKey = AndroidConstants.JSON_KEY_SETS__TIME_ONE;
-    } else if (selectedWeekInt == 2) {
-      setTimeKey = AndroidConstants.JSON_KEY_SETS__TIME_TWO;
-    } else {
-      setTimeKey = "";
-    }
-    
-    try {
-      lastSetSelected.get(setTimeKey);
-    } catch (JSONException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    
-    
-    if (CalendarUtils.whatWeekIsToday() < selectedWeekInt) {
-      returnValue = false; // If todayWeek < selectedWeek Selection==Future
-
-    } else if (CalendarUtils.whatWeekIsToday() > selectedWeekInt) {
-      returnValue = true; // If todayWeek > selectedWeek Selection!=Future
-
-    } else if (CalendarUtils.isFestDayAfter(todayInt, selectedDayInt)) {
-      returnValue = true; // If todayDay < selectedDay Selection==Future
-
-    } else if (CalendarUtils.isFestDayAfter(selectedDayInt, todayInt)) {
-      returnValue = false; // If todayDay > selectedDay Selection!=Future
-
-    }
-      
-
-    try {
-      return CalendarUtils.isSetInTheFuture(lastSetSelected, _appController.getWeekToQuery(),
-          _appController.getDayToQuery());
-    } catch (JSONException e) {
-      LogController.ERROR.logMessage(e.getClass().getSimpleName() + " parsing selected set time");
-      e.printStackTrace();
-      return false;
-    }
-
-  }
 
   // An item was selected from the list of sets
   @Override
@@ -685,21 +651,23 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       LogController.OTHER.logMessage("JSONException assigning Artist name to Rating dialog");
       e.printStackTrace();
     }
+    
 
-    int week = CalendarUtils.whatWeekIsToday();
+    int weeksOver = CalendarUtils.getlastFestWeekExpired(_appController.getFestivalName());
+    
     RadioGroup weekGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_week);
     RadioButton buttonWeek1 = (RadioButton) dialogRate.findViewById(R.id.radio_button_week1);
     RadioButton buttonWeek2 = (RadioButton) dialogRate.findViewById(R.id.radio_button_week2);
 
     int idChanged = -1;
 
-    if (week == 1) {
+    if (weeksOver == 0) {  //Still in week 1, disable rating week 2
       buttonWeek1.setClickable(true);
       buttonWeek2.setClickable(false);
-      buttonWeek1.setChecked(true);
+      buttonWeek1.setChecked(true); 
       idChanged = buttonWeek1.getId();
 
-    } else if (week == 2) {
+    } else if (weeksOver <= 1) {  //Week 2 or later, enable rating week 2
 
       buttonWeek1.setClickable(true);
       buttonWeek2.setClickable(true);
@@ -754,38 +722,38 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   // Any button in any view or dialog was clicked
   @Override
   public void onClick(View viewClicked) {
-  
+
     // OK clicked on first use dialog
     if (viewClicked.getId() == R.id.button_firstuse_ok) {
       clickDialogFirstUseButtonOK();
     }
-  
+
     // "OK" clicked to submit email address
     if (viewClicked.getId() == R.id.button_provideEmail) {
       clickDialogConfirmEmailButtonOK();
     }
-  
+
     if (viewClicked.getId() == R.id.button_declineEmail) {
       dialogEmail.dismiss();
     }
-  
+
     if (viewClicked.getId() == R.id.buttonChangeToSearchSets) {
       System.out.println("Button: Switch Day");
       Intent intent = new Intent();
       intent.setClass(this, SearchSetsActivity.class);
       startActivity(intent);
     }
-  
+
     // Submit rating for a set
     if (viewClicked.getId() == R.id.button_go_rate_inline) { // Selections
       clickDialogSubmitRatingButtonOK();
     } // End rating dialog submitted
-  
+
     // Submit rating for a set
     if (viewClicked.getId() == R.id.button_go_rate_above) { // Selections
       clickDialogSubmitRatingButtonOK();
     } // End rating dialog submitted
-  
+
     // Submit rating for a set and do Facebook post
     if (viewClicked.getId() == R.id.button_go_fb) {
       try {
@@ -795,7 +763,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         e.printStackTrace();
       }
     }
-  
+
     // Submit rating for a set and do Twitter post
     if (viewClicked.getId() == R.id.button_go_tweet) {
       try {
@@ -805,60 +773,60 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         e.printStackTrace();
       }
     }
-  
+
     if (viewClicked.getId() == R.id.button_network_error_ok) {
       System.out.println("Clicked dismiss network error dialog");
       dialogNetworkError.dismiss();
     }
-  
+
     if (viewClicked.getId() == R.id.button_network_error_ok) {
       dialogNetworkError.dismiss();
     }
-  
+
     if (dialogAlerts.isShowing()) {
       // This should work instead of having to give a globally unique ID to each button
       if (viewClicked.getId() == R.id.button_ok) {
         LogController.USER_ACTION_UI.logMessage("Alert Dialog - OK Clicked");
-        
+
         RadioButton radioNearNumbers = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
         RadioButton radioWithText = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
         EditText numberBox = (EditText) dialogAlerts.findViewById(R.id.numberBox);
-        //Get integer value of numberbox text
+        // Get integer value of numberbox text
         int minutesBefore = 20;
-        
+
         boolean alertExists = false;
 
-          alertExists = _appController.getAlertManager().alertExistsForSet(lastSetSelected, _appController.getWeekToQuery());
+        alertExists = _appController.getAlertManager().alertExistsForSet(lastSetSelected,
+            _appController.getWeekToQuery());
 
-
-        
         if (radioNearNumbers.isChecked()) {
           if (alertExists) {
-            //Update Alert
-            _appController.getAlertManager().addAlertForSet(lastSetSelected, CalendarUtils.whatWeekIsToday(), minutesBefore); 
+            // Update Alert
+            _appController.getAlertManager().addAlertForSet(lastSetSelected, _appController.getWeekToQuery(),
+                minutesBefore);
           } else {
-            //Create new alert
+            // Create new alert
           }
         } else if (radioWithText.isChecked()) {
           if (alertExists) {
-            //Cancel and delete alert
-            _appController.getAlertManager().removeAlertForSet(lastSetSelected, CalendarUtils.whatWeekIsToday());
+            // Cancel and delete alert
+            _appController.getAlertManager().removeAlertForSet(lastSetSelected, _appController.getWeekToQuery());
           } else {
-            //Nothing to do
+            // Nothing to do
           }
         }
-        
+
         dialogAlerts.dismiss();
-        
+
       } else if (viewClicked.getId() == R.id.button_cancel) {
         LogController.USER_ACTION_UI.logMessage("Alert Dialog - Cancel Clicked");
         dialogAlerts.dismiss();
-        
+
       } else if (viewClicked.getId() == R.id.radioNearNumberfield) {
         LogController.USER_ACTION_UI.logMessage("Alert Dialog - Radio near number field Clicked");
         RadioButton otherButton = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
         otherButton.setChecked(false);
-  
+
       } else if (viewClicked.getId() == R.id.radioWithText) {
         LogController.USER_ACTION_UI.logMessage("Alert Dialog - Radio near textonly field Clicked");
         RadioButton otherButton = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
