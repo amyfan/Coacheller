@@ -23,18 +23,11 @@ public class AlertManager {
     this.application = myApplication;
   }
 
-  public boolean alertExistsForSet(JSONObject setData, int week) {
+  public boolean alertExistsForSet(JSONObject setData, int week) throws JSONException {
 
     Integer setID;
-    try {
-      setID = (Integer)setData.getInt(AndroidConstants.JSON_KEY_SETS__SET_ID);
-      
-    } catch (JSONException e) {
-      LogController.ERROR.logMessage(e.getClass().getSimpleName() + " parsing selected set ID");
-      e.printStackTrace();
-      return false;
-    }
-    
+    setID = (Integer) setData.getInt(AndroidConstants.JSON_KEY_SETS__SET_ID);
+
     String hashKey = computeHashKey(setID, week);
     return this.managedAlerts.containsKey(hashKey);
   }
@@ -43,16 +36,10 @@ public class AlertManager {
     return setID + "-" + week;
   }
 
-  // Consider only setId as input
-  public void addAlertForSet(JSONObject setData, int week, int minutesBefore) {
+
+  public void addAlertForSet(JSONObject setData, int week, int minutesBefore) throws JSONException {
     Integer setID;
-    try {
-      setID = (Integer) setData.get(AndroidConstants.JSON_KEY_SETS__SET_ID);
-    } catch (JSONException e) {
-      LogController.ERROR.logMessage(getClass().getSimpleName() + " - ERROR parsing set data, could not add alert");
-      e.printStackTrace();
-      return; // Give up!!!
-    }
+    setID = (Integer) setData.get(AndroidConstants.JSON_KEY_SETS__SET_ID);
 
     if (alertExistsForSet(setData, week)) {
       // if alert exists, update it
@@ -74,7 +61,7 @@ public class AlertManager {
       e.printStackTrace();
       return; // Give up!!!
     }
-    
+
     String hashKey = computeHashKey(setID, week);
 
     // Destroy alert
@@ -83,7 +70,6 @@ public class AlertManager {
 
     // Remove from hash
     this.managedAlerts.remove(hashKey);
-
   }
 
   public void removeAllAlerts() {

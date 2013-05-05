@@ -611,8 +611,13 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   private void prepareDialogAlerts() {
 
     boolean alertExists = false;
+    try {
+      alertExists = _appController.getAlertManager().alertExistsForSet(lastSetSelected, _appController.getWeekToQuery());
+    } catch (JSONException e) {
+      LogController.ERROR.logMessage(e.getClass().getSimpleName() + " parsing selected set ID for modifying alerts");
+      e.printStackTrace();
+    }
 
-    alertExists = _appController.getAlertManager().alertExistsForSet(lastSetSelected, _appController.getWeekToQuery());
 
     RadioButton radioNearNumbers = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
     RadioButton radioWithText = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
@@ -780,59 +785,72 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       dialogNetworkError.dismiss();
     }
 
-    if (viewClicked.getId() == R.id.button_network_error_ok) {
-      dialogNetworkError.dismiss();
-    }
-
     if (dialogAlerts != null && dialogAlerts.isShowing()) {
       // This should work instead of having to give a globally unique ID to each button
-      if (viewClicked.getId() == R.id.button_ok) {
-        LogController.USER_ACTION_UI.logMessage("Alert Dialog - OK Clicked");
+      handleClickDialogAlerts(viewClicked);
+    }
+  }
 
-        RadioButton radioNearNumbers = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
-        RadioButton radioWithText = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
-        EditText numberBox = (EditText) dialogAlerts.findViewById(R.id.numberBox);
-        // Get integer value of numberbox text
-        int minutesBefore = 20;
+  private void handleClickDialogAlerts(View viewClicked) {
+    if (viewClicked.getId() == R.id.button_ok) {
+      LogController.USER_ACTION_UI.logMessage("Alert Dialog - OK Clicked");
 
-        boolean alertExists = false;
+      RadioButton radioNearNumbers = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
+      RadioButton radioWithText = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
+      EditText numberBox = (EditText) dialogAlerts.findViewById(R.id.numberBox);
+      // Get integer value of numberbox text
+      int minutesBefore = 20;
 
+      boolean alertExists = false;
+
+      try {
         alertExists = _appController.getAlertManager().alertExistsForSet(lastSetSelected,
             _appController.getWeekToQuery());
+      } catch (JSONException e) {
+        LogController.ERROR.logMessage(e.getClass().getSimpleName() + " parsing selected set ID for modifying alerts");
+        e.printStackTrace();
+        return;  //Have to give up here
+      }
 
-        if (radioNearNumbers.isChecked()) {
-          if (alertExists) {
-            // Update Alert
+      if (radioNearNumbers.isChecked()) {
+        if (alertExists) {
+          // Update Alert
+          try {
             _appController.getAlertManager().addAlertForSet(lastSetSelected, _appController.getWeekToQuery(),
                 minutesBefore);
-          } else {
-            // Create new alert
+          } catch (JSONException e) {
+            LogController.ERROR.logMessage(getClass().getSimpleName() + " - ERROR parsing set data, could not add alert");
+            e.printStackTrace();
+            return; // Give up!!!
           }
-        } else if (radioWithText.isChecked()) {
-          if (alertExists) {
-            // Cancel and delete alert
-            _appController.getAlertManager().removeAlertForSet(lastSetSelected, _appController.getWeekToQuery());
-          } else {
-            // Nothing to do
-          }
+
+        } else {
+          // Create new alert
         }
-
-        dialogAlerts.dismiss();
-
-      } else if (viewClicked.getId() == R.id.button_cancel) {
-        LogController.USER_ACTION_UI.logMessage("Alert Dialog - Cancel Clicked");
-        dialogAlerts.dismiss();
-
-      } else if (viewClicked.getId() == R.id.radioNearNumberfield) {
-        LogController.USER_ACTION_UI.logMessage("Alert Dialog - Radio near number field Clicked");
-        RadioButton otherButton = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
-        otherButton.setChecked(false);
-
-      } else if (viewClicked.getId() == R.id.radioWithText) {
-        LogController.USER_ACTION_UI.logMessage("Alert Dialog - Radio near textonly field Clicked");
-        RadioButton otherButton = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
-        otherButton.setChecked(false);
+      } else if (radioWithText.isChecked()) {
+        if (alertExists) {
+          // Cancel and delete alert
+          _appController.getAlertManager().removeAlertForSet(lastSetSelected, _appController.getWeekToQuery());
+        } else {
+          // Nothing to do
+        }
       }
+
+      dialogAlerts.dismiss();
+
+    } else if (viewClicked.getId() == R.id.button_cancel) {
+      LogController.USER_ACTION_UI.logMessage("Alert Dialog - Cancel Clicked");
+      dialogAlerts.dismiss();
+
+    } else if (viewClicked.getId() == R.id.radioNearNumberfield) {
+      LogController.USER_ACTION_UI.logMessage("Alert Dialog - Radio near number field Clicked");
+      RadioButton otherButton = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
+      otherButton.setChecked(false);
+
+    } else if (viewClicked.getId() == R.id.radioWithText) {
+      LogController.USER_ACTION_UI.logMessage("Alert Dialog - Radio near textonly field Clicked");
+      RadioButton otherButton = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
+      otherButton.setChecked(false);
     }
   }
 

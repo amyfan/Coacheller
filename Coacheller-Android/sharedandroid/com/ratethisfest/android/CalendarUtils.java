@@ -117,17 +117,8 @@ public class CalendarUtils extends Application {
     String selectedFestDayOfMonth = rowMatched.get(FestData.FEST_DAYOFMONTH);
     String selectedFestMonth = rowMatched.get(FestData.FEST_MONTH);
 
-    // Determine if we should read the first or second week's set time
-    String selectedSetTimeKey;
-    if (selectedWeek == 1) {
-      selectedSetTimeKey = AndroidConstants.JSON_KEY_SETS__TIME_ONE;
-    } else {
-      selectedSetTimeKey = AndroidConstants.JSON_KEY_SETS__TIME_TWO;
-    }
-    LogController.SET_TIME_OPERATIONS.logMessage("Using key:" + selectedSetTimeKey + " to retrieve set time");
-
-    // Read the chosen set time
-    Integer selectedSetTime = (Integer) lastSetSelected.get(selectedSetTimeKey);
+    //get set time
+    Integer selectedSetTime = getSetTime(lastSetSelected, weekToQuery, fest);
 
     String currentDateTime = "" + currentYear + padStringZero(currentMonth(), 2)
         + padStringZero(currentDayOfMonth(), 2) + padStringZero(currentTime24hr(), 4);
@@ -140,6 +131,34 @@ public class CalendarUtils extends Application {
     } else {
       return false;
     }
+  }
+  
+  public static Integer getSetTime(JSONObject setData, int week, FestivalEnum fest) throws JSONException {
+    int selectedYear = (Integer) setData.get(AndroidConstants.JSON_KEY_SETS__YEAR);
+    
+ // Determine if we should read the first or second week's set time
+    String selectedSetTimeKey;
+    if (week == 1) {
+      selectedSetTimeKey = AndroidConstants.JSON_KEY_SETS__TIME_ONE;
+    } else {
+      selectedSetTimeKey = AndroidConstants.JSON_KEY_SETS__TIME_TWO;
+    }
+    LogController.SET_TIME_OPERATIONS.logMessage("Using key:" + selectedSetTimeKey + " to retrieve set time");
+
+    // Read the chosen set time
+    Integer selectedSetTime = (Integer) setData.get(selectedSetTimeKey);
+    return selectedSetTime;
+  }
+  
+  public void getSetDatetime(JSONObject setData, int week, FestivalEnum fest) throws JSONException {
+    Integer setTime = getSetTime(setData, week, fest);
+    
+    //USE ISSETINTHEFUTURE() code
+    //year
+    //month
+    //day of month
+    
+    //set calendar object, return datetime in some form
   }
 
   // For a given fest, see what weeks of that fest are already over
