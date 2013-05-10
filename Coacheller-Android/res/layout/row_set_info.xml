@@ -54,7 +54,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/text_wk2_rating"
+            android:id="@+id/text_in"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

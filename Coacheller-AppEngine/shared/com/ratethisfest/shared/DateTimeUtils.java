@@ -2,9 +2,10 @@ package com.ratethisfest.shared;
 
 public class DateTimeUtils {
 
+  //Consider moving to CalendarUtils
   public static String militaryToCivilianTime(int milTime) {
     String ampm;
-    if (milTime < 1200 || milTime >= 2400) {
+    if (milTime < 1200 || milTime >= 2400) {  //? milTime cannot be higher than 23:59:59.9999999r ?
       ampm = "a";
     } else {
       ampm = "p";

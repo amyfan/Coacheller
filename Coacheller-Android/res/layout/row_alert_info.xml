@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/alert_layout_vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#330033"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/timeDayDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/text_set_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/dayDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="25"
+            android:text="dayDate"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/spacer"
+        android:layout_width="7dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/alertRightSide"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/text_artist_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Artist&apos;s Name"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <LinearLayout
+            android:id="@+id/set_layout_ratings"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="true" >
+
+            <TextView
+                android:id="@+id/text_stage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="STAGE"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/text_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" in "
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/text_timeUntilAlert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Interval"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_note1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Note goes here"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#666666"
+        android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/text_note2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Note goes here"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#666666"
+        android:textStyle="italic" />
+
+    <LinearLayout
+        android:id="@+id/set_layout_spacer"
+        android:layout_width="fill_parent"
+        android:layout_height="4dp" >
+    </LinearLayout>
+
+</LinearLayout>

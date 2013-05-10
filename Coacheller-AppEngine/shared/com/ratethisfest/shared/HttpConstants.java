@@ -2,9 +2,10 @@ package com.ratethisfest.shared;
 
 public class HttpConstants {
   // TODO ideally placed in resource file
-  public static final String SERVER_URL_COACHELLER = "https://ratethisfest.appspot.com/coachellerServlet";
+  private static final String SERVER_URL_COACHELLER = "https://ratethisfest.appspot.com/coachellerServlet";
   public static final String SERVER_URL_LOLLAPALOOZER = "https://ratethisfest.appspot.com/lollapaloozerServlet";
-
+  public static final String SERVER_URL_TEST = "https://www.google.com";
+  
   public static final String PARAM_ACTION = "action";
   public static final String PARAM_AUTH_TYPE = "auth_type";
   public static final String PARAM_AUTH_ID = "auth_id";
@@ -21,4 +22,10 @@ public class HttpConstants {
   public static final String ACTION_GET_RATINGS = "get_ratings";
   public static final String ACTION_ADD_RATING = "add_rating";
   public static final String ACTION_EMAIL_RATINGS = "email_ratings";
+
+  //Only FestivalEnum should use this.
+  //A class wanting the fest URL should be asking whatever instance of FestivalEnum it can reach
+  public static String readCommentgetCoachellerServerUrlReadComment() {
+    return SERVER_URL_COACHELLER;
+  }
 }

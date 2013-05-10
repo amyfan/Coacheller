@@ -84,7 +84,7 @@ public class SearchSetsActivity extends Activity implements OnClickListener {
       }
     });
 
-    int weekExpired = CalendarUtils.getlastFestWeekExpired(appController.getFestivalName());
+    int weekExpired = CalendarUtils.getlastFestWeekExpired(appController.getFestival());
     if (weekExpired == 0) {
       LogController.OTHER.logMessage("Date suggests week 1");
       setUIWeek1();

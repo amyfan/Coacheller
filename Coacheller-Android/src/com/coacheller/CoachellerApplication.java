@@ -29,6 +29,7 @@ import com.ratethisfest.android.StorageManager;
 import com.ratethisfest.android.auth.AppControllerInt;
 import com.ratethisfest.android.auth.AuthActivityInt;
 import com.ratethisfest.android.auth.AuthModel;
+import com.ratethisfest.android.data.FakeDataSource;
 import com.ratethisfest.android.data.JSONArrayHashMap;
 import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.android.log.LogController;
@@ -42,10 +43,9 @@ import com.ratethisfest.shared.HttpConstants;
  */
 public class CoachellerApplication extends Application implements AppControllerInt {
 
-  //An alternate solution has been implemented
-  //public static final String FACEBOOK_APP_ID = AuthConstants.COACH_FACEBOOK_APP_ID;
-  //public static final String FACEBOOK_APP_SECRET = AuthConstants.COACH_FACEBOOK_APP_SECRET;
-
+  // An alternate solution has been implemented
+  // public static final String FACEBOOK_APP_ID = AuthConstants.COACH_FACEBOOK_APP_ID;
+  // public static final String FACEBOOK_APP_SECRET = AuthConstants.COACH_FACEBOOK_APP_SECRET;
 
   private AuthModel authModel;
   private AlertManager alertManager = new AlertManager(this);
@@ -57,8 +57,8 @@ public class CoachellerApplication extends Application implements AppControllerI
   private StorageManager storageManager;
 
   // CRITICAL that the keys are listed in this order
-  private JSONArrayHashMap userRatingsJAHM = new JSONArrayHashMap(
-      AndroidConstants.JSON_KEY_RATINGS__SET_ID, AndroidConstants.JSON_KEY_RATINGS__WEEK);
+  private JSONArrayHashMap userRatingsJAHM = new JSONArrayHashMap(AndroidConstants.JSON_KEY_RATINGS__SET_ID,
+      AndroidConstants.JSON_KEY_RATINGS__WEEK);
   private boolean _networkErrors;
 
   private int queryYear;
@@ -66,32 +66,27 @@ public class CoachellerApplication extends Application implements AppControllerI
   private String queryDay;
 
   public CoachellerApplication() {
-    System.out.println("Application Object Instantiated");  //Keep this first
-    
-    //Set logging options here
+    System.out.println("Application Object Instantiated"); // Keep this first
+
+    // Set logging options here
     LogController.LIFECYCLE_ACTIVITY.disable();
     LogController.LIFECYCLE_THREAD.disable();
-    //LogController.USER_ACTION_UI.disable();
+    // LogController.USER_ACTION_UI.disable();
     LogController.MULTIWEEK.disable();
-    //LogController.allCategoriesOn();
-    
+    // LogController.allCategoriesOn();
 
     // Initialize app constant hashmap for this application (Coacheller)
     HashMap<String, String> appConstants = new HashMap<String, String>();
 
-    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_ID,
-        AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_ID);
-    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_SECRET,
-        AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_SECRET);
+    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_ID, AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_ID);
+    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_SECRET, AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_SECRET);
 
     appConstants.put(AuthConstants.FACEBOOK_APP_ID, AuthConstants.COACH_FACEBOOK_APP_ID);
     appConstants.put(AuthConstants.FACEBOOK_APP_SECRET, AuthConstants.COACH_FACEBOOK_APP_SECRET);
 
     appConstants.put(AuthConstants.TWITTER_CONSUMER_KEY, AuthConstants.COACH_TWITTER_CONSUMER_KEY);
-    appConstants.put(AuthConstants.TWITTER_CONSUMER_SECRET,
-        AuthConstants.COACH_TWITTER_CONSUMER_SECRET);
-    appConstants.put(AuthConstants.TWITTER_OAUTH_CALLBACK_URL,
-        AuthConstants.COACH_TWITTER_OAUTH_CALLBACK_URL);
+    appConstants.put(AuthConstants.TWITTER_CONSUMER_SECRET, AuthConstants.COACH_TWITTER_CONSUMER_SECRET);
+    appConstants.put(AuthConstants.TWITTER_OAUTH_CALLBACK_URL, AuthConstants.COACH_TWITTER_OAUTH_CALLBACK_URL);
 
     authModel = new AuthModel(this, appConstants);
   }
@@ -101,8 +96,7 @@ public class CoachellerApplication extends Application implements AppControllerI
       if (activityChooseLogin == act) {
         LogController.LIFECYCLE_ACTIVITY.logMessage("Identical ChooseLoginActivity was registered with Application");
       } else {
-        System.out
-            .println("Warning: Different ChooseLoginActivity was registered with Application");
+        System.out.println("Warning: Different ChooseLoginActivity was registered with Application");
       }
     }
     activityChooseLogin = act;
@@ -113,22 +107,23 @@ public class CoachellerApplication extends Application implements AppControllerI
     return activityChooseLogin;
   }
 
-//  public void unregisterChooseLoginActivity() {
-//    activityChooseLogin = null;
-//  }
+  // public void unregisterChooseLoginActivity() {
+  // activityChooseLogin = null;
+  // }
 
   public void registerCoachellerActivity(CoachellerActivity act) {
     if (activityCoacheller != null) {
       if (activityCoacheller == act) {
         LogController.LIFECYCLE_ACTIVITY.logMessage("Identical CoachellerActivity was registered with Application");
       } else {
-        LogController.LIFECYCLE_ACTIVITY.logMessage("Warning: Different CoachellerActivity was registered with Application");
+        LogController.LIFECYCLE_ACTIVITY
+            .logMessage("Warning: Different CoachellerActivity was registered with Application");
       }
     }
     activityCoacheller = act;
 
     queryYear = CalendarUtils.currentYear();
-    queryWeek = CalendarUtils.suggestWeekToQuery(getFestivalName());
+    queryWeek = CalendarUtils.suggestWeekToQuery(getFestival());
     queryDay = CalendarUtils.suggestDayToQueryString();
 
     storageManager = new StorageManager(this, getString(R.string.save_file_name));
@@ -150,7 +145,8 @@ public class CoachellerApplication extends Application implements AppControllerI
       if (activitySearchSets == act) {
         LogController.LIFECYCLE_ACTIVITY.logMessage("Identical SetsSearchActivity was registered with Application");
       } else {
-        LogController.LIFECYCLE_ACTIVITY.logMessage("Warning: Different SetsSearchActivity was registered with Application");
+        LogController.LIFECYCLE_ACTIVITY
+            .logMessage("Warning: Different SetsSearchActivity was registered with Application");
       }
     }
     activitySearchSets = act;
@@ -184,8 +180,6 @@ public class CoachellerApplication extends Application implements AppControllerI
     this.queryDay = dayToQuery;
   }
 
-  
-  
   public int getWeekToQuery() {
     return queryWeek;
   }
@@ -201,14 +195,19 @@ public class CoachellerApplication extends Application implements AppControllerI
   public void setYearToQuery(int yearToQuery) {
     this.queryYear = yearToQuery;
   }
-  
-  public FestivalEnum getFestivalName() {
-    return FestivalEnum.COACHELLA;
+
+  public FestivalEnum getFestival() {
+
+    return getTestFestival(); // Testing only...
+    //return FestivalEnum.COACHELLA;
   }
-  
-  public int getFestivalNumberOfWeeks() {
-    // Coachella
-    return AndroidConstants.FESTIVAL_WEEKS_COACHELLER;
+
+  private FestivalEnum getTestFestival() {
+    for (int i = 0; i < 10; i++) {
+      LogController.ERROR.logMessage("TEST MODE - TEST MODE - TEST MODE - TEST MODE - TEST MODE - TEST MODE");
+      System.out.println("TEST MODE - TEST MODE - TEST MODE - TEST MODE - TEST MODE - TEST MODE");
+    }
+    return FestivalEnum.TESTFEST;
   }
 
   public void refreshDataFromStorage() {
@@ -219,10 +218,11 @@ public class CoachellerApplication extends Application implements AppControllerI
     if (queryDay == null) {
       queryDay = CalendarUtils.suggestDayToQueryString();
     }
-    
+
     int dayToQueryInt = DaysHashMap.DayStringToJavaCalendar(queryDay);
     String defaultDayToQueryString = DaysHashMap.DayJavaCalendarToString(Calendar.FRIDAY);
-    if (!(dayToQueryInt == Calendar.FRIDAY) && !(dayToQueryInt == Calendar.SATURDAY) && !(dayToQueryInt == Calendar.SUNDAY)) {
+    if (!(dayToQueryInt == Calendar.FRIDAY) && !(dayToQueryInt == Calendar.SATURDAY)
+        && !(dayToQueryInt == Calendar.SUNDAY)) {
       queryDay = defaultDayToQueryString;
     }
   }
@@ -266,7 +266,6 @@ public class CoachellerApplication extends Application implements AppControllerI
     loginData.accountIdentifier = results.getString(AuthConstants.INTENT_EXTRA_ACCOUNT_IDENTIFIER);
     loginData.accountToken = results.getString(AuthConstants.INTENT_EXTRA_LOGIN_TOKEN);
 
-    
     if (loginData.loginType.equals(AuthConstants.LOGIN_TYPE_GOOGLE)
         || loginData.loginType.equals(AuthConstants.LOGIN_TYPE_FACEBOOK)) {
       loginData.emailAddress = loginData.accountIdentifier;
@@ -275,8 +274,8 @@ public class CoachellerApplication extends Application implements AppControllerI
     }
 
     System.out.println("Saving login data timeIssued=" + loginData.timeLoginIssued + " loginType="
-        + loginData.loginType + " accountIdentifier=" + loginData.accountIdentifier
-        + " accountToken=" + loginData.accountToken + " emailAddress=" + loginData.emailAddress);
+        + loginData.loginType + " accountIdentifier=" + loginData.accountIdentifier + " accountToken="
+        + loginData.accountToken + " emailAddress=" + loginData.emailAddress);
 
     saveDataLoginInfo(loginData);
   }
@@ -308,10 +307,10 @@ public class CoachellerApplication extends Application implements AppControllerI
 
       JSONArray myRatings = null;
       try {
-        List<NameValuePair> params = AndroidUtils.createGetQueryParamsArrayList(queryYear + "",
-            queryDay, getLoginData());
+        List<NameValuePair> params = AndroidUtils.createGetQueryParamsArrayList(queryYear + "", queryDay,
+            getLoginData());
 
-        myRatings = ServiceUtils.getRatings(params, this, HttpConstants.SERVER_URL_COACHELLER);
+        myRatings = ServiceUtils.getRatings(params, this, getFestival().getUrl());
 
         storageManager.putJSONArray(AndroidConstants.DATA_RATINGS, myRatings);
       } catch (Exception e1) {
@@ -355,8 +354,13 @@ public class CoachellerApplication extends Application implements AppControllerI
       List<NameValuePair> params = new ArrayList<NameValuePair>();
       params.add(new BasicNameValuePair(HttpConstants.PARAM_YEAR, queryYear + ""));
       params.add(new BasicNameValuePair(HttpConstants.PARAM_DAY, queryDay));
-      setData = ServiceUtils.getSets(params, this, HttpConstants.SERVER_URL_COACHELLER);
 
+      // If festival equals testFest, do something wacky
+      if (getFestival().equals(FestivalEnum.TESTFEST)) {
+        setData = FakeDataSource.getData();
+      } else {
+        setData = ServiceUtils.getSets(params, this, getFestival().getUrl());
+      }
       storageManager.putJSONArray(AndroidConstants.DATA_SETS, setData);
     } catch (Exception e) {
       _networkErrors = true;
@@ -390,9 +394,9 @@ public class CoachellerApplication extends Application implements AppControllerI
       if (rating.has(AndroidConstants.JSON_KEY_RATINGS__NOTES)) {
         notes = rating.getString(AndroidConstants.JSON_KEY_RATINGS__NOTES);
       }
-      List<NameValuePair> nameValuePairs = AndroidUtils.createSubmitRatingParamsArrayList(
-          queryYear + "", setId, scoreSelectedValue, notes, getLoginData(), weekNumber + "");
-      ServiceUtils.addRating(nameValuePairs, this, HttpConstants.SERVER_URL_COACHELLER);
+      List<NameValuePair> nameValuePairs = AndroidUtils.createSubmitRatingParamsArrayList(queryYear + "", setId,
+          scoreSelectedValue, notes, getLoginData(), weekNumber + "");
+      ServiceUtils.addRating(nameValuePairs, this, getFestival().getUrl());
 
       // Need this in order to make the new rating appear in real time
 
@@ -412,8 +416,7 @@ public class CoachellerApplication extends Application implements AppControllerI
   }
 
   public void updateSearchFields(String year, String week, String day) {
-    LogController.OTHER.logMessage("Searching year[" + year + "] week[" + week + "] day[" + day
-        + "]");
+    LogController.OTHER.logMessage("Searching year[" + year + "] week[" + week + "] day[" + day + "]");
     setYearToQuery(Integer.valueOf(year));
     setDayToQuery(day);
     setWeekToQuery(Integer.valueOf(week));
@@ -426,17 +429,15 @@ public class CoachellerApplication extends Application implements AppControllerI
     String errorString = problem + "\r\n\r\nDetails:\r\n" + details;
     System.out.println(errorString);
 
-    AlertDialog.Builder builder = new AlertDialog.Builder(authModel.getLastAuthActivity()
-        .getLastActivity());
+    AlertDialog.Builder builder = new AlertDialog.Builder(authModel.getLastAuthActivity().getLastActivity());
     builder.setTitle(title);
-    builder.setMessage(errorString).setCancelable(true)
-        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int id) {
-          }
-        }
+    builder.setMessage(errorString).setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+      @Override
+      public void onClick(DialogInterface dialog, int id) {
+      }
+    }
 
-        )
+    )
     // todo .setIcon(R.)
 
     // .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -447,13 +448,9 @@ public class CoachellerApplication extends Application implements AppControllerI
     AlertDialog alert = builder.create();
     alert.show();
   }
-  
+
   public AlertManager getAlertManager() {
     return this.alertManager;
   }
-
-
-  
-  
 
 }

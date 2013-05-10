@@ -43,5 +43,8 @@
 
     <string name="name_week1_short">Week 1</string>
     <string name="name_week2_short">Week 2</string>
+    <string name="title_activity_alerts">Manage Alerts</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

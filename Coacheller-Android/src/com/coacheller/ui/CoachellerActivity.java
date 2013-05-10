@@ -1,5 +1,7 @@
 package com.coacheller.ui;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -208,9 +210,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     LogController.LIFECYCLE_ACTIVITY.logMessage(this + " onResume");
     _appController.setLastAuthActivity(this);
 
-    // TODO: We'll reenable this if we have something significant to say in
-    // the
-    // beginning
+    // TODO: We'll reenable this if we have something significant to say in the beginning
     // if (_appController.isDataFirstUse()) {
     // showDialog(DIALOG_FIRST_USE);
     // } else {
@@ -223,7 +223,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       refreshData(); // TODO multi-thread this
     }
 
-    //testFestData(); // Just prints some stuff
+    // testFestData(); // Just prints some stuff
   }
 
   private void testFestData() {
@@ -248,33 +248,31 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     // System.out.println(key +":"+ resultRows.get(key));
     // }
 
-//    HashMap<String, String> criteria = new HashMap<String, String>();
-//    criteria.put(FestData.FEST_WEEK, "1");  //Any day in week 1 of any fest
-//    criteria.put(FestData.FEST_YEAR, "2013");  //Restrict to days in 2013
-//    criteria.put(FestData.FEST_DAYOFMONTH, "3");  //Restrict to days on the 3rd of any month
-//
-//    Map<Integer, Map<String, String>> rowsMatchingAll = FestData.rowsMatchingAll(criteria);
-//    System.out.println("Search Results:");
-//    for (Integer key : rowsMatchingAll.keySet()) {
-//      System.out.println(key + ":" + rowsMatchingAll.get(key));
-//    }
+    // HashMap<String, String> criteria = new HashMap<String, String>();
+    // criteria.put(FestData.FEST_WEEK, "1"); //Any day in week 1 of any fest
+    // criteria.put(FestData.FEST_YEAR, "2013"); //Restrict to days in 2013
+    // criteria.put(FestData.FEST_DAYOFMONTH, "3"); //Restrict to days on the 3rd of any month
+    //
+    // Map<Integer, Map<String, String>> rowsMatchingAll = FestData.rowsMatchingAll(criteria);
+    // System.out.println("Search Results:");
+    // for (Integer key : rowsMatchingAll.keySet()) {
+    // System.out.println(key + ":" + rowsMatchingAll.get(key));
+    // }
   }
 
   // An item in the ListView of sets is clicked
   @Override
   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-    JSONObject obj = (JSONObject) setListAdapter.getItem(position);
-    lastSetSelected = obj;
+    this.lastSetSelected = (JSONObject) setListAdapter.getItem(position);
+    final int festivalMaxNumberOfWeeks = CalendarUtils.getFestivalMaxNumberOfWeeks(_appController.getFestival());
 
     try {// TODO Hard coded strings means you are going to hell
       String setId = lastSetSelected.getString(AndroidConstants.JSON_KEY_SETS__SET_ID);
       JSONObject lastRatingWeek1 = _appController.getUserRatingsJAHM().getJSONObject(setId, "1");
-
       lastRatingPair.first = lastRatingWeek1;
 
       JSONObject lastRatingWeek2 = null;
-      // TODO IF festival has a second week....
-      if (_appController.getFestivalNumberOfWeeks() == 2) {
+      if (festivalMaxNumberOfWeeks == 2) {
         lastRatingWeek2 = _appController.getUserRatingsJAHM().getJSONObject(setId, "2");
         lastRatingPair.second = lastRatingWeek2;
       }
@@ -285,32 +283,30 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     }
 
     // Variable setup is done
-    LogController.OTHER.logMessage("You Clicked On: " + obj + " previous ratings " + lastRatingPair.first + "/"
-        + lastRatingPair.second);
-
-    // Figure out the time of the currently clicked set
-    LogController.SET_DATA.logMessage("Last set selected:");
-    LogController.SET_DATA.logMessage(lastSetSelected.toString());
-    _appController.getWeekToQuery(); // Week the user is looking at
+    LogController.SET_DATA.logMessage("You Clicked On: " + lastSetSelected + " previous ratings "
+        + lastRatingPair.first + "/" + lastRatingPair.second);
 
     boolean lastSelectedSetInFuture = false;
     try {
-      //Issue here with weekToQuery returning 0;
-      lastSelectedSetInFuture = CalendarUtils.isSetInTheFuture(lastSetSelected, _appController.getWeekToQuery(), _appController.getFestivalName());
+      // Issue here with weekToQuery returning 0;
+      lastSelectedSetInFuture = CalendarUtils.isSetInTheFuture(lastSetSelected, _appController.getWeekToQuery(),
+          _appController.getFestival());
     } catch (JSONException e) {
       LogController.ERROR.logMessage("CoachellerActivity - JSONException calling CalendarUtils.isSetInTheFuture");
       e.printStackTrace();
     }
+    lastSelectedSetInFuture = true; // DEBUG and test alerts
     LogController.SET_DATA.logMessage("Selected set in the future?:" + lastSelectedSetInFuture);
     if (lastSelectedSetInFuture) {
-      // Ask to set alarm
+      // Set in the future, Ask to set alarm
       showDialog(AndroidConstants.DIALOG_ALERTS);
 
     } else if (!_appController.getIsLoggedIn()) {
+      // Set not in the future, user not logged in
       _beginSigninProcess(); // Get the user logged in, cannot rate any sets right now
 
     } else {
-      // User is logged in, go ahead and rate something
+      // Set not in the future, user is logged in, go ahead and rate something
       if (lastSetSelected == null) {
         LogController.ERROR.logMessage(this.toString() + " UNEXPECTED: lastSetSelected is null");
       }
@@ -320,8 +316,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     }
   }
 
-
-  // An item was selected from the list of sets
+  // Spinner drop-down selection was made
   @Override
   public void onItemSelected(AdapterView<?> parent, View arg1, int arg2, long arg3) {
 
@@ -344,7 +339,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
     case R.id.menu_item_email_me:
-      LogController.OTHER.logMessage("Menu button 'email me' pressed");
+      LogController.USER_ACTION_UI.logMessage("Menu button 'email me' pressed");
 
       if (!_appController.getIsLoggedIn()) {
         Toast.makeText(this, "Try rating at least one set first", 15).show();
@@ -352,16 +347,23 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         try {
           showDialog(AndroidConstants.DIALOG_GETEMAIL);
         } catch (Exception e) {
-          LogController.OTHER.logMessage("Error requesting ratings email");
+          LogController.ERROR.logMessage("Error requesting ratings email");
           e.printStackTrace();
         }
       }
       return true;
 
     case R.id.menu_item_delete_email:
-      LogController.OTHER.logMessage("Menu button 'delete email' pressed");
+      LogController.USER_ACTION_UI.logMessage("Menu button 'delete email' pressed");
       _appController.clearLoginData();
       refreshData();
+      return true;
+      
+    case R.id.menu_item_manage_alerts:
+      LogController.USER_ACTION_UI.logMessage("Menu button 'manage alerts' pressed");
+      Intent intent = new Intent();
+      intent.setClass(this, AlertsActivity.class);
+      startActivity(intent);
       return true;
 
     default:
@@ -609,15 +611,15 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   }
 
   private void prepareDialogAlerts() {
-
+    final FestivalEnum fest = _appController.getFestival();
     boolean alertExists = false;
     try {
-      alertExists = _appController.getAlertManager().alertExistsForSet(lastSetSelected, _appController.getWeekToQuery());
+      alertExists = _appController.getAlertManager()
+          .alertExistsForSet(fest, lastSetSelected, _appController.getWeekToQuery());
     } catch (JSONException e) {
       LogController.ERROR.logMessage(e.getClass().getSimpleName() + " parsing selected set ID for modifying alerts");
       e.printStackTrace();
     }
-
 
     RadioButton radioNearNumbers = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
     RadioButton radioWithText = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
@@ -632,6 +634,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     if (alertExists) {
       // -> Prepare dialog 1) Edit current alert (minutes before set) 2) Cancel existing alert
+      // FIX:  Make second radio choice visible
       radioWithText.setText("Cancel this alert");
       // TODO need to get the number of minutes value on this alert and populate the number box
 
@@ -640,6 +643,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     } else {
       // -> Prepare dialog 1) Set alert for x minutes before set 2) Cancel, nevermind
+      //  FIX: Make second radio choice invisible
       radioWithText.setText("Go Back");
 
     }
@@ -657,23 +661,22 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       LogController.OTHER.logMessage("JSONException assigning Artist name to Rating dialog");
       e.printStackTrace();
     }
-    
 
-    int weeksOver = CalendarUtils.getlastFestWeekExpired(_appController.getFestivalName());
-    
+    int weeksOver = CalendarUtils.getlastFestWeekExpired(_appController.getFestival());
+
     RadioGroup weekGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_week);
     RadioButton buttonWeek1 = (RadioButton) dialogRate.findViewById(R.id.radio_button_week1);
     RadioButton buttonWeek2 = (RadioButton) dialogRate.findViewById(R.id.radio_button_week2);
 
     int idChanged = -1;
 
-    if (weeksOver == 0) {  //Still in week 1, disable rating week 2
+    if (weeksOver == 0) { // Still in week 1, disable rating week 2
       buttonWeek1.setClickable(true);
       buttonWeek2.setClickable(false);
-      buttonWeek1.setChecked(true); 
+      buttonWeek1.setChecked(true);
       idChanged = buttonWeek1.getId();
 
-    } else if (weeksOver <= 1) {  //Week 2 or later, enable rating week 2
+    } else if (weeksOver <= 1) { // Week 2 or later, enable rating week 2
 
       buttonWeek1.setClickable(true);
       buttonWeek2.setClickable(true);
@@ -792,47 +795,66 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   }
 
   private void handleClickDialogAlerts(View viewClicked) {
+    final RadioButton radioNearNumbers = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
+    final RadioButton radioWithText = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
+    final EditText numberBox = (EditText) dialogAlerts.findViewById(R.id.numberBox);
+    final int weekToQuery = _appController.getWeekToQuery();
+    final FestivalEnum fest = _appController.getFestival();
+
     if (viewClicked.getId() == R.id.button_ok) {
       LogController.USER_ACTION_UI.logMessage("Alert Dialog - OK Clicked");
 
-      RadioButton radioNearNumbers = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
-      RadioButton radioWithText = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
-      EditText numberBox = (EditText) dialogAlerts.findViewById(R.id.numberBox);
-      // Get integer value of numberbox text
-      int minutesBefore = 20;
+      // Need to get integer value of numberbox text
+      final int minutesBefore = 20;
 
       boolean alertExists = false;
 
       try {
-        alertExists = _appController.getAlertManager().alertExistsForSet(lastSetSelected,
-            _appController.getWeekToQuery());
+        alertExists = _appController.getAlertManager().alertExistsForSet(fest, lastSetSelected, weekToQuery);
       } catch (JSONException e) {
         LogController.ERROR.logMessage(e.getClass().getSimpleName() + " parsing selected set ID for modifying alerts");
         e.printStackTrace();
-        return;  //Have to give up here
+        return; // Have to give up here
       }
 
       if (radioNearNumbers.isChecked()) {
+        // Create or update an alert
+        // Does not seem to matter right now if alert exists.
+        try {
+          _appController.getAlertManager().addAlertForSet(fest, lastSetSelected, weekToQuery, minutesBefore);
+
+        } catch (JSONException e) {
+          e.printStackTrace();
+        } catch (FileNotFoundException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        } catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
         if (alertExists) {
           // Update Alert
-          try {
-            _appController.getAlertManager().addAlertForSet(lastSetSelected, _appController.getWeekToQuery(),
-                minutesBefore);
-          } catch (JSONException e) {
-            LogController.ERROR.logMessage(getClass().getSimpleName() + " - ERROR parsing set data, could not add alert");
-            e.printStackTrace();
-            return; // Give up!!!
-          }
-
         } else {
           // Create new alert
         }
       } else if (radioWithText.isChecked()) {
+        // User intends to cancel alert
         if (alertExists) {
           // Cancel and delete alert
-          _appController.getAlertManager().removeAlertForSet(lastSetSelected, _appController.getWeekToQuery());
+          try {
+            _appController.getAlertManager().removeAlertForSet(fest, lastSetSelected, weekToQuery);
+          } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
         } else {
-          // Nothing to do
+          // Alert never existed?, cannot delete, Nothing to do
         }
       }
 
@@ -960,7 +982,6 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   protected void redrawUI() {
     try {
       setListAdapter.resortSetList(sortMode);
-
     } catch (JSONException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

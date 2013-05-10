@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +22,7 @@ import android.app.Application;
 public class CalendarUtils extends Application {
   public static HashMap<Integer, String> days;
 
+  // Return the current time as 3 or 4 digits in 24-hour format
   public static Integer currentTime24hr() {
     SimpleDateFormat sdf = new SimpleDateFormat("HHmm");
     String timeValueStr = sdf.format(new Date());
@@ -71,7 +73,7 @@ public class CalendarUtils extends Application {
   }
 
   public static int suggestWeekToQuery(FestivalEnum fest) {
-    final int maximumWeeks = fest.getNumberOfWeeks();
+    final int maximumWeeks = getFestivalMaxNumberOfWeeks(fest);
     final int lastWeekExpired = CalendarUtils.getlastFestWeekExpired(fest);
 
     if (lastWeekExpired + 1 > maximumWeeks) {
@@ -89,54 +91,66 @@ public class CalendarUtils extends Application {
 
   public static boolean isSetInTheFuture(JSONObject lastSetSelected, int weekToQuery, FestivalEnum fest)
       throws JSONException {
-    int currentYear = CalendarUtils.currentYear();
 
-    int currentDay = CalendarUtils.currentDayOfWeek();
-    String currentDayName = CalendarUtils.currentDayName();
-
-    int selectedYear = (Integer) lastSetSelected.get(AndroidConstants.JSON_KEY_SETS__YEAR);
-    int selectedWeek = weekToQuery;
-    String selectedDayName = (String) lastSetSelected.get(AndroidConstants.JSON_KEY_SETS__DAY);
-
-    // Get the numeric date of the selected set using year, week, dayname
-    HashMap<String, String> searchCriteria = new HashMap<String, String>();
-    searchCriteria.put(FestData.FEST_NAME, fest.getName());
-    searchCriteria.put(FestData.FEST_YEAR, selectedYear + "");
-    searchCriteria.put(FestData.FEST_WEEK, selectedWeek + "");
-    searchCriteria.put(FestData.FEST_DAYNAME, selectedDayName);
-    Map<Integer, Map<String, String>> rowsMatchingMap = FestData.rowsMatchingAll(searchCriteria);
-
-    int numberOfResults = rowsMatchingMap.values().size();
-    if (numberOfResults > 1) {
-      LogController.ERROR.logMessage("CalendarUtils - Error, more than one fest day returned");
-      return false;
-    }
-
-    Integer rowIndex = rowsMatchingMap.keySet().iterator().next();
-    Map<String, String> rowMatched = rowsMatchingMap.get(rowIndex);
-    String selectedFestDayOfMonth = rowMatched.get(FestData.FEST_DAYOFMONTH);
-    String selectedFestMonth = rowMatched.get(FestData.FEST_MONTH);
-
-    //get set time
-    Integer selectedSetTime = getSetTime(lastSetSelected, weekToQuery, fest);
-
-    String currentDateTime = "" + currentYear + padStringZero(currentMonth(), 2)
-        + padStringZero(currentDayOfMonth(), 2) + padStringZero(currentTime24hr(), 4);
-    String selectedDateTime = "" + selectedYear + padStringZero(selectedFestMonth, 2)
-        + padStringZero(selectedFestDayOfMonth, 2) + padStringZero(selectedSetTime, 4);
-    LogController.SET_TIME_OPERATIONS.logMessage("Current:" + currentDateTime+ " Selected:" + selectedDateTime);
-
-    if (currentDateTime.compareTo(selectedDateTime) < 0) {
-      return true;
-    } else {
-      return false;
-    }
+    Date currentDateTime = getCurrentDateTime();
+    Date setDateTime = getSetDateTime(lastSetSelected, weekToQuery, fest);
+    LogController.SET_TIME_OPERATIONS.logMessage("Current Time: " + currentDateTime + " Selected Set Time: "
+        + setDateTime);
+    return currentDateTime.before(setDateTime);
   }
-  
-  public static Integer getSetTime(JSONObject setData, int week, FestivalEnum fest) throws JSONException {
+
+  // Old implementation
+  // public static boolean isSetInTheFuture(JSONObject lastSetSelected, int weekToQuery, FestivalEnum fest)
+  // throws JSONException {
+  // int currentYear = CalendarUtils.currentYear();
+  //
+  // int currentDay = CalendarUtils.currentDayOfWeek();
+  // String currentDayName = CalendarUtils.currentDayName();
+  //
+  // int selectedYear = (Integer) lastSetSelected.get(AndroidConstants.JSON_KEY_SETS__YEAR);
+  // int selectedWeek = weekToQuery;
+  // String selectedDayName = (String) lastSetSelected.get(AndroidConstants.JSON_KEY_SETS__DAY);
+  //
+  // // Get the numeric date of the selected set using year, week, dayname
+  // HashMap<String, String> searchCriteria = new HashMap<String, String>();
+  // searchCriteria.put(FestData.FEST_NAME, fest.getName());
+  // searchCriteria.put(FestData.FEST_YEAR, selectedYear + "");
+  // searchCriteria.put(FestData.FEST_WEEK, selectedWeek + "");
+  // searchCriteria.put(FestData.FEST_DAYNAME, selectedDayName);
+  // Map<Integer, Map<String, String>> rowsMatchingMap = FestData.rowsMatchingAll(searchCriteria);
+  //
+  // int numberOfResults = rowsMatchingMap.values().size();
+  // if (numberOfResults > 1) {
+  // LogController.ERROR.logMessage("CalendarUtils - Error, more than one fest day returned");
+  // return false;
+  // }
+  //
+  // Integer rowIndex = rowsMatchingMap.keySet().iterator().next();
+  // Map<String, String> rowMatched = rowsMatchingMap.get(rowIndex);
+  // String selectedFestDayOfMonth = rowMatched.get(FestData.FEST_DAYOFMONTH);
+  // String selectedFestMonth = rowMatched.get(FestData.FEST_MONTH);
+  //
+  // //get set time
+  // Integer selectedSetTime = getSetTime(lastSetSelected, weekToQuery);
+  //
+  // String currentDateTime = "" + currentYear + padStringZero(currentMonth(), 2)
+  // + padStringZero(currentDayOfMonth(), 2) + padStringZero(currentTime24hr(), 4);
+  // String selectedDateTime = "" + selectedYear + padStringZero(selectedFestMonth, 2)
+  // + padStringZero(selectedFestDayOfMonth, 2) + padStringZero(selectedSetTime, 4);
+  // LogController.SET_TIME_OPERATIONS.logMessage("Current:" + currentDateTime+ " Selected:" + selectedDateTime);
+  //
+  // if (currentDateTime.compareTo(selectedDateTime) < 0) {
+  // return true;
+  // } else {
+  // return false;
+  // }
+  // }
+
+  // Fix: Why does this require fest?
+  public static Integer getSetTime(JSONObject setData, int week) throws JSONException {
     int selectedYear = (Integer) setData.get(AndroidConstants.JSON_KEY_SETS__YEAR);
-    
- // Determine if we should read the first or second week's set time
+
+    // Determine if we should read the first or second week's set time
     String selectedSetTimeKey;
     if (week == 1) {
       selectedSetTimeKey = AndroidConstants.JSON_KEY_SETS__TIME_ONE;
@@ -149,16 +163,53 @@ public class CalendarUtils extends Application {
     Integer selectedSetTime = (Integer) setData.get(selectedSetTimeKey);
     return selectedSetTime;
   }
-  
-  public void getSetDatetime(JSONObject setData, int week, FestivalEnum fest) throws JSONException {
-    Integer setTime = getSetTime(setData, week, fest);
-    
-    //USE ISSETINTHEFUTURE() code
-    //year
-    //month
-    //day of month
-    
-    //set calendar object, return datetime in some form
+
+  public static Date getSetDateTime(JSONObject setData, int week, FestivalEnum fest) throws JSONException {
+    final int setYear = (Integer) setData.get(AndroidConstants.JSON_KEY_SETS__YEAR);
+    final int setWeek = week;
+    final String setDayName = (String) setData.get(AndroidConstants.JSON_KEY_SETS__DAY);
+    final Integer setTime24Format = getSetTime(setData, week);
+    final Integer setTimeHours = getHourFromSetTime(setTime24Format);
+    final Integer setTimeMinutes = getMinutesFromSetTime(setTime24Format);
+
+    // Get the numeric date of the selected set using year, week, dayname
+    // Search is required to lookup set fest/year/week/dayname and find month and dayOfMonth
+    HashMap<String, String> searchCriteria = new HashMap<String, String>();
+    searchCriteria.put(FestData.FEST_NAME, fest.getName());
+    searchCriteria.put(FestData.FEST_YEAR, setYear + "");
+    searchCriteria.put(FestData.FEST_WEEK, setWeek + "");
+    searchCriteria.put(FestData.FEST_DAYNAME, setDayName);
+    Map<Integer, Map<String, String>> rowsMatchingMap = FestData.rowsMatchingAll(searchCriteria);
+
+    int numberOfResults = rowsMatchingMap.values().size();
+    if (numberOfResults > 1) {
+      LogController.ERROR.logMessage("CalendarUtils - Error, more than one fest day returned");
+      return null;
+    }
+
+    Integer rowIndex = rowsMatchingMap.keySet().iterator().next();
+    Map<String, String> rowMatched = rowsMatchingMap.get(rowIndex);
+    final Integer setDayOfMonth = Integer.valueOf(rowMatched.get(FestData.FEST_DAYOFMONTH));
+    final Integer setMonth = Integer.valueOf(rowMatched.get(FestData.FEST_MONTH));
+
+    String selectedDateTime = "Set Data Year:" + setYear + " Month:" + padStringZero(setMonth, 2) + " Day:"
+        + padStringZero(setDayOfMonth, 2) + " Time:" + padStringZero(setTime24Format, 4) + " (as " + setTimeHours + ":"
+        + setTimeMinutes + ")";
+    LogController.SET_TIME_OPERATIONS.logMessage(selectedDateTime);
+
+    Calendar returnCal = Calendar.getInstance();
+    returnCal.set(Calendar.YEAR, setYear);
+    returnCal.set(Calendar.MONTH, setMonth - 1); // Java calendar months are zero based.
+    returnCal.set(Calendar.DAY_OF_MONTH, setDayOfMonth);
+    returnCal.set(Calendar.HOUR_OF_DAY, setTimeHours); // HOUR_OF_DAY for 24hr format
+    returnCal.set(Calendar.MINUTE, setTimeMinutes);
+
+    return returnCal.getTime();
+  }
+
+  public static Date getCurrentDateTime() {
+    Calendar cal = Calendar.getInstance();
+    return cal.getTime();
   }
 
   // For a given fest, see what weeks of that fest are already over
@@ -166,7 +217,7 @@ public class CalendarUtils extends Application {
   // During week 2 of a fest, returns 1
   // When a fest with 2 weeks is completely over, returns 2
   public static int getlastFestWeekExpired(FestivalEnum fest) {
-    final int numWeeks = fest.getNumberOfWeeks();
+    final int numWeeks = getFestivalMaxNumberOfWeeks(fest);
     final int currentYear = CalendarUtils.currentYear();
 
     int lastWeekExpired = 0;
@@ -178,7 +229,7 @@ public class CalendarUtils extends Application {
       String festDay = lastDayOfWeek.get(FestData.FEST_DAYOFMONTH);
 
       Calendar endOfThatWeek = Calendar.getInstance();
-      endOfThatWeek.set(Calendar.MONTH, Integer.valueOf(festMonth)-1); //Java Calendar months are ZERO BASED
+      endOfThatWeek.set(Calendar.MONTH, Integer.valueOf(festMonth) - 1); // Java Calendar months are ZERO BASED
       endOfThatWeek.set(Calendar.DAY_OF_MONTH, Integer.valueOf(festDay));
       if (today.after(endOfThatWeek)) {
         lastWeekExpired = checkWeek;
@@ -214,6 +265,18 @@ public class CalendarUtils extends Application {
     return biggestRow;
   }
 
+  // Extract the hour from an Integer representation of 24-hour time
+  // 0 -> 0, 45 -> 0, 145 -> 1, 2300 -> 23, 2345 -> 23
+  public static Integer getHourFromSetTime(Integer setTime) {
+    return setTime / 100;
+  }
+
+  // Extract the minutes from an Integer representation of 24-hour time
+  // 0 -> 0, 45 -> 45, 145 -> 45, 2300 -> 0, 2345 -> 45
+  public static Integer getMinutesFromSetTime(Integer setTime) {
+    return setTime % 100;
+  }
+
   public static String padStringZero(Integer intInput, int numChars) {
     String input = intInput + "";
     return padStringZero(input, numChars);
@@ -221,6 +284,79 @@ public class CalendarUtils extends Application {
 
   public static String padStringZero(String input, int numChars) {
     return String.format("%" + numChars + "s", input).replace(" ", "0");
+  }
+
+  // What is the largest number of weeks that the named festival has ever run?
+  // Returns the greatest number of weeks that a fest ever ran in a year
+  // Even if it only happened in that one year
+  // For Coachella we expect the answer to be 2
+  // For lollapalooza we expect the answer to be 1
+  // If Coachella ran for 3 weeks in 1972 AND it was in the database, the answer would be 3
+  public static int getFestivalMaxNumberOfWeeks(FestivalEnum festival) {
+    // Get every single entry for the stated fest
+    HashMap<String, String> criteria = new HashMap<String, String>();
+    criteria.put(FestData.FEST_NAME, festival.getName());
+    Map<Integer, Map<String, String>> rowsMatchingAll = FestData.rowsMatchingAll(criteria);
+
+    int largestNumberOfWeeks = 0;
+    for (Map<String, String> festDayData : rowsMatchingAll.values()) {
+      int weekNumber = Integer.valueOf(festDayData.get(FestData.FEST_WEEK));
+      if (weekNumber > largestNumberOfWeeks) {
+        largestNumberOfWeeks = weekNumber;
+      }
+    }
+
+    LogController.MULTIWEEK.logMessage("Calculated festival" + festival + " to have up to " + largestNumberOfWeeks
+        + "weeks");
+    return largestNumberOfWeeks;
+  }
+
+  // int festivalMaxNumberOfWeeks = CalendarUtils.getFestivalMaxNumberOfWeeks(this.getFestival());
+  public static String formatInterval(final long l) {
+    int maxValues = 2;
+    long days = l / 86400000; // d
+    long hours = l % 86400000 / 3600000; // h
+    long minutes = l % 3600000 / 60000; // m
+    // long seconds = l%60000/1000; //s
+    // long millis = l%1000; //ms
+
+    StringBuffer returnBuffer = new StringBuffer();
+    int values = 0;
+
+    if (days > 0 && values < maxValues) {
+      returnBuffer.append(days);
+      returnBuffer.append(" day");
+      if (days > 0) {
+        returnBuffer.append("s");
+      }
+      values++;
+    }
+    
+    if (hours > 0 && values < maxValues) {
+      if (values > 0) {
+        returnBuffer.append(" ");
+      }
+      returnBuffer.append(hours);
+      returnBuffer.append(" hour");
+      if (hours > 0) {
+        returnBuffer.append("s");
+      }
+      values++;
+    }
+    
+    if (minutes > 0 && values < maxValues) {
+      if (values > 0) {
+        returnBuffer.append(" ");
+      }
+      returnBuffer.append(minutes);
+      returnBuffer.append(" minute");
+      if (minutes > 0) {
+        returnBuffer.append("s");
+      }
+      values++;
+    }
+    
+    return returnBuffer.toString();
   }
 
 }

@@ -15,7 +15,7 @@ import com.google.common.collect.Maps;
 import com.ratethisfest.android.log.LogController;
 
 public enum FestData {
-  INSTANCE;
+  INSTANCE;  //Singleton magic
 
   public static final String FEST_NAME = "FEST_NAME";
   public static final String FEST_WEEK = "FEST_WEEK";
@@ -103,6 +103,38 @@ public enum FestData {
     tableBuilder.put(row, FEST_MONTH, "8");
     tableBuilder.put(row, FEST_DAYOFMONTH, "4");
     tableBuilder.put(row, FEST_DAYNAME, "Sunday");
+    
+    row++;
+    tableBuilder.put(row, FEST_NAME, "TestFest");
+    tableBuilder.put(row, FEST_WEEK, "1");
+    tableBuilder.put(row, FEST_YEAR, "2013");
+    tableBuilder.put(row, FEST_MONTH, "10");
+    tableBuilder.put(row, FEST_DAYOFMONTH, "11");
+    tableBuilder.put(row, FEST_DAYNAME, "Friday");
+    
+    row++;
+    tableBuilder.put(row, FEST_NAME, "TestFest");
+    tableBuilder.put(row, FEST_WEEK, "1");
+    tableBuilder.put(row, FEST_YEAR, "2013");
+    tableBuilder.put(row, FEST_MONTH, "10");
+    tableBuilder.put(row, FEST_DAYOFMONTH, "12");
+    tableBuilder.put(row, FEST_DAYNAME, "Saturday");
+    
+    row++;
+    tableBuilder.put(row, FEST_NAME, "TestFest");
+    tableBuilder.put(row, FEST_WEEK, "2");
+    tableBuilder.put(row, FEST_YEAR, "2013");
+    tableBuilder.put(row, FEST_MONTH, "10");
+    tableBuilder.put(row, FEST_DAYOFMONTH, "18");
+    tableBuilder.put(row, FEST_DAYNAME, "Friday");
+    
+    row++;
+    tableBuilder.put(row, FEST_NAME, "TestFest");
+    tableBuilder.put(row, FEST_WEEK, "2");
+    tableBuilder.put(row, FEST_YEAR, "2013");
+    tableBuilder.put(row, FEST_MONTH, "10");
+    tableBuilder.put(row, FEST_DAYOFMONTH, "19");
+    tableBuilder.put(row, FEST_DAYNAME, "Saturday");
 
     festTable = tableBuilder.build();
   }

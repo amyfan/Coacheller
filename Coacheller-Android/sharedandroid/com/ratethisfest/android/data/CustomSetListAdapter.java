@@ -121,7 +121,7 @@ public abstract class CustomSetListAdapter implements ListAdapter {
   // If we are ready to draw the view
   // Needed for concurrency issues
   protected boolean haveData() {
-    if (_data != null) {
+    if (_data != null && _sortMap != null  && getCount() > 0) {
       return true;
     }
     return false;

@@ -3,28 +3,57 @@ package com.ratethisfest.shared;
 import java.util.EnumSet;
 
 public enum FestivalEnum {
-  COACHELLA("Coachella",2), LOLLAPALOOZA("Lollapalooza",1);
+  COACHELLA("Coachella", HttpConstants.readCommentgetCoachellerServerUrlReadComment()), LOLLAPALOOZA("Lollapalooza",
+      HttpConstants.SERVER_URL_LOLLAPALOOZER), TESTFEST("TestFest", HttpConstants.SERVER_URL_TEST);
 
   private String value;
-  private int numberOfWeeks;
+  private String serverURL;
 
-  private FestivalEnum(String value, int numberOfWeeks) {
+  // private int numberOfWeeks;
+
+  //Important to update this if fields change
+  public boolean equals(FestivalEnum otherFest) {
+    if (!this.value.equals(otherFest.value)) {
+      return false;
+    }
+    
+    if (!this.serverURL.equals(otherFest.serverURL)) {
+      return false;
+    }
+    
+    return true;
+  }
+  
+  
+  
+  private FestivalEnum(String value, String URL) {
     this.value = value;
-    this.numberOfWeeks = numberOfWeeks;
+    this.serverURL = URL;
   }
 
+  // private FestivalEnum(String value, int numberOfWeeks) {
+  // this.value = value;
+  // this.numberOfWeeks = numberOfWeeks;
+  // }
   
   public String getName() {
-    return value;
+    return this.value;
   }
-  //Fix this, rename all to getName
+
+  // Used by code I did not write, not going to delete
+  // Fix this, rename all to getName?
   public String getValue() {
-    return value;
+    return this.value;
   }
-  
-  public int getNumberOfWeeks() {
-    return numberOfWeeks;
+
+  public String getUrl() {
+    return this.serverURL;
   }
+
+
+  // public int getNumberOfWeeks() {
+  // return numberOfWeeks;
+  // }
 
   public static FestivalEnum fromValue(String value) {
     for (final FestivalEnum element : EnumSet.allOf(FestivalEnum.class)) {

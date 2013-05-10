@@ -4,17 +4,18 @@ public class AndroidConstants {
   public static final String SORT_TIME = "time";
   public static final String SORT_ARTIST = "artist";
   public static final String SORT_STAGE = "stage";
-  
+
   // Local Storage
   public static final String DATA_SETS = "DATA_SETS";
   public static final String DATA_RATINGS = "DATA_RATINGS";
-  
+
   // Alerts feature
-  //Minutes before a set to trigger an alert, default setting
+  // Minutes before a set to trigger an alert, default setting
   public static final Integer ALERT_DEFAULT_REMINDERTIME = 15;
+
   
-  public static final Integer FESTIVAL_WEEKS_LOLLAPALOOZER = 1;
-  public static final Integer FESTIVAL_WEEKS_COACHELLER = 2;
+  // public static final Integer FESTIVAL_WEEKS_LOLLAPALOOZER = 1;
+  // public static final Integer FESTIVAL_WEEKS_COACHELLER = 2;
 
   // JSON Hashmap Keys
   public static final String JSON_KEY_SETS__SET_ID = "id";

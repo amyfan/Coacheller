@@ -5,7 +5,7 @@ public enum LogController {
       "Set Data Operations"), SET_TIME_OPERATIONS("Comparing stored set time data to the current time"), AUTH_GOOGLE(
       "Google Authorization"), AUTH_FACEBOOK("Facebook Authorization"), AUTH_TWITTER("Twitter Authorization"), OTHER(
       "Miscellaneous"), MULTIWEEK("Multi-Week Functionality"), MODEL("Internal Representation of Data"), ERROR(
-      "Things that we expect should not ever happen"), ALERTS("Alert Feature");
+      "Things that we expect should not ever happen"), ALERTS("Alert Feature"), LIST_ADAPTER("Implementation of ListAdapter interface");
 
   public final String _readableDescription;
   private boolean _messagesEnabled;

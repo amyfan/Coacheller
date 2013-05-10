@@ -53,7 +53,7 @@ public class CoachSetListAdapter extends CustomSetListAdapter {
       viewHolder.textArtist = (TextView) rowView.findViewById(R.id.text_artist_name);
       viewHolder.textStage = (TextView) rowView.findViewById(R.id.text_stage);
       viewHolder.ratingWk1 = (TextView) rowView.findViewById(R.id.text_wk1_rating);
-      viewHolder.ratingWk2 = (TextView) rowView.findViewById(R.id.text_wk2_rating);
+      viewHolder.ratingWk2 = (TextView) rowView.findViewById(R.id.text_in);
       viewHolder.myRating = (TextView) rowView.findViewById(R.id.text_my_rating);
       viewHolder.myComment1 = (TextView) rowView.findViewById(R.id.text_note1);
       viewHolder.myComment2 = (TextView) rowView.findViewById(R.id.text_note2);
@@ -67,7 +67,14 @@ public class CoachSetListAdapter extends CustomSetListAdapter {
     try {
 
       ViewHolder holder = (ViewHolder) rowView.getTag();
-      JSONObject setObj = _sortMap.getSortedJSONObj(position);
+      
+      
+      //Crash sometimes happens here in test mode
+      //Suspect problem related to race condition exposed with no-latency test data
+      //believed to be fixed with null check in haveData() function
+      //LogController.SET_DATA.logMessage("_sortMap field:"+ _sortMap);
+      JSONObject setObj = _sortMap.getSortedJSONObj(position);  
+      
       String setId = setObj.getString(AndroidConstants.JSON_KEY_SETS__SET_ID); // Get
       // the set Id
 

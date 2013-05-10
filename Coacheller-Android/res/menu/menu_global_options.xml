@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item android:id="@+id/menu_item_manage_alerts" android:title="Manage Alerts" android:icon="@android:drawable/ic_menu_recent_history"></item>
     <item android:id="@+id/menu_item_email_me" android:title="Email me my Ratings!" android:icon="@android:drawable/ic_menu_send"></item>
     <item android:id="@+id/menu_item_delete_email" android:title="Delete stored email" android:icon="@android:drawable/ic_menu_delete"></item>
+    
     
 
 </menu>
