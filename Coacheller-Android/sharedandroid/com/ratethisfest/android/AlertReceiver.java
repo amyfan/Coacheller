@@ -1,5 +1,6 @@
 package com.ratethisfest.android;
 
+import com.coacheller.CoachellerApplication;
 import com.ratethisfest.android.log.LogController;
 
 import android.content.BroadcastReceiver;
@@ -20,8 +21,11 @@ public class AlertReceiver extends BroadcastReceiver {
     LogController.ALERTS.logMessage("Alert - Received alert broadcast");
     // here you can get the extras you passed in when creating the alarm
     Bundle bundleExtras = intent.getBundleExtra(Alert.REMINDER_BUNDLE);
-    Object hashKey = bundleExtras.get(Alert.HASH_KEY);
+    String hashKey = (String) bundleExtras.get(Alert.HASH_KEY);
     LogController.ALERTS.logMessage("Alarm went off for hashKey:" + hashKey);
     // Toast.makeText(context, "Alarm went off for hashKey:"+ hashKey, Toast.LENGTH_SHORT).show();
+
+    CoachellerApplication appContext = (CoachellerApplication) context.getApplicationContext();
+    appContext.getAlertManager().alertWentOff(hashKey);
   }
 }

@@ -36,6 +36,7 @@ public class AlertListAdapter implements ListAdapter {
     java.util.Collections.sort(this.localAlertList, new AlertEntryComparator());
   }
 
+  //Only sorts by time
   private class AlertEntryComparator implements Comparator<Entry<String, Alert>> {
     @Override
     public int compare(Entry<String, Alert> argLeft, Entry<String, Alert> argRight) {
@@ -59,7 +60,7 @@ public class AlertListAdapter implements ListAdapter {
 
   @Override
   public int getCount() {
-    LogController.LIST_ADAPTER.logMessage("AlertListAdapter.getCount()");
+    // LogController.LIST_ADAPTER.logMessage("AlertListAdapter.getCount()");
     return dataSource.getNumberOfItems();
   }
 
@@ -81,7 +82,7 @@ public class AlertListAdapter implements ListAdapter {
   // the proportion of visible/total items estimated to be very high
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
-    LogController.LIST_ADAPTER.logMessage("AlertListAdapter.getView()");
+    //LogController.LIST_ADAPTER.logMessage("AlertListAdapter.getView()");
     LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     View rowView = inflater.inflate(R.layout.row_alert_info, parent, false);
     
@@ -97,10 +98,8 @@ public class AlertListAdapter implements ListAdapter {
     textTime.setText(currentAlert.getSetTimeAsString());
     textStage.setText(currentAlert.getStage());
     textArtistName.setText(currentAlert.getArtist());
-    textTimeRemaining.setText(currentAlert.getTimeIntervalToAlert());
+    textTimeRemaining.setText(currentAlert.getTextIntervalUntilAlert());
 
-    // TextView textView = (TextView) rowView.findViewById(R.id.text_artist_name);
-    // TextView textView = (TextView) rowView.findViewById(R.id.text_artist_name);
 
     return rowView;
   }
@@ -119,7 +118,8 @@ public class AlertListAdapter implements ListAdapter {
 
   @Override
   public int getItemViewType(int position) {
-    LogController.LIST_ADAPTER.logMessage("AlertListAdapter.getItemViewType()");
+    //This one is called often
+    //LogController.LIST_ADAPTER.logMessage("AlertListAdapter.getItemViewType()");
     return 0;
   }
 
@@ -137,7 +137,8 @@ public class AlertListAdapter implements ListAdapter {
 
   @Override
   public boolean isEnabled(int position) {
-    LogController.LIST_ADAPTER.logMessage("AlertListAdapter.isEnabled()");
+    //This one is called a whole lot
+    //LogController.LIST_ADAPTER.logMessage("AlertListAdapter.isEnabled()");
     return false;
   }
 

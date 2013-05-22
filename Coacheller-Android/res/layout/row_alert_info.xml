@@ -28,6 +28,14 @@
             android:text="dayDate"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/spacer"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:orientation="vertical" >
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -58,19 +66,26 @@
             android:baselineAligned="true" >
 
             <TextView
+                android:id="@+id/text_at"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="At "
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
                 android:id="@+id/text_stage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="STAGE"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/text_in"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=" in "
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="bold" />
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
                 android:id="@+id/text_timeUntilAlert"
@@ -80,30 +95,6 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold" />
         </LinearLayout>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/text_note1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Note goes here"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#666666"
-        android:textStyle="italic" />
-
-    <TextView
-        android:id="@+id/text_note2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Note goes here"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#666666"
-        android:textStyle="italic" />
-
-    <LinearLayout
-        android:id="@+id/set_layout_spacer"
-        android:layout_width="fill_parent"
-        android:layout_height="4dp" >
     </LinearLayout>
 
 </LinearLayout>

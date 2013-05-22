@@ -2,6 +2,7 @@ package com.coacheller.ui;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -140,6 +141,19 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     AndroidUtils.populateSpinnerWithArray(spinnerSortType, android.R.layout.simple_spinner_item, R.array.search_types,
         android.R.layout.simple_spinner_dropdown_item);
     spinnerSortType.setOnItemSelectedListener(this);
+
+    
+    try {
+      _appController.getAlertManager().loadAlerts();
+    } catch (StreamCorruptedException e) {
+      _appController.getAlertManager().exceptionLoadingAlerts(e);
+    } catch (FileNotFoundException e) {
+      _appController.getAlertManager().exceptionLoadingAlerts(e);
+    } catch (IOException e) {
+      _appController.getAlertManager().exceptionLoadingAlerts(e);
+    } catch (ClassNotFoundException e) {
+      _appController.getAlertManager().exceptionLoadingAlerts(e);
+    }
 
     // Above here is stuff to be done once
 

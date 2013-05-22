@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.AdapterView.OnItemClickListener;
@@ -100,6 +101,14 @@ public class AlertsActivity extends Activity implements OnItemClickListener, OnC
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
+    
+    this.redrawEverything();
+    
+  }
+  
+  private void redrawEverything() {
+    ListView listViewAlerts = (ListView) findViewById(R.id.listView_alerts);
+    listViewAlerts.invalidateViews();
   }
 
 }

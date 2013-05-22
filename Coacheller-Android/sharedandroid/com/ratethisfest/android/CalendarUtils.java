@@ -313,10 +313,12 @@ public class CalendarUtils extends Application {
 
   // int festivalMaxNumberOfWeeks = CalendarUtils.getFestivalMaxNumberOfWeeks(this.getFestival());
   public static String formatInterval(final long l) {
+    long longTimeMillis = Math.abs(l);
+    
     int maxValues = 2;
-    long days = l / 86400000; // d
-    long hours = l % 86400000 / 3600000; // h
-    long minutes = l % 3600000 / 60000; // m
+    long days = longTimeMillis / 86400000; // d
+    long hours = longTimeMillis % 86400000 / 3600000; // h
+    long minutes = longTimeMillis % 3600000 / 60000; // m
     // long seconds = l%60000/1000; //s
     // long millis = l%1000; //ms
 
@@ -354,6 +356,10 @@ public class CalendarUtils extends Application {
         returnBuffer.append("s");
       }
       values++;
+    }
+    
+    if (l < 0) {
+      returnBuffer.append(" ago");
     }
     
     return returnBuffer.toString();

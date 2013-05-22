@@ -1,5 +1,6 @@
 package com.ratethisfest.android;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,23 +21,26 @@ import com.ratethisfest.shared.DateTimeUtils;
 import com.ratethisfest.shared.FestivalEnum;
 
 public class Alert implements Serializable {
-
+  private static final long serialVersionUID = 1L;
   public static final String REMINDER_BUNDLE = "RateThisFestAlertBundle";
-  public static final String HASH_KEY = "HASH_KEY"; //Possibly move to Alert class
+  public static final String HASH_KEY = "HASH_KEY";
   private String hashKey;
   private String stageName;
   private String artistName;
-  private Date setTime;
+  private Date performanceDateTime;
   private int minutesBeforeSetTime;
-  private transient Context context; // Do not serialize, not relevant unless alarm is being set
-  private PendingIntent createdPendingIntent; // Not sure about serializing
+
+  // Should not be members, we don't have context when we deserialize so cannot re-create
+  // private transient Context context; // Do not serialize, not relevant unless alarm is being set
+  // private PendingIntent createdPendingIntent; // Not sure about serializing
 
   public Alert() {
+    
     LogController.ALERTS.logMessage("Class Alert - Default Constructor called");
   }
-  
+
   public Date getSetTime() {
-    return this.setTime;
+    return this.performanceDateTime;
   }
 
   // you can use this constructor to create the alarm.
@@ -45,78 +49,107 @@ public class Alert implements Serializable {
   // and the timeout
   public Alert(FestivalEnum fest, int week, JSONObject setData, String hashKey, int timeoutInSeconds)
       throws JSONException {
-    
+
     this.hashKey = hashKey;
     this.minutesBeforeSetTime = timeoutInSeconds;
-    this.setTime = CalendarUtils.getSetDateTime(setData, week, fest);
+    this.performanceDateTime = CalendarUtils.getSetDateTime(setData, week, fest);
     this.artistName = setData.getString(AndroidConstants.JSON_KEY_SETS__ARTIST);
-    
+
     String stageKey = AndroidConstants.JSON_KEY_SETS__STAGE_ONE;
-    if (week ==2) {
+    if (week == 2) {
       stageKey = AndroidConstants.JSON_KEY_SETS__STAGE_TWO;
     }
     this.stageName = setData.getString(stageKey);
   }
 
   public void setAlarm(Context context) {
-    LogController.ALERTS.logMessage("Class Alert - Setting alert "+ hashKey);
+    LogController.ALERTS.logMessage("Class Alert - Setting alert " + hashKey);
 
-    Bundle extras = new Bundle();
-    extras.putString(HASH_KEY, this.hashKey);
-    
+    Bundle extras = createBundle();
+
     // Create pendingIntent to be broadcast later
-    AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-    Intent intent = new Intent(context, AlertReceiver.class);
-    intent.putExtra(REMINDER_BUNDLE, extras);
-    this.createdPendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    PendingIntent builtPendingIntent = buildPendingIntent(context, extras);
 
     // Set intent to fire after X millis
     Calendar time = Calendar.getInstance();
     time.setTimeInMillis(System.currentTimeMillis()); // Might not be needed
     time.add(Calendar.SECOND, this.minutesBeforeSetTime);
-    alarmMgr.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), this.createdPendingIntent);
+
+    AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    alarmMgr.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), builtPendingIntent);
   }
 
-  public void cancel() {
-    LogController.ALERTS.logMessage("Class Alert - Cancelling alert"+ hashKey);
-    AlarmManager alarmMgr = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
-    alarmMgr.cancel(this.createdPendingIntent);
+  private Bundle createBundle() {
+    Bundle extras = new Bundle();
+    extras.putString(HASH_KEY, this.hashKey);
+    return extras;
+  }
+
+  private PendingIntent buildPendingIntent(Context context, Bundle extras) {
+    Intent intent = new Intent(context, AlertReceiver.class);
+    intent.putExtra(REMINDER_BUNDLE, extras);
+    return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+  }
+
+  public void cancel(Context context) {
+    LogController.ALERTS.logMessage("Class Alert - Cancelling alert" + hashKey);
+    AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    // Extras bundle does not matter for purpose of matching PendingIntent 's
+    alarmMgr.cancel(buildPendingIntent(context, createBundle())); 
   }
 
   public String getDayDateAsString() {
     Calendar cal = Calendar.getInstance();
-    cal.setTime(setTime);
-    //use simpledateformat here
+    cal.setTime(performanceDateTime);
+    // use simpledateformat here
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, MMM d");
     // SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, MMM d, ''yy"); //Includes year
-    return simpleDateFormat.format(setTime);
+    return simpleDateFormat.format(performanceDateTime);
   }
 
   public String getSetTimeAsString() {
-    int milTime = setTime.getHours() *100 + setTime.getMinutes();
+    int milTime = performanceDateTime.getHours() * 100 + performanceDateTime.getMinutes();
     return DateTimeUtils.militaryToCivilianTime(milTime);
   }
 
   public String getStage() {
     return this.stageName;
   }
-  
+
   public String getArtist() {
     return this.artistName;
   }
-  
-  //Should check if alert time has passed before using this
-  public String getTimeIntervalToAlert() {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(setTime);
-    cal.add(Calendar.MINUTE, -1 * minutesBeforeSetTime);
-    
+
+  // Should check if alert time has passed before using this
+  public String getTextIntervalUntilAlert() {
     long currentTimeMillis = System.currentTimeMillis();
-    long alertTimeMillis = cal.getTimeInMillis();
-    
+    Date alertDateTime = this.getAlertDateTime();
+    long alertTimeMillis = alertDateTime.getTime();
+
     return CalendarUtils.formatInterval(alertTimeMillis - currentTimeMillis);
   }
-  
-  
+
+  public Date getAlertDateTime() {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(performanceDateTime);
+    cal.add(Calendar.MINUTE, -1 * minutesBeforeSetTime);
+    return cal.getTime();
+  }
+
+  public boolean getIsAlertInFuture() {
+    Date alertDateTime = this.getAlertDateTime();
+    long alertTimeMillis = alertDateTime.getTime();
+    return System.currentTimeMillis() < alertTimeMillis;
+  }
+
+  public String getHashKey() {
+    return this.hashKey;
+  }
+
+
+//  private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
+//    stream.defaultReadObject();
+//
+//  }
 
 }
