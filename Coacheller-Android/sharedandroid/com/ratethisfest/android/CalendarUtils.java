@@ -47,10 +47,14 @@ public class CalendarUtils extends Application {
   // this way:
   public static String currentDayName() {
     int todayInt = currentDayOfWeek();
-    return DaysHashMap.DayJavaCalendarToString(todayInt);
+    return getDayName(todayInt);
+  }
+  
+  public static String getDayName(int dayInt) {
+    return DaysHashMap.DayJavaCalendarToString(dayInt);
   }
 
-  public static int currentMonth() {
+  public static int currentNMonth() {
     Calendar cal = Calendar.getInstance();
     return cal.get(Calendar.MONTH) + 1; // Months are zero-based, 0-11
   }

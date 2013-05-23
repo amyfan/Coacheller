@@ -44,28 +44,30 @@ public class AlertManager implements AlertListAdapterDataSource {
     this.application = myApplication;
   }
 
+  /** @category AlertListAdapterDataSource */
   @Override
   public int getNumberOfItems() {
     return managedAlerts.size(); // Initialized on instantiation, safe
   }
-
+  
+  /** @category AlertListAdapterDataSource */
   @Override
   public HashMap<String, Alert> getAlerts() {
     return managedAlerts;
   }
 
-  //Called from the UI to add or update an existing alert
+  // Called from the UI to add or update an existing alert
   public void addAlertForSet(FestivalEnum fest, JSONObject setData, int week, int minutesBefore) throws JSONException,
       FileNotFoundException, IOException {
     final Integer setID = (Integer) setData.get(AndroidConstants.JSON_KEY_SETS__SET_ID);
     final String hashKey = computeHashKey(fest, setID, week);
-  
+
     if (alertExistsForSet(fest, setData, week)) {
       Alert existingAlert = managedAlerts.get(hashKey);
-  
+
       // need to change existing alert
       LogController.ALERTS.logMessage("Warning: Code Missing, need to update existing alert");
-  
+
     } else {
       // otherwise create it
       Alert newAlert = new Alert(fest, week, setData, hashKey, 8);
@@ -73,16 +75,16 @@ public class AlertManager implements AlertListAdapterDataSource {
       this.managedAlerts.put(hashKey, newAlert);
     }
     saveAlerts();
-    updateNextAlertWithAPI();
+    registerNextAlertWithAPI();
   }
 
   public void removeAlertForSet(FestivalEnum fest, JSONObject setData, int week) throws FileNotFoundException,
       IOException, JSONException {
     final Integer setID = (Integer) setData.get(AndroidConstants.JSON_KEY_SETS__SET_ID);
     final String hashKey = computeHashKey(fest, setID, week);
-  
+
     LogController.ERROR.logMessage(getClass().getSimpleName() + " - ERROR parsing set data, could not remove alert");
-  
+
     removeAlertWithHashKey(hashKey);
   }
 
@@ -101,16 +103,16 @@ public class AlertManager implements AlertListAdapterDataSource {
   private void removeAlertWithHashKey(final String hashKey) throws FileNotFoundException, IOException {
     this.managedAlerts.remove(hashKey);
     saveAlerts();
-    updateNextAlertWithAPI();
+    registerNextAlertWithAPI();
   }
 
   public void removeAllAlerts() throws FileNotFoundException, IOException {
-    //Collection<Alert> alerts = this.managedAlerts.values();
+    // Collection<Alert> alerts = this.managedAlerts.values();
 
     // After they are really cancelled
     managedAlerts.clear();
     saveAlerts();
-    updateNextAlertWithAPI();  //Must be called to cancel any alerts with the API
+    registerNextAlertWithAPI(); // Must be called to cancel any alerts with the API
   }
 
   public Alert getAlertWithHashKey(String hashKey) {
@@ -126,19 +128,20 @@ public class AlertManager implements AlertListAdapterDataSource {
   }
 
   private Alert findNextAlert() {
-    if (managedAlerts.isEmpty()) {
+    //if (managedAlerts.isEmpty()) {
+    if (getNumberOfItems() == 0) {
       return null;
     }
-  
+
     // Guaranteed not empty
     Iterator<Entry<String, Alert>> alertIterator = managedAlerts.entrySet().iterator();
     Entry<String, Alert> earliestAlertEntry = alertIterator.next();
-  
+
     while (alertIterator.hasNext()) {
       Entry<String, Alert> entry = alertIterator.next();
       String hashKey = entry.getKey();
       Alert alert = entry.getValue();
-  
+
       if (alert.getSetTime().before(earliestAlertEntry.getValue().getSetTime())) {
         earliestAlertEntry = entry;
       }
@@ -146,21 +149,22 @@ public class AlertManager implements AlertListAdapterDataSource {
     return earliestAlertEntry.getValue();
   }
 
+  
   // This should be the only function that sets and cancels alerts with the API
-  private void updateNextAlertWithAPI() {
+  private void registerNextAlertWithAPI() {
     Alert nextAlert = findNextAlert();
     String nextAlertDescription = "";
     if (nextAlert != null) {
       nextAlertDescription = nextAlert.getHashKey() + " " + nextAlert.getArtist() + " at "
           + nextAlert.getDayDateAsString();
     }
-  
+
     String previousAlertDescription = "";
     if (this.scheduledAlert != null) {
       previousAlertDescription = this.scheduledAlert.getHashKey() + " " + this.scheduledAlert.getArtist() + " at "
           + this.scheduledAlert.getDayDateAsString();
     }
-  
+
     if (nextAlert == null) { // there is no next alert
       LogController.ALERTS.logMessage("AlertManager.setNextAlert(): No next alert to schedule, previous was:"
           + previousAlertDescription);
@@ -181,11 +185,12 @@ public class AlertManager implements AlertListAdapterDataSource {
         LogController.ALERTS.logMessage("AlertManager.setNextAlert(): No change, next alert same as current alert: "
             + nextAlertDescription);
       }
-  
+
     }
-  
+
   }
 
+  /** @category IO */
   private void saveAlerts() throws FileNotFoundException, IOException {
     FileOutputStream fos = this.application.openFileOutput(STORED_FILENAME, Context.MODE_PRIVATE);
     ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -194,6 +199,7 @@ public class AlertManager implements AlertListAdapterDataSource {
     LogController.ALERTS.logMessage("Saved local file " + localFile.getName() + " size:" + localFile.length());
   }
 
+  /** @category IO */
   public void loadAlerts() throws StreamCorruptedException, FileNotFoundException, IOException, ClassNotFoundException {
     File localFile = getLocalFile(); // ???Throws NPE if file does not exist???
     if (localFile.exists()) {
@@ -203,18 +209,20 @@ public class AlertManager implements AlertListAdapterDataSource {
       ObjectInputStream ois = new ObjectInputStream(fis);
       managedAlerts = (HashMap<String, Alert>) ois.readObject();
       LogController.ALERTS.logMessage("AlertManager loaded file, size:" + localFile.length());
-      updateNextAlertWithAPI();
+      registerNextAlertWithAPI();
     } else {
 
       LogController.ALERTS.logMessage("AlertManager save file does not yet exist");
     }
 
   }
-
+  
+  /** @category IO */
   private File getLocalFile() {
     return this.application.getFileStreamPath(STORED_FILENAME);
   }
 
+  /** @category IO */
   public void exceptionLoadingAlerts(Exception e) {
     LogController.ERROR.logMessage("Error loading alerts from disk: " + e.getMessage());
     e.printStackTrace();
@@ -227,7 +235,7 @@ public class AlertManager implements AlertListAdapterDataSource {
     LogController.ALERTS.logMessage(alertMsg);
 
     // Here is where the application should alert the user to see the next set
-    
+
     // Now remove the alert
     try {
       removeAlertWithHashKey(hashKey);

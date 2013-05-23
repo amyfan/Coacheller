@@ -24,6 +24,7 @@ public class Alert implements Serializable {
   private static final long serialVersionUID = 1L;
   public static final String REMINDER_BUNDLE = "RateThisFestAlertBundle";
   public static final String HASH_KEY = "HASH_KEY";
+  public static final String ACTION_ALERT = "com.ratethisfest.Alert:ACTION";
   private String hashKey;
   private String stageName;
   private String artistName;
@@ -35,10 +36,26 @@ public class Alert implements Serializable {
   // private PendingIntent createdPendingIntent; // Not sure about serializing
 
   public Alert() {
-    
+
     LogController.ALERTS.logMessage("Class Alert - Default Constructor called");
   }
 
+  /** @category Properties */
+  public String getStage() {
+    return this.stageName;
+  }
+
+  /** @category Properties */
+  public String getArtist() {
+    return this.artistName;
+  }
+
+  /** @category Properties */
+  public String getHashKey() {
+    return this.hashKey;
+  }
+
+  /** @category Properties */
   public Date getSetTime() {
     return this.performanceDateTime;
   }
@@ -70,32 +87,37 @@ public class Alert implements Serializable {
     // Create pendingIntent to be broadcast later
     PendingIntent builtPendingIntent = buildPendingIntent(context, extras);
 
-    // Set intent to fire after X millis
+    // // Set intent to fire after X millis
+    // Calendar time = Calendar.getInstance();
+    // time.setTimeInMillis(System.currentTimeMillis()); // Might not be needed
+    // time.add(Calendar.SECOND, this.minutesBeforeSetTime);
     Calendar time = Calendar.getInstance();
-    time.setTimeInMillis(System.currentTimeMillis()); // Might not be needed
-    time.add(Calendar.SECOND, this.minutesBeforeSetTime);
+    time.setTime(getAlertDateTime());
 
     AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     alarmMgr.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), builtPendingIntent);
-  }
-
-  private Bundle createBundle() {
-    Bundle extras = new Bundle();
-    extras.putString(HASH_KEY, this.hashKey);
-    return extras;
-  }
-
-  private PendingIntent buildPendingIntent(Context context, Bundle extras) {
-    Intent intent = new Intent(context, AlertReceiver.class);
-    intent.putExtra(REMINDER_BUNDLE, extras);
-    return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
   public void cancel(Context context) {
     LogController.ALERTS.logMessage("Class Alert - Cancelling alert" + hashKey);
     AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     // Extras bundle does not matter for purpose of matching PendingIntent 's
-    alarmMgr.cancel(buildPendingIntent(context, createBundle())); 
+    alarmMgr.cancel(buildPendingIntent(context, createBundle()));
+  }
+
+  /** @category Intent */
+  private Bundle createBundle() {
+    Bundle extras = new Bundle();
+    extras.putString(HASH_KEY, this.hashKey);
+    return extras;
+  }
+
+  /** @category Intent */
+  private PendingIntent buildPendingIntent(Context context, Bundle extras) {
+    Intent intent = new Intent(context, AlertReceiver.class);
+    intent.setAction(ACTION_ALERT);
+    intent.putExtra(REMINDER_BUNDLE, extras);
+    return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
   public String getDayDateAsString() {
@@ -110,14 +132,6 @@ public class Alert implements Serializable {
   public String getSetTimeAsString() {
     int milTime = performanceDateTime.getHours() * 100 + performanceDateTime.getMinutes();
     return DateTimeUtils.militaryToCivilianTime(milTime);
-  }
-
-  public String getStage() {
-    return this.stageName;
-  }
-
-  public String getArtist() {
-    return this.artistName;
   }
 
   // Should check if alert time has passed before using this
@@ -142,14 +156,9 @@ public class Alert implements Serializable {
     return System.currentTimeMillis() < alertTimeMillis;
   }
 
-  public String getHashKey() {
-    return this.hashKey;
-  }
-
-
-//  private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
-//    stream.defaultReadObject();
-//
-//  }
+  // private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
+  // stream.defaultReadObject();
+  //
+  // }
 
 }
