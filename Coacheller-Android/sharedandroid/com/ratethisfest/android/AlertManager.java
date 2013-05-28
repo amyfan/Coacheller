@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -18,11 +17,6 @@ import org.json.JSONObject;
 
 import android.app.Application;
 import android.content.Context;
-import android.database.DataSetObserver;
-import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListAdapter;
 
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.shared.FestivalEnum;
@@ -49,7 +43,7 @@ public class AlertManager implements AlertListAdapterDataSource {
   public int getNumberOfItems() {
     return managedAlerts.size(); // Initialized on instantiation, safe
   }
-  
+
   /** @category AlertListAdapterDataSource */
   @Override
   public HashMap<String, Alert> getAlerts() {
@@ -62,22 +56,39 @@ public class AlertManager implements AlertListAdapterDataSource {
     final Integer setID = (Integer) setData.get(AndroidConstants.JSON_KEY_SETS__SET_ID);
     final String hashKey = computeHashKey(fest, setID, week);
 
-    if (alertExistsForSet(fest, setData, week)) {
-      Alert existingAlert = managedAlerts.get(hashKey);
-
-      // need to change existing alert
-      LogController.ALERTS.logMessage("Warning: Code Missing, need to update existing alert");
+    Alert existingAlert = null;
+    existingAlert = getAlertForSet(fest, setData, week);
+    if (existingAlert != null) {
+      existingAlert.setMinutesBeforeSet(minutesBefore);
 
     } else {
       // otherwise create it
-      Alert newAlert = new Alert(fest, week, setData, hashKey, 8);
-      // Add to hash
+      Alert newAlert = new Alert(fest, week, setData, hashKey, minutesBefore);
       this.managedAlerts.put(hashKey, newAlert);
     }
-    saveAlerts();
-    registerNextAlertWithAPI();
+    alertWasChanged();
   }
 
+  public boolean alertExistsForSet(FestivalEnum fest, JSONObject setData, int week) throws JSONException {
+    Integer setID = (Integer) setData.getInt(AndroidConstants.JSON_KEY_SETS__SET_ID);
+    String hashKey = computeHashKey(fest, setID, week);
+    return this.managedAlerts.containsKey(hashKey);
+  }
+
+  public Alert getAlertForSet(FestivalEnum fest, JSONObject setData, int week) throws JSONException {
+    Integer setID = (Integer) setData.getInt(AndroidConstants.JSON_KEY_SETS__SET_ID);
+    String hashKey = computeHashKey(fest, setID, week);
+    return managedAlerts.get(hashKey);
+  }
+
+  private String computeHashKey(FestivalEnum fest, int setID, int week) {
+    String hashKey = fest.getName() + "-" + setID + "-" + week;
+    LogController.ALERTS.logMessage("Computed Hash Key: " + hashKey);
+    return hashKey;
+  }
+
+  /** @category Remove Alert */
+  // Helper method for removing alerts, usually called by main activity
   public void removeAlertForSet(FestivalEnum fest, JSONObject setData, int week) throws FileNotFoundException,
       IOException, JSONException {
     final Integer setID = (Integer) setData.get(AndroidConstants.JSON_KEY_SETS__SET_ID);
@@ -88,31 +99,26 @@ public class AlertManager implements AlertListAdapterDataSource {
     removeAlertWithHashKey(hashKey);
   }
 
-  public boolean alertExistsForSet(FestivalEnum fest, JSONObject setData, int week) throws JSONException {
-    Integer setID = (Integer) setData.getInt(AndroidConstants.JSON_KEY_SETS__SET_ID);
-    String hashKey = computeHashKey(fest, setID, week);
-    return this.managedAlerts.containsKey(hashKey);
+  /** @category Remove Alert */
+  // Helper method for removing alerts, usually called by classes which reference alerts directly
+  public void removeAlert(Alert alertToRemove) throws FileNotFoundException, IOException {
+    removeAlertWithHashKey(alertToRemove.getHashKey());
   }
 
-  private String computeHashKey(FestivalEnum fest, int setID, int week) {
-    String hashKey = fest.getName() + "-" + setID + "-" + week;
-    LogController.ALERTS.logMessage("Computed Hash Key: " + hashKey);
-    return hashKey;
-  }
-
+  /** @category Remove Alert */
+  // Functional endpoint for removing alerts
   private void removeAlertWithHashKey(final String hashKey) throws FileNotFoundException, IOException {
     this.managedAlerts.remove(hashKey);
-    saveAlerts();
-    registerNextAlertWithAPI();
+    alertWasChanged();
   }
 
+  /** @category Remove Alert */
   public void removeAllAlerts() throws FileNotFoundException, IOException {
     // Collection<Alert> alerts = this.managedAlerts.values();
 
     // After they are really cancelled
     managedAlerts.clear();
-    saveAlerts();
-    registerNextAlertWithAPI(); // Must be called to cancel any alerts with the API
+    alertWasChanged(); // Must be called to cancel any alerts with the API
   }
 
   public Alert getAlertWithHashKey(String hashKey) {
@@ -127,8 +133,9 @@ public class AlertManager implements AlertListAdapterDataSource {
     // return null;
   }
 
+  // Out of all currently managed alerts, identifies the alert which should go off next
   private Alert findNextAlert() {
-    //if (managedAlerts.isEmpty()) {
+    // if (managedAlerts.isEmpty()) {
     if (getNumberOfItems() == 0) {
       return null;
     }
@@ -142,27 +149,26 @@ public class AlertManager implements AlertListAdapterDataSource {
       String hashKey = entry.getKey();
       Alert alert = entry.getValue();
 
-      if (alert.getSetTime().before(earliestAlertEntry.getValue().getSetTime())) {
+      if (alert.getSetDateTime().before(earliestAlertEntry.getValue().getSetDateTime())) {
         earliestAlertEntry = entry;
       }
     }
     return earliestAlertEntry.getValue();
   }
 
-  
   // This should be the only function that sets and cancels alerts with the API
   private void registerNextAlertWithAPI() {
     Alert nextAlert = findNextAlert();
     String nextAlertDescription = "";
     if (nextAlert != null) {
       nextAlertDescription = nextAlert.getHashKey() + " " + nextAlert.getArtist() + " at "
-          + nextAlert.getDayDateAsString();
+          + nextAlert.getDayDateAsString() + " " + nextAlert.getSetDateTime();
     }
 
     String previousAlertDescription = "";
     if (this.scheduledAlert != null) {
       previousAlertDescription = this.scheduledAlert.getHashKey() + " " + this.scheduledAlert.getArtist() + " at "
-          + this.scheduledAlert.getDayDateAsString();
+          + this.scheduledAlert.getDayDateAsString() + " " + this.scheduledAlert.getSetDateTime();
     }
 
     if (nextAlert == null) { // there is no next alert
@@ -178,7 +184,7 @@ public class AlertManager implements AlertListAdapterDataSource {
                                                      // alert
         LogController.ALERTS.logMessage("AlertManager.setNextAlert(): Scheduling next alert: " + nextAlertDescription
             + " previous alert was " + previousAlertDescription);
-        scheduledAlert.cancel(this.application.getApplicationContext());
+        scheduledAlert.cancelAlarm(this.application.getApplicationContext());
         nextAlert.setAlarm(application);
         this.scheduledAlert = nextAlert;
       } else if (this.scheduledAlert == nextAlert) { // there is a next alert and it is the same as the previous alert
@@ -216,7 +222,7 @@ public class AlertManager implements AlertListAdapterDataSource {
     }
 
   }
-  
+
   /** @category IO */
   private File getLocalFile() {
     return this.application.getFileStreamPath(STORED_FILENAME);
@@ -240,12 +246,25 @@ public class AlertManager implements AlertListAdapterDataSource {
     try {
       removeAlertWithHashKey(hashKey);
     } catch (FileNotFoundException e) {
-      // TODO Auto-generated catch block
+      LogController.ERROR.logMessage("AlertManager: Error removing alert: " + e.getClass());
       e.printStackTrace();
     } catch (IOException e) {
-      // TODO Auto-generated catch block
+      LogController.ERROR.logMessage("AlertManager: Error removing alert: " + e.getClass());
       e.printStackTrace();
     }
+  }
+
+  public void alertWasChanged() {
+    try {
+      saveAlerts();
+    } catch (FileNotFoundException e) {
+      LogController.ERROR.logMessage("AlertManager: Error saving changes to alerts: " + e.getClass());
+      e.printStackTrace();
+    } catch (IOException e) {
+      LogController.ERROR.logMessage("AlertManager: Error saving changes to alerts: " + e.getClass());
+      e.printStackTrace();
+    }
+    registerNextAlertWithAPI();
   }
 
 }

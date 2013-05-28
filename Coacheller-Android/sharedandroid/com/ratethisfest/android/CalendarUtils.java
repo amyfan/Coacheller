@@ -1,7 +1,9 @@
 package com.ratethisfest.android;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -20,8 +22,9 @@ import com.ratethisfest.shared.FestivalEnum;
 import android.app.Application;
 
 public class CalendarUtils extends Application {
-  public static HashMap<Integer, String> days;
+  //public static HashMap<Integer, String> days;  //Not used?
 
+  /** @category TimeNow */
   // Return the current time as 3 or 4 digits in 24-hour format
   public static Integer currentTime24hr() {
     SimpleDateFormat sdf = new SimpleDateFormat("HHmm");
@@ -31,58 +34,97 @@ public class CalendarUtils extends Application {
     return timeValueInteger;
   }
 
+  /** @category TimeNow */
   // Allows operations to be simplified in code
   // i.e. comparing the order of days
   public static int currentDayOfWeek() {
     Calendar cal = Calendar.getInstance();
     return cal.get(Calendar.DAY_OF_WEEK);
   }
-
+  
+  /** @category TimeNow */
   public static int currentDayOfMonth() {
     Calendar cal = Calendar.getInstance();
     return cal.get(Calendar.DAY_OF_MONTH);
   }
 
+  
+  /** @category TimeNow */
   // App and Database use strings in English so this time it is better to do it
   // this way:
   public static String currentDayName() {
     int todayInt = currentDayOfWeek();
     return getDayName(todayInt);
   }
-  
+
   public static String getDayName(int dayInt) {
     return DaysHashMap.DayJavaCalendarToString(dayInt);
   }
 
+  /** @category TimeNow */
   public static int currentNMonth() {
     Calendar cal = Calendar.getInstance();
     return cal.get(Calendar.MONTH) + 1; // Months are zero-based, 0-11
   }
 
+  /** @category TimeNow */
   public static int currentYear() {
     return Calendar.getInstance().get(Calendar.YEAR);
   }
 
-  // Use this when suggesting a day to search on and the user's preference is not yet known.
-  // No reason to try to display set data from a Monday
-  public static String suggestDayToQueryString() {
+  /** @category TimeNow */
+  public static Date getCurrentDateTime() {
     Calendar cal = Calendar.getInstance();
-    if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-      return DaysHashMap.DayJavaCalendarToString(Calendar.SUNDAY);
-    } else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
-      return DaysHashMap.DayJavaCalendarToString(Calendar.SATURDAY);
-    } else {
-      return DaysHashMap.DayJavaCalendarToString(Calendar.FRIDAY);
-    }
+    return cal.getTime();
   }
 
+  
+  
+  // Use this when suggesting a day to search on and the user's preference is not yet known.
+  // If a day of the "suggested" fest week has the same name as today, pick that day
+  // Otherwise, pick the first day of the "suggested" fest week
+  public static String suggestDayToQueryString(FestivalEnum fest) {
+    HashMap<String, String> criteria = new HashMap<String, String>();
+    criteria.put(FestData.FEST_NAME, fest.getName());
+    criteria.put(FestData.FEST_YEAR, currentYear()+"");
+    criteria.put(FestData.FEST_WEEK, suggestWeekToQuery(fest)+"");
+    
+    Map<Integer, Map<String, String>> rowsMatchingAll = FestData.rowsMatchingAll(criteria);
+
+    Iterator<Map<String, String>> rowIterator = rowsMatchingAll.values().iterator();
+    
+    ArrayList<Integer> days = new ArrayList<Integer>();
+    while (rowIterator.hasNext()) {
+        Map<String, String> latestRowFound = rowIterator.next();
+        String dayName = latestRowFound.get(FestData.FEST_DAYNAME);
+        int dayInt = DaysHashMap.DayStringToJavaCalendar(dayName);
+        days.add(dayInt);
+        
+        if (currentDayOfWeek() == dayInt) {
+          return getDayName(dayInt);
+        }
+    }
+    
+    //Today does not match any of the days queried from the fest week
+    Collections.sort(days);
+    Integer firstDay = days.get(0);
+    if (firstDay == null) {
+      return getDayName(Calendar.SUNDAY);
+    }
+    
+    return getDayName(firstDay);
+  }
+
+  //Before fest starts, return 1
+  //During fest, returns the current fest week
+  //After fest, returns the last fest week
   public static int suggestWeekToQuery(FestivalEnum fest) {
     final int maximumWeeks = getFestivalMaxNumberOfWeeks(fest);
-    final int lastWeekExpired = CalendarUtils.getlastFestWeekExpired(fest);
+    final int lastWeekExpired = getlastFestWeekExpired(fest);
 
     if (lastWeekExpired + 1 > maximumWeeks) {
-      // After week 1 is over and there is no week 2
-      // After week 2 is over and there is no week 3
+      // After week 1 is over and there is no week 2 (return 1)
+      // After week 2 is over and there is no week 3 (return 2)
       return lastWeekExpired;
     } else {
       // Before week 1 starts (return 0+1)
@@ -211,9 +253,16 @@ public class CalendarUtils extends Application {
     return returnCal.getTime();
   }
 
-  public static Date getCurrentDateTime() {
-    Calendar cal = Calendar.getInstance();
-    return cal.getTime();
+  // Extract the hour from an Integer representation of 24-hour time
+  // 0 -> 0, 45 -> 0, 145 -> 1, 2300 -> 23, 2345 -> 23
+  public static Integer getHourFromSetTime(Integer setTime) {
+    return setTime / 100;
+  }
+
+  // Extract the minutes from an Integer representation of 24-hour time
+  // 0 -> 0, 45 -> 45, 145 -> 45, 2300 -> 0, 2345 -> 45
+  public static Integer getMinutesFromSetTime(Integer setTime) {
+    return setTime % 100;
   }
 
   // For a given fest, see what weeks of that fest are already over
@@ -252,42 +301,22 @@ public class CalendarUtils extends Application {
     Map<Integer, Map<String, String>> rowsMatchingAll = FestData.rowsMatchingAll(criteria);
 
     Iterator<Map<String, String>> rowIterator = rowsMatchingAll.values().iterator();
-    Map<String, String> biggestRow = rowIterator.next();
+    Map<String, String> latestRowFound = rowIterator.next();
 
     while (rowIterator.hasNext()) {
       Map<String, String> currentRow = rowIterator.next();
 
-      String biggestRowMonthDay = "" + biggestRow.get(FestData.FEST_MONTH) + biggestRow.get(FestData.FEST_DAYOFMONTH);
+      String biggestRowMonthDay = "" + latestRowFound.get(FestData.FEST_MONTH)
+          + latestRowFound.get(FestData.FEST_DAYOFMONTH);
       String currentRowMonthDay = "" + currentRow.get(FestData.FEST_MONTH) + currentRow.get(FestData.FEST_DAYOFMONTH);
 
       // Might have this backwards...
       if (biggestRowMonthDay.compareTo(currentRowMonthDay) < 0) {
-        biggestRow = currentRow;
+        latestRowFound = currentRow;
       }
     }
 
-    return biggestRow;
-  }
-
-  // Extract the hour from an Integer representation of 24-hour time
-  // 0 -> 0, 45 -> 0, 145 -> 1, 2300 -> 23, 2345 -> 23
-  public static Integer getHourFromSetTime(Integer setTime) {
-    return setTime / 100;
-  }
-
-  // Extract the minutes from an Integer representation of 24-hour time
-  // 0 -> 0, 45 -> 45, 145 -> 45, 2300 -> 0, 2345 -> 45
-  public static Integer getMinutesFromSetTime(Integer setTime) {
-    return setTime % 100;
-  }
-
-  public static String padStringZero(Integer intInput, int numChars) {
-    String input = intInput + "";
-    return padStringZero(input, numChars);
-  }
-
-  public static String padStringZero(String input, int numChars) {
-    return String.format("%" + numChars + "s", input).replace(" ", "0");
+    return latestRowFound;
   }
 
   // What is the largest number of weeks that the named festival has ever run?
@@ -315,10 +344,21 @@ public class CalendarUtils extends Application {
     return largestNumberOfWeeks;
   }
 
-  // int festivalMaxNumberOfWeeks = CalendarUtils.getFestivalMaxNumberOfWeeks(this.getFestival());
+  /** @category String formatting */
+  public static String padStringZero(Integer intInput, int numChars) {
+    String input = intInput + "";
+    return padStringZero(input, numChars);
+  }
+
+  /** @category String formatting */
+  public static String padStringZero(String input, int numChars) {
+    return String.format("%" + numChars + "s", input).replace(" ", "0");
+  }
+  
+  /** @category String formatting */
   public static String formatInterval(final long l) {
     long longTimeMillis = Math.abs(l);
-    
+
     int maxValues = 2;
     long days = longTimeMillis / 86400000; // d
     long hours = longTimeMillis % 86400000 / 3600000; // h
@@ -337,7 +377,7 @@ public class CalendarUtils extends Application {
       }
       values++;
     }
-    
+
     if (hours > 0 && values < maxValues) {
       if (values > 0) {
         returnBuffer.append(" ");
@@ -349,7 +389,7 @@ public class CalendarUtils extends Application {
       }
       values++;
     }
-    
+
     if (minutes > 0 && values < maxValues) {
       if (values > 0) {
         returnBuffer.append(" ");
@@ -361,11 +401,11 @@ public class CalendarUtils extends Application {
       }
       values++;
     }
-    
+
     if (l < 0) {
       returnBuffer.append(" ago");
     }
-    
+
     return returnBuffer.toString();
   }
 

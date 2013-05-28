@@ -18,7 +18,7 @@ public class AndroidUtils {
     if (inputBundle == null) {
       return "[bundle was null]";
     }
-    
+
     StringBuilder returnString = new StringBuilder();
     int count = 0;
     for (String s : inputBundle.keySet()) {
@@ -29,16 +29,14 @@ public class AndroidUtils {
   }
 
   /**
-   * populateSpinnerWithArray Populates dropdown boxes with options, based on
-   * string arrays.
+   * populateSpinnerWithArray Populates dropdown boxes with options, based on string arrays.
    * 
-   * @param spinner
-   * @param stringArrayResId
+   * @param spinner  Spinner object representing he UI widget
+   * @param stringArrayResId  Resource ID of the spinner object
    */
-  public static void populateSpinnerWithArray(Spinner spinner, int textViewResId,
-      int stringArrayResId, int dropDownViewResId) {
-    ArrayAdapter<String> adapter = new ArrayAdapter<String>(spinner.getContext(), textViewResId,
-        spinner.getContext().getResources().getStringArray(stringArrayResId));
+  public static void populateSpinnerWithArray(Spinner spinner, int textViewResId, String[] stringArray,
+      int dropDownViewResId) {
+    ArrayAdapter<String> adapter = new ArrayAdapter<String>(spinner.getContext(), textViewResId, stringArray);
     adapter.setDropDownViewResource(dropDownViewResId);
     spinner.setAdapter(adapter);
   }
@@ -51,8 +49,7 @@ public class AndroidUtils {
    * @param loginData
    * @return
    */
-  public static List<NameValuePair> createGetQueryParamsArrayList(String year, String dayToQuery,
-      LoginData loginData) {
+  public static List<NameValuePair> createGetQueryParamsArrayList(String year, String dayToQuery, LoginData loginData) {
     List<NameValuePair> params = new ArrayList<NameValuePair>();
 
     params.add(new BasicNameValuePair(HttpConstants.PARAM_YEAR, year));

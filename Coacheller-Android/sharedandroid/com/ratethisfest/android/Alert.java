@@ -35,29 +35,8 @@ public class Alert implements Serializable {
   // private transient Context context; // Do not serialize, not relevant unless alarm is being set
   // private PendingIntent createdPendingIntent; // Not sure about serializing
 
-  public Alert() {
-
+  private Alert() {
     LogController.ALERTS.logMessage("Class Alert - Default Constructor called");
-  }
-
-  /** @category Properties */
-  public String getStage() {
-    return this.stageName;
-  }
-
-  /** @category Properties */
-  public String getArtist() {
-    return this.artistName;
-  }
-
-  /** @category Properties */
-  public String getHashKey() {
-    return this.hashKey;
-  }
-
-  /** @category Properties */
-  public Date getSetTime() {
-    return this.performanceDateTime;
   }
 
   // you can use this constructor to create the alarm.
@@ -79,6 +58,47 @@ public class Alert implements Serializable {
     this.stageName = setData.getString(stageKey);
   }
 
+  /** @category Properties */
+  public String getStage() {
+    return this.stageName;
+  }
+
+  /** @category Properties */
+  public String getArtist() {
+    return this.artistName;
+  }
+
+  /** @category Properties */
+  public String getHashKey() {
+    return this.hashKey;
+  }
+
+  /** @category Properties */
+  public Date getSetDateTime() {
+    return this.performanceDateTime;
+  }
+
+  public Date getAlertDateTime() {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(performanceDateTime);
+    cal.add(Calendar.MINUTE, -1 * minutesBeforeSetTime);
+    return cal.getTime();
+  }
+
+  public String getSetTimeAsString() {
+    int milTime = performanceDateTime.getHours() * 100 + performanceDateTime.getMinutes();
+    return DateTimeUtils.militaryToCivilianTime(milTime);
+  }
+
+  public String getDayDateAsString() {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(performanceDateTime);
+    // use simpledateformat here
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, MMM d");
+    // SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, MMM d, ''yy"); //Includes year
+    return simpleDateFormat.format(performanceDateTime);
+  }
+
   public void setAlarm(Context context) {
     LogController.ALERTS.logMessage("Class Alert - Setting alert " + hashKey);
 
@@ -98,7 +118,7 @@ public class Alert implements Serializable {
     alarmMgr.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), builtPendingIntent);
   }
 
-  public void cancel(Context context) {
+  public void cancelAlarm(Context context) {
     LogController.ALERTS.logMessage("Class Alert - Cancelling alert" + hashKey);
     AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     // Extras bundle does not matter for purpose of matching PendingIntent 's
@@ -120,20 +140,6 @@ public class Alert implements Serializable {
     return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
-  public String getDayDateAsString() {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(performanceDateTime);
-    // use simpledateformat here
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, MMM d");
-    // SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, MMM d, ''yy"); //Includes year
-    return simpleDateFormat.format(performanceDateTime);
-  }
-
-  public String getSetTimeAsString() {
-    int milTime = performanceDateTime.getHours() * 100 + performanceDateTime.getMinutes();
-    return DateTimeUtils.militaryToCivilianTime(milTime);
-  }
-
   // Should check if alert time has passed before using this
   public String getTextIntervalUntilAlert() {
     long currentTimeMillis = System.currentTimeMillis();
@@ -143,17 +149,18 @@ public class Alert implements Serializable {
     return CalendarUtils.formatInterval(alertTimeMillis - currentTimeMillis);
   }
 
-  public Date getAlertDateTime() {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(performanceDateTime);
-    cal.add(Calendar.MINUTE, -1 * minutesBeforeSetTime);
-    return cal.getTime();
-  }
-
   public boolean getIsAlertInFuture() {
     Date alertDateTime = this.getAlertDateTime();
     long alertTimeMillis = alertDateTime.getTime();
     return System.currentTimeMillis() < alertTimeMillis;
+  }
+
+  public int getMinutesBeforeSet() {
+    return this.minutesBeforeSetTime;
+  }
+
+  public void setMinutesBeforeSet(int minutesBefore) {
+    this.minutesBeforeSetTime = minutesBefore;
   }
 
   // private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {

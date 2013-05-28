@@ -1,7 +1,6 @@
 package com.coacheller;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,7 +22,6 @@ import com.ratethisfest.android.AlertManager;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.CalendarUtils;
-import com.ratethisfest.android.DaysHashMap;
 import com.ratethisfest.android.ServiceUtils;
 import com.ratethisfest.android.StorageManager;
 import com.ratethisfest.android.auth.AppControllerInt;
@@ -122,9 +120,9 @@ public class CoachellerApplication extends Application implements AppControllerI
     }
     activityCoacheller = act;
 
-    queryYear = CalendarUtils.currentYear();
-    queryWeek = CalendarUtils.suggestWeekToQuery(getFestival());
-    queryDay = CalendarUtils.suggestDayToQueryString();
+    this.queryYear = CalendarUtils.currentYear();
+    this.queryWeek = CalendarUtils.suggestWeekToQuery(getFestival());
+    this.queryDay = CalendarUtils.suggestDayToQueryString(getFestival());
 
     storageManager = new StorageManager(this, getString(R.string.save_file_name));
 
@@ -199,13 +197,12 @@ public class CoachellerApplication extends Application implements AppControllerI
   public FestivalEnum getFestival() {
 
     return getTestFestival(); // Testing only...
-    //return FestivalEnum.COACHELLA;
+    // return FestivalEnum.COACHELLA;
   }
 
   private FestivalEnum getTestFestival() {
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 5; i++) {
       LogController.ERROR.logMessage("TEST MODE - TEST MODE - TEST MODE - TEST MODE - TEST MODE - TEST MODE");
-      System.out.println("TEST MODE - TEST MODE - TEST MODE - TEST MODE - TEST MODE - TEST MODE");
     }
     return FestivalEnum.TESTFEST;
   }
@@ -216,15 +213,17 @@ public class CoachellerApplication extends Application implements AppControllerI
 
     // TODO: enumerate
     if (queryDay == null) {
-      queryDay = CalendarUtils.suggestDayToQueryString();
+      queryDay = CalendarUtils.suggestDayToQueryString(getFestival());
     }
 
-    int dayToQueryInt = DaysHashMap.DayStringToJavaCalendar(queryDay);
-    String defaultDayToQueryString = DaysHashMap.DayJavaCalendarToString(Calendar.FRIDAY);
-    if (!(dayToQueryInt == Calendar.FRIDAY) && !(dayToQueryInt == Calendar.SATURDAY)
-        && !(dayToQueryInt == Calendar.SUNDAY)) {
-      queryDay = defaultDayToQueryString;
-    }
+    // CalendarUtils should handle the defaulting
+
+    // int dayToQueryInt = DaysHashMap.DayStringToJavaCalendar(queryDay);
+    // String defaultDayToQueryString = DaysHashMap.DayJavaCalendarToString(Calendar.FRIDAY);
+    // if (!(dayToQueryInt == Calendar.FRIDAY) && !(dayToQueryInt == Calendar.SATURDAY)
+    // && !(dayToQueryInt == Calendar.SUNDAY)) {
+    // queryDay = defaultDayToQueryString;
+    // }
   }
 
   public boolean isDataFirstUse() {
@@ -357,7 +356,7 @@ public class CoachellerApplication extends Application implements AppControllerI
 
       // If festival equals testFest, do something wacky
       if (getFestival().equals(FestivalEnum.TESTFEST)) {
-        setData = FakeDataSource.getData();
+        setData = FakeDataSource.getData(params);
       } else {
         setData = ServiceUtils.getSets(params, this, getFestival().getUrl());
       }

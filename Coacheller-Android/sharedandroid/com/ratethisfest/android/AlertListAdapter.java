@@ -7,9 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.coacheller.R;
-import com.ratethisfest.android.log.LogController;
-
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.view.LayoutInflater;
@@ -17,6 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+
+import com.coacheller.R;
+import com.ratethisfest.android.log.LogController;
 
 public class AlertListAdapter implements ListAdapter {
 
@@ -36,12 +36,12 @@ public class AlertListAdapter implements ListAdapter {
     java.util.Collections.sort(this.localAlertList, new AlertEntryComparator());
   }
 
-  //Only sorts by time
+  // Only sorts by time
   private class AlertEntryComparator implements Comparator<Entry<String, Alert>> {
     @Override
     public int compare(Entry<String, Alert> argLeft, Entry<String, Alert> argRight) {
-      Date setTimeLeft = argLeft.getValue().getSetTime();
-      Date setTimeRight = argRight.getValue().getSetTime();
+      Date setTimeLeft = argLeft.getValue().getSetDateTime();
+      Date setTimeRight = argRight.getValue().getSetDateTime();
       return setTimeLeft.compareTo(setTimeRight);
     }
   }
@@ -55,7 +55,7 @@ public class AlertListAdapter implements ListAdapter {
   @Override
   public boolean areAllItemsEnabled() {
     LogController.LIST_ADAPTER.logMessage("AlertListAdapter.areAllItemsEnabled()");
-    return false;
+    return true;
   }
 
   @Override
@@ -82,10 +82,10 @@ public class AlertListAdapter implements ListAdapter {
   // the proportion of visible/total items estimated to be very high
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
-    //LogController.LIST_ADAPTER.logMessage("AlertListAdapter.getView()");
+    // LogController.LIST_ADAPTER.logMessage("AlertListAdapter.getView()");
     LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     View rowView = inflater.inflate(R.layout.row_alert_info, parent, false);
-    
+
     TextView textTime = (TextView) rowView.findViewById(R.id.text_set_time);
     TextView textDayDate = (TextView) rowView.findViewById(R.id.dayDate);
     TextView textStage = (TextView) rowView.findViewById(R.id.text_stage);
@@ -100,26 +100,28 @@ public class AlertListAdapter implements ListAdapter {
     textArtistName.setText(currentAlert.getArtist());
     textTimeRemaining.setText(currentAlert.getTextIntervalUntilAlert());
 
-
     return rowView;
   }
 
   @Override
-  public Object getItem(int position) {
+  public Entry<String, Alert> getItem(int position) {
     LogController.LIST_ADAPTER.logMessage("AlertListAdapter.getItem()");
-    return null;
+    Entry<String, Alert> currentEntry = this.localAlertList.get(position);
+    return currentEntry;
+    // return null;
   }
 
   @Override
   public long getItemId(int position) {
-    LogController.LIST_ADAPTER.logMessage("AlertListAdapter.getItemId()");
+    LogController.LIST_ADAPTER.logMessage("AlertListAdapter.getItemId(" + position + ")");
     return 0;
   }
 
   @Override
   public int getItemViewType(int position) {
-    //This one is called often
-    //LogController.LIST_ADAPTER.logMessage("AlertListAdapter.getItemViewType()");
+    // This one is called often
+    // No need to implement unless there is more than one type of view in the list
+    // LogController.LIST_ADAPTER.logMessage("AlertListAdapter.getItemViewType()");
     return 0;
   }
 
@@ -137,9 +139,9 @@ public class AlertListAdapter implements ListAdapter {
 
   @Override
   public boolean isEnabled(int position) {
-    //This one is called a whole lot
-    //LogController.LIST_ADAPTER.logMessage("AlertListAdapter.isEnabled()");
-    return false;
+    // This one is called a whole lot
+    // LogController.LIST_ADAPTER.logMessage("AlertListAdapter.isEnabled()");
+    return true;
   }
 
 }

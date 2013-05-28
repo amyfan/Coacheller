@@ -19,15 +19,15 @@
     <string name="day_search_sets">Day</string>
     <string name="buttonlabel_search_sets">Go!</string>
 
-    <string-array name="names_year">
+    <string-array name="names_year_deprecated">
         <item>2013</item>
         <item>2012</item>
     </string-array>
-    <string-array name="names_week">
+    <string-array name="names_week_deprecated">
         <item>Weekend 1</item>
         <item>Weekend 2</item>
     </string-array>
-    <string-array name="names_day">
+    <string-array name="names_day_deprecated">
         <item>Friday</item>
         <item>Saturday</item>
         <item>Sunday</item>

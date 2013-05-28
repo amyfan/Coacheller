@@ -6,7 +6,6 @@ import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -43,15 +42,10 @@ import android.widget.Toast;
 import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
 import com.coacheller.data.CoachSetListAdapter;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableTable;
-import com.google.common.collect.Maps;
+import com.ratethisfest.android.Alert;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.CalendarUtils;
-import com.ratethisfest.android.DaysHashMap;
 import com.ratethisfest.android.ServiceUtils;
 import com.ratethisfest.android.auth.AuthActivityInt;
 import com.ratethisfest.android.auth.AuthModel;
@@ -59,7 +53,6 @@ import com.ratethisfest.android.data.CustomPair;
 import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.android.data.SocialNetworkPost;
 import com.ratethisfest.android.log.LogController;
-import com.ratethisfest.data.FestData;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.FestivalEnum;
 import com.ratethisfest.shared.FieldVerifier;
@@ -138,11 +131,11 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     buttonSearchSets.setOnClickListener(this);
 
     Spinner spinnerSortType = (Spinner) findViewById(R.id.spinner_sort_by);
-    AndroidUtils.populateSpinnerWithArray(spinnerSortType, android.R.layout.simple_spinner_item, R.array.search_types,
+    String[] searchTypeStringArray = _appController.getResources().getStringArray(R.array.search_types);
+    AndroidUtils.populateSpinnerWithArray(spinnerSortType, android.R.layout.simple_spinner_item, searchTypeStringArray,
         android.R.layout.simple_spinner_dropdown_item);
     spinnerSortType.setOnItemSelectedListener(this);
 
-    
     try {
       _appController.getAlertManager().loadAlerts();
     } catch (StreamCorruptedException e) {
@@ -372,7 +365,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       _appController.clearLoginData();
       refreshData();
       return true;
-      
+
     case R.id.menu_item_manage_alerts:
       LogController.USER_ACTION_UI.logMessage("Menu button 'manage alerts' pressed");
       Intent intent = new Intent();
@@ -626,41 +619,37 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   private void prepareDialogAlerts() {
     final FestivalEnum fest = _appController.getFestival();
-    boolean alertExists = false;
+    final RadioButton radioNearNumbers = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
+    final RadioButton radioWithText = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
+    final EditText numberBox = (EditText) dialogAlerts.findViewById(R.id.numberBox);
+
+    Alert existingAlert = null;
     try {
-      alertExists = _appController.getAlertManager()
-          .alertExistsForSet(fest, lastSetSelected, _appController.getWeekToQuery());
+      existingAlert = _appController.getAlertManager().getAlertForSet(fest, lastSetSelected,
+          _appController.getWeekToQuery());
     } catch (JSONException e) {
       LogController.ERROR.logMessage(e.getClass().getSimpleName() + " parsing selected set ID for modifying alerts");
       e.printStackTrace();
     }
 
-    RadioButton radioNearNumbers = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
-    RadioButton radioWithText = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
-    EditText numberBox = (EditText) dialogAlerts.findViewById(R.id.numberBox);
-
-    // This is the pattern we want the dialog to present in each time.
     radioNearNumbers.setChecked(true);
     radioWithText.setChecked(false);
-    numberBox.selectAll();
 
     // Still don't know how to keep the keyboard from popping up
 
-    if (alertExists) {
+    Integer alertReminderTime = AndroidConstants.ALERT_DEFAULT_REMINDERTIME;
+    if (existingAlert != null) {
       // -> Prepare dialog 1) Edit current alert (minutes before set) 2) Cancel existing alert
-      // FIX:  Make second radio choice visible
+      // FIX: Make second radio choice visible
+      radioWithText.setVisibility(View.VISIBLE);
       radioWithText.setText("Cancel this alert");
-      // TODO need to get the number of minutes value on this alert and populate the number box
-
-      Integer value = (int) (Math.random() * 10);
-      numberBox.setText(value + "");
-
+      // get the number of minutes value on this alert and populate the number box
+      alertReminderTime = existingAlert.getMinutesBeforeSet(); // Override default for existing alert
     } else {
-      // -> Prepare dialog 1) Set alert for x minutes before set 2) Cancel, nevermind
-      //  FIX: Make second radio choice invisible
-      radioWithText.setText("Go Back");
-
+      radioWithText.setVisibility(View.INVISIBLE);
     }
+    numberBox.setText(alertReminderTime + "");
+    numberBox.selectAll(); // Easily allows user to overwrite
   }
 
   private void prepareDialogRateSet() {
@@ -818,60 +807,38 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     if (viewClicked.getId() == R.id.button_ok) {
       LogController.USER_ACTION_UI.logMessage("Alert Dialog - OK Clicked");
 
-      // Need to get integer value of numberbox text
-      final int minutesBefore = 20;
-
-      boolean alertExists = false;
-
-      try {
-        alertExists = _appController.getAlertManager().alertExistsForSet(fest, lastSetSelected, weekToQuery);
-      } catch (JSONException e) {
-        LogController.ERROR.logMessage(e.getClass().getSimpleName() + " parsing selected set ID for modifying alerts");
-        e.printStackTrace();
-        return; // Have to give up here
-      }
-
       if (radioNearNumbers.isChecked()) {
         // Create or update an alert
-        // Does not seem to matter right now if alert exists.
         try {
+          Integer minutesBefore = Integer.parseInt(numberBox.getText().toString());
           _appController.getAlertManager().addAlertForSet(fest, lastSetSelected, weekToQuery, minutesBefore);
 
         } catch (JSONException e) {
+          LogController.ERROR.logMessage("CoachellerActivity: Error adding/updating alert: " + e.getClass());
           e.printStackTrace();
         } catch (FileNotFoundException e) {
-          // TODO Auto-generated catch block
+          LogController.ERROR.logMessage("CoachellerActivity: Error adding/updating alert: " + e.getClass());
           e.printStackTrace();
         } catch (IOException e) {
-          // TODO Auto-generated catch block
+          LogController.ERROR.logMessage("CoachellerActivity: Error adding/updating alert: " + e.getClass());
           e.printStackTrace();
         }
-        if (alertExists) {
-          // Update Alert
-        } else {
-          // Create new alert
-        }
+
       } else if (radioWithText.isChecked()) {
         // User intends to cancel alert
-        if (alertExists) {
-          // Cancel and delete alert
-          try {
-            _appController.getAlertManager().removeAlertForSet(fest, lastSetSelected, weekToQuery);
-          } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
-        } else {
-          // Alert never existed?, cannot delete, Nothing to do
+        try {
+          _appController.getAlertManager().removeAlertForSet(fest, lastSetSelected, weekToQuery);
+        } catch (FileNotFoundException e) {
+          LogController.ERROR.logMessage("CoachellerActivity: Error cancelling alert: " + e.getClass());
+          e.printStackTrace();
+        } catch (IOException e) {
+          LogController.ERROR.logMessage("CoachellerActivity: Error cancelling alert: " + e.getClass());
+          e.printStackTrace();
+        } catch (JSONException e) {
+          LogController.ERROR.logMessage("CoachellerActivity: Error cancelling alert: " + e.getClass());
+          e.printStackTrace();
         }
       }
-
       dialogAlerts.dismiss();
 
     } else if (viewClicked.getId() == R.id.button_cancel) {

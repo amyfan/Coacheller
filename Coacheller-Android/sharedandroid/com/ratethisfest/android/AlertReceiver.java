@@ -4,15 +4,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
 
-import com.coacheller.CoachellerApplication;
-import com.ratethisfest.android.log.LogController;
-
-import android.R.anim;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
+
+import com.coacheller.CoachellerApplication;
+import com.ratethisfest.android.log.LogController;
 
 public class AlertReceiver extends BroadcastReceiver {
 
