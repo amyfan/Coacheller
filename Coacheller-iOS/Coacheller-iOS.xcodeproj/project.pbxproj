@@ -419,6 +419,7 @@
 		7987F6B2170EBB4100C23C26 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Amy Fan (83T487849K)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -432,6 +433,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = Coacheller;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "14284B9A-3E7F-46E3-93C7-57B26361B5E3";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -440,6 +442,7 @@
 		7987F6B3170EBB4100C23C26 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Amy Fan (83T487849K)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -453,6 +456,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = Coacheller;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "14284B9A-3E7F-46E3-93C7-57B26361B5E3";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
