@@ -1,4 +1,4 @@
-package com.coacheller.data;
+package com.ratethisfest.android.data;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import com.coacheller.R;
 import com.ratethisfest.android.AndroidConstants;
-import com.ratethisfest.android.data.CustomSetListAdapter;
-import com.ratethisfest.android.data.JSONArrayHashMap;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.DateTimeUtils;

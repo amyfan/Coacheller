@@ -101,6 +101,7 @@ public class AlertManager implements AlertListAdapterDataSource {
 
   /** @category Remove Alert */
   // Helper method for removing alerts, usually called by classes which reference alerts directly
+  // The other class may not know what Set this alert belongs to, and may not need to care.
   public void removeAlert(Alert alertToRemove) throws FileNotFoundException, IOException {
     removeAlertWithHashKey(alertToRemove.getHashKey());
   }

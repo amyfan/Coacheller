@@ -15,9 +15,6 @@ import android.app.Application;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import com.coacheller.ui.ChooseLoginActivity;
-import com.coacheller.ui.CoachellerActivity;
-import com.coacheller.ui.SearchSetsActivity;
 import com.ratethisfest.android.AlertManager;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.AndroidUtils;
@@ -31,6 +28,9 @@ import com.ratethisfest.android.data.FakeDataSource;
 import com.ratethisfest.android.data.JSONArrayHashMap;
 import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.android.log.LogController;
+import com.ratethisfest.android.ui.ChooseLoginActivity;
+import com.ratethisfest.android.ui.CoachellerActivity;
+import com.ratethisfest.android.ui.SearchSetsActivity;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.FestivalEnum;
 import com.ratethisfest.shared.HttpConstants;
@@ -87,6 +87,7 @@ public class CoachellerApplication extends Application implements AppControllerI
     appConstants.put(AuthConstants.TWITTER_OAUTH_CALLBACK_URL, AuthConstants.COACH_TWITTER_OAUTH_CALLBACK_URL);
 
     authModel = new AuthModel(this, appConstants);
+
   }
 
   public void registerChooseLoginActivity(ChooseLoginActivity act) {

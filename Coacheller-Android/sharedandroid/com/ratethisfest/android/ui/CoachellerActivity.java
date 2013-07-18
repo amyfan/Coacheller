@@ -1,4 +1,4 @@
-package com.coacheller.ui;
+package com.ratethisfest.android.ui;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -41,7 +41,6 @@ import android.widget.Toast;
 
 import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
-import com.coacheller.data.CoachSetListAdapter;
 import com.ratethisfest.android.Alert;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.AndroidUtils;
@@ -49,6 +48,7 @@ import com.ratethisfest.android.CalendarUtils;
 import com.ratethisfest.android.ServiceUtils;
 import com.ratethisfest.android.auth.AuthActivityInt;
 import com.ratethisfest.android.auth.AuthModel;
+import com.ratethisfest.android.data.CoachSetListAdapter;
 import com.ratethisfest.android.data.CustomPair;
 import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.android.data.SocialNetworkPost;

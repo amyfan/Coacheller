@@ -12,7 +12,6 @@ import java.util.TreeSet;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Maps;
 import com.ratethisfest.android.CalendarUtils;

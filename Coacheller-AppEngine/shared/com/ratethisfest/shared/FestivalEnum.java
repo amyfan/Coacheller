@@ -6,26 +6,24 @@ public enum FestivalEnum {
   COACHELLA("Coachella", HttpConstants.readCommentgetCoachellerServerUrlReadComment()), LOLLAPALOOZA("Lollapalooza",
       HttpConstants.SERVER_URL_LOLLAPALOOZER), TESTFEST("TestFest", HttpConstants.SERVER_URL_TEST);
 
-  private String value;
+  private String value; // Fest Name
   private String serverURL;
 
   // private int numberOfWeeks;
 
-  //Important to update this if fields change
+  // Important to update this if fields change
   public boolean equals(FestivalEnum otherFest) {
     if (!this.value.equals(otherFest.value)) {
       return false;
     }
-    
+
     if (!this.serverURL.equals(otherFest.serverURL)) {
       return false;
     }
-    
+
     return true;
   }
-  
-  
-  
+
   private FestivalEnum(String value, String URL) {
     this.value = value;
     this.serverURL = URL;
@@ -35,7 +33,7 @@ public enum FestivalEnum {
   // this.value = value;
   // this.numberOfWeeks = numberOfWeeks;
   // }
-  
+
   public String getName() {
     return this.value;
   }
@@ -49,7 +47,6 @@ public enum FestivalEnum {
   public String getUrl() {
     return this.serverURL;
   }
-
 
   // public int getNumberOfWeeks() {
   // return numberOfWeeks;

@@ -31,8 +31,8 @@ public class TwitterAuthProviderOAuth {
   }
 
   private OAuthService _getService() {
-    return new ServiceBuilder().provider(TwitterApi.class).apiKey(_consumerKey)
-        .apiSecret(_consumerSecret).callback(_callbackUrl).build();
+    return new ServiceBuilder().provider(TwitterApi.class).apiKey(_consumerKey).apiSecret(_consumerSecret)
+        .callback(_callbackUrl).build();
   }
 
   public String getRequestTokenUrl() {
@@ -65,8 +65,7 @@ public class TwitterAuthProviderOAuth {
     _accessToken = new Token(token, secret);
   }
 
-  public Response accessResource(Verb httpVerb, String resourceUrl,
-      HashMap<String, String> bodyParameters) {
+  public Response accessResource(Verb httpVerb, String resourceUrl, HashMap<String, String> bodyParameters) {
 
     OAuthRequest request = new OAuthRequest(httpVerb, resourceUrl);
     for (String s : bodyParameters.keySet()) {

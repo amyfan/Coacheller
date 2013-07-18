@@ -1,4 +1,4 @@
-package com.coacheller.ui;
+package com.ratethisfest.android.ui;
 
 import java.util.Calendar;
 

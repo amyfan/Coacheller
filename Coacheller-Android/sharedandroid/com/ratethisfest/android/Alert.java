@@ -1,11 +1,9 @@
 package com.ratethisfest.android;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,19 +33,16 @@ public class Alert implements Serializable {
   // private transient Context context; // Do not serialize, not relevant unless alarm is being set
   // private PendingIntent createdPendingIntent; // Not sure about serializing
 
+  // Initializes an object to represent the Alert for this set
   private Alert() {
-    LogController.ALERTS.logMessage("Class Alert - Default Constructor called");
+    LogController.ERROR.logMessage("Class Alert - Default Constructor called");
   }
 
-  // you can use this constructor to create the alarm.
-  // Just pass in the main activity as the context,
-  // any extras you'd like to get later when triggered
-  // and the timeout
-  public Alert(FestivalEnum fest, int week, JSONObject setData, String hashKey, int timeoutInSeconds)
+  // Initializes an object to represent the Alert for this set
+  public Alert(FestivalEnum fest, int week, JSONObject setData, String hashKey, int minutesBeforeSet)
       throws JSONException {
-
     this.hashKey = hashKey;
-    this.minutesBeforeSetTime = timeoutInSeconds;
+    this.minutesBeforeSetTime = minutesBeforeSet;
     this.performanceDateTime = CalendarUtils.getSetDateTime(setData, week, fest);
     this.artistName = setData.getString(AndroidConstants.JSON_KEY_SETS__ARTIST);
 
@@ -99,6 +94,8 @@ public class Alert implements Serializable {
     return simpleDateFormat.format(performanceDateTime);
   }
 
+  // Registers PendingIntent with Android AlarmManager service.
+  // The app will be notified when the PendingIntent is later broadcast.
   public void setAlarm(Context context) {
     LogController.ALERTS.logMessage("Class Alert - Setting alert " + hashKey);
 
@@ -118,6 +115,8 @@ public class Alert implements Serializable {
     alarmMgr.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), builtPendingIntent);
   }
 
+  // Cancels PendingIntent with Android AlarmManager service.
+  // Must be called with the same Context that set the Alert
   public void cancelAlarm(Context context) {
     LogController.ALERTS.logMessage("Class Alert - Cancelling alert" + hashKey);
     AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

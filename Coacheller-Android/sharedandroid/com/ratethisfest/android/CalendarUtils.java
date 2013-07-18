@@ -5,21 +5,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Application;
+
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.data.FestData;
 import com.ratethisfest.shared.FestivalEnum;
-
-import android.app.Application;
 
 public class CalendarUtils extends Application {
   //public static HashMap<Integer, String> days;  //Not used?

@@ -1,4 +1,4 @@
-package com.coacheller.ui;
+package com.ratethisfest.android.ui;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
