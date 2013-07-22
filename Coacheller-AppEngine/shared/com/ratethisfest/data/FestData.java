@@ -177,15 +177,17 @@ public enum FestData {
     TreeSet<Integer> rowsToReturn = new TreeSet<Integer>(festTable.rowKeySet());
 
     int size = rowsToReturn.size();
+    String debugSearchParams = "";
     for (Map.Entry<String, String> entry : criteria.entrySet()) {
       String columnName = entry.getKey();
       String valueToMatch = entry.getValue();
-      LogController.OTHER.logMessage("Processing match criteron " + columnName + " == " + valueToMatch);
-
+      // LogController.OTHER.logMessage("Processing match criterion " + columnName + " == " + valueToMatch);
+      debugSearchParams += columnName + "=" + valueToMatch + " ";
       Set<Integer> matchingRows = searchForRows(columnName, valueToMatch).keySet();
       rowsToReturn.retainAll(matchingRows);
       size = rowsToReturn.size();
     }
+    LogController.OTHER.logMessage("FestData Search: " + debugSearchParams);
 
     Predicate<Integer> returnPredicate = Predicates.in(rowsToReturn);
     return Maps.filterKeys(festTable.rowMap(), returnPredicate);

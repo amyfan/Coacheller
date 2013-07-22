@@ -67,7 +67,7 @@ public class CoachellerApplication extends Application implements AppControllerI
     System.out.println("Application Object Instantiated"); // Keep this first
 
     // Set logging options here
-    LogController.LIFECYCLE_ACTIVITY.disable();
+    // LogController.LIFECYCLE_ACTIVITY.disable();
     LogController.LIFECYCLE_THREAD.disable();
     // LogController.USER_ACTION_UI.disable();
     LogController.MULTIWEEK.disable();

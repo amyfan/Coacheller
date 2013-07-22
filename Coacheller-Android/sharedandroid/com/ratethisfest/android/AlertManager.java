@@ -17,6 +17,7 @@ import org.json.JSONObject;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.shared.FestivalEnum;
@@ -175,6 +176,8 @@ public class AlertManager implements AlertListAdapterDataSource {
     if (nextAlert == null) { // there is no next alert
       LogController.ALERTS.logMessage("AlertManager.setNextAlert(): No next alert to schedule, previous was:"
           + previousAlertDescription);
+      this.scheduledAlert = null;
+
     } else {
       if (this.scheduledAlert == null) { // there is a next alert and there was no previous alert
         LogController.ALERTS.logMessage("AlertManager.setNextAlert(): No previous alert, setting next alert:"
@@ -235,11 +238,11 @@ public class AlertManager implements AlertListAdapterDataSource {
     e.printStackTrace();
   }
 
-  public void alertWentOff(String hashKey) {
-    Alert alertWentOff = getAlertWithHashKey(hashKey);
-    String alertMsg = "Go see " + alertWentOff.getArtist() + " at " + alertWentOff.getStage() + " for the set at "
-        + alertWentOff.getSetTimeAsString() + " starting in " + alertWentOff.getTextIntervalUntilAlert();
-    LogController.ALERTS.logMessage(alertMsg);
+  public void alertWentOff(String hashKey, Context context, Intent intent) {
+    // Alert alertWentOff = getAlertWithHashKey(hashKey);
+    // String alertMsg = "Go see " + alertWentOff.getArtist() + " at " + alertWentOff.getStage() + " for the set at "
+    // + alertWentOff.getSetTimeAsString() + " starting in " + alertWentOff.getTextIntervalUntilAlert();
+    // LogController.ALERTS.logMessage(alertMsg);
 
     // Here is where the application should alert the user to see the next set
 
@@ -253,6 +256,8 @@ public class AlertManager implements AlertListAdapterDataSource {
       LogController.ERROR.logMessage("AlertManager: Error removing alert: " + e.getClass());
       e.printStackTrace();
     }
+
+    AlertAlarmActivity.launch(context, intent);
   }
 
   public void alertWasChanged() {

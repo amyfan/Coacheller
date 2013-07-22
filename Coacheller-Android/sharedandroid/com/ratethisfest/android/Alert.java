@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.coacheller.R;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.shared.DateTimeUtils;
 import com.ratethisfest.shared.FestivalEnum;
@@ -99,9 +100,8 @@ public class Alert implements Serializable {
   public void setAlarm(Context context) {
     LogController.ALERTS.logMessage("Class Alert - Setting alert " + hashKey);
 
-    Bundle extras = createBundle();
-
     // Create pendingIntent to be broadcast later
+    Bundle extras = createBundle();
     PendingIntent builtPendingIntent = buildPendingIntent(context, extras);
 
     // // Set intent to fire after X millis
@@ -110,7 +110,6 @@ public class Alert implements Serializable {
     // time.add(Calendar.SECOND, this.minutesBeforeSetTime);
     Calendar time = Calendar.getInstance();
     time.setTime(getAlertDateTime());
-
     AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     alarmMgr.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), builtPendingIntent);
   }
@@ -133,19 +132,28 @@ public class Alert implements Serializable {
 
   /** @category Intent */
   private PendingIntent buildPendingIntent(Context context, Bundle extras) {
-    Intent intent = new Intent(context, AlertReceiver.class);
+    String alertMsg = "Go see " + this.getArtist() + " at " + this.getStage() + " for the set at "
+        + this.getSetTimeAsString() + " starting in " + this.getTextIntervalUntilSet();
+
+    Intent intent = new Intent(context, RTFIntentReceiver.class);
     intent.setAction(ACTION_ALERT);
-    intent.putExtra(REMINDER_BUNDLE, extras);
+    // intent.putExtra(REMINDER_BUNDLE, extras); // Dont think we need this
+    intent.putExtra(HASH_KEY, getHashKey());
+
+    intent.putExtra(AlertAlarmActivity.DIALOG_TITLE, context.getString(R.string.app_name));
+    intent.putExtra(AlertAlarmActivity.DIALOG_MESSAGE, alertMsg);
+    intent.putExtra(AlertAlarmActivity.LEFT_BUTTON_TEXT, "Show Schedule");
+    intent.putExtra(AlertAlarmActivity.RIGHT_BUTTON_TEXT, "Dismiss");
     return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
-  // Should check if alert time has passed before using this
+  // This seems to handle alerts in the past reasonably well
   public String getTextIntervalUntilAlert() {
-    long currentTimeMillis = System.currentTimeMillis();
-    Date alertDateTime = this.getAlertDateTime();
-    long alertTimeMillis = alertDateTime.getTime();
+    return CalendarUtils.formatInterval(this.getAlertDateTime().getTime() - System.currentTimeMillis());
+  }
 
-    return CalendarUtils.formatInterval(alertTimeMillis - currentTimeMillis);
+  public String getTextIntervalUntilSet() {
+    return CalendarUtils.formatInterval(this.getSetDateTime().getTime() - System.currentTimeMillis());
   }
 
   public boolean getIsAlertInFuture() {

@@ -97,7 +97,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    LogController.LIFECYCLE_ACTIVITY.logMessage("CoachellerActivity Launched");
+    LogController.LIFECYCLE_ACTIVITY.logMessage("CoachellerActivity Launched: " + this);
     _appController = (CoachellerApplication) getApplication();
     _appController.registerCoachellerActivity(CoachellerActivity.this);
 
@@ -233,39 +233,40 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     // testFestData(); // Just prints some stuff
   }
 
-  private void testFestData() {
-    // ImmutableTable<Integer, String, String> festTable = FestData.getTable();
-    // ImmutableMap<Integer, String> rowToFestName = festTable.column(FestData.FEST_NAME);
-    // Predicate<String> equalsCoachella = Predicates.equalTo("Coachella");
-    // Map<Integer, String> filteredValues = Maps.filterValues(rowToFestName, equalsCoachella);
-    // System.out.println("Results 1:");
-    //
-    // for (Integer key : filteredValues.keySet()) {
-    // System.out.println(key +":"+ rowToFestName.get(key));
-    // }
-    //
-    // System.out.println("Raw Table:");
-    // for (Integer key : FestData.getTable().rowKeySet()) {
-    // System.out.println(key +":"+ FestData.getTable().row(key));
-    // }
-    //
-    // System.out.println("Search Results:");
-    // Map<Integer, Map<String, String>> resultRows = FestData.searchForRows(FestData.FEST_NAME, "Lollapalooza");
-    // for (Integer key: resultRows.keySet()) {
-    // System.out.println(key +":"+ resultRows.get(key));
-    // }
+  // What was this supposed to do?
+  // private void testFestData() {
+  // ImmutableTable<Integer, String, String> festTable = FestData.getTable();
+  // ImmutableMap<Integer, String> rowToFestName = festTable.column(FestData.FEST_NAME);
+  // Predicate<String> equalsCoachella = Predicates.equalTo("Coachella");
+  // Map<Integer, String> filteredValues = Maps.filterValues(rowToFestName, equalsCoachella);
+  // System.out.println("Results 1:");
+  //
+  // for (Integer key : filteredValues.keySet()) {
+  // System.out.println(key +":"+ rowToFestName.get(key));
+  // }
+  //
+  // System.out.println("Raw Table:");
+  // for (Integer key : FestData.getTable().rowKeySet()) {
+  // System.out.println(key +":"+ FestData.getTable().row(key));
+  // }
+  //
+  // System.out.println("Search Results:");
+  // Map<Integer, Map<String, String>> resultRows = FestData.searchForRows(FestData.FEST_NAME, "Lollapalooza");
+  // for (Integer key: resultRows.keySet()) {
+  // System.out.println(key +":"+ resultRows.get(key));
+  // }
 
-    // HashMap<String, String> criteria = new HashMap<String, String>();
-    // criteria.put(FestData.FEST_WEEK, "1"); //Any day in week 1 of any fest
-    // criteria.put(FestData.FEST_YEAR, "2013"); //Restrict to days in 2013
-    // criteria.put(FestData.FEST_DAYOFMONTH, "3"); //Restrict to days on the 3rd of any month
-    //
-    // Map<Integer, Map<String, String>> rowsMatchingAll = FestData.rowsMatchingAll(criteria);
-    // System.out.println("Search Results:");
-    // for (Integer key : rowsMatchingAll.keySet()) {
-    // System.out.println(key + ":" + rowsMatchingAll.get(key));
-    // }
-  }
+  // HashMap<String, String> criteria = new HashMap<String, String>();
+  // criteria.put(FestData.FEST_WEEK, "1"); //Any day in week 1 of any fest
+  // criteria.put(FestData.FEST_YEAR, "2013"); //Restrict to days in 2013
+  // criteria.put(FestData.FEST_DAYOFMONTH, "3"); //Restrict to days on the 3rd of any month
+  //
+  // Map<Integer, Map<String, String>> rowsMatchingAll = FestData.rowsMatchingAll(criteria);
+  // System.out.println("Search Results:");
+  // for (Integer key : rowsMatchingAll.keySet()) {
+  // System.out.println(key + ":" + rowsMatchingAll.get(key));
+  // }
+  // }
 
   // An item in the ListView of sets is clicked
   @Override
@@ -479,8 +480,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   @Override
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
-    setIntent(intent);// must store the new intent unless getIntent() will
-    // return the old one
+    LogController.LIFECYCLE_ACTIVITY.logMessage("CoachellerActivity.onNewIntent() called");
+    setIntent(intent);// must store the new intent unless getIntent() will return the old one
     checkForExtraData();
   }
 
