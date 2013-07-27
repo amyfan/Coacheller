@@ -1,4 +1,4 @@
-package com.ratethisfest.android;
+package com.ratethisfest.android.alert;
 
 import java.util.ArrayList;
 import java.util.Comparator;

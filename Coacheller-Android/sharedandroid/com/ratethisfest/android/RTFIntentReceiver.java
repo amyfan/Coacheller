@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.coacheller.CoachellerApplication;
+import com.ratethisfest.android.alert.Alert;
 import com.ratethisfest.android.log.LogController;
 
 public class RTFIntentReceiver extends BroadcastReceiver {

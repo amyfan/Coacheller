@@ -7,13 +7,16 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.DateTimeUtils;
+import com.ratethisfest.shared.FestivalEnum;
 
 public class CoachSetListAdapter extends CustomSetListAdapter {
 
@@ -26,10 +29,12 @@ public class CoachSetListAdapter extends CustomSetListAdapter {
     public TextView myRating;
     public TextView myComment1;
     public TextView myComment2;
+    public ImageView alertImage;
   }
 
-  public CoachSetListAdapter(Context context, String timeFieldName, String stageFieldName,
-      JSONArrayHashMap myRatings_JAHM) {
+  public CoachSetListAdapter(Context context, CoachellerApplication application, String timeFieldName,
+      String stageFieldName, JSONArrayHashMap myRatings_JAHM) {
+    this.application = application;
     setContext(context);
     setTimeFieldName(timeFieldName);
     setStageFieldName(stageFieldName);
@@ -43,8 +48,7 @@ public class CoachSetListAdapter extends CustomSetListAdapter {
     View rowView = convertView;
 
     if (rowView == null) {
-      LayoutInflater inflater = (LayoutInflater) _context
-          .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      LayoutInflater inflater = (LayoutInflater) _context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       rowView = inflater.inflate(R.layout.row_set_info, parent, false);
       ViewHolder viewHolder = new ViewHolder();
       viewHolder.textTime = (TextView) rowView.findViewById(R.id.text_set_time);
@@ -55,6 +59,7 @@ public class CoachSetListAdapter extends CustomSetListAdapter {
       viewHolder.myRating = (TextView) rowView.findViewById(R.id.text_my_rating);
       viewHolder.myComment1 = (TextView) rowView.findViewById(R.id.text_note1);
       viewHolder.myComment2 = (TextView) rowView.findViewById(R.id.text_note2);
+      viewHolder.alertImage = (ImageView) rowView.findViewById(R.id.image_alert_scheduled);
       rowView.setTag(viewHolder);
     }
 
@@ -65,14 +70,13 @@ public class CoachSetListAdapter extends CustomSetListAdapter {
     try {
 
       ViewHolder holder = (ViewHolder) rowView.getTag();
-      
-      
-      //Crash sometimes happens here in test mode
-      //Suspect problem related to race condition exposed with no-latency test data
-      //believed to be fixed with null check in haveData() function
-      //LogController.SET_DATA.logMessage("_sortMap field:"+ _sortMap);
-      JSONObject setObj = _sortMap.getSortedJSONObj(position);  
-      
+
+      // Crash sometimes happens here in test mode
+      // Suspect problem related to race condition exposed with no-latency test data
+      // believed to be fixed with null check in haveData() function
+      // LogController.SET_DATA.logMessage("_sortMap field:"+ _sortMap);
+      JSONObject setObj = _sortMap.getSortedJSONObj(position);
+
       String setId = setObj.getString(AndroidConstants.JSON_KEY_SETS__SET_ID); // Get
       // the set Id
 
@@ -150,14 +154,22 @@ public class CoachSetListAdapter extends CustomSetListAdapter {
         holder.myComment2.setVisibility(View.VISIBLE);
       }
 
-      // Gnarly debug thing
-      // CoachellerApplication.debug(_context,"Artist["+
-      // holder.textArtist.getText() +"] Rating["+ score1 +"/"+ score2);
+      FestivalEnum currentFest = this.application.getFestival();
+      int queriedWeek = this.application.getWeekToQuery();
+      boolean alertExistsForThisSet = this.application.getAlertManager().alertExistsForSet(currentFest, setObj,
+          queriedWeek);
+
+      if (alertExistsForThisSet) {
+        holder.alertImage.setVisibility(View.VISIBLE);
+      } else {
+        holder.alertImage.setVisibility(View.GONE);
+      }
 
     } catch (JSONException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
+    // Finished drawing on the row view
 
     return rowView;
   }

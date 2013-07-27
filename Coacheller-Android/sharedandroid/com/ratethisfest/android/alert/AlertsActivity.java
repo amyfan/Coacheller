@@ -1,11 +1,13 @@
-package com.ratethisfest.android.ui;
+package com.ratethisfest.android.alert;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map.Entry;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,11 +23,9 @@ import android.widget.RadioButton;
 
 import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
-import com.ratethisfest.android.Alert;
-import com.ratethisfest.android.AlertListAdapter;
-import com.ratethisfest.android.AlertManager;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.log.LogController;
+import com.ratethisfest.android.ui.CoachellerActivity;
 
 public class AlertsActivity extends Activity implements OnItemClickListener, OnClickListener {
 
@@ -201,18 +201,48 @@ public class AlertsActivity extends Activity implements OnItemClickListener, OnC
   }
 
   private void clickedButtonCancelAllAlerts() {
-    try {
-      this.application.getAlertManager().removeAllAlerts();
-    } catch (FileNotFoundException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+    if (this.application.getAlertManager().getAlerts().keySet().isEmpty()) {
+      return; // Return if no alerts
     }
 
-    this.redrawEverything();
+    showYesNoDialog();
 
+  }
+
+  private void showYesNoDialog() {
+    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+
+      public AlertsActivity myActivity;
+
+      @Override
+      public void onClick(DialogInterface dialog, int which) {
+        switch (which) {
+        case DialogInterface.BUTTON_POSITIVE:
+          // Yes button was clicked
+          try {
+            AlertsActivity.this.application.getAlertManager().removeAllAlerts();
+          } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+
+          AlertsActivity.this.redrawEverything();
+          break;
+
+        case DialogInterface.BUTTON_NEGATIVE:
+          // No button was clicked
+          break;
+        }
+      }
+    };
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle("Cancel all Alerts");
+    builder.setMessage("This will cancel all of your alerts.  Are you sure?")
+        .setPositiveButton("Yes", dialogClickListener).setNegativeButton("No", dialogClickListener).show();
   }
 
   private void redrawEverything() {

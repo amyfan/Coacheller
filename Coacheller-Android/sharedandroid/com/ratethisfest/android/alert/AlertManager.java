@@ -1,4 +1,4 @@
-package com.ratethisfest.android;
+package com.ratethisfest.android.alert;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,6 +19,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 
+import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.shared.FestivalEnum;
 

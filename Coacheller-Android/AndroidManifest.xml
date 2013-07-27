@@ -13,6 +13,8 @@
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:name="com.coacheller.CoachellerApplication"
@@ -56,13 +58,13 @@
         </receiver>
 
         <activity
-            android:name="com.ratethisfest.android.ui.AlertsActivity"
+            android:name="com.ratethisfest.android.alert.AlertsActivity"
             android:label="@string/title_activity_alerts" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.coacheller.ui.CoachellerActivity" />
         </activity>
-        <activity android:name="com.ratethisfest.android.AlertAlarmActivity"></activity>
+        <activity android:name="com.ratethisfest.android.alert.AlertAlarmActivity"></activity>
     </application>
 
 </manifest>

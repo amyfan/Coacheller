@@ -15,12 +15,12 @@ import android.app.Application;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import com.ratethisfest.android.AlertManager;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.CalendarUtils;
 import com.ratethisfest.android.ServiceUtils;
 import com.ratethisfest.android.StorageManager;
+import com.ratethisfest.android.alert.AlertManager;
 import com.ratethisfest.android.auth.AppControllerInt;
 import com.ratethisfest.android.auth.AuthActivityInt;
 import com.ratethisfest.android.auth.AuthModel;
@@ -202,9 +202,7 @@ public class CoachellerApplication extends Application implements AppControllerI
   }
 
   private FestivalEnum getTestFestival() {
-    for (int i = 0; i < 5; i++) {
-      LogController.ERROR.logMessage("TEST MODE - TEST MODE - TEST MODE - TEST MODE - TEST MODE - TEST MODE");
-    }
+    FestivalEnum.TESTFEST.printTestMessage();
     return FestivalEnum.TESTFEST;
   }
 

@@ -41,11 +41,12 @@ import android.widget.Toast;
 
 import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
-import com.ratethisfest.android.Alert;
 import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.CalendarUtils;
 import com.ratethisfest.android.ServiceUtils;
+import com.ratethisfest.android.alert.Alert;
+import com.ratethisfest.android.alert.AlertsActivity;
 import com.ratethisfest.android.auth.AuthActivityInt;
 import com.ratethisfest.android.auth.AuthModel;
 import com.ratethisfest.android.data.CoachSetListAdapter;
@@ -89,7 +90,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   // private int _ratingSelectedWeek;
 
   private Handler _networkIOHandler;
-  private CoachellerApplication _appController;
+  private CoachellerApplication _application;
 
   /** Called by Android Framework when the activity is first created. */
 
@@ -98,8 +99,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     super.onCreate(savedInstanceState);
 
     LogController.LIFECYCLE_ACTIVITY.logMessage("CoachellerActivity Launched: " + this);
-    _appController = (CoachellerApplication) getApplication();
-    _appController.registerCoachellerActivity(CoachellerActivity.this);
+    _application = (CoachellerApplication) getApplication();
+    _application.registerCoachellerActivity(CoachellerActivity.this);
 
     sortMode = AndroidConstants.SORT_TIME;
 
@@ -119,8 +120,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     _ratingSelectedValueToId.put("5", R.id.radio_button_score5);
 
     setContentView(R.layout.sets_list);
-    setListAdapter = new CoachSetListAdapter(this, AndroidConstants.JSON_KEY_SETS__TIME_ONE,
-        AndroidConstants.JSON_KEY_SETS__STAGE_ONE, _appController.getUserRatingsJAHM());
+    setListAdapter = new CoachSetListAdapter(this, _application, AndroidConstants.JSON_KEY_SETS__TIME_ONE,
+        AndroidConstants.JSON_KEY_SETS__STAGE_ONE, _application.getUserRatingsJAHM());
     setListAdapter.setData(new JSONArray());
 
     ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
@@ -131,21 +132,21 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     buttonSearchSets.setOnClickListener(this);
 
     Spinner spinnerSortType = (Spinner) findViewById(R.id.spinner_sort_by);
-    String[] searchTypeStringArray = _appController.getResources().getStringArray(R.array.search_types);
+    String[] searchTypeStringArray = _application.getResources().getStringArray(R.array.search_types);
     AndroidUtils.populateSpinnerWithArray(spinnerSortType, android.R.layout.simple_spinner_item, searchTypeStringArray,
         android.R.layout.simple_spinner_dropdown_item);
     spinnerSortType.setOnItemSelectedListener(this);
 
     try {
-      _appController.getAlertManager().loadAlerts();
+      _application.getAlertManager().loadAlerts();
     } catch (StreamCorruptedException e) {
-      _appController.getAlertManager().exceptionLoadingAlerts(e);
+      _application.getAlertManager().exceptionLoadingAlerts(e);
     } catch (FileNotFoundException e) {
-      _appController.getAlertManager().exceptionLoadingAlerts(e);
+      _application.getAlertManager().exceptionLoadingAlerts(e);
     } catch (IOException e) {
-      _appController.getAlertManager().exceptionLoadingAlerts(e);
+      _application.getAlertManager().exceptionLoadingAlerts(e);
     } catch (ClassNotFoundException e) {
-      _appController.getAlertManager().exceptionLoadingAlerts(e);
+      _application.getAlertManager().exceptionLoadingAlerts(e);
     }
 
     // Above here is stuff to be done once
@@ -165,7 +166,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
           LogController.LIFECYCLE_THREAD.logMessage("Executing submit rating thread callback ");
 
           try {
-            _appController.doSubmitRating(lastRating);
+            _application.doSubmitRating(lastRating);
 
             // Don't need since we are refreshing
             // ListView viewSetsList = (ListView)
@@ -204,9 +205,9 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     LogController.OTHER.logMessage("CoachellerActivity setting search suggestion of year[" + year + "] week[" + week
         + "] day[" + day + "]");
-    _appController.setYearToQuery(Integer.valueOf(year));
-    _appController.setDayToQuery(day);
-    _appController.setWeekToQuery(Integer.valueOf(week));
+    _application.setYearToQuery(Integer.valueOf(year));
+    _application.setDayToQuery(day);
+    _application.setWeekToQuery(Integer.valueOf(week));
     refreshData();
   }
 
@@ -215,7 +216,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   public void onResume() {
     super.onResume();
     LogController.LIFECYCLE_ACTIVITY.logMessage(this + " onResume");
-    _appController.setLastAuthActivity(this);
+    _application.setLastAuthActivity(this);
 
     // TODO: We'll reenable this if we have something significant to say in the beginning
     // if (_appController.isDataFirstUse()) {
@@ -272,16 +273,16 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   @Override
   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
     this.lastSetSelected = (JSONObject) setListAdapter.getItem(position);
-    final int festivalMaxNumberOfWeeks = CalendarUtils.getFestivalMaxNumberOfWeeks(_appController.getFestival());
+    final int festivalMaxNumberOfWeeks = CalendarUtils.getFestivalMaxNumberOfWeeks(_application.getFestival());
 
     try {// TODO Hard coded strings means you are going to hell
       String setId = lastSetSelected.getString(AndroidConstants.JSON_KEY_SETS__SET_ID);
-      JSONObject lastRatingWeek1 = _appController.getUserRatingsJAHM().getJSONObject(setId, "1");
+      JSONObject lastRatingWeek1 = _application.getUserRatingsJAHM().getJSONObject(setId, "1");
       lastRatingPair.first = lastRatingWeek1;
 
       JSONObject lastRatingWeek2 = null;
       if (festivalMaxNumberOfWeeks == 2) {
-        lastRatingWeek2 = _appController.getUserRatingsJAHM().getJSONObject(setId, "2");
+        lastRatingWeek2 = _application.getUserRatingsJAHM().getJSONObject(setId, "2");
         lastRatingPair.second = lastRatingWeek2;
       }
 
@@ -297,8 +298,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     boolean lastSelectedSetInFuture = false;
     try {
       // Issue here with weekToQuery returning 0;
-      lastSelectedSetInFuture = CalendarUtils.isSetInTheFuture(lastSetSelected, _appController.getWeekToQuery(),
-          _appController.getFestival());
+      lastSelectedSetInFuture = CalendarUtils.isSetInTheFuture(lastSetSelected, _application.getWeekToQuery(),
+          _application.getFestival());
     } catch (JSONException e) {
       LogController.ERROR.logMessage("CoachellerActivity - JSONException calling CalendarUtils.isSetInTheFuture");
       e.printStackTrace();
@@ -309,7 +310,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       // Set in the future, Ask to set alarm
       showDialog(AndroidConstants.DIALOG_ALERTS);
 
-    } else if (!_appController.getIsLoggedIn()) {
+    } else if (!_application.getIsLoggedIn()) {
       // Set not in the future, user not logged in
       _beginSigninProcess(); // Get the user logged in, cannot rate any sets right now
 
@@ -349,7 +350,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     case R.id.menu_item_email_me:
       LogController.USER_ACTION_UI.logMessage("Menu button 'email me' pressed");
 
-      if (!_appController.getIsLoggedIn()) {
+      if (!_application.getIsLoggedIn()) {
         Toast.makeText(this, "Try rating at least one set first", 15).show();
       } else {
         try {
@@ -363,7 +364,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     case R.id.menu_item_delete_email:
       LogController.USER_ACTION_UI.logMessage("Menu button 'delete email' pressed");
-      _appController.clearLoginData();
+      _application.clearLoginData();
       refreshData();
       return true;
 
@@ -443,27 +444,27 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
       case AuthConstants.INTENT_CHOOSE_LOGIN_TYPE:
         Bundle results = data.getExtras();
-        _appController.processLoginData(results);
+        _application.processLoginData(results);
         break;
 
       case AuthConstants.INTENT_FACEBOOK_LOGIN: {
         // Assuming it is Facebook
         LogController.LIFECYCLE_ACTIVITY.logMessage("onActivityResult called by Facebook API");
         // Required by Facebook API
-        _appController.getAuthModel().getFacebookObject().authorizeCallback(requestCode, resultCode, data);
+        _application.getAuthModel().getFacebookObject().authorizeCallback(requestCode, resultCode, data);
         break;
       }
 
       case AuthConstants.INTENT_TWITTER_LOGIN: {
         // Assuming it is Facebook
         LogController.LIFECYCLE_ACTIVITY.logMessage("onActivityResult called by Twitter API");
-        _appController.getAuthModel().twitterAuthCallback(requestCode, resultCode, data);
+        _application.getAuthModel().twitterAuthCallback(requestCode, resultCode, data);
         break;
       }
 
       default:
-        _appController.showErrorDialog("Unexpected Response",
-            "An unexpected response was received from another window", infoMessage);
+        _application.showErrorDialog("Unexpected Response", "An unexpected response was received from another window",
+            infoMessage);
 
         break;
       }
@@ -619,15 +620,15 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   }
 
   private void prepareDialogAlerts() {
-    final FestivalEnum fest = _appController.getFestival();
+    final FestivalEnum fest = _application.getFestival();
     final RadioButton radioNearNumbers = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
     final RadioButton radioWithText = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
     final EditText numberBox = (EditText) dialogAlerts.findViewById(R.id.numberBox);
 
     Alert existingAlert = null;
     try {
-      existingAlert = _appController.getAlertManager().getAlertForSet(fest, lastSetSelected,
-          _appController.getWeekToQuery());
+      existingAlert = _application.getAlertManager().getAlertForSet(fest, lastSetSelected,
+          _application.getWeekToQuery());
     } catch (JSONException e) {
       LogController.ERROR.logMessage(e.getClass().getSimpleName() + " parsing selected set ID for modifying alerts");
       e.printStackTrace();
@@ -666,7 +667,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       e.printStackTrace();
     }
 
-    int weeksOver = CalendarUtils.getlastFestWeekExpired(_appController.getFestival());
+    int weeksOver = CalendarUtils.getlastFestWeekExpired(_application.getFestival());
 
     RadioGroup weekGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_week);
     RadioButton buttonWeek1 = (RadioButton) dialogRate.findViewById(R.id.radio_button_week1);
@@ -695,7 +696,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     // TODO pick user's last rating
     onCheckedChanged(weekGroup, idChanged);
 
-    if (_appController.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)) {
+    if (_application.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)) {
       ImageButton buttonFB = (ImageButton) dialogRate.findViewById(R.id.button_go_fb);
       buttonFB.setImageResource(R.drawable.post_facebook_large);
       System.out.println(buttonFB.getPaddingTop() + " " + buttonFB.getPaddingLeft() + " " + buttonFB.getPaddingBottom()
@@ -704,14 +705,14 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     }
 
-    if (_appController.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
+    if (_application.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
       ImageButton buttonTweet = (ImageButton) dialogRate.findViewById(R.id.button_go_tweet);
       buttonTweet.setImageResource(R.drawable.post_twitter_large);
       buttonTweet.setPadding(7, 3, 7, 10);
     }
 
-    if (_appController.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)
-        && _appController.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
+    if (_application.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)
+        && _application.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
 
       Button buttonRateAbove = (Button) dialogRate.findViewById(R.id.button_go_rate_above);
       buttonRateAbove.setVisibility(View.VISIBLE);
@@ -723,10 +724,10 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   private void prepareDialogGetEmail() {
     EditText emailField = (EditText) dialogEmail.findViewById(R.id.textField_enterEmail);
-    if (_appController.getLoginData().emailAddress == null) {
+    if (_application.getLoginData().emailAddress == null) {
       emailField.setText("");
     } else {
-      emailField.setText(_appController.getLoginData().emailAddress);
+      emailField.setText(_application.getLoginData().emailAddress);
       emailField.selectAll();
       emailField.requestFocus();
     }
@@ -802,8 +803,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     final RadioButton radioNearNumbers = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
     final RadioButton radioWithText = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
     final EditText numberBox = (EditText) dialogAlerts.findViewById(R.id.numberBox);
-    final int weekToQuery = _appController.getWeekToQuery();
-    final FestivalEnum fest = _appController.getFestival();
+    final int weekToQuery = _application.getWeekToQuery();
+    final FestivalEnum fest = _application.getFestival();
 
     if (viewClicked.getId() == R.id.button_ok) {
       LogController.USER_ACTION_UI.logMessage("Alert Dialog - OK Clicked");
@@ -812,7 +813,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
         // Create or update an alert
         try {
           Integer minutesBefore = Integer.parseInt(numberBox.getText().toString());
-          _appController.getAlertManager().addAlertForSet(fest, lastSetSelected, weekToQuery, minutesBefore);
+          _application.getAlertManager().addAlertForSet(fest, lastSetSelected, weekToQuery, minutesBefore);
 
         } catch (JSONException e) {
           LogController.ERROR.logMessage("CoachellerActivity: Error adding/updating alert: " + e.getClass());
@@ -828,7 +829,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       } else if (radioWithText.isChecked()) {
         // User intends to cancel alert
         try {
-          _appController.getAlertManager().removeAlertForSet(fest, lastSetSelected, weekToQuery);
+          _application.getAlertManager().removeAlertForSet(fest, lastSetSelected, weekToQuery);
         } catch (FileNotFoundException e) {
           LogController.ERROR.logMessage("CoachellerActivity: Error cancelling alert: " + e.getClass());
           e.printStackTrace();
@@ -872,9 +873,9 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       invalidEmail.show();
 
     } else { // Email is valid. Save email and email ratings
-      _appController.setLoginEmail(email);
+      _application.setLoginEmail(email);
 
-      if (!_appController.saveData()) {
+      if (!_application.saveData()) {
         showDialog(AndroidConstants.DIALOG_NETWORK_ERROR);
       }
 
@@ -885,7 +886,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
         List<NameValuePair> parameterList = new ArrayList<NameValuePair>();
 
-        LoginData loginData = _appController.getLoginData();
+        LoginData loginData = _application.getLoginData();
 
         parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_EMAIL, email));
         parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TYPE, loginData.loginType + ""));
@@ -904,7 +905,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   }
 
   private void clickDialogFirstUseButtonOK() {
-    _appController.setDataFirstUse(false);
+    _application.setDataFirstUse(false);
     // TODO _storageManager.save();
     dialogFirstUse.dismiss();
     _showClickToRate(); // display 'tap set to rate it' toast
@@ -927,12 +928,12 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     }
     rateDialogSubmitRating();
 
-    _appController.getAuthModel().ensurePermission(AuthModel.PERMISSION_TWITTER_TWEET);
+    _application.getAuthModel().ensurePermission(AuthModel.PERMISSION_TWITTER_TWEET);
 
     _queuedTwitterPost = _buildSocialNetworkPost();
 
     // https://api.twitter.com/1/statuses
-    if (_appController.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
+    if (_application.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
       System.out.println("Twitter Auth available now, posting immediately");
       doTwitterPost();
     } else {
@@ -948,10 +949,10 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       return;
     }
     rateDialogSubmitRating();
-    _appController.getAuthModel().ensurePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL);
+    _application.getAuthModel().ensurePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL);
 
     _queuedFacebookPost = _buildSocialNetworkPost();
-    if (_appController.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)) {
+    if (_application.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)) {
       System.out.println("FB Auth available now, posting immediately");
       doFacebookPost();
     } else {
@@ -975,27 +976,27 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     LogController.OTHER.logMessage("Data Refresh is complete");
     _lastRefresh = System.currentTimeMillis();
 
-    if (!_appController.saveData()) {
+    if (!_application.saveData()) {
       showDialog(AndroidConstants.DIALOG_NETWORK_ERROR);
     }
   }
 
   public void refreshData() {
-    if (_appController.getWeekToQuery() == 1) {
+    if (_application.getWeekToQuery() == 1) {
       setListAdapter.setTimeFieldName(AndroidConstants.JSON_KEY_SETS__TIME_ONE);
       setListAdapter.setStageFieldName(AndroidConstants.JSON_KEY_SETS__STAGE_ONE);
-    } else if (_appController.getWeekToQuery() == 2) {
+    } else if (_application.getWeekToQuery() == 2) {
       setListAdapter.setTimeFieldName(AndroidConstants.JSON_KEY_SETS__TIME_TWO);
       setListAdapter.setStageFieldName(AndroidConstants.JSON_KEY_SETS__STAGE_TWO);
     }
 
     TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
     // TODO: add year
-    titleView.setText(_appController.getYearToQuery() + " - " + _appController.getDayToQuery() + ", Weekend "
-        + _appController.getWeekToQuery());
+    titleView.setText(_application.getYearToQuery() + " - " + _application.getDayToQuery() + ", Weekend "
+        + _application.getWeekToQuery());
     // +" "+ weekString);
 
-    _appController.refreshDataFromStorage();
+    _application.refreshDataFromStorage();
 
     launchGetDataThread(); // TODO multithread this
   }
@@ -1089,7 +1090,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       @Override
       public void run() {
         try {
-          setListAdapter.setData(_appController.getDataFromServer());
+          setListAdapter.setData(_application.getDataFromServer());
         } catch (JSONException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
@@ -1107,7 +1108,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       @Override
       public void run() {
         try {
-          setListAdapter.setData(_appController.getDataFromServer());
+          setListAdapter.setData(_application.getDataFromServer());
         } catch (JSONException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
@@ -1130,12 +1131,12 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       return;
     }
 
-    if (!_appController.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
+    if (!_application.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
       System.out.println("Warning: trying to post without Twitter permissions");
     }
 
     // use _queuedFacebookPost
-    String result = _appController.getAuthModel().tweetToTwitter(_queuedTwitterPost);
+    String result = _application.getAuthModel().tweetToTwitter(_queuedTwitterPost);
     System.out.println("Twitter result:");
     System.out.println(result);
     _queuedTwitterPost = null;
@@ -1147,12 +1148,12 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       return;
     }
 
-    if (!_appController.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)) {
+    if (!_application.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)) {
       System.out.println("Warning: trying to post without facebook permissions");
     }
 
     // use _queuedFacebookPost
-    String result = _appController.getAuthModel().postToFacebookWall(_queuedFacebookPost);
+    String result = _application.getAuthModel().postToFacebookWall(_queuedFacebookPost);
     System.out.println("Facebook result:");
     System.out.println(result);
     _queuedFacebookPost = null;

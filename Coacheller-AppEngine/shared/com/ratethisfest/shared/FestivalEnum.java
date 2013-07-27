@@ -2,12 +2,15 @@ package com.ratethisfest.shared;
 
 import java.util.EnumSet;
 
+import com.ratethisfest.android.log.LogController;
+
 public enum FestivalEnum {
   COACHELLA("Coachella", HttpConstants.readCommentgetCoachellerServerUrlReadComment()), LOLLAPALOOZA("Lollapalooza",
       HttpConstants.SERVER_URL_LOLLAPALOOZER), TESTFEST("TestFest", HttpConstants.SERVER_URL_TEST);
 
   private String value; // Fest Name
   private String serverURL;
+  private boolean testMessagePrinted = false; // not meant to be persistent
 
   // private int numberOfWeeks;
 
@@ -59,5 +62,15 @@ public enum FestivalEnum {
       }
     }
     throw new IllegalArgumentException("Cannot be parsed into an enum element : '" + value + "'");
+  }
+
+  public void printTestMessage() {
+    if (!testMessagePrinted) {
+      for (int i = 0; i < 5; i++) {
+        LogController.ERROR.logMessage("TEST MODE - TEST MODE - TEST MODE - TEST MODE - TEST MODE - TEST MODE");
+      }
+      this.testMessagePrinted = true;
+    }
+
   }
 }
