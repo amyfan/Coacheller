@@ -202,7 +202,7 @@ public class CoachellerApplication extends Application implements AppControllerI
   }
 
   private FestivalEnum getTestFestival() {
-    FestivalEnum.TESTFEST.printTestMessage();
+    FestivalEnum.TESTFEST.announceTestMessage();
     return FestivalEnum.TESTFEST;
   }
 

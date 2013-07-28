@@ -85,7 +85,7 @@ public class AlertManager implements AlertListAdapterDataSource {
 
   private String computeHashKey(FestivalEnum fest, int setID, int week) {
     String hashKey = fest.getName() + "-" + setID + "-" + week;
-    LogController.ALERTS.logMessage("Computed Hash Key: " + hashKey);
+    // LogController.ALERTS.logMessage("Computed Hash Key: " + hashKey);
     return hashKey;
   }
 

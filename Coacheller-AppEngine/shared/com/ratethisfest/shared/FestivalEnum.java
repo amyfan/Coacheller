@@ -64,7 +64,7 @@ public enum FestivalEnum {
     throw new IllegalArgumentException("Cannot be parsed into an enum element : '" + value + "'");
   }
 
-  public void printTestMessage() {
+  public void announceTestMessage() {
     if (!testMessagePrinted) {
       for (int i = 0; i < 5; i++) {
         LogController.ERROR.logMessage("TEST MODE - TEST MODE - TEST MODE - TEST MODE - TEST MODE - TEST MODE");
@@ -73,4 +73,5 @@ public enum FestivalEnum {
     }
 
   }
+
 }

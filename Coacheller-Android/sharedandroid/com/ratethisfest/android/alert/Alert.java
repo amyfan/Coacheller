@@ -136,7 +136,7 @@ public class Alert implements Serializable {
   /** @category Intent */
   private PendingIntent buildPendingIntent(Context context, Bundle extras) {
     String alertMsg = "Go see " + this.getArtist() + " at " + this.getStage() + " for the set at "
-        + this.getSetTimeAsString() + " starting in " + this.getTextIntervalUntilSet();
+        + this.getSetTimeAsString() + " starting in " + this.minutesBeforeSetTime + " minute(s)";
 
     Intent intent = new Intent(context, RTFIntentReceiver.class);
     intent.setAction(ACTION_ALERT);

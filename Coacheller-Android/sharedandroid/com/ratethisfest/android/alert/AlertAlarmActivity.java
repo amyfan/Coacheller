@@ -137,7 +137,7 @@ public class AlertAlarmActivity extends Activity implements OnClickListener {
       externalActionsStop();
       finish();
       Intent intent = new Intent(this, CoachellerActivity.class);
-      intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
       startActivity(intent);
 
     } else if (viewClicked == findViewById(R.id.rightSmallButton)) {
@@ -153,8 +153,8 @@ public class AlertAlarmActivity extends Activity implements OnClickListener {
 
     // This Intent already has the extras we want, just change the target class
     intent.setClass(context, AlertAlarmActivity.class);
-    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // Asks to use a new task
+    intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK); // Supplement to NEW_TASK that asks to ALWAYS use a new task
 
     // scheduledIntent.putExtras(intent.getExtras()); // Put extras from other intent into this intent
     context.startActivity(intent);
