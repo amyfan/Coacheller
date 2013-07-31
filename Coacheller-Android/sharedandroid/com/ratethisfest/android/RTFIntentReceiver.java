@@ -55,6 +55,7 @@ public class RTFIntentReceiver extends BroadcastReceiver {
 
     CoachellerApplication appContext = (CoachellerApplication) context.getApplicationContext();
     appContext.getAlertManager().alertWentOff(hashKey, context, intent);
+    appContext.redrawSetList();
   }
 
   private void handleBootAction(Context context, Intent intent) {

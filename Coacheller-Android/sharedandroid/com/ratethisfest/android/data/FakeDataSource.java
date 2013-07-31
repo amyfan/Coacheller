@@ -6,8 +6,8 @@ import org.apache.http.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import com.ratethisfest.android.CalendarUtils;
 import com.ratethisfest.android.log.LogController;
+import com.ratethisfest.data.CalendarUtils;
 import com.ratethisfest.shared.HttpConstants;
 
 public class FakeDataSource {

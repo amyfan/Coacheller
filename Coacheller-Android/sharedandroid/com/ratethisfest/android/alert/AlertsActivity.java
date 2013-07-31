@@ -23,9 +23,9 @@ import android.widget.RadioButton;
 
 import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
-import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.android.ui.CoachellerActivity;
+import com.ratethisfest.data.AndroidConstants;
 
 public class AlertsActivity extends Activity implements OnItemClickListener, OnClickListener {
 

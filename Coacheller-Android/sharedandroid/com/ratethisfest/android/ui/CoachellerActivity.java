@@ -41,19 +41,18 @@ import android.widget.Toast;
 
 import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
-import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.AndroidUtils;
-import com.ratethisfest.android.CalendarUtils;
 import com.ratethisfest.android.ServiceUtils;
 import com.ratethisfest.android.alert.Alert;
 import com.ratethisfest.android.alert.AlertsActivity;
-import com.ratethisfest.android.auth.AuthActivityInt;
 import com.ratethisfest.android.auth.AuthModel;
 import com.ratethisfest.android.data.CoachSetListAdapter;
 import com.ratethisfest.android.data.CustomPair;
 import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.android.data.SocialNetworkPost;
 import com.ratethisfest.android.log.LogController;
+import com.ratethisfest.data.AndroidConstants;
+import com.ratethisfest.data.CalendarUtils;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.FestivalEnum;
 import com.ratethisfest.shared.FieldVerifier;
@@ -64,7 +63,7 @@ import com.ratethisfest.shared.HttpConstants;
  * 
  */
 public class CoachellerActivity extends Activity implements View.OnClickListener, OnItemSelectedListener,
-    OnItemClickListener, OnCheckedChangeListener, AuthActivityInt {
+    OnItemClickListener, OnCheckedChangeListener {
 
   private static final int REFRESH_INTERVAL__SECONDS = 15;
 
@@ -216,7 +215,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
   public void onResume() {
     super.onResume();
     LogController.LIFECYCLE_ACTIVITY.logMessage(this + " onResume");
-    _application.setLastAuthActivity(this);
+    _application.setLastActivity(this);
 
     // TODO: We'll reenable this if we have something significant to say in the beginning
     // if (_appController.isDataFirstUse()) {
@@ -962,7 +961,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     dialogRate.dismiss();
   }
 
-  protected void redrawUI() {
+  public void redrawUI() {
     try {
       setListAdapter.resortSetList(sortMode);
     } catch (JSONException e) {
@@ -1125,7 +1124,6 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
   private SocialNetworkPost _queuedFacebookPost;
 
-  @Override
   public synchronized void doTwitterPost() {
     if (_queuedTwitterPost == null) {
       return;
@@ -1142,7 +1140,6 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     _queuedTwitterPost = null;
   }
 
-  @Override
   public synchronized void doFacebookPost() {
     if (_queuedFacebookPost == null) {
       return;
@@ -1159,12 +1156,6 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     _queuedFacebookPost = null;
   }
 
-  @Override
-  public void modelChanged() {
-    // Something is wrong with this...
-  }
-
-  @Override
   public Activity getLastActivity() {
     return this;
   }

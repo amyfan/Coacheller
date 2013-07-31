@@ -96,7 +96,7 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
     super.onResume();
 
     CoachellerApplication app = (CoachellerApplication) getApplication();
-    app.setLastAuthActivity(this);
+    app.setLastActivity(this);
 
     AuthProviderInt currentProvider = _app.getAuthModel().getCurrentAuthProvider();
     if (currentProvider != null) {
@@ -118,14 +118,13 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
 
     if (_app.getAuthModel().isLoggedInPrimary()) {
       result = RESULT_OK;
-      returnIntent.putExtra(AuthConstants.INTENT_EXTRA_LOGIN_TYPE, _app.getAuthModel()
-          .getCurrentAuthProviderType());
+      returnIntent.putExtra(AuthConstants.INTENT_EXTRA_LOGIN_TYPE, _app.getAuthModel().getCurrentAuthProviderType());
 
-      returnIntent.putExtra(AuthConstants.INTENT_EXTRA_ACCOUNT_IDENTIFIER, _app.getAuthModel()
-          .getCurrentAuthProvider().getVerifiedAccountIdentifier());
+      returnIntent.putExtra(AuthConstants.INTENT_EXTRA_ACCOUNT_IDENTIFIER, _app.getAuthModel().getCurrentAuthProvider()
+          .getVerifiedAccountIdentifier());
 
-      returnIntent.putExtra(AuthConstants.INTENT_EXTRA_LOGIN_TOKEN, _app.getAuthModel()
-          .getCurrentAuthProvider().getAuthToken());
+      returnIntent.putExtra(AuthConstants.INTENT_EXTRA_LOGIN_TOKEN, _app.getAuthModel().getCurrentAuthProvider()
+          .getAuthToken());
 
     } else {
       result = RESULT_CANCELED;
@@ -184,8 +183,8 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
 
-    String infoMessage = "ChooseLoginActivity.onActivityResult(requestCode=[" + requestCode
-        + "], resultCode=[" + resultCode + "] with data: " + data;
+    String infoMessage = "ChooseLoginActivity.onActivityResult(requestCode=[" + requestCode + "], resultCode=["
+        + resultCode + "] with data: " + data;
     LogController.LIFECYCLE_ACTIVITY.logMessage(infoMessage);
 
     LogController.LIFECYCLE_ACTIVITY.logMessage("");
@@ -204,8 +203,8 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
       break;
     }
     default:
-      _app.showErrorDialog("Unexpected Response",
-          "An unexpected response was received from another window", infoMessage);
+      _app.showErrorDialog("Unexpected Response", "An unexpected response was received from another window",
+          infoMessage);
 
       break;
     }
@@ -227,19 +226,16 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
       _app.getAuthModel().primaryLogin(AuthConstants.LOGIN_TYPE_FACEBOOK);
     }
 
-    if (buttonClickedName.equals(this.getResources().getResourceEntryName(
-        R.id.btn_login_facebook_browser))) {
+    if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_facebook_browser))) {
       _app.getAuthModel().primaryLogin(AuthConstants.LOGIN_TYPE_FACEBOOK_BROWSER);
     }
 
-    if (buttonClickedName.equals(this.getResources().getResourceEntryName(
-        R.id.btn_invalidate_tokens))) {
+    if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_invalidate_tokens))) {
       _app.getAuthModel().invalidateTokens();
       _updateUI();
     }
 
-    if (buttonClickedName.equals(this.getResources()
-        .getResourceEntryName(R.id.btn_dismiss_activity))) {
+    if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_dismiss_activity))) {
       _returnToMainActivity();
     }
   }
@@ -256,11 +252,10 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
           return false;
         }
 
-        if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
-            && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {// Left Swipe
+        if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {// Left Swipe
           _loginStatusText.setText(_loginStatusText.getText() + "L");
-        } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
-            && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {// Right Swipe
+        } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {// Right
+                                                                                                                  // Swipe
           _loginStatusText.setText(_loginStatusText.getText() + "R");
         }
 
@@ -277,17 +272,6 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
     }
   }
 
-  @Override
-  public synchronized void doTwitterPost() {
-    LogController.OTHER.logMessage("WARNING: ChooseLoginActivity Empty interface method has been called");
-  }
-
-  @Override
-  public synchronized void doFacebookPost() {
-    LogController.OTHER.logMessage("WARNING: ChooseLoginActivity Empty interface method has been called");
-  }
-
-  @Override
   public void modelChanged() {
     // Run method in main UI thread
     View v = findViewById(android.R.id.content);
@@ -303,6 +287,5 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
   public Activity getLastActivity() {
     return this;
   }
-
 
 }

@@ -14,8 +14,8 @@ import android.widget.Toast;
 import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
 import com.ratethisfest.android.AndroidUtils;
-import com.ratethisfest.android.CalendarUtils;
 import com.ratethisfest.android.log.LogController;
+import com.ratethisfest.data.CalendarUtils;
 import com.ratethisfest.data.FestData;
 
 public class SearchSetsActivity extends Activity implements OnClickListener {

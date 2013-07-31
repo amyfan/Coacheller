@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.coacheller.CoachellerApplication;
 import com.coacheller.R;
-import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.log.LogController;
+import com.ratethisfest.data.AndroidConstants;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.DateTimeUtils;
 import com.ratethisfest.shared.FestivalEnum;

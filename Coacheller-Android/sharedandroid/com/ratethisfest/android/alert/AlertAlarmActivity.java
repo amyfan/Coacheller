@@ -31,29 +31,39 @@ public class AlertAlarmActivity extends Activity implements OnClickListener {
 
   private Vibrator vibrator;
   private KeyguardLock keyguardLock;
-  private PowerManager.WakeLock wakeLock;
+  private static PowerManager.WakeLock wakeLock;
   private MediaPlayer mediaPlayer;
+  private long timeActionsStarted;
+  private static final long MIN_ALERT_TIME_MILLIS = 500; // externalActionsStop exception
 
   /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
+    LogController.LIFECYCLE_ACTIVITY.logMessage("AlertAlarmActivity: onCreate()");
     setupUI();
 
   }
 
   @Override
   protected void onPause() {
-    // TODO Auto-generated method stub
     super.onPause();
+    LogController.LIFECYCLE_ACTIVITY.logMessage("AlertAlarmActivity: onPause()");
     externalActionsStop();
   }
 
   @Override
   protected void onStart() {
     super.onStart();
+    LogController.LIFECYCLE_ACTIVITY.logMessage("AlertAlarmActivity: onStart()");
     externalActionsStart();
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    LogController.LIFECYCLE_ACTIVITY.logMessage("AlertAlarmActivity: onResume()");
+    // externalActionsStart();
   }
 
   private void setupUI() {
@@ -90,25 +100,37 @@ public class AlertAlarmActivity extends Activity implements OnClickListener {
   }
 
   private void externalActionsStart() {
-    vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-    // Start without a delay // Vibrate for x milliseconds // Sleep for y milliseconds
-    long[] pattern = { 0, 200, 1000 };
-    this.vibrator.vibrate(pattern, 0); // The '0' here means to repeat indefinitely '-1' would play the vibration once
+    LogController.ALERTS.logMessage("AlertAlarmActivity: externalActionsStart()");
+    this.timeActionsStarted = System.currentTimeMillis();
+    // Wake lock should be first
+    // must be done before intent is sent or device could sleep
+    // PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+    // this.wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "tag");
+    // this.wakeLock.acquire();
 
     KeyguardManager myKeyGuard = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
     this.keyguardLock = myKeyGuard.newKeyguardLock("tagName");
     this.keyguardLock.disableKeyguard();
 
-    PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-    this.wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "tag");
-    this.wakeLock.acquire();
+    vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+    // Start without a delay // Vibrate for x milliseconds // Sleep for y milliseconds
+    long[] pattern = { 0, 200, 1000 };
+    this.vibrator.vibrate(pattern, 0); // The '0' here means to repeat indefinitely '-1' would play the vibration once
 
     this.mediaPlayer = MediaPlayer.create(this, Settings.System.DEFAULT_ALARM_ALERT_URI);
     this.mediaPlayer.setLooping(true);
     this.mediaPlayer.start();
+
   }
 
+  // Android sends onPause within 100ms of onStart+onResume for some reason, need to guard against that
   private void externalActionsStop() {
+    LogController.ALERTS.logMessage("AlertAlarmActivity: externalActionsStop()");
+    long timeActionsRunning = System.currentTimeMillis() - this.timeActionsStarted;
+    if (timeActionsRunning < MIN_ALERT_TIME_MILLIS) {
+      return;
+    }
+
     // Things to do when activity is dismissed
 
     // FIGURE OUT HOW TO USE CLEANUP OBJECT
@@ -149,6 +171,11 @@ public class AlertAlarmActivity extends Activity implements OnClickListener {
 
   // This static method can be called to bring up the Alarm dialog.
   public static void launch(Context context, Intent intent) {
+    // Wake lock must be acquired now, other wake lock will be lost after BroadcastReceiver.onReceive() returns
+    PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+    wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "tag");
+    wakeLock.acquire();
+
     // Intent scheduledIntent = new Intent(context, AlertAlarmActivity.class);
 
     // This Intent already has the extras we want, just change the target class

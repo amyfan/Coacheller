@@ -69,7 +69,7 @@ public class TwitterAuthProvider implements AuthProviderInt {
   public void login() {
     LogController.AUTH_TWITTER.logMessage("Acquiring Twitter permissions");
     String authReqTokenUrl = _oAuthProvider.getRequestTokenUrl();
-    Activity lastAuthActivity = _model.getLastAuthActivity().getLastActivity();
+    Activity lastAuthActivity = _model.getLastAuthActivity();
 
     Intent twitterAuthIntent = new Intent(lastAuthActivity, TwitterAuthWebpageActivity.class);
     twitterAuthIntent.putExtra(AuthConstants.INTENT_EXTRA_AUTH_URL, authReqTokenUrl);

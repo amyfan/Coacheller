@@ -15,10 +15,10 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.coacheller.R;
-import com.ratethisfest.android.AndroidConstants;
-import com.ratethisfest.android.CalendarUtils;
 import com.ratethisfest.android.RTFIntentReceiver;
 import com.ratethisfest.android.log.LogController;
+import com.ratethisfest.data.AndroidConstants;
+import com.ratethisfest.data.CalendarUtils;
 import com.ratethisfest.shared.DateTimeUtils;
 import com.ratethisfest.shared.FestivalEnum;
 

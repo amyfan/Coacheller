@@ -19,8 +19,9 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 
-import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.log.LogController;
+import com.ratethisfest.data.AndroidConstants;
+import com.ratethisfest.data.CalendarUtils;
 import com.ratethisfest.shared.FestivalEnum;
 
 public class AlertManager implements AlertListAdapterDataSource {
@@ -164,8 +165,9 @@ public class AlertManager implements AlertListAdapterDataSource {
     Alert nextAlert = findNextAlert();
     String nextAlertDescription = "";
     if (nextAlert != null) {
+      String minutesBeforeIntervalDescription = CalendarUtils.formatInterval(nextAlert.getMinutesBeforeSet() * 1000);
       nextAlertDescription = nextAlert.getHashKey() + " " + nextAlert.getArtist() + " at "
-          + nextAlert.getDayDateAsString() + " " + nextAlert.getSetDateTime();
+          + nextAlert.getDayDateAsString() + " " + nextAlert.getSetDateTime() + "- " + minutesBeforeIntervalDescription;
     }
 
     String previousAlertDescription = "";

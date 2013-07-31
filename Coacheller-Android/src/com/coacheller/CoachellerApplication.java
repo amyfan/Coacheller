@@ -10,19 +10,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import com.ratethisfest.android.AndroidConstants;
 import com.ratethisfest.android.AndroidUtils;
-import com.ratethisfest.android.CalendarUtils;
 import com.ratethisfest.android.ServiceUtils;
 import com.ratethisfest.android.StorageManager;
 import com.ratethisfest.android.alert.AlertManager;
 import com.ratethisfest.android.auth.AppControllerInt;
-import com.ratethisfest.android.auth.AuthActivityInt;
 import com.ratethisfest.android.auth.AuthModel;
 import com.ratethisfest.android.data.FakeDataSource;
 import com.ratethisfest.android.data.JSONArrayHashMap;
@@ -31,6 +29,8 @@ import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.android.ui.ChooseLoginActivity;
 import com.ratethisfest.android.ui.CoachellerActivity;
 import com.ratethisfest.android.ui.SearchSetsActivity;
+import com.ratethisfest.data.AndroidConstants;
+import com.ratethisfest.data.CalendarUtils;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.FestivalEnum;
 import com.ratethisfest.shared.HttpConstants;
@@ -163,13 +163,16 @@ public class CoachellerApplication extends Application implements AppControllerI
     return authModel;
   }
 
-  public void setLastAuthActivity(AuthActivityInt lastActivity) {
-    authModel.setLastAuthActivity(lastActivity);
+  public void setLastActivity(Activity lastActivity) {
+    if (lastActivity instanceof ChooseLoginActivity) {
+      authModel.setLastActivity((ChooseLoginActivity) lastActivity);
+    }
   }
 
-  public AuthActivityInt getLastAuthActivity() {
-    return authModel.getLastAuthActivity();
-  }
+  // Not used
+  // public AuthActivityInt getLastAuthActivity() {
+  // return authModel.getLastAuthActivity();
+  // }
 
   public String getDayToQuery() {
     return queryDay;
@@ -427,7 +430,7 @@ public class CoachellerApplication extends Application implements AppControllerI
     String errorString = problem + "\r\n\r\nDetails:\r\n" + details;
     System.out.println(errorString);
 
-    AlertDialog.Builder builder = new AlertDialog.Builder(authModel.getLastAuthActivity().getLastActivity());
+    AlertDialog.Builder builder = new AlertDialog.Builder(authModel.getLastAuthActivity());
     builder.setTitle(title);
     builder.setMessage(errorString).setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener() {
       @Override
@@ -449,6 +452,12 @@ public class CoachellerApplication extends Application implements AppControllerI
 
   public AlertManager getAlertManager() {
     return this.alertManager;
+  }
+
+  public void redrawSetList() {
+    if (this.activityCoacheller != null) {
+      this.activityCoacheller.redrawUI();
+    }
   }
 
 }

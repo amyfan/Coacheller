@@ -8,7 +8,7 @@ import android.database.DataSetObserver;
 import android.widget.ListAdapter;
 
 import com.coacheller.CoachellerApplication;
-import com.ratethisfest.android.AndroidConstants;
+import com.ratethisfest.data.AndroidConstants;
 
 public abstract class CustomSetListAdapter implements ListAdapter {
 
