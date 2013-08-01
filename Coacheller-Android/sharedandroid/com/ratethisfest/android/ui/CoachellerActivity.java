@@ -640,13 +640,14 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     Integer alertReminderTime = AndroidConstants.ALERT_DEFAULT_REMINDERTIME;
     if (existingAlert != null) {
+      this.dialogAlerts.setTitle("Edit Alert for This Set");
       // -> Prepare dialog 1) Edit current alert (minutes before set) 2) Cancel existing alert
-      // FIX: Make second radio choice visible
       radioWithText.setVisibility(View.VISIBLE);
       radioWithText.setText("Cancel this alert");
       // get the number of minutes value on this alert and populate the number box
       alertReminderTime = existingAlert.getMinutesBeforeSet(); // Override default for existing alert
     } else {
+      this.dialogAlerts.setTitle("This Set is Happening Later");
       radioWithText.setVisibility(View.INVISIBLE);
     }
     numberBox.setText(alertReminderTime + "");

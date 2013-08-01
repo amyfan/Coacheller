@@ -78,7 +78,6 @@ public class AlertAlarmActivity extends Activity implements OnClickListener {
 
       if (key.equals(DIALOG_TITLE)) {
         TextView textView = (TextView) findViewById(R.id.textDialogTitle);
-        // textView.setText(value);
         this.setTitle(value);
       } else if (key.equals(DIALOG_MESSAGE)) {
         TextView textView = (TextView) findViewById(R.id.textDialogMessage);

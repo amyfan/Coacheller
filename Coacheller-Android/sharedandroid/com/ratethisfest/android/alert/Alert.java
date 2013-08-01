@@ -143,7 +143,7 @@ public class Alert implements Serializable {
     // intent.putExtra(REMINDER_BUNDLE, extras); // Dont think we need this
     intent.putExtra(HASH_KEY, getHashKey());
 
-    intent.putExtra(AlertAlarmActivity.DIALOG_TITLE, context.getString(R.string.app_name));
+    intent.putExtra(AlertAlarmActivity.DIALOG_TITLE, context.getString(R.string.app_name) + " Reminder");
     intent.putExtra(AlertAlarmActivity.DIALOG_MESSAGE, alertMsg);
     intent.putExtra(AlertAlarmActivity.LEFT_BUTTON_TEXT, "Show Schedule");
     intent.putExtra(AlertAlarmActivity.RIGHT_BUTTON_TEXT, "Dismiss");
