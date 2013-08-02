@@ -16,6 +16,7 @@ import android.app.Application;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import com.lollapaloozer.R;
 import com.ratethisfest.android.AndroidLogCatLogger;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.ServiceUtils;

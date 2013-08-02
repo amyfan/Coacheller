@@ -14,7 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.coacheller.R;
+import com.lollapaloozer.R;
 import com.ratethisfest.android.RTFIntentReceiver;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.data.AndroidConstants;

@@ -22,7 +22,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 
 import com.coacheller.CoachellerApplication;
-import com.coacheller.R;
+import com.lollapaloozer.R;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.android.ui.CoachellerActivity;
 import com.ratethisfest.data.AndroidConstants;

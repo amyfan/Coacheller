@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.coacheller.CoachellerApplication;
-import com.coacheller.R;
+import com.lollapaloozer.R;
 import com.ratethisfest.android.auth.AuthActivityInt;
 import com.ratethisfest.android.auth.AuthProviderInt;
 import com.ratethisfest.android.log.LogController;

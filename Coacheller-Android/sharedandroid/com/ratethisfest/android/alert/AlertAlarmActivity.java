@@ -15,7 +15,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.coacheller.R;
+import com.lollapaloozer.R;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.android.ui.CoachellerActivity;
 

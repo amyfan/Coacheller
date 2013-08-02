@@ -40,7 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.coacheller.CoachellerApplication;
-import com.coacheller.R;
+import com.lollapaloozer.R;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.ServiceUtils;
 import com.ratethisfest.android.alert.Alert;

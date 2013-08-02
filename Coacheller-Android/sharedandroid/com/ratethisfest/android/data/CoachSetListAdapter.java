@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.coacheller.CoachellerApplication;
-import com.coacheller.R;
+import com.lollapaloozer.R;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.data.AndroidConstants;
 import com.ratethisfest.shared.AuthConstants;

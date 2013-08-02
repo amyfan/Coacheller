@@ -10,7 +10,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
-import com.coacheller.R;
+import com.lollapaloozer.R;
 import com.ratethisfest.shared.AuthConstants;
 
 public class TwitterAuthWebpageActivity extends Activity {

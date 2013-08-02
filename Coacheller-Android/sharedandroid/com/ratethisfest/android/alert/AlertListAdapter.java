@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
-import com.coacheller.R;
+import com.lollapaloozer.R;
 import com.ratethisfest.android.log.LogController;
 
 public class AlertListAdapter implements ListAdapter {

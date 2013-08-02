@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.coacheller"
-    android:versionCode="6"
+    package="com.lollapaloozer"
+    android:versionCode="14"
     android:versionName="2.0" >
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,7 +19,6 @@
 
     <application
         android:name="com.coacheller.CoachellerApplication"
-        android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <uses-library android:name="com.google.android.maps" />
