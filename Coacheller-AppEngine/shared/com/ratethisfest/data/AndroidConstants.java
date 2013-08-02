@@ -1,4 +1,4 @@
-package com.ratethisfest.android;
+package com.ratethisfest.data;
 
 public class AndroidConstants {
   public static final String SORT_TIME = "time";

@@ -1,0 +1,50 @@
+Lollapalooza,2013,Sunday,1300,Bud Light,Palma Violets
+Lollapalooza,2013,Sunday,1430,Bud Light,Alex Clare
+Lollapalooza,2013,Sunday,1630,Bud Light,Two Door Cinema Club
+Lollapalooza,2013,Sunday,1830,Bud Light,Vampire Weekend
+Lollapalooza,2013,Sunday,2030,Bud Light,Phoenix
+Lollapalooza,2013,Sunday,1215,Petrillo,Yawn
+Lollapalooza,2013,Sunday,1345,Petrillo,Jake Bugg
+Lollapalooza,2013,Sunday,1530,Petrillo,Baroness
+Lollapalooza,2013,Sunday,1730,Petrillo,The Vaccines
+Lollapalooza,2013,Sunday,1945,Petrillo,RVSB
+Lollapalooza,2013,Sunday,1200,The Grove,Rivals Of The Peacemaker
+Lollapalooza,2013,Sunday,1300,The Grove,The Orwells
+Lollapalooza,2013,Sunday,1415,The Grove,Skaters
+Lollapalooza,2013,Sunday,1530,The Grove,MS MR
+Lollapalooza,2013,Sunday,1645,The Grove,Wavves
+Lollapalooza,2013,Sunday,1800,The Grove,DIIV
+Lollapalooza,2013,Sunday,1915,The Grove,2 Chainz
+Lollapalooza,2013,Sunday,2045,The Grove,Cat Power
+Lollapalooza,2013,Sunday,1200,BMI,O' Brother
+Lollapalooza,2013,Sunday,1310,BMI,Makeshift Prodigy
+Lollapalooza,2013,Sunday,1410,BMI,Nightmare & the Cat
+Lollapalooza,2013,Sunday,1520,BMI,The Mowgli's
+Lollapalooza,2013,Sunday,1630,BMI,Machines Are People Too
+Lollapalooza,2013,Sunday,1740,BMI,Bear Mountain
+Lollapalooza,2013,Sunday,1850,BMI,Half Moon Run
+Lollapalooza,2013,Sunday,1130,Kidzapalooza,School Of Rock
+Lollapalooza,2013,Sunday,1230,Kidzapalooza,The Q Brothers
+Lollapalooza,2013,Sunday,1330,Kidzapalooza,Ralph's World
+Lollapalooza,2013,Sunday,1430,Kidzapalooza,School Of Rock
+Lollapalooza,2013,Sunday,1515,Kidzapalooza,Peter DiStefano & Tor
+Lollapalooza,2013,Sunday,1545,Kidzapalooza,Special Guest
+Lollapalooza,2013,Sunday,1605,Kidzapalooza,The Blisters
+Lollapalooza,2013,Sunday,1200,Perry's,Stratus
+Lollapalooza,2013,Sunday,1300,Perry's,Alvin Risk
+Lollapalooza,2013,Sunday,1400,Perry's,Angel Haze
+Lollapalooza,2013,Sunday,1515,Perry's,Kill the Noise
+Lollapalooza,2013,Sunday,1630,Perry's,Art Department
+Lollapalooza,2013,Sunday,1745,Perry's,Dog Blood
+Lollapalooza,2013,Sunday,1900,Perry's,Major Lazer
+Lollapalooza,2013,Sunday,2045,Perry's,Knife Party
+Lollapalooza,2013,Sunday,1200,Lake Shore,Guards
+Lollapalooza,2013,Sunday,1330,Lake Shore,Wild Belle
+Lollapalooza,2013,Sunday,1500,Lake Shore,Lianne La Havas
+Lollapalooza,2013,Sunday,1700,Lake Shore,Alt-J
+Lollapalooza,2013,Sunday,1900,Lake Shore,Beach House
+Lollapalooza,2013,Sunday,1245,Red Bull Sound Select,Astro
+Lollapalooza,2013,Sunday,1415,Red Bull Sound Select,Wild Nothing
+Lollapalooza,2013,Sunday,1600,Red Bull Sound Select,Tegan and Sara
+Lollapalooza,2013,Sunday,1800,Red Bull Sound Select,Grizzly Bear
+Lollapalooza,2013,Sunday,2000,Red Bull Sound Select,The Cure

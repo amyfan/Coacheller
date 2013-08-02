@@ -1,4 +1,4 @@
-package com.ratethisfest.android;
+package com.ratethisfest.data;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,14 +12,11 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Application;
-
 import com.ratethisfest.android.log.LogController;
-import com.ratethisfest.data.FestData;
 import com.ratethisfest.shared.FestivalEnum;
 
-public class CalendarUtils extends Application {
-  //public static HashMap<Integer, String> days;  //Not used?
+public class CalendarUtils {
+  // public static HashMap<Integer, String> days; //Not used?
 
   /** @category TimeNow */
   // Return the current time as 3 or 4 digits in 24-hour format
@@ -38,14 +35,13 @@ public class CalendarUtils extends Application {
     Calendar cal = Calendar.getInstance();
     return cal.get(Calendar.DAY_OF_WEEK);
   }
-  
+
   /** @category TimeNow */
   public static int currentDayOfMonth() {
     Calendar cal = Calendar.getInstance();
     return cal.get(Calendar.DAY_OF_MONTH);
   }
 
-  
   /** @category TimeNow */
   // App and Database use strings in English so this time it is better to do it
   // this way:
@@ -55,7 +51,11 @@ public class CalendarUtils extends Application {
   }
 
   public static String getDayName(int dayInt) {
-    return DaysHashMap.DayJavaCalendarToString(dayInt);
+    int dayToLookup = dayInt;
+    if (dayInt == 8) {
+      dayToLookup -= 7;
+    }
+    return DaysHashMap.DayJavaCalendarToString(dayToLookup);
   }
 
   /** @category TimeNow */
@@ -75,46 +75,44 @@ public class CalendarUtils extends Application {
     return cal.getTime();
   }
 
-  
-  
   // Use this when suggesting a day to search on and the user's preference is not yet known.
   // If a day of the "suggested" fest week has the same name as today, pick that day
   // Otherwise, pick the first day of the "suggested" fest week
   public static String suggestDayToQueryString(FestivalEnum fest) {
     HashMap<String, String> criteria = new HashMap<String, String>();
     criteria.put(FestData.FEST_NAME, fest.getName());
-    criteria.put(FestData.FEST_YEAR, currentYear()+"");
-    criteria.put(FestData.FEST_WEEK, suggestWeekToQuery(fest)+"");
-    
+    criteria.put(FestData.FEST_YEAR, currentYear() + "");
+    criteria.put(FestData.FEST_WEEK, suggestWeekToQuery(fest) + "");
+
     Map<Integer, Map<String, String>> rowsMatchingAll = FestData.rowsMatchingAll(criteria);
 
     Iterator<Map<String, String>> rowIterator = rowsMatchingAll.values().iterator();
-    
+
     ArrayList<Integer> days = new ArrayList<Integer>();
     while (rowIterator.hasNext()) {
-        Map<String, String> latestRowFound = rowIterator.next();
-        String dayName = latestRowFound.get(FestData.FEST_DAYNAME);
-        int dayInt = DaysHashMap.DayStringToJavaCalendar(dayName);
-        days.add(dayInt);
-        
-        if (currentDayOfWeek() == dayInt) {
-          return getDayName(dayInt);
-        }
+      Map<String, String> latestRowFound = rowIterator.next();
+      String dayName = latestRowFound.get(FestData.FEST_DAYNAME);
+      int dayInt = DaysHashMap.DayStringToJavaCalendar(dayName);
+      days.add(dayInt);
+
+      if (currentDayOfWeek() == dayInt) {
+        return getDayName(dayInt);
+      }
     }
-    
-    //Today does not match any of the days queried from the fest week
+
+    // Today does not match any of the days queried from the fest week
     Collections.sort(days);
     Integer firstDay = days.get(0);
     if (firstDay == null) {
       return getDayName(Calendar.SUNDAY);
     }
-    
+
     return getDayName(firstDay);
   }
 
-  //Before fest starts, return 1
-  //During fest, returns the current fest week
-  //After fest, returns the last fest week
+  // Before fest starts, return 1
+  // During fest, returns the current fest week
+  // After fest, returns the last fest week
   public static int suggestWeekToQuery(FestivalEnum fest) {
     final int maximumWeeks = getFestivalMaxNumberOfWeeks(fest);
     final int lastWeekExpired = getlastFestWeekExpired(fest);
@@ -351,7 +349,7 @@ public class CalendarUtils extends Application {
   public static String padStringZero(String input, int numChars) {
     return String.format("%" + numChars + "s", input).replace(" ", "0");
   }
-  
+
   /** @category String formatting */
   public static String formatInterval(final long l) {
     long longTimeMillis = Math.abs(l);

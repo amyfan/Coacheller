@@ -1,4 +1,4 @@
-package com.ratethisfest.android;
+package com.ratethisfest.data;
 
 import java.util.Calendar;
 import java.util.HashMap;

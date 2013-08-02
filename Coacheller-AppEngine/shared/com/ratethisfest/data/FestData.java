@@ -14,8 +14,6 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Maps;
-import com.ratethisfest.android.CalendarUtils;
-import com.ratethisfest.android.DaysHashMap;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.shared.FestivalEnum;
 
@@ -273,6 +271,12 @@ public enum FestData {
       Map<String, String> latestRowFound = rowIterator.next();
       String festDayString = latestRowFound.get(FestData.FEST_DAYNAME);
       int festDayInt = DaysHashMap.DayStringToJavaCalendar(festDayString);
+
+      // If day is Sunday, add 7 so it gets sorted to after saturday
+      if (festDayInt == Calendar.SUNDAY) {
+        festDayInt += 7;
+      }
+
       if (!days.contains(festDayInt)) {
         days.add(festDayInt);
       }

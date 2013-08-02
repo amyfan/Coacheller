@@ -2,13 +2,11 @@
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
   <application>ratethisfest</application>
   <version>1</version>
+  <threadsafe>true</threadsafe>
+  
+  <!-- Hopefully will fix generation of ID's above max Integer value -->
+  <auto-id-policy>legacy</auto-id-policy>
 
-  <!--
-    By default, App Engine sends requests serially to a given web server.
-    To allow App Engine to send multiple requests in parallel specify:
-
-      <threadsafe>true</threadsafe>
-  -->
 
   <!-- Configure serving/caching of GWT files -->
   <static-files>

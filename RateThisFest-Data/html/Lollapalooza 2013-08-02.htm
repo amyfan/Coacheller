@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head><script type="text/javascript">var NREUMQ=NREUMQ||[];NREUMQ.push(["mark","firstbyte",new Date().getTime()]);</script>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Lollapalooza 2013</title>
+  <meta name="title" content="Lollapalooza 2013" />
+  <meta name="description" content="See who's playing Lollapalooza 2013, which of your friends are going, and pick your own favorites." />
+  
+  <link rel="shortcut icon" href="http://s3.amazonaws.com/dostuff-production/property_assets/698/Lolla_favicon_16x16.jpg" type="image/x-icon" />
+  
+  <link rel="image_src" href="http://s3.amazonaws.com/dostuff-production/property_assets/700/Lolla_favicon_75x75.jpg" />
+  
+  
+  <script src="http://t.dostuffmedia.com/livejs.js?poe=1072" type="text/javascript"></script>
+          
+    <script>var ds_lang = "en";</script>
+    
+        <script src="http://s3.amazonaws.com/dostuff-production/code_asset/107/javascript_20130222190237.js?1361559757" type="text/javascript"></script>
+<link href="http://s3.amazonaws.com/dostuff-production/code_asset/106/layout_css_20120808141531.css?1344435331" media="screen" rel="stylesheet" type="text/css" />
+<link href="http://s3.amazonaws.com/dostuff-production/code_asset/2331/compiled/compiled_ca_custom_sass_20130514133044.css?1368538244" media="screen" rel="stylesheet" type="text/css" />
+    <link href="http://s3.amazonaws.com/dostuff-production/code_asset/2332/ca_custom_css_20130514152929.css?1368545369" media="screen" rel="stylesheet" type="text/css" />    <script src="http://s3.amazonaws.com/dostuff-production/code_asset/2333/ca_custom_js_20130514133216.js?1368538336" type="text/javascript"></script>    
+    
+<script>
+  jQuery(document).ready(function($){
+    
+  (function(){
+  var timeout;
+  var showFacebookFriends = $('#ds-content').data('ds-hovercards-version') == 'facebook';
+
+$.fn.lineup_bubble = function() {
+  var $this = $(this);
+  // it will be called from playe callback on schedule page as well
+  // so we want to be sure that bubble is not added to ds-event-boxed
+  if ($this.hasClass('band') || $this.hasClass('ds-event-lower')) {
+    var has_bubble = $this.data('lineup-bubble-has-bubble');
+    if (!has_bubble) {
+      $this.append($('<span class="ds-text" />').text($this.text()));
+      $this.data('lineup-bubble-has-bubble', true);
+    }
+  }
+  return $this;
+}
+
+// this function is used for hovercards on festivals
+// referenced from tooltip.js.erb
+var goAwayFacebook = false;
+var add_remove_click = function(event) {
+  var $dsAddRem = $(this);
+  var isBand = event.data.isBand, triggerID;
+    for_facebook_app = $('body').hasClass('ds-facebook-app');
+  
+  if (!event.data.triggerID) {
+    triggerID = $dsAddRem.attr('band_id');
+  } else {
+    triggerID = event.data.triggerID
+  }
+
+  var toggleURL = isBand ? ['/band/', triggerID, '/fans/toggle.js'].join('') : ['/vote/', triggerID, '/toggle.js'].join('');
+  if (for_facebook_app) {
+    var tab_id = $('body').attr("ds-tab-id");
+    toggleURL = "/contest/pagetab/" + tab_id + "/toggle/" + triggerID;
+  }
+
+  if ($dsAddRem.hasClass('ds-disabled')) return false;
+
+  $dsAddRem.addClass('ds-disabled');
+
+  var params = {};
+
+  var showFacebookFriends = $('#ds-content').data('ds-hovercards-version') == 'facebook';
+  if (showFacebookFriends) {
+    params.v6 = 1;
+  } else {
+    params.v3 = 1;
+  }
+  if ( $('body').hasClass('ds-popup-v8') ) {
+    var data = isBand ? (params.v8 = 1) : (params.v8lol = 1);
+  }
+  
+    }
+
+var $metabar_add = $('#ds-metabar .ds-add-remove');
+// metabar add/remove works only with band voting now, hence the isBand: true
+$metabar_add.live('click', {isBand : true}, add_remove_click)
+
+
+$('.ds-lineup > ul > li > a, .ds-schedule .ds-event-box, ul.ds-lineup > li > em  > span > a')
+  .add('.ds-event-lower .ds-event-lower').hover(
+  function() {
+    var $this = $(this),
+        triggerID = this.id,
+        tooltipState = $this.data('ds-tooltip-state'),
+        isBand = $this.hasClass('band');
+        if (!isBand) {
+          isBand = $this.hasClass('band-image');
+        }
+        lower_tooltip = $this.hasClass('band-image') ? ' ds-tooltip-lower' : '';
+        for_facebook_app = $('body').hasClass('ds-facebook-app');
+
+            $this.lineup_bubble();
+
+    if ($this.hasClass('band-image')) {
+      $this.addClass('ds-hover-image');
+    }
+
+    $this
+      .addClass('ds-hover')
+            .parent()
+        .addClass('ds-active');
+
+    // add new tooltip if only there is no tooltip already
+    if (typeof tooltipState === 'undefined') {
+      var $tooltip = $('<span class="ds-tooltip' + lower_tooltip + '">\
+                          <span class="ds-arrow"></span>\
+                          <span class="ds-arrow-bg"></span>\
+                          <span class="ds-content"><span class="ds-tooltip-band-actions">Loading...</span></span>\
+                        </span>');
+      if (showFacebookFriends) {
+        $tooltip.addClass('ds-tooltip-fb-friends');
+      }
+      $this
+                .data('ds-tooltip-state', 'added')
+        .prepend($tooltip);
+      if ($("body").hasClass("ds-popup-v8")) {
+        adjustToolTipPosition($this, $tooltip);
+      }
+    }
+
+    if (timeout) clearTimeout(timeout);
+
+    if ($this.hasClass('no-popup')) {
+      $(this).find('.ds-tooltip, .ds-text').remove();
+    } else if (tooltipState != 'loaded' && tooltipState != 'requesting') {
+            timeout = setTimeout(function(){
+        var has_song = $this.hasClass('ds-player-show-state');
+        var loadURL = [(isBand ? "/band/" : "/event/"), triggerID, "/fpup"].join('');
+        if (for_facebook_app) { 
+          var tab_id = $('body').attr("ds-tab-id");
+          loadURL = "/contest/pagetab/" + tab_id + "/hover/" + triggerID;
+        }
+        var params = {};
+        if (has_song) {
+          params.has_song = true;
+        }
+        if (showFacebookFriends) {
+          params.version = 'fb';
+        }
+                params = $.param(params);
+        params && ( loadURL += '?' + params );
+
+        $this
+          .data('ds-tooltip-state', 'requesting')
+          .find('> .ds-tooltip > .ds-content')
+          .load(loadURL, null, function() {
+            $this.data('ds-tooltip-state', 'loaded');
+            // update ds-song status
+            if (has_song) {
+              // grab song node
+              var $ds_song = $this.find('.ds-song');
+              // read player status, gs-player change callbacks put it here
+              var player_state = $this.data('ds-player-state');
+
+              if (player_state == 'playing') {
+                $ds_song
+                  .addClass('ds-currently-playing')
+                  .removeClass('ds-currently-paused');
+              } else if (player_state == 'paused') {
+                $ds_song
+                  .addClass('ds-currently-paused')
+                  .removeClass('ds-currently-playing');
+              }
+            }
+
+            $this.find('.ds-add-remove').live('click', {isBand : isBand, triggerID: triggerID}, add_remove_click);
+          });
+      }, 400);
+    }
+
+        $this
+      .find('.ds-tooltip')
+        .bind('click', function(e){
+          e.preventDefault();
+          if ($(e.target).is('a')) {
+            location.href = e.target.href;
+          }
+        });
+
+    
+  },
+
+  function() {
+    // delete all previously created stuff
+    var $this = $(this);
+
+    $this
+      .removeClass('ds-hover')
+      .parent()
+        .removeClass('ds-active')
+    if ($this.hasClass('band-image')) {
+      $this.removeClass('ds-hover-image');
+    }
+    
+    if (timeout) clearTimeout(timeout);
+  }
+);
+})();
+        
+if ($('body').hasClass('ds-band-show-page')) {
+  var band_name = $('.ds-band-header h1').html();
+  _umbel.push({"type": "send", "name": "action.tag", "value": ["Bands", band_name]});}
+
+(function(){
+  
+    $('a.ds-band-add')
+    .bind('mousedown', function(){
+      var band_name = $('.ds-band-header h1').html();
+      _umbel.push({"type": "send", "name": "action.tag", "value": ["Engagement", "Favorite"]});    });
+  $('a.ds-add-remove')
+    .live('mousedown', function(){
+      var band_name = $(this).parents().eq(3).find('span.ds-text').html();
+      _umbel.push({"type": "send", "name": "action.tag", "value": ["Engagement", "Favorite"]});    });
+  
+    $('.band-video-player').live('mousedown', function(){
+    _umbel.push({"type": "send", "name": "action.tag", "value": ["Engagement", "YouTube"]});  });
+  
+    $('.ds-comments-submit').live('mousedown', function(){
+    _umbel.push({"type": "send", "name": "action.tag", "value": ["Engagement", "Commenter"]});  });
+  
+    $('li.ds-share-fb')
+    .find('a')
+      .bind('mousedown', function(){
+        _umbel.push({"type": "send", "name": "action.tag", "value": ["Engagement", "Share", "Facebook"]});      });
+  $('li.ds-share-tw')
+    .find('a')
+      .bind('mousedown', function(){
+        _umbel.push({"type": "send", "name": "action.tag", "value": ["Engagement", "Share", "Twitter"]});      });
+  $('li.ds-share-em')
+    .find('a')
+      .bind('mousedown', function(){
+        _umbel.push({"type": "send", "name": "action.tag", "value": ["Engagement", "Share", "Email"]});      });  
+  
+})();  
+
+(function(){
+  var page_type = 'schedule',
+    eventType = 'mousedown',
+    page_event_id = 0;
+  
+    
+    $('li.ds-share-fb')
+    .find('a')
+      .bind(eventType, function(){
+        if(typeof t_string === 'undefined'){t_string = 0;} _gaq.push(['t2._trackPageview', '/vpv/epv/f-243/' + page_type + '/page/share-facebook/local/0/' + page_event_id + '/none/0/0/' + t_string + '/']);      });
+  $('li.ds-share-tw')
+    .find('a')
+      .bind(eventType, function(){
+        if(typeof t_string === 'undefined'){t_string = 0;} _gaq.push(['t2._trackPageview', '/vpv/epv/f-243/' + page_type + '/page/share-twitter/local/0/' + page_event_id + '/none/0/0/' + t_string + '/']);      });
+  $('li.ds-share-em')
+    .find('a')
+      .bind(eventType, function(){
+        if(typeof t_string === 'undefined'){t_string = 0;} _gaq.push(['t2._trackPageview', '/vpv/epv/f-243/' + page_type + '/page/share-email/local/0/' + page_event_id + '/none/0/0/' + t_string + '/']);      });
+  $('li.ds-share-addthis')
+    .find('a')
+      .bind(eventType, function(){
+        if(typeof t_string === 'undefined'){t_string = 0;} _gaq.push(['t2._trackPageview', '/vpv/epv/f-243/' + page_type + '/page/share-addthis/local/0/' + page_event_id + '/none/0/0/' + t_string + '/']);      });
+
+    $('a.ds-band-add')
+    .bind(eventType, function(){
+      if(typeof t_string === 'undefined'){t_string = 0;} _gaq.push(['t2._trackPageview', '/vpv/epv/f-243/' + page_type + '/page/add-band/local/0/' + page_event_id + '/none/0/0/' + t_string + '/']);    });
+  $('a.ds-add-remove')
+    .live(eventType, function(){
+      var page_event_id = $(this).attr('band_id');
+      if(typeof t_string === 'undefined'){t_string = 0;} _gaq.push(['t2._trackPageview', '/vpv/epv/f-243/' + page_type + '/page/add-band-hovercard/local/0/' + page_event_id + '/none/0/0/' + t_string + '/']);    });
+  $('a.ds-song')
+    .live(eventType, function(){
+      var page_event_id = $(this).attr('band_id');
+      if(typeof t_string === 'undefined'){t_string = 0;} _gaq.push(['t2._trackPageview', '/vpv/epv/f-243/' + page_type + '/page/play-song/local/0/' + page_event_id + '/none/0/0/' + t_string + '/']);    });
+    
+    $('input.ds-comments-submit')
+    .live(eventType, function(){
+      var page_event_id = $(this).attr('band_id');
+      if(typeof t_string === 'undefined'){t_string = 0;} _gaq.push(['t2._trackPageview', '/vpv/epv/f-243/' + page_type + '/page/comment/local/0/' + page_event_id + '/none/0/0/' + t_string + '/']);    });
+
+})();
+
+
+    // current hostname 
+    var hostname_regex = new RegExp(location.hostname.split('.').slice(1).join('.'), 'i');
+    
+    $("a").each(function(){
+      /* 
+        we have to use "hostname" and not "href", because 
+        there might be our hostname in get attribute/value pairs 
+        like "http://twitter.com?status=go+to+HOSTNAME.COM"
+      */
+      if ( (!hostname_regex.test(this.hostname)) && !(this.href == "javascript:void(0);") ) {
+        $(this)
+          .addClass("external")
+          .attr("target","_blank");
+      }
+    });
+
+  });
+</script>
+    
+        <link href="http://lolp1.c3cdn.com/dostuff_fonts/fonts.css" rel="stylesheet" />
+<link href="http://s3.amazonaws.com/dostuff-production/property_assets/2915/lolla-2012-hb.css?edited=061312" rel="stylesheet" />
+<script type="text/javascript" src="http://cdn.jquerytools.org/1.2.5/all/jquery.tools.min.js"></script>    
+    
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1835828-1']);
+  _gaq.push(['_setDomainName', 'lollapalooza.com']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+      _gaq.push(['t2._setAccount', 'UA-68280-26']);
+    _gaq.push(['t2._setDomainName', 'lollapalooza.com']);
+    _gaq.push(['t2._setAllowLinker', true]);
+    _gaq.push(['t2._trackPageview']);
+    _gaq.push(['t3._setAccount', 'UA-68280-43']);
+    _gaq.push(['t3._setDomainName', 'lollapalooza.com']);
+    _gaq.push(['t3._setAllowLinker', true]);
+      (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+          <script type="text/javascript">
+          window._umbel = window._umbel || [];
+          (function() {
+            var u = document.createElement('script');
+            u.type = 'text/javascript';
+            u.async = true;
+            u.src = document.location.protocol + '//tags.api.umbel.com/fzgyjzucnipfeckf/w.js?d=' + new Date().getMonth() + '' + new Date().getDate();
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(u, s);
+          })();
+        </script>
+</head>
+
+<body
+  ds-language = "en"
+  class="ds-popup-v8 ds-not-logged-in ">
+        <div id="fb-root"></div>
+      <script>
+        window.fbAsyncInit = function() {
+                FB.init({
+        appId   : '106269092745615',
+        status  : false,
+        cookie  : true,
+        xfbml   : true,
+        oauth   : true
+      });
+
+          
+              if(window.location.pathname == "/login" || window.location.pathname == "/join"){
+      FB.Event.subscribe('auth.statusChange', function(response) {
+        if (response.status === 'connected') {
+          if (response.authResponse) {
+            sr = response.authResponse.signedRequest;
+            window.location = '/facebook/process-login?fb_sr='+sr;
+          }
+        }
+      });
+    }
+    
+
+          
+          $(document).ready( function() {
+            $('.ds-facebook-logout').click(function() {
+              FB.logout(function(response) {
+                window.location = '/logout';
+              });
+            });
+          });
+        };
+        (function(d){
+          var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
+          js = d.createElement('script'); js.id = id; js.async = true;
+          js.src = "//connect.facebook.net/en_US/all.js";
+          d.getElementsByTagName('head')[0].appendChild(js);
+        }(document));
+      </script>
+  <div id="page">
+    
+    <div id="header">
+                <div style="background: url('http://s3.amazonaws.com/dostuff-production/property_assets/4210/nav_bg_dates_2013.png');" id="topnav">
+	<div>
+		<ul class="mainnav">
+          <li class="tickets">
+            <a href="http://www.lollapalooza.com/tickets/" class="toplevel">Tickets</a>
+            <ul>
+              <li class="first"><a href="http://www.lollapalooza.com/tickets/" class="bigtop" style="font-size: 14px;">General Admission</a></li>
+              <li><a href="http://www.lollapalooza.com/tickets/vip-tickets" style="font-size: 16px;">VIP & Platinum</a></li>
+              <li><a href="http://www.cidentertainment.com/lollapalooza/2013/index.php?page=travel" target="_blank" style="font-size: 15px;">Travel Packages</a></li>
+              <li><a href=" http://lollapalooza.hotelsforhope.org/group-event?id=6747" target="_blank" style="font-size: 15px;">Book Your Hotel</a></li>
+              <li class="last"><a href="http://store.lollapalooza.com/" target="_blank" style="font-size: 18px;">Store</a></li>
+            </ul>
+          </li>
+          <li class="line-up">
+            <a href="http://lineup.lollapalooza.com/" class="toplevel">Lineup</a>
+            <ul>
+			<li class="first"><a href="http://lineup.lollapalooza.com/" class="bigtop" style="font-size: 21px;">2013 Lineup</a></li>
+			<li><a href="http://lineup.lollapalooza.com/schedule/" style="font-size: 19px;">2013 Schedule</a></li>
+			<li class="last"><a href="http://www.do312.com/lollaaftershows" target="_blank" style="font-size: 16px;">2013 Aftershows</a>
+		</ul>
+          </li>
+          <li class="experiences">
+            <a href="http://www.lollapalooza.com/experience/" class="toplevel">Experiences</a>
+            <ul>
+              <li class="first"><a href="http://www.lollapalooza.com/experience/festival-map" class="bigtop" style="font-size: 20px;">The Map</a></li>     
+              <li><a href="http://www.lollapalooza.com/experience/activities" style="font-size: 21px;">Activities</a></li>
+              <li><a href="http://www.lollapalooza.com/experience/green-street" style="font-size: 20px;">Green Street</a></li>
+              <li><a href="http://www.lollapalooza.com/experience/chow-town" style="font-size: 20px;">Chow Town</a></li>
+              <li class="last"><a href="http://www.lollapalooza.com/experience/kidzapalooza" style="font-size: 18px;">Kidzapalooza</a></li> 
+            </ul>
+            <!--ul-->
+              <!--li class="first"><a href="http://www.lollapalooza.com/experience/festival-map" class="bigtop">Festival Map</a></li-->
+              <!--li><a href="http://www.lollapalooza.com/experience/activities" style="font-size: 21px;">Activities</a></li-->
+              <!--li><a href="http://www.lollapalooza.com/experience/chow-down" style="font-size: 20px;">Chow Down</a></li-->
+              <!--li><a href="http://www.lollapalooza.com/experience/green-street" style="font-size: 20px;">Green Street</a></li-->
+              <!--li class="last"><a href="http://www.lollapalooza.com/experience/kidzapalooza">Kidzapalooza</a></li-->
+              <!--<li><a href="http://www.lollapalooza.com/experience/gallery" style="font-size: 15px;">Gallery (Best Of)</a></li>-->
+            <!--/ul-->
+          </li>
+          <li class="faqs">
+            <a href="http://www.lollapalooza.com/faqs/festival-faqs" class="toplevel">Faqs</a>
+            <ul>
+              <li class="first"><a href="http://www.lollapalooza.com/faqs/festival-faqs" class="bigtop" style="font-size: 16px;">Festival FAQs</a></li>
+              <li><a href="http://www.lollapalooza.com/tickets/faqs" style="font-size: 17px;">Ticket FAQs</a></li>
+              <li><a href="http://www.lollapalooza.com/faqs/getting-here" style="font-size: 16px;">Getting Here</a></li>
+              <li class="last"><a href="http://www.lollapalooza.com/faqs/staying-here" style="font-size: 16px;">Staying Here</a></li>
+            </ul>
+          </li>
+          <li class="connect">
+            <a href="http://www.lollapalooza.com/category/lolla-news/" class="toplevel">Connect</a>
+            <ul>
+              <li class="first"><a href="http://www.lollapalooza.com/category/lolla-news/" class="bigtop" style="font-size: 15px;">News & Updates</a></li>
+              <li><a href="http://www.lollapalooza.com/connect/e-list-sign-up" style="font-size: 16px;">E-List Sign-Up</a></li>
+              <li><a href="http://www.facebook.com/lollapalooza" target="_blank" style="font-size: 18px;">Facebook</a></li>
+              <li><a href="http://www.twitter.com/lollapalooza" target="_blank" style="font-size: 18px;">Twitter</a></li>
+              <li class="last"><a href="http://www.lollapalooza.com/news-events/artists/2012/07/13/mobile-app/" style="font-size: 18px;">Mobile App</a></li>
+            </ul>
+          </li>
+          <li class="history">
+            <a href="http://www.lollapalooza.com/history" class="toplevel">History</a>
+            <ul>
+              <li class="first"><a href="http://www.lollapalooza.com/history" class="bigtop">History</a></li>
+              <li><a href="http://lineup.lollapalooza.com/past/1991" style="font-size: 14px;">Festival Archives</a></li>
+              <li><a href="http://www.lollapalooza.com/timecapsule/" style="font-size: 16px;" target="_blank">Time Capsule</a></li>
+              <li class="last"><a href="http://www.lollapalooza.com/20th-video-series/" style="font-size: 14px;">20th Video Series</a></li>
+            </ul>
+          </li>
+        </ul>
+		<!-- .mainnav -->
+	</div>
+</div>
+<div id="logo"><a href="http://www.lollapalooza.com" onclick="_gaq.push(['_trackPageview','/vpv/tickets/vip-tickets/header-logo-to/home/']);"><img src="http://s3.amazonaws.com/dostuff-production/property_assets/2927/logo2.png" alt="Lollapaloza" /></a></div>
+		
+<div class="smallicons">
+	<div class="redbox">
+		<a href="http://www.lollapaloozabr.com/" target="_blank" title="Lollapalooza Chega ao Brasil">Lolla Brasil</a>
+		<a href="http://www.lollapaloozacl.com/" target="_blank" title="Echa un vistazo a Lollapalooza Chile">Lolla Chile</a>
+	</div>
+	<div class="icon">
+		<a href="http://www.lollapalooza.com/connect/e-list-sign-up/" target="_blank"><img src="http://s3.amazonaws.com/dostuff-production/property_assets/2928/top_mail.png" title="Sign up for our E-List"/></a>
+	</div>
+	<div class="icon">
+		<a href="http://facebook.com/lollapalooza" target="_blank"><img src="http://s3.amazonaws.com/dostuff-production/property_assets/2929/top_facebook.png" title="Go to our Facebook page"/></a>
+	</div>
+	<div class="icon twitter">
+		<a href="http://twitter.com/lollapalooza" target="_blank"><img src="http://s3.amazonaws.com/dostuff-production/property_assets/2945/top_twitter.png" title="Go to our Twitter page"/></a>
+	</div>
+	<div class="icon">
+		<a href="http://do312.com/" target="_blank"><img src="http://s3.amazonaws.com/dostuff-production/property_assets/2944/top_do.png" title="Check out other Chicago concerts at Do312.com"/></a>
+	</div>
+</div>
+
+<div id="ticket-box" class="fourtickets"><span class="tb-row tb-sold x" style="bottom:0px;" ><span class="tb-title">Souvenir</span><span class="tb-subtitle">3-Day Pass</span><span class="tb-price"><span>$</span>75</span><span class="tb-footnote">SOLD OUT</span></span><span class="tb-row tb-sold x" style="bottom:0px;" ><span class="tb-title">Early Bird</span><span class="tb-subtitle">3-Day Pass</span><span class="tb-price"><span>$</span>200</span><span class="tb-footnote">SOLD OUT</span></span><span class="tb-row tb-sold x" style="bottom:0px;" ><span class="tb-title">Regular</span><span class="tb-subtitle">3-Day Pass</span><span class="tb-price"><span>$</span>235</span><span class="tb-footnote">SOLD OUT</span></span><span class="tb-row tb-sold x" style="bottom:0px;" ><span class="tb-title">Single</span><span class="tb-subtitle">1-Day Pass</span><span class="tb-price"><span>$</span>95</span><span class="tb-footnote">SOLD OUT</span>
+</div>
+
+<h1 class="fl-zebra"><span>2013 Line-up</span><span>2013 Line-up</span><span>2013 Line-up</span></h1>
+<a class="fl-login-top" href="/login">Log In</a>
+<a class="fl-logout-top" href="/logout">Log Out</a>            <ul class="ds-login-links container-shadow">
+  
+    <li><a href="http://lineup.lollapalooza.com/login" class="blk">Log In <span class="grn">&raquo;</span></a></li>
+    <li><a href="http://lineup.lollapalooza.com/join" class="blk">Register <span class="grn">&raquo;</span></a></li>
+    <li></li>
+  
+</ul>    </div>
+    
+    <div id="ds-content-outer-wrapper">
+      <div id="ds-content-wrapper">
+        <div id="ds-content-inner-wrapper">
+          <div id="ds-content" data-ds-hovercards-version="facebook">
+            
+
+
+
+<div class="ds-header">
+  <div class="ds-arrange">
+  <h2>Days</h2>
+  <div>
+    
+          <span>Fri, Aug 2</span>
+        <span class="ds-dropdown-arrow"></span>
+    <ul>
+                    <li class="current"><a href="/events/2013/08/03/">Sat, Aug 3</a></li>
+                <li class="current"><a href="/events/2013/08/04/">Sun, Aug 4</a></li>
+        </ul>
+  </div>
+</div>
+  <div class="ds-custom-lineup">
+    <h2>Custom Schedule</h2>
+    <div class="ds-custom-lineup-friends">
+      <p>Join 53034 Lolla fans and <a href="http://lineup.lollapalooza.com/login">create your custom schedule.</a></p>
+    </div>
+    <div class="ds-create-a-lineup">
+      <a href="http://lineup.lollapalooza.com/login" class="ds-create-join ds-button" onclick="_gaq.push(['_trackEvent','create','schedule','schedule-top']);">+ Create a Schedule</a>
+    </div>
+  </div>
+  <div class="ds-share">
+  <h2>Share</h2>
+  <ul>
+    <li class="ds-share-fb">
+      <a href="http://www.facebook.com/sharer.php?u=http://lineup.lollapalooza.com/schedule?utm=2013_facebook_share_schedule" title="Post to Facebook" onclick="_gaq.push(['_trackEvent','share','facebook','schedule']);window.open(this.href,' sharer', 'toolbar=0, status=0, width=626, height=436'); return false;">Post to Facebook</a>
+    </li>
+    <li class="ds-share-tw">
+      <a href="http://twitter.com/?status=The 2013 Lolla schedule is out! http://lineup.lollapalooza.com/schedule" target="_blank" title="Post to Twitter" onclick="_gaq.push(['_trackEvent','share','twitter','schedule']);">Post to Twitter</a>
+    </li>
+    <li class="ds-share-em">
+      <a href="mailto:?subject=The 2013 Lolla schedule is out!&amp;body=http://lineup.lollapalooza.com/events/2013/08/02" title="Email your Friends" onclick="_gaq.push(['_trackEvent','share','email','schedule']);">Email your Friends</a>
+    </li>
+    <li class="ds-share-addthis">
+      
+      <script>
+      addthis_pub = '';
+      addthis_options = 'favorites, digg, delicious, reddit, live, more';
+      </script>
+      <a onclick="_gaq.push(['_trackEvent','share','addthis','schedule']); return addthis_open(this, '', '[URL]', '[TITLE]');" href="http://www.addthis.com/bookmark.php" title="Post Everywhere Else">Post Everywhere Else</a>
+    </li>
+  </ul>
+</div>
+
+  
+
+<div class="ds-icalprint">
+    <div class="ds-aprint">
+    <span class="ds-handle"><span class="ds-aprint-text">Print</span> <span class="ds-triangle">▼</span></span>
+    <div class="  ds-hidden">
+            <a href="/events/print-schedule?1375418806">Custom Schedule PDF</a>
+    </div>
+  </div>
+  <script>
+    (function($){
+      var $handle = $('.ds-aprint > .ds-handle'),
+        $printLinks = $handle.next();
+      $handle.click(function(e){
+        e.stopPropagation();
+        $printLinks.slideToggle();
+      });
+      $(document).click(function(){
+        $printLinks.slideUp();
+      });
+    })(jQuery);
+  </script>
+</div>
+</div>
+
+
+      
+
+<div class="ds-schedule ds-player day2">
+  
+    
+      
+
+<table cellspacing="0" cellpadding="0">
+  <tr class="ds-schedule-header">
+    <th class="ds-time"></th>
+          <th class="ds-venue-column-259464-20130802">
+                  Bud Light              </th>
+          <th class="ds-venue-column-259465-20130802">
+                  Petrillo              </th>
+          <th class="ds-venue-column-259466-20130802">
+                  The Grove              </th>
+          <th class="ds-venue-column-259467-20130802">
+                  BMI              </th>
+          <th class="ds-venue-column-259468-20130802">
+                  Kidzapalooza              </th>
+          <th class="ds-venue-column-259469-20130802">
+                  Perry's              </th>
+          <th class="ds-venue-column-259470-20130802">
+                  Lake Shore              </th>
+          <th class="ds-venue-column-259471-20130802">
+                  Red Bull Sound Select              </th>
+      </tr>
+  <tr>
+    <th class="ds-times">
+      <ul>
+                                              <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-100">
+            11:00</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-115">
+            11:15</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-130">
+            11:30</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-145">
+            11:45</li>
+                                                <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-200">
+            12:00</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-215">
+            12:15</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-230">
+            12:30</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-245">
+            12:45</li>
+                                                <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-300">
+            1:00</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-315">
+            1:15</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-330">
+            1:30</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-345">
+            1:45</li>
+                                                <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-400">
+            2:00</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-415">
+            2:15</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-430">
+            2:30</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-445">
+            2:45</li>
+                                                <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-500">
+            3:00</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-515">
+            3:15</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-530">
+            3:30</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-545">
+            3:45</li>
+                                                <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-600">
+            4:00</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-615">
+            4:15</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-630">
+            4:30</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-645">
+            4:45</li>
+                                                <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-700">
+            5:00</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-715">
+            5:15</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-730">
+            5:30</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-745">
+            5:45</li>
+                                                <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-800">
+            6:00</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-815">
+            6:15</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-830">
+            6:30</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-845">
+            6:45</li>
+                                                <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-900">
+            7:00</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-915">
+            7:15</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-930">
+            7:30</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-945">
+            7:45</li>
+                                                <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-1000">
+            8:00</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-1015">
+            8:15</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-1030">
+            8:30</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-1045">
+            8:45</li>
+                                                <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-1100">
+            9:00</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-1115">
+            9:15</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-1130">
+            9:30</li>
+          <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-1145">
+            9:45</li>
+                                    <li style="height: 29.0px; line-height: 29.0px;" class="ds-schedule-row-1200">10:00</li>
+              </ul>
+    </th>
+          <td class="ds-stage ds-stage1 ds-venue-column-259464-20130802">  
+        <div class="ds-bands">
+                      
+              <div class="ds-event-box    ds-event-1681769  ds-ecat-music" id="1681769" style="top:210.0px;height:89.0px;line-height:89.0px"><span class="ds-vert-align" style="height:89.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/io-echo">IO Echo</a></strong><span class="ds-time-range" style="font-size:1.0em;">12:45 - 1:30</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681770  ds-ecat-music" id="1681770" style="top:390.0px;height:119.0px;line-height:119.0px"><span class="ds-vert-align" style="height:119.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/ghost-bc-">Ghost B.C.</a></strong><span class="ds-time-range" style="font-size:1.0em;">2:15 - 3:15</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681771  ds-ecat-music" id="1681771" style="top:630.0px;height:119.0px;line-height:119.0px"><span class="ds-vert-align" style="height:119.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/band-of-horses">Band Of Horses</a></strong><span class="ds-time-range" style="font-size:1.0em;">4:15 - 5:15</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681772  ds-ecat-music" id="1681772" style="top:870.0px;height:149.0px;line-height:149.0px"><span class="ds-vert-align" style="height:149.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/queens-of-the-stone-age-">Queens Of The Stone Age</a></strong><span class="ds-time-range" style="font-size:1.0em;">6:15 - 7:30</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681773  ds-ecat-music" id="1681773" style="top:1110.0px;height:209.0px;line-height:209.0px"><span class="ds-vert-align" style="height:209.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/nine-inch-nails">Nine Inch Nails</a></strong><span class="ds-time-range" style="font-size:1.0em;">8:15 - 10:00</span></div></div>
+                              </div>
+      </td>
+          <td class="ds-stage ds-stage2 ds-venue-column-259465-20130802">  
+        <div class="ds-bands">
+                      
+              <div class="ds-event-box    ds-event-1681774  ds-ecat-music" id="1681774" style="top:120.0px;height:89.0px;line-height:89.0px"><span class="ds-vert-align" style="height:89.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:0.8em;"><a href="/band/the-neighbourhood">The Neighbourhood</a></strong><span class="ds-time-range" style="font-size:0.8em;">12:00 - 12:45</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681775  ds-ecat-music" id="1681775" style="top:300.0px;height:89.0px;line-height:89.0px"><span class="ds-vert-align" style="height:89.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/deap-vally">Deap Vally</a></strong><span class="ds-time-range" style="font-size:1.0em;">1:30 - 2:15</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681812  ds-ecat-music" id="1681812" style="top:510.0px;height:119.0px;line-height:119.0px"><span class="ds-vert-align" style="height:119.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/jessie-ware">Jessie Ware</a></strong><span class="ds-time-range" style="font-size:1.0em;">3:15 - 4:15</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681777  ds-ecat-music" id="1681777" style="top:750.0px;height:119.0px;line-height:119.0px"><span class="ds-vert-align" style="height:119.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/thievery-corporation">Thievery Corporation</a></strong><span class="ds-time-range" style="font-size:1.0em;">5:15 - 6:15</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681778  ds-ecat-music" id="1681778" style="top:1020.0px;height:89.0px;line-height:89.0px"><span class="ds-vert-align" style="height:89.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/lance-herbstrong">Lance Herbstrong</a></strong><span class="ds-time-range" style="font-size:1.0em;">7:30 - 8:15</span></div></div>
+                              </div>
+      </td>
+          <td class="ds-stage ds-stage3 ds-venue-column-259466-20130802">  
+        <div class="ds-bands">
+                      
+              <div class="ds-event-box    ds-event-1681779  ds-ecat-music" id="1681779" style="top:120.0px;height:59.0px;line-height:59.0px"><span class="ds-vert-align" style="height:59.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:0.9em;"><a href="/band/drowners-">Drowners</a></strong><span class="ds-time-range" style="font-size:0.9em;">12:00 - 12:30</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681780  ds-ecat-music" id="1681780" style="top:240.0px;height:89.0px;line-height:89.0px"><span class="ds-vert-align" style="height:89.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/san-cisco">San Cisco</a></strong><span class="ds-time-range" style="font-size:1.0em;">1:00 - 1:45</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681781  ds-ecat-music" id="1681781" style="top:390.0px;height:89.0px;line-height:89.0px"><span class="ds-vert-align" style="height:89.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/twenty-one-pilots">Twenty One Pilots</a></strong><span class="ds-time-range" style="font-size:1.0em;">2:15 - 3:00</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681782  ds-ecat-music" id="1681782" style="top:540.0px;height:89.0px;line-height:89.0px"><span class="ds-vert-align" style="height:89.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/atlas-genius">Atlas Genius</a></strong><span class="ds-time-range" style="font-size:1.0em;">3:30 - 4:15</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681783  ds-ecat-music" id="1681783" style="top:690.0px;height:89.0px;line-height:89.0px"><span class="ds-vert-align" style="height:89.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/theophilus-london">Theophilus London</a></strong><span class="ds-time-range" style="font-size:1.0em;">4:45 - 5:30</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681784  ds-ecat-music" id="1681784" style="top:840.0px;height:89.0px;line-height:89.0px"><span class="ds-vert-align" style="height:89.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/disclosure">Disclosure</a></strong><span class="ds-time-range" style="font-size:1.0em;">6:00 - 6:45</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681785  ds-ecat-music" id="1681785" style="top:990.0px;height:119.0px;line-height:119.0px"><span class="ds-vert-align" style="height:119.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/frightened-rabbit">Frightened Rabbit</a></strong><span class="ds-time-range" style="font-size:1.0em;">7:15 - 8:15</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681786  ds-ecat-music" id="1681786" style="top:1170.0px;height:119.0px;line-height:119.0px"><span class="ds-vert-align" style="height:119.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/lana-del-rey-">Lana Del Rey</a></strong><span class="ds-time-range" style="font-size:1.0em;">8:45 - 9:45</span></div></div>
+                              </div>
+      </td>
+          <td class="ds-stage ds-stage4 ds-venue-column-259467-20130802">  
+        <div class="ds-bands">
+                      
+              <div class="ds-event-box    ds-event-1681787  ds-ecat-music" id="1681787" style="top:120.0px;height:79.0px;line-height:79.0px"><span class="ds-vert-align" style="height:79.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/american-authors">American Authors</a></strong><span class="ds-time-range" style="font-size:1.0em;">12:00 - 12:40</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681788  ds-ecat-music" id="1681788" style="top:260.0px;height:79.0px;line-height:79.0px"><span class="ds-vert-align" style="height:79.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/d-pryde">D-Pryde</a></strong><span class="ds-time-range" style="font-size:1.0em;">1:10 - 1:50</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681789  ds-ecat-music" id="1681789" style="top:380.0px;height:79.0px;line-height:79.0px"><span class="ds-vert-align" style="height:79.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/brick-mortar">Brick + Mortar</a></strong><span class="ds-time-range" style="font-size:1.0em;">2:10 - 2:50</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681790  ds-ecat-music" id="1681790" style="top:520.0px;height:79.0px;line-height:79.0px"><span class="ds-vert-align" style="height:79.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/houndmouth">Houndmouth</a></strong><span class="ds-time-range" style="font-size:1.0em;">3:20 - 4:00</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681791  ds-ecat-music" id="1681791" style="top:660.0px;height:79.0px;line-height:79.0px"><span class="ds-vert-align" style="height:79.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/pacific-air">Pacific Air</a></strong><span class="ds-time-range" style="font-size:1.0em;">4:30 - 5:10</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681792  ds-ecat-music" id="1681792" style="top:800.0px;height:79.0px;line-height:79.0px"><span class="ds-vert-align" style="height:79.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/hey-marseilles">Hey Marseilles</a></strong><span class="ds-time-range" style="font-size:1.0em;">5:40 - 6:20</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681793  ds-ecat-music" id="1681793" style="top:940.0px;height:79.0px;line-height:79.0px"><span class="ds-vert-align" style="height:79.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/chance-the-rapper">Chance The Rapper</a></strong><span class="ds-time-range" style="font-size:1.0em;">6:50 - 7:30</span></div></div>
+                              </div>
+      </td>
+          <td class="ds-stage ds-stage5 ds-venue-column-259468-20130802">  
+        <div class="ds-bands">
+                      
+              <div class="ds-event-box    ds-event-1693578  ds-ecat-music" id="1693578" style="top:60.0px;height:49.0px;line-height:49.0px"><span class="ds-vert-align" style="height:49.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:0.8em;"><a href="/band/school-of-rock">School Of Rock</a></strong><span class="ds-time-range" style="font-size:0.8em;">11:30 - 11:55</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681795  ds-ecat-music" id="1681795" style="top:180.0px;height:49.0px;line-height:49.0px"><span class="ds-vert-align" style="height:49.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/ella-jenkins-">Ella Jenkins</a></strong><span class="ds-time-range" style="font-size:1.0em;">12:30 - 12:55</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681796  ds-ecat-music" id="1681796" style="top:300.0px;height:49.0px;line-height:49.0px"><span class="ds-vert-align" style="height:49.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/jambo">Jambo</a></strong><span class="ds-time-range" style="font-size:1.0em;">1:30 - 1:55</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681797  ds-ecat-music" id="1681797" style="top:420.0px;height:49.0px;line-height:49.0px"><span class="ds-vert-align" style="height:49.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/the-not-its-">The Not Its</a></strong><span class="ds-time-range" style="font-size:1.0em;">2:30 - 2:55</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681798  ds-ecat-music" id="1681798" style="top:510.0px;height:49.0px;line-height:49.0px"><span class="ds-vert-align" style="height:49.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:0.8em;"><a href="/band/q-brothers">The Q Brothers</a></strong><span class="ds-time-range" style="font-size:0.8em;">3:15 - 3:40</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1693579  ds-ecat-music" id="1693579" style="top:570.0px;height:29.0px;line-height:29.0px"><span class="ds-vert-align" style="height:29.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:0.7em;"><a href="/band/kristian-bush-">Kristian Bush</a></strong><span class="ds-time-range" style="font-size:0.7em;">3:45 - 4:00</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681794  ds-ecat-music" id="1681794" style="top:600.0px;height:59.0px;line-height:59.0px"><span class="ds-vert-align" style="height:59.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:0.8em;"><a href="/band/school-of-rock">School Of Rock</a></strong><span class="ds-time-range" style="font-size:0.8em;">4:00 - 4:30</span></div></div>
+                              </div>
+      </td>
+          <td class="ds-stage ds-stage6 ds-venue-column-259469-20130802">  
+        <div class="ds-bands">
+                      
+              <div class="ds-event-box    ds-event-1681799  ds-ecat-music" id="1681799" style="top:120.0px;height:89.0px;line-height:89.0px"><span class="ds-vert-align" style="height:89.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/brite-lite-brite">Brite Lite Brite</a></strong><span class="ds-time-range" style="font-size:1.0em;">12:00 - 12:45</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681800  ds-ecat-music" id="1681800" style="top:240.0px;height:89.0px;line-height:89.0px"><span class="ds-vert-align" style="height:89.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/keys-n-krates">Keys N Krates</a></strong><span class="ds-time-range" style="font-size:1.0em;">1:00 - 1:45</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681801  ds-ecat-music" id="1681801" style="top:360.0px;height:119.0px;line-height:119.0px"><span class="ds-vert-align" style="height:119.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/timeflies">Timeflies</a></strong><span class="ds-time-range" style="font-size:1.0em;">2:00 - 3:00</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681802  ds-ecat-music" id="1681802" style="top:510.0px;height:119.0px;line-height:119.0px"><span class="ds-vert-align" style="height:119.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/monsta">Monsta</a></strong><span class="ds-time-range" style="font-size:1.0em;">3:15 - 4:15</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681803  ds-ecat-music" id="1681803" style="top:660.0px;height:119.0px;line-height:119.0px"><span class="ds-vert-align" style="height:119.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/dillon-francis">Dillon Francis</a></strong><span class="ds-time-range" style="font-size:1.0em;">4:30 - 5:30</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681804  ds-ecat-music" id="1681804" style="top:810.0px;height:119.0px;line-height:119.0px"><span class="ds-vert-align" style="height:119.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/modestep">Modestep</a></strong><span class="ds-time-range" style="font-size:1.0em;">5:45 - 6:45</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681805  ds-ecat-music" id="1681805" style="top:960.0px;height:149.0px;line-height:149.0px"><span class="ds-vert-align" style="height:149.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/flux-pavillion">Flux Pavilion</a></strong><span class="ds-time-range" style="font-size:1.0em;">7:00 - 8:15</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681806  ds-ecat-music" id="1681806" style="top:1170.0px;height:149.0px;line-height:149.0px"><span class="ds-vert-align" style="height:149.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/steve-aoki">Steve Aoki</a></strong><span class="ds-time-range" style="font-size:1.0em;">8:45 - 10:00</span></div></div>
+                              </div>
+      </td>
+          <td class="ds-stage ds-stage7 ds-venue-column-259470-20130802">  
+        <div class="ds-bands">
+                      
+              <div class="ds-event-box    ds-event-1681807  ds-ecat-music" id="1681807" style="top:150.0px;height:89.0px;line-height:89.0px"><span class="ds-vert-align" style="height:89.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/robert-delong">Robert DeLong</a></strong><span class="ds-time-range" style="font-size:1.0em;">12:15 - 1:00</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681808  ds-ecat-music" id="1681808" style="top:330.0px;height:89.0px;line-height:89.0px"><span class="ds-vert-align" style="height:89.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/icona-pop">Icona Pop</a></strong><span class="ds-time-range" style="font-size:1.0em;">1:45 - 2:30</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681809  ds-ecat-music" id="1681809" style="top:510.0px;height:119.0px;line-height:119.0px"><span class="ds-vert-align" style="height:119.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/father-john-misty">Father John Misty</a></strong><span class="ds-time-range" style="font-size:1.0em;">3:15 - 4:15</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681810  ds-ecat-music" id="1681810" style="top:750.0px;height:119.0px;line-height:119.0px"><span class="ds-vert-align" style="height:119.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/imagine-dragons">Imagine Dragons</a></strong><span class="ds-time-range" style="font-size:1.0em;">5:15 - 6:15</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681811  ds-ecat-music" id="1681811" style="top:1010.0px;height:119.0px;line-height:119.0px"><span class="ds-vert-align" style="height:119.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/hot-chip">Hot Chip</a></strong><span class="ds-time-range" style="font-size:1.0em;">7:25 - 8:25</span></div></div>
+                              </div>
+      </td>
+          <td class="ds-stage ds-stage8 ds-venue-column-259471-20130802">  
+        <div class="ds-bands">
+                      
+              <div class="ds-event-box    ds-event-1681776  ds-ecat-music" id="1681776" style="top:240.0px;height:89.0px;line-height:89.0px"><span class="ds-vert-align" style="height:89.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/emile-sande">Emeli Sande</a></strong><span class="ds-time-range" style="font-size:1.0em;">1:00 - 1:45</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681813  ds-ecat-music" id="1681813" style="top:420.0px;height:89.0px;line-height:89.0px"><span class="ds-vert-align" style="height:89.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/smith-westerns">Smith Westerns</a></strong><span class="ds-time-range" style="font-size:1.0em;">2:30 - 3:15</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681814  ds-ecat-music" id="1681814" style="top:630.0px;height:119.0px;line-height:119.0px"><span class="ds-vert-align" style="height:119.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/crystal-castles">Crystal Castles</a></strong><span class="ds-time-range" style="font-size:1.0em;">4:15 - 5:15</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681815  ds-ecat-music" id="1681815" style="top:870.0px;height:139.0px;line-height:139.0px"><span class="ds-vert-align" style="height:139.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/new-order">New Order</a></strong><span class="ds-time-range" style="font-size:1.0em;">6:15 - 7:25</span></div></div>
+            
+              <div class="ds-event-box    ds-event-1681817  ds-ecat-music" id="1681817" style="top:1130.0px;height:189.0px;line-height:189.0px"><span class="ds-vert-align" style="height:189.0px;">&nbsp;</span><div class="ds-event-container"><strong class="ds-event-title" style="font-size:1.0em;"><a href="/band/the-killers">The Killers</a></strong><span class="ds-time-range" style="font-size:1.0em;">8:25 - 10:00</span></div></div>
+                              </div>
+      </td>
+      </tr>
+</table>
+    
+      <a name="more"></a>
+          
+<div class="ds-schedule-lower">
+            <div class="ds-stage-lower">
+        <h3>f.y.e. Autograph Schedule</h3>
+                  
+          <div class="ds-event-lower">
+            <div class="ds-event-lower-time">1:30 PM</div>
+                                          <a href="http://lineup.lollapalooza.com/band/the-neighbourhood" class="ds-event-lower " id="1890120">The Neighbourhood</a>                                    </div>
+                  
+          <div class="ds-event-lower">
+            <div class="ds-event-lower-time">2:30 PM</div>
+                                          <a href="http://lineup.lollapalooza.com/band/san-cisco" class="ds-event-lower " id="1886993">San Cisco</a>                                    </div>
+                  
+          <div class="ds-event-lower">
+            <div class="ds-event-lower-time">3:00 PM</div>
+                                          <a href="http://lineup.lollapalooza.com/band/imagine-dragons" class="ds-event-lower " id="1886995">Imagine Dragons</a>                                    </div>
+                  
+          <div class="ds-event-lower">
+            <div class="ds-event-lower-time">3:00 PM</div>
+                                          <a href="http://lineup.lollapalooza.com/band/twenty-one-pilots" class="ds-event-lower " id="1886994">Twenty One Pilots</a>                                    </div>
+                  
+          <div class="ds-event-lower">
+            <div class="ds-event-lower-time">3:30 PM</div>
+                                          <a href="http://lineup.lollapalooza.com/band/icona-pop" class="ds-event-lower " id="1886996">Icona Pop</a>                                    </div>
+                  
+          <div class="ds-event-lower">
+            <div class="ds-event-lower-time">3:45 PM</div>
+                                          <a href="http://lineup.lollapalooza.com/band/ghost-bc-" class="ds-event-lower " id="1886997">Ghost B.C.</a>                                    </div>
+                  
+          <div class="ds-event-lower">
+            <div class="ds-event-lower-time">4:45 PM</div>
+                                          <a href="http://lineup.lollapalooza.com/band/deap-vally" class="ds-event-lower " id="1886998">Deap Vally</a>                                    </div>
+                  
+          <div class="ds-event-lower">
+            <div class="ds-event-lower-time">5:00 PM</div>
+                                          <a href="http://lineup.lollapalooza.com/band/atlas-genius" class="ds-event-lower " id="1887000">Atlas Genius</a>                                    </div>
+                  
+          <div class="ds-event-lower">
+            <div class="ds-event-lower-time">5:00 PM</div>
+                                          <a href="http://lineup.lollapalooza.com/band/houndmouth" class="ds-event-lower " id="1886999">Houndmouth</a>                                    </div>
+                  
+          <div class="ds-event-lower">
+            <div class="ds-event-lower-time">5:45 PM</div>
+                                          <a href="http://lineup.lollapalooza.com/band/steve-aoki" class="ds-event-lower " id="1887001">Steve Aoki</a>                                    </div>
+                  
+          <div class="ds-event-lower">
+            <div class="ds-event-lower-time">6:00 PM</div>
+                                          <a href="http://lineup.lollapalooza.com/band/theophilus-london" class="ds-event-lower " id="1887002">Theophilus London</a>                                    </div>
+                  
+          <div class="ds-event-lower">
+            <div class="ds-event-lower-time">7:00 PM</div>
+                                          <a href="http://lineup.lollapalooza.com/band/hey-marseilles" class="ds-event-lower " id="1887003">Hey Marseilles</a>                                    </div>
+                  
+          <div class="ds-event-lower">
+            <div class="ds-event-lower-time">7:30 PM</div>
+                                          <a href="http://lineup.lollapalooza.com/band/disclosure" class="ds-event-lower " id="1887004">Disclosure</a>                                    </div>
+                  
+          <div class="ds-event-lower">
+            <div class="ds-event-lower-time">7:45 PM</div>
+                                          <a href="http://lineup.lollapalooza.com/band/modestep" class="ds-event-lower " id="1887005">Modestep</a>                                    </div>
+                  
+          <div class="ds-event-lower">
+            <div class="ds-event-lower-time">8:45 PM</div>
+                                          <a href="http://lineup.lollapalooza.com/band/frightened-rabbit" class="ds-event-lower " id="1887006">Frightened Rabbit</a>                                    </div>
+              </div>
+      </div>        
+      <ul class="ds-schedule-days">
+          <li class="ds-schedule-days-current-date"><a href="/events/2013/08/02/">Friday, August  2</a></li>
+          <li class=""><a href="/events/2013/08/03/">Saturday, August  3</a></li>
+          <li class=""><a href="/events/2013/08/04/">Sunday, August  4</a></li>
+  </ul>
+  </div>
+
+
+  
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="footer">
+                <div id="fl-footer"><div id="fl-site-footer"></div>
+	<ul>
+		<li class="fl-ft"><a href="http://www.lollapalooza.com/tickets/">Tickets</a></li>
+		<li><a href="http://www.lollapalooza.com/tickets/general-admission">General Admission</a></li>
+		<li><a href="http://www.lollapalooza.com/tickets/vip-tickets">VIP Tickets</a></li>
+		<!--li><a href="http://www.lollapalooza.com/tickets/private-cabanas">Private Cabanas</a></li-->
+		<li><a href="http://www.cidentertainment.com/home/lollapalooza2012.php" target="_blank">Travel Packages</a></li>
+		<li><a href="http://www.lollapalooza.com/tickets/faqs/">Ticket FAQs</a></li>
+	</ul>
+	<ul>
+				<li class="fl-ft"><a href="http://lineup.lollapalooza.com/">Lineup</a></li></li>
+				<li><a href="http://lineup.lollapalooza.com/">2013 Lineup</a></li>
+				<li><a href="http://lineup.lollapalooza.com/schedule">2013 Schedule</a></li>
+				<li><a href="http://www.do312.com/lollaaftershows" target="_blank">2013 Aftershows</a></li>					
+			</ul>
+	<ul>
+		<li class="fl-ft"><a href="http://www.lollapalooza.com/experience">Experience</a></li>
+		<li><a href="http://www.lollapalooza.com/experience">2013 Experience</a></li>
+		<li><a href="http://www.lollapalooza.com/experience/activities">Activities</a></li>
+		<li><a href="http://www.lollapalooza.com/experience/festival-map/">2013 Map</a></li>
+		<li><a href="http://www.lollapalooza.com/experience/chow-town/">Chow Town</a></li>
+		<li><a href="http://www.lollapalooza.com/experience/green-street">Green Street</a></li>
+		<li><a href="http://www.lollapalooza.com/experience/kidzapalooza">Kidzapalooza</a></li>
+		<!--li><a href="http://www.lollapalooza.com/xxxxxxxxxx">Gallery</a></li-->
+	</ul>
+	<ul>
+		<li class="fl-ft"><a href="http://www.lollapalooza.com/faqs/festival-faqs">FAQs</a></li>
+		<li><a href="http://www.lollapalooza.com/faqs/festival-faqs">Festival FAQs</a></li>
+		<li><a href="http://www.lollapalooza.com/faqs/getting-here">Getting Here</a></li>
+		<li><a href="http://www.lollapalooza.com/faqs/staying-here">Staying Here</a></li>
+	</ul>
+	<ul>
+		<li class="fl-ft"><a href="http://www.lollapalooza.com/category/lolla-news">Connect</a></li>
+		<li><a href="http://www.lollapalooza.com/category/lolla-news">News & Updates</a></li>
+		<li><a href="http://www.lollapalooza.com/connect/e-list-sign-up">E-list Sign-Up</a></li>
+		<li><a href="http://www.facebook.com/lollapalooza" target="_blank">Facebook</a></li>
+		<li><a href="http://www.twitter.com/lollapalooza" target="_blank">Twitter</a></li>
+		<li><a href="http://www.youtube.com/lollapalooza" target="_blank">YouTube</a></li>
+		<li><a href="http://www.flickr.com/photos/lollapaloozafest" target="_blank">Flickr</a></li>
+		<li><a href="http://theboard.lollapalooza.com/" target="_blank">Forum</a></li>
+	</ul>
+	<ul>
+		<li class="fl-ft"><a href="http://www.lollapalooza.com/history">History</a></li>
+		<li><a href="http://www.lollapalooza.com/history">1991 - Present</a></li>
+		<li><a href="http://lineup.lollapalooza.com/past/1991">Festival Archive</a></li>
+		<li><a href="http://www.lollapalooza.com/20th-video-series/">20th Video Series</a></li>
+		<li><a href="http://www.lollapalooza.com/timecapsule/" target="_blank">Time Capsule</a></li>
+	</ul>
+	<ul>
+		<li class="fl-ft"><a href="#">More</a></li>
+		<li><a href="http://store.lollapalooza.com/">Store</a></li>
+		<li><a href="http://www.lollapalooza.com/news-events/lolla-news/2011/07/19/iphone-android-app/">Mobile Apps</a></li>
+		<li><a href="http://www.lollapalooza.com/press">Press</a></li>
+		<li><a href="http://www.lollapalooza.com/sponsors">Sponsors</a></li>
+		<li><a href="http://www.lollapalooza.com/privacy">Privacy</a></li>
+	</ul>
+	<form action="http://www.lollapalooza.com/search-results/" id="cse-search-box">
+		<input name="cx" value="011672449814620826243:dupyvlry-og" type="hidden"/>
+		<input name="cof" value="FORID:11" type="hidden"/>
+		<label for="fl-s">Looking for something?</label>
+		<input type="text" id="fl-s" name="q"/>
+		<button type="submit">Search</button>
+	</form>
+	<div id="fl-character">
+	</div>
+	<div id="fl-copy" style="color:#A9B2A5;">
+		&copy; Lollapalooza
+	</div>
+</div>          </div>
+    
+  </div>
+    <script src="http://s7.addthis.com/js/200/addthis_widget.js"></script>
+
+    <div id="ds-fest-modal-content"><span class="ds-modal-loading">Please wait...</span></div>
+<script type="text/javascript">if (!NREUMQ.f) { NREUMQ.f=function() {
+NREUMQ.push(["load",new Date().getTime()]);
+var e=document.createElement("script");
+e.type="text/javascript";
+e.src=(("http:"===document.location.protocol)?"http:":"https:") + "//" +
+  "rpm-images.newrelic.com/42/eum/rum.js";
+document.body.appendChild(e);
+if(NREUMQ.a)NREUMQ.a();
+};
+NREUMQ.a=window.onload;window.onload=NREUMQ.f;
+};
+NREUMQ.push(["nrfj","beacon-3.newrelic.com","523568d535","2038250","IVtXQxNYClxVEExQEgdaTRgIWQJVSA==",0,872,new Date().getTime(),"","","","",""]);</script></body>
+</html>
