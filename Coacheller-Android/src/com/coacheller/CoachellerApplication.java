@@ -16,6 +16,7 @@ import android.app.Application;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import com.ratethisfest.android.AndroidLogCatLogger;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.ServiceUtils;
 import com.ratethisfest.android.StorageManager;
@@ -73,19 +74,27 @@ public class CoachellerApplication extends Application implements AppControllerI
     LogController.MULTIWEEK.disable();
     // LogController.allCategoriesOn();
 
-    // Initialize app constant hashmap for this application (Coacheller)
     HashMap<String, String> appConstants = new HashMap<String, String>();
 
-    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_ID, AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_ID);
-    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_SECRET, AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_SECRET);
+    // // Initialize app constant hashmap for this application (Coacheller)
+    // appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_ID, AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_ID);
+    // appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_SECRET, AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_SECRET);
+    // appConstants.put(AuthConstants.FACEBOOK_APP_ID, AuthConstants.COACH_FACEBOOK_APP_ID);
+    // appConstants.put(AuthConstants.FACEBOOK_APP_SECRET, AuthConstants.COACH_FACEBOOK_APP_SECRET);
+    // appConstants.put(AuthConstants.TWITTER_CONSUMER_KEY, AuthConstants.COACH_TWITTER_CONSUMER_KEY);
+    // appConstants.put(AuthConstants.TWITTER_CONSUMER_SECRET, AuthConstants.COACH_TWITTER_CONSUMER_SECRET);
+    // appConstants.put(AuthConstants.TWITTER_OAUTH_CALLBACK_URL, AuthConstants.COACH_TWITTER_OAUTH_CALLBACK_URL);
 
-    appConstants.put(AuthConstants.FACEBOOK_APP_ID, AuthConstants.COACH_FACEBOOK_APP_ID);
-    appConstants.put(AuthConstants.FACEBOOK_APP_SECRET, AuthConstants.COACH_FACEBOOK_APP_SECRET);
+    // Initialize app constant hashmap for this application (Lollapaloozer)
+    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_ID, AuthConstants.LOLLA_GOOGLE_MOBILE_CLIENT_ID);
+    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_SECRET, AuthConstants.LOLLA_GOOGLE_MOBILE_CLIENT_SECRET);
+    appConstants.put(AuthConstants.FACEBOOK_APP_ID, AuthConstants.LOLLA_FACEBOOK_APP_ID);
+    appConstants.put(AuthConstants.FACEBOOK_APP_SECRET, AuthConstants.LOLLA_FACEBOOK_APP_SECRET);
+    appConstants.put(AuthConstants.TWITTER_CONSUMER_KEY, AuthConstants.LOLLA_TWITTER_CONSUMER_KEY);
+    appConstants.put(AuthConstants.TWITTER_CONSUMER_SECRET, AuthConstants.LOLLA_TWITTER_CONSUMER_SECRET);
+    appConstants.put(AuthConstants.TWITTER_OAUTH_CALLBACK_URL, AuthConstants.LOLLA_TWITTER_OAUTH_CALLBACK_URL);
 
-    appConstants.put(AuthConstants.TWITTER_CONSUMER_KEY, AuthConstants.COACH_TWITTER_CONSUMER_KEY);
-    appConstants.put(AuthConstants.TWITTER_CONSUMER_SECRET, AuthConstants.COACH_TWITTER_CONSUMER_SECRET);
-    appConstants.put(AuthConstants.TWITTER_OAUTH_CALLBACK_URL, AuthConstants.COACH_TWITTER_OAUTH_CALLBACK_URL);
-
+    LogController.addLogInterface(new AndroidLogCatLogger("ratethisfest"));
     authModel = new AuthModel(this, appConstants);
 
   }
@@ -165,7 +174,7 @@ public class CoachellerApplication extends Application implements AppControllerI
 
   public void setLastActivity(Activity lastActivity) {
     if (lastActivity instanceof ChooseLoginActivity) {
-      authModel.setLastActivity((ChooseLoginActivity) lastActivity);
+      authModel.setLastAuthRelatedActivity((ChooseLoginActivity) lastActivity);
     }
   }
 
@@ -200,8 +209,9 @@ public class CoachellerApplication extends Application implements AppControllerI
 
   public FestivalEnum getFestival() {
 
-    return getTestFestival(); // Testing only...
+    // return getTestFestival(); // Testing only...
     // return FestivalEnum.COACHELLA;
+    return FestivalEnum.LOLLAPALOOZA;
   }
 
   private FestivalEnum getTestFestival() {

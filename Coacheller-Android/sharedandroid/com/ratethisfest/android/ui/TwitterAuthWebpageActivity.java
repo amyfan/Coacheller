@@ -50,20 +50,18 @@ public class TwitterAuthWebpageActivity extends Activity {
         System.out.println("onPageStarted : " + url);
         Uri uri = Uri.parse(url);
 
-        //OK to use AuthConstants constant directly if this code is used in COACHELLER ONLY
-        if (url.startsWith(AuthConstants.COACH_TWITTER_OAUTH_CALLBACK_URL) && url != null) {
+        // OK to use AuthConstants constant directly if this code is used in COACHELLER ONLY
+        if (url.startsWith(AuthConstants.LOLLA_TWITTER_OAUTH_CALLBACK_URL) && url != null) {
           System.out.println("Special callback URL was detected");
           _requestTokenString = uri.getQueryParameter(AuthConstants.OAUTH_CALLBACK_PARAM_TOKEN);
-          _requestTokenVerifierString = uri
-              .getQueryParameter(AuthConstants.OAUTH_CALLBACK_PARAM_VERIFIER);
+          _requestTokenVerifierString = uri.getQueryParameter(AuthConstants.OAUTH_CALLBACK_PARAM_VERIFIER);
 
           System.out.println("OAuth token: " + _requestTokenString);
           System.out.println("OAuth verifier: " + _requestTokenVerifierString);
 
           Intent resultIntent = new Intent();
           resultIntent.putExtra(AuthConstants.INTENT_EXTRA_OAUTH1_RETURN_TOKEN, _requestTokenString);
-          resultIntent.putExtra(AuthConstants.INTENT_EXTRA_OAUTH1_RETURN_VERIFIER,
-              _requestTokenVerifierString);
+          resultIntent.putExtra(AuthConstants.INTENT_EXTRA_OAUTH1_RETURN_VERIFIER, _requestTokenVerifierString);
           setResult(RESULT_OK, resultIntent);
           finish();
 

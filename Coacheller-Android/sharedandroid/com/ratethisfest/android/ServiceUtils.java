@@ -23,6 +23,7 @@ import org.json.JSONTokener;
 
 import android.content.Context;
 
+import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.shared.HttpConstants;
 
 public class ServiceUtils {
@@ -37,8 +38,7 @@ public class ServiceUtils {
    * @return
    * @throws Exception
    */
-  public static JSONArray getSets(List<NameValuePair> params, Context context, String serverUrl)
-      throws Exception {
+  public static JSONArray getSets(List<NameValuePair> params, Context context, String serverUrl) throws Exception {
     try {
       // Returning FAKE DATA
       // if (1 < 3) {
@@ -56,6 +56,7 @@ public class ServiceUtils {
 
       url += paramString;
 
+      LogController.OTHER.logMessage("Fetching URL: " + url);
       HttpGet get = new HttpGet(url);
       HttpClient hc = new DefaultHttpClient();
       HttpResponse response = hc.execute(get);
@@ -78,8 +79,7 @@ public class ServiceUtils {
 
   // Sample of working URL
   // http://ratethisfest.appspot.com/coachellerServlet?email=testing@this.com&action=get_sets&year=2012&day=Friday
-  public static JSONArray getRatings(List<NameValuePair> params, Context context, String serverUrl)
-      throws Exception {
+  public static JSONArray getRatings(List<NameValuePair> params, Context context, String serverUrl) throws Exception {
 
     /**
      * 
@@ -91,8 +91,7 @@ public class ServiceUtils {
     try {
 
       String url = serverUrl;
-      params.add(new BasicNameValuePair(HttpConstants.PARAM_ACTION,
-          HttpConstants.ACTION_GET_RATINGS));
+      params.add(new BasicNameValuePair(HttpConstants.PARAM_ACTION, HttpConstants.ACTION_GET_RATINGS));
 
       if (!url.endsWith("?")) {
         url += "?";
@@ -132,8 +131,7 @@ public class ServiceUtils {
    */
 
   // TODO returns JSONArray which is probably null - is this correct?
-  public static String addRating(List<NameValuePair> parameterList, Context context,
-      String serverUrl) throws Exception {
+  public static String addRating(List<NameValuePair> parameterList, Context context, String serverUrl) throws Exception {
     try {
       // // TODO: pass in PARAM_NOTES here
       // StringBuilder requestStringb = new StringBuilder();
@@ -159,8 +157,7 @@ public class ServiceUtils {
       // params.setParameter(HttpConstants.PARAM_NOTES, comments);
       // post.setParams(params);
 
-      parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_ACTION,
-          HttpConstants.ACTION_ADD_RATING));
+      parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_ACTION, HttpConstants.ACTION_ADD_RATING));
 
       HttpPost post = new HttpPost(serverUrl);
       post.setEntity(new UrlEncodedFormEntity(parameterList));
@@ -181,13 +178,12 @@ public class ServiceUtils {
     }
   }
 
-  public static String emailMyRatings(List<NameValuePair> parameterList, Context context,
-      String serverUrl) throws Exception {
+  public static String emailMyRatings(List<NameValuePair> parameterList, Context context, String serverUrl)
+      throws Exception {
     try {
       HttpPost post = new HttpPost(serverUrl);
 
-      parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_ACTION,
-          HttpConstants.ACTION_EMAIL_RATINGS));
+      parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_ACTION, HttpConstants.ACTION_EMAIL_RATINGS));
 
       post.setEntity(new UrlEncodedFormEntity(parameterList));
       HttpClient hc = new DefaultHttpClient();
@@ -207,15 +203,13 @@ public class ServiceUtils {
     }
   }
 
-  private static JSONArray getHttpGetResponse(HttpResponse response, Context context)
-      throws Exception {
+  private static JSONArray getHttpGetResponse(HttpResponse response, Context context) throws Exception {
 
     // get the response from GAE server, should be in JSON format
     if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
       // CalendarUtils.debug(context, HTTP_SUCCESS);
 
-      BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity()
-          .getContent(), "UTF-8"));
+      BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
       StringBuilder builder = new StringBuilder();
       for (String line = null; (line = reader.readLine()) != null;) {
         builder.append(line).append("\n");
@@ -237,15 +231,13 @@ public class ServiceUtils {
 
   }
 
-  private static String getHttpPostResponse(HttpResponse response, Context context)
-      throws Exception {
+  private static String getHttpPostResponse(HttpResponse response, Context context) throws Exception {
 
     // get the response from GAE server, should be in JSON format
     if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
       // CalendarUtils.debug(context, HTTP_SUCCESS);
 
-      BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity()
-          .getContent(), "UTF-8"));
+      BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
       StringBuilder builder = new StringBuilder();
       for (String line = null; (line = reader.readLine()) != null;) {
         builder.append(line).append("\n");

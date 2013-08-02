@@ -216,6 +216,7 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     super.onResume();
     LogController.LIFECYCLE_ACTIVITY.logMessage(this + " onResume");
     _application.setLastActivity(this);
+    _application.getAuthModel().setLastAuthRelatedActivity(this);
 
     // TODO: We'll reenable this if we have something significant to say in the beginning
     // if (_appController.isDataFirstUse()) {
@@ -303,7 +304,8 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       LogController.ERROR.logMessage("CoachellerActivity - JSONException calling CalendarUtils.isSetInTheFuture");
       e.printStackTrace();
     }
-    lastSelectedSetInFuture = true; // DEBUG and test alerts
+    // lastSelectedSetInFuture = false; // DEBUG and test ratings
+    // lastSelectedSetInFuture = true; // DEBUG and test alerts
     LogController.SET_DATA.logMessage("Selected set in the future?:" + lastSelectedSetInFuture);
     if (lastSelectedSetInFuture) {
       // Set in the future, Ask to set alarm
@@ -693,6 +695,13 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       weekGroup.clearCheck();
     }
 
+    int numWeeks = CalendarUtils.getFestivalMaxNumberOfWeeks(_application.getFestival());
+    if (numWeeks == 1) {
+      weekGroup.setVisibility(View.INVISIBLE);
+      TextView selectWeekText = (TextView) dialogRate.findViewById(R.id.layout_radio_choice_minutes_textline_text);
+      selectWeekText.setVisibility(View.GONE);
+    }
+
     // TODO pick user's last rating
     onCheckedChanged(weekGroup, idChanged);
 
@@ -991,10 +1000,12 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     }
 
     TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
-    // TODO: add year
-    titleView.setText(_application.getYearToQuery() + " - " + _application.getDayToQuery() + ", Weekend "
-        + _application.getWeekToQuery());
-    // +" "+ weekString);
+    String titleString = _application.getFestival().getName() + " " + _application.getYearToQuery() + " - "
+        + _application.getDayToQuery();
+    if (CalendarUtils.getFestivalMaxNumberOfWeeks(_application.getFestival()) > 1) {
+      titleString += ", Weekend " + _application.getWeekToQuery();
+    }
+    titleView.setText(titleString);
 
     _application.refreshDataFromStorage();
 

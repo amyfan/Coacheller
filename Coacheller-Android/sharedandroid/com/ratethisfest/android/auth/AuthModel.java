@@ -18,7 +18,7 @@ public class AuthModel {
 
   private AppControllerInt appController;
   private HashMap<String, String> _appConstants;
-  private ChooseLoginActivity lastAuthActivity;
+  private Activity lastAuthActivity;
   private GoogleAuthProvider _authProviderGoogle;
   private FacebookAuthProvider _authProviderFacebook;
   private TwitterAuthProvider _authProviderTwitter;
@@ -64,7 +64,9 @@ public class AuthModel {
     }
 
     // If ChooseLoginActivity
-    lastAuthActivity.modelChanged();
+    if (lastAuthActivity instanceof ChooseLoginActivity) {
+      ((ChooseLoginActivity) lastAuthActivity).modelChanged();
+    }
   }
 
   // public boolean isLoggedIn() {
@@ -253,7 +255,7 @@ public class AuthModel {
     return appController;
   }
 
-  public void setLastActivity(ChooseLoginActivity lastAuthActivity) {
+  public void setLastAuthRelatedActivity(Activity lastAuthActivity) {
     this.lastAuthActivity = lastAuthActivity;
   }
 

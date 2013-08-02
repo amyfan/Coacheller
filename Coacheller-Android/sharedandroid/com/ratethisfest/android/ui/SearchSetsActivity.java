@@ -100,6 +100,11 @@ public class SearchSetsActivity extends Activity implements OnClickListener {
       setUIWeek2();
     }
 
+    int numWeeks = CalendarUtils.getFestivalMaxNumberOfWeeks(appController.getFestival());
+    if (numWeeks == 1) {
+      _weekendSpinner.setVisibility(View.INVISIBLE);
+    }
+
     _daySpinner = (Spinner) this.findViewById(R.id.search_spinner_day);
     AndroidUtils.populateSpinnerWithArray(_daySpinner, android.R.layout.simple_spinner_item,
         FestData.getArrayDays(appController.getFestival()), android.R.layout.simple_spinner_dropdown_item);

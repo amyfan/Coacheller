@@ -97,6 +97,7 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
 
     CoachellerApplication app = (CoachellerApplication) getApplication();
     app.setLastActivity(this);
+    app.getAuthModel().setLastAuthRelatedActivity(this);
 
     AuthProviderInt currentProvider = _app.getAuthModel().getCurrentAuthProvider();
     if (currentProvider != null) {
