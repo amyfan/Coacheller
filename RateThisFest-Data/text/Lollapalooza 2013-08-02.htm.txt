@@ -1,0 +1,50 @@
+Lollapalooza,2013,Friday,1245,Bud Light,IO Echo
+Lollapalooza,2013,Friday,1415,Bud Light,Ghost B.C.
+Lollapalooza,2013,Friday,1615,Bud Light,Band Of Horses
+Lollapalooza,2013,Friday,1815,Bud Light,Queens Of The Stone Age
+Lollapalooza,2013,Friday,2015,Bud Light,Nine Inch Nails
+Lollapalooza,2013,Friday,1200,Petrillo,The Neighbourhood
+Lollapalooza,2013,Friday,1330,Petrillo,Deap Vally
+Lollapalooza,2013,Friday,1515,Petrillo,Jessie Ware
+Lollapalooza,2013,Friday,1715,Petrillo,Thievery Corporation
+Lollapalooza,2013,Friday,1930,Petrillo,Lance Herbstrong
+Lollapalooza,2013,Friday,1200,The Grove,Drowners
+Lollapalooza,2013,Friday,1300,The Grove,San Cisco
+Lollapalooza,2013,Friday,1415,The Grove,Twenty One Pilots
+Lollapalooza,2013,Friday,1530,The Grove,Atlas Genius
+Lollapalooza,2013,Friday,1645,The Grove,Theophilus London
+Lollapalooza,2013,Friday,1800,The Grove,Disclosure
+Lollapalooza,2013,Friday,1915,The Grove,Frightened Rabbit
+Lollapalooza,2013,Friday,2045,The Grove,Lana Del Rey
+Lollapalooza,2013,Friday,1200,BMI,American Authors
+Lollapalooza,2013,Friday,1310,BMI,D-Pryde
+Lollapalooza,2013,Friday,1410,BMI,Brick + Mortar
+Lollapalooza,2013,Friday,1520,BMI,Houndmouth
+Lollapalooza,2013,Friday,1630,BMI,Pacific Air
+Lollapalooza,2013,Friday,1740,BMI,Hey Marseilles
+Lollapalooza,2013,Friday,1850,BMI,Chance The Rapper
+Lollapalooza,2013,Friday,1130,Kidzapalooza,School Of Rock
+Lollapalooza,2013,Friday,1230,Kidzapalooza,Ella Jenkins
+Lollapalooza,2013,Friday,1330,Kidzapalooza,Jambo
+Lollapalooza,2013,Friday,1430,Kidzapalooza,The Not Its
+Lollapalooza,2013,Friday,1515,Kidzapalooza,The Q Brothers
+Lollapalooza,2013,Friday,1545,Kidzapalooza,Kristian Bush
+Lollapalooza,2013,Friday,1600,Kidzapalooza,School Of Rock
+Lollapalooza,2013,Friday,1200,Perry's,Brite Lite Brite
+Lollapalooza,2013,Friday,1300,Perry's,Keys N Krates
+Lollapalooza,2013,Friday,1400,Perry's,Timeflies
+Lollapalooza,2013,Friday,1515,Perry's,Monsta
+Lollapalooza,2013,Friday,1630,Perry's,Dillon Francis
+Lollapalooza,2013,Friday,1745,Perry's,Modestep
+Lollapalooza,2013,Friday,1900,Perry's,Flux Pavilion
+Lollapalooza,2013,Friday,2045,Perry's,Steve Aoki
+Lollapalooza,2013,Friday,1215,Lake Shore,Robert DeLong
+Lollapalooza,2013,Friday,1345,Lake Shore,Icona Pop
+Lollapalooza,2013,Friday,1515,Lake Shore,Father John Misty
+Lollapalooza,2013,Friday,1715,Lake Shore,Imagine Dragons
+Lollapalooza,2013,Friday,1925,Lake Shore,Hot Chip
+Lollapalooza,2013,Friday,1300,Red Bull Sound Select,Emeli Sande
+Lollapalooza,2013,Friday,1430,Red Bull Sound Select,Smith Westerns
+Lollapalooza,2013,Friday,1615,Red Bull Sound Select,Crystal Castles
+Lollapalooza,2013,Friday,1815,Red Bull Sound Select,New Order
+Lollapalooza,2013,Friday,2025,Red Bull Sound Select,The Killers

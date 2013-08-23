@@ -15,8 +15,8 @@ public class JSONArraySortMap {
 
   private ArrayList<CustomPair<Integer, JSONObject>> sortedArrayOfPairs = new ArrayList<CustomPair<Integer, JSONObject>>();
 
-  public JSONArraySortMap(JSONArray arrayToSort, String parameterToSort, int valueType,
-      String optionalSecondParam, int valueTypeTwo) throws JSONException {
+  public JSONArraySortMap(JSONArray arrayToSort, String parameterToSort, int valueType, String optionalSecondParam,
+      int valueTypeTwo) throws JSONException {
 
     ArrayList<CustomPair<Integer, JSONObject>> arrayOfPairs = createArrayOfPairs(arrayToSort);
     if (optionalSecondParam != null) {
@@ -25,8 +25,7 @@ public class JSONArraySortMap {
     sortedArrayOfPairs = sortThePairArray(arrayOfPairs, parameterToSort, valueType);
   }
 
-  private ArrayList<CustomPair<Integer, JSONObject>> createArrayOfPairs(JSONArray arrayToSort)
-      throws JSONException {
+  private ArrayList<CustomPair<Integer, JSONObject>> createArrayOfPairs(JSONArray arrayToSort) throws JSONException {
     ArrayList<CustomPair<Integer, JSONObject>> arrayOfPairs = new ArrayList<CustomPair<Integer, JSONObject>>();
 
     // read values in
@@ -50,8 +49,7 @@ public class JSONArraySortMap {
     Comparator<CustomPair<Integer, JSONObject>> comparator = new Comparator<CustomPair<Integer, JSONObject>>() {
 
       @Override
-      public int compare(CustomPair<Integer, JSONObject> pairA,
-          CustomPair<Integer, JSONObject> pairB) {
+      public int compare(CustomPair<Integer, JSONObject> pairA, CustomPair<Integer, JSONObject> pairB) {
         try {
           if (type == VALUE_INTEGER) {
             Integer aValue = pairA.second.getInt(param);
@@ -76,6 +74,9 @@ public class JSONArraySortMap {
   }
 
   public JSONObject getSortedJSONObj(int index) throws JSONException {
+    if (sortedArrayOfPairs.size() == 0) {
+      throw new JSONException("sortedArrayOfPairs was length 0");
+    }
     return sortedArrayOfPairs.get(index).second;
   }
 }

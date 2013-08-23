@@ -1,0 +1,51 @@
+Lollapalooza,2013,Saturday,1300,Bud Light,Planet Hemp
+Lollapalooza,2013,Saturday,1445,Bud Light,Charles Bradley
+Lollapalooza,2013,Saturday,1645,Bud Light,Ellie Goulding
+Lollapalooza,2013,Saturday,1845,Bud Light,Kendrick Lamar
+Lollapalooza,2013,Saturday,2030,Bud Light,The Postal Service
+Lollapalooza,2013,Saturday,1215,Petrillo,The Bright Light Social Hour
+Lollapalooza,2013,Saturday,1400,Petrillo,Reignwolf
+Lollapalooza,2013,Saturday,1545,Petrillo,Matt & Kim
+Lollapalooza,2013,Saturday,1745,Petrillo,Foals
+Lollapalooza,2013,Saturday,1945,Petrillo,Supreme Cuts
+Lollapalooza,2013,Saturday,1200,The Grove,Phox
+Lollapalooza,2013,Saturday,1300,The Grove,Pujol
+Lollapalooza,2013,Saturday,1415,The Grove,Family of the Year
+Lollapalooza,2013,Saturday,1530,The Grove,St. Lucia
+Lollapalooza,2013,Saturday,1645,The Grove,Unknown Mortal Orchestra
+Lollapalooza,2013,Saturday,1800,The Grove,Heartless Bastards
+Lollapalooza,2013,Saturday,1915,The Grove,HAIM
+Lollapalooza,2013,Saturday,2045,The Grove,Azealia Banks
+Lollapalooza,2013,Saturday,2045,The Grove,Death Grips
+Lollapalooza,2013,Saturday,1200,BMI,Frontier Ruckus
+Lollapalooza,2013,Saturday,1310,BMI,Beast Patrol
+Lollapalooza,2013,Saturday,1410,BMI,Wild Cub
+Lollapalooza,2013,Saturday,1520,BMI,Lukas Nelson & P.O.T.R.
+Lollapalooza,2013,Saturday,1630,BMI,The Dunwells
+Lollapalooza,2013,Saturday,1740,BMI,Brooke Waggoner
+Lollapalooza,2013,Saturday,1850,BMI,Blondfire
+Lollapalooza,2013,Saturday,1130,Kidzapalooza,School Of Rock
+Lollapalooza,2013,Saturday,1230,Kidzapalooza,Jambo
+Lollapalooza,2013,Saturday,1330,Kidzapalooza,School Of Rock
+Lollapalooza,2013,Saturday,1430,Kidzapalooza,The Not Its
+Lollapalooza,2013,Saturday,1515,Kidzapalooza,The Blisters
+Lollapalooza,2013,Saturday,1605,Kidzapalooza,Ralph's World
+Lollapalooza,2013,Saturday,1630,Kidzapalooza,Bad Things
+Lollapalooza,2013,Saturday,1200,Perry's,Cherub
+Lollapalooza,2013,Saturday,1300,Perry's,Cole Plante
+Lollapalooza,2013,Saturday,1415,Perry's,360
+Lollapalooza,2013,Saturday,1515,Perry's,GRiZ
+Lollapalooza,2013,Saturday,1630,Perry's,Baauer
+Lollapalooza,2013,Saturday,1745,Perry's,Adventure Club
+Lollapalooza,2013,Saturday,1900,Perry's,Dada Life
+Lollapalooza,2013,Saturday,2045,Perry's,Steve Angello
+Lollapalooza,2013,Saturday,1200,Lake Shore,Wheeler Brothers
+Lollapalooza,2013,Saturday,1330,Lake Shore,Little Green Cars
+Lollapalooza,2013,Saturday,1500,Lake Shore,Court Yard Hounds
+Lollapalooza,2013,Saturday,1700,Lake Shore,Eric Church
+Lollapalooza,2013,Saturday,1915,Lake Shore,The Lumineers
+Lollapalooza,2013,Saturday,1245,Red Bull Sound Select,Shovels & Rope
+Lollapalooza,2013,Saturday,1415,Red Bull Sound Select,Ben Howard
+Lollapalooza,2013,Saturday,1600,Red Bull Sound Select,Local Natives
+Lollapalooza,2013,Saturday,1800,Red Bull Sound Select,The National
+Lollapalooza,2013,Saturday,2015,Red Bull Sound Select,Mumford & Sons

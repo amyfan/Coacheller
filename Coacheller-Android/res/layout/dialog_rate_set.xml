@@ -27,7 +27,7 @@
             android:layout_alignParentTop="true"
             android:src="@android:drawable/ic_delete" />
     </RelativeLayout>
-    
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="50dp"
@@ -39,7 +39,6 @@
             android:layout_height="fill_parent"
             android:text="Artist"
             android:textAppearance="?android:attr/textAppearanceLarge" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -52,8 +51,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Which Weekend?"
-            android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <RadioGroup
@@ -75,22 +74,20 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/name_week2_short" />
-
     </RadioGroup>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="left" >
-
+
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="How Was It?"
-            android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <RadioGroup
@@ -110,7 +107,6 @@
         <LinearLayout
             android:layout_width="10dp"
             android:layout_height="fill_parent" >
-
         </LinearLayout>
 
         <RadioButton
@@ -156,7 +152,6 @@
             android:layout_width="10dp"
             android:layout_height="fill_parent" >
         </LinearLayout>
-
     </RadioGroup>
 
     <EditText
@@ -173,7 +168,7 @@
 
         <requestFocus />
     </EditText>
-        
+
     <Button
         android:id="@+id/button_go_rate_above"
         android:layout_width="wrap_content"
@@ -181,7 +176,7 @@
         android:layout_gravity="center_horizontal"
         android:text="Rate It!"
         android:visibility="gone" />
-        
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -212,7 +207,6 @@
             android:layout_gravity="center_horizontal"
             android:scaleType="center"
             android:src="@drawable/post_twitter_small" />
-
     </LinearLayout>
 
 </LinearLayout>

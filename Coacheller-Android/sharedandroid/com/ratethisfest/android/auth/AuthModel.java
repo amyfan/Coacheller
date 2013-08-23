@@ -3,10 +3,12 @@ package com.ratethisfest.android.auth;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.app.Activity;
 import android.content.Intent;
 
 import com.facebook.android.Facebook;
 import com.ratethisfest.android.data.SocialNetworkPost;
+import com.ratethisfest.android.ui.ChooseLoginActivity;
 import com.ratethisfest.shared.AuthConstants;
 
 public class AuthModel {
@@ -16,7 +18,7 @@ public class AuthModel {
 
   private AppControllerInt appController;
   private HashMap<String, String> _appConstants;
-  private AuthActivityInt lastAuthActivity;
+  private Activity lastAuthActivity;
   private GoogleAuthProvider _authProviderGoogle;
   private FacebookAuthProvider _authProviderFacebook;
   private TwitterAuthProvider _authProviderTwitter;
@@ -32,10 +34,10 @@ public class AuthModel {
     _appConstants = appConstants;
     _authProviderGoogle = new GoogleAuthProvider(AuthModel.this);
     _authProviderFacebook = new FacebookAuthProvider(AuthModel.this);
-    //_authProviderFacebookWeb = new FacebookWebAuthProvider(AuthModel.this); //Never implemented
+    // _authProviderFacebookWeb = new FacebookWebAuthProvider(AuthModel.this); //Never implemented
     _authProviderTwitter = new TwitterAuthProvider(AuthModel.this);
   }
-  
+
   public String getAppConstant(String keyName) {
     return _appConstants.get(keyName);
   }
@@ -55,16 +57,16 @@ public class AuthModel {
 
     if (loginType.equals(AuthConstants.LOGIN_TYPE_FACEBOOK)) {
       _addPermission(PERMISSION_FACEBOOK_POSTWALL);
-      lastAuthActivity.doFacebookPost();
     }
 
     if (loginType.equals(AuthConstants.LOGIN_TYPE_TWITTER)) {
       _addPermission(PERMISSION_TWITTER_TWEET);
-      lastAuthActivity.doTwitterPost();
     }
 
     // If ChooseLoginActivity
-    lastAuthActivity.modelChanged();
+    if (lastAuthActivity instanceof ChooseLoginActivity) {
+      ((ChooseLoginActivity) lastAuthActivity).modelChanged();
+    }
   }
 
   // public boolean isLoggedIn() {
@@ -196,7 +198,7 @@ public class AuthModel {
   public void invalidateTokens() {
     _authProviderGoogle.logout();
     _authProviderFacebook.logout();
-    //_authProviderFacebookWeb.logout();
+    // _authProviderFacebookWeb.logout();
     _authProviderTwitter.logout();
 
     _primaryLoginType = null;
@@ -253,11 +255,11 @@ public class AuthModel {
     return appController;
   }
 
-  public void setLastAuthActivity(AuthActivityInt lastAuthActivity) {
+  public void setLastAuthRelatedActivity(Activity lastAuthActivity) {
     this.lastAuthActivity = lastAuthActivity;
   }
 
-  public AuthActivityInt getLastAuthActivity() {
+  public Activity getLastAuthActivity() {
     return lastAuthActivity;
   }
 

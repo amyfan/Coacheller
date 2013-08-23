@@ -3,14 +3,16 @@ package com.ratethisfest.android.data;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import com.ratethisfest.android.AndroidConstants;
-
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.widget.ListAdapter;
 
+import com.coacheller.CoachellerApplication;
+import com.ratethisfest.data.AndroidConstants;
+
 public abstract class CustomSetListAdapter implements ListAdapter {
 
+  protected CoachellerApplication application; // Already broke abstraction of CustomSetListAdapter
   protected Context _context;
   protected String _timeFieldName;
   protected String _stageFieldName;
@@ -18,6 +20,7 @@ public abstract class CustomSetListAdapter implements ListAdapter {
   protected JSONArraySortMap _sortMap; // sorted sets
   protected JSONArrayHashMap _myRatings_JAHM;
 
+  // Make vars private or remove set methods for protected vars
   public void setContext(Context context) {
     _context = context;
   }
@@ -38,8 +41,7 @@ public abstract class CustomSetListAdapter implements ListAdapter {
     _sortMap = new JSONArraySortMap(_data, fieldName, dataType, null, dataType);
   }
 
-  public void sortByFields(String fieldName, int dataType, String fieldNameTwo, int dataTypeTwo)
-      throws JSONException {
+  public void sortByFields(String fieldName, int dataType, String fieldNameTwo, int dataTypeTwo) throws JSONException {
     _sortMap = new JSONArraySortMap(_data, fieldName, dataType, fieldNameTwo, dataTypeTwo);
   }
 
@@ -121,7 +123,7 @@ public abstract class CustomSetListAdapter implements ListAdapter {
   // If we are ready to draw the view
   // Needed for concurrency issues
   protected boolean haveData() {
-    if (_data != null && _sortMap != null  && getCount() > 0) {
+    if (_data != null && _sortMap != null && getCount() > 0) {
       return true;
     }
     return false;
@@ -133,8 +135,7 @@ public abstract class CustomSetListAdapter implements ListAdapter {
     } else if (AndroidConstants.SORT_ARTIST.equals(sortMode)) {
       sortByField(AndroidConstants.SORT_ARTIST, JSONArraySortMap.VALUE_STRING);
     } else if (AndroidConstants.SORT_STAGE.equals(sortMode)) {
-      sortByFields(_stageFieldName, JSONArraySortMap.VALUE_STRING, _timeFieldName,
-          JSONArraySortMap.VALUE_INTEGER);
+      sortByFields(_stageFieldName, JSONArraySortMap.VALUE_STRING, _timeFieldName, JSONArraySortMap.VALUE_INTEGER);
     }
   }
 }

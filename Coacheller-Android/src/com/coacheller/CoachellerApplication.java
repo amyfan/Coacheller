@@ -10,27 +10,29 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import com.coacheller.ui.ChooseLoginActivity;
-import com.coacheller.ui.CoachellerActivity;
-import com.coacheller.ui.SearchSetsActivity;
-import com.ratethisfest.android.AlertManager;
-import com.ratethisfest.android.AndroidConstants;
+import com.lollapaloozer.R;
+import com.ratethisfest.android.AndroidLogCatLogger;
 import com.ratethisfest.android.AndroidUtils;
-import com.ratethisfest.android.CalendarUtils;
 import com.ratethisfest.android.ServiceUtils;
 import com.ratethisfest.android.StorageManager;
+import com.ratethisfest.android.alert.AlertManager;
 import com.ratethisfest.android.auth.AppControllerInt;
-import com.ratethisfest.android.auth.AuthActivityInt;
 import com.ratethisfest.android.auth.AuthModel;
 import com.ratethisfest.android.data.FakeDataSource;
 import com.ratethisfest.android.data.JSONArrayHashMap;
 import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.android.log.LogController;
+import com.ratethisfest.android.ui.ChooseLoginActivity;
+import com.ratethisfest.android.ui.CoachellerActivity;
+import com.ratethisfest.android.ui.SearchSetsActivity;
+import com.ratethisfest.data.AndroidConstants;
+import com.ratethisfest.data.CalendarUtils;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.FestivalEnum;
 import com.ratethisfest.shared.HttpConstants;
@@ -67,26 +69,35 @@ public class CoachellerApplication extends Application implements AppControllerI
     System.out.println("Application Object Instantiated"); // Keep this first
 
     // Set logging options here
-    LogController.LIFECYCLE_ACTIVITY.disable();
+    // LogController.LIFECYCLE_ACTIVITY.disable();
     LogController.LIFECYCLE_THREAD.disable();
     // LogController.USER_ACTION_UI.disable();
     LogController.MULTIWEEK.disable();
     // LogController.allCategoriesOn();
 
-    // Initialize app constant hashmap for this application (Coacheller)
     HashMap<String, String> appConstants = new HashMap<String, String>();
 
-    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_ID, AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_ID);
-    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_SECRET, AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_SECRET);
+    // // Initialize app constant hashmap for this application (Coacheller)
+    // appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_ID, AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_ID);
+    // appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_SECRET, AuthConstants.COACH_GOOGLE_MOBILE_CLIENT_SECRET);
+    // appConstants.put(AuthConstants.FACEBOOK_APP_ID, AuthConstants.COACH_FACEBOOK_APP_ID);
+    // appConstants.put(AuthConstants.FACEBOOK_APP_SECRET, AuthConstants.COACH_FACEBOOK_APP_SECRET);
+    // appConstants.put(AuthConstants.TWITTER_CONSUMER_KEY, AuthConstants.COACH_TWITTER_CONSUMER_KEY);
+    // appConstants.put(AuthConstants.TWITTER_CONSUMER_SECRET, AuthConstants.COACH_TWITTER_CONSUMER_SECRET);
+    // appConstants.put(AuthConstants.TWITTER_OAUTH_CALLBACK_URL, AuthConstants.COACH_TWITTER_OAUTH_CALLBACK_URL);
 
-    appConstants.put(AuthConstants.FACEBOOK_APP_ID, AuthConstants.COACH_FACEBOOK_APP_ID);
-    appConstants.put(AuthConstants.FACEBOOK_APP_SECRET, AuthConstants.COACH_FACEBOOK_APP_SECRET);
+    // Initialize app constant hashmap for this application (Lollapaloozer)
+    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_ID, AuthConstants.LOLLA_GOOGLE_MOBILE_CLIENT_ID);
+    appConstants.put(AuthConstants.GOOGLE_MOBILE_CLIENT_SECRET, AuthConstants.LOLLA_GOOGLE_MOBILE_CLIENT_SECRET);
+    appConstants.put(AuthConstants.FACEBOOK_APP_ID, AuthConstants.LOLLA_FACEBOOK_APP_ID);
+    appConstants.put(AuthConstants.FACEBOOK_APP_SECRET, AuthConstants.LOLLA_FACEBOOK_APP_SECRET);
+    appConstants.put(AuthConstants.TWITTER_CONSUMER_KEY, AuthConstants.LOLLA_TWITTER_CONSUMER_KEY);
+    appConstants.put(AuthConstants.TWITTER_CONSUMER_SECRET, AuthConstants.LOLLA_TWITTER_CONSUMER_SECRET);
+    appConstants.put(AuthConstants.TWITTER_OAUTH_CALLBACK_URL, AuthConstants.LOLLA_TWITTER_OAUTH_CALLBACK_URL);
 
-    appConstants.put(AuthConstants.TWITTER_CONSUMER_KEY, AuthConstants.COACH_TWITTER_CONSUMER_KEY);
-    appConstants.put(AuthConstants.TWITTER_CONSUMER_SECRET, AuthConstants.COACH_TWITTER_CONSUMER_SECRET);
-    appConstants.put(AuthConstants.TWITTER_OAUTH_CALLBACK_URL, AuthConstants.COACH_TWITTER_OAUTH_CALLBACK_URL);
-
+    LogController.addLogInterface(new AndroidLogCatLogger("ratethisfest"));
     authModel = new AuthModel(this, appConstants);
+
   }
 
   public void registerChooseLoginActivity(ChooseLoginActivity act) {
@@ -162,13 +173,16 @@ public class CoachellerApplication extends Application implements AppControllerI
     return authModel;
   }
 
-  public void setLastAuthActivity(AuthActivityInt lastActivity) {
-    authModel.setLastAuthActivity(lastActivity);
+  public void setLastActivity(Activity lastActivity) {
+    if (lastActivity instanceof ChooseLoginActivity) {
+      authModel.setLastAuthRelatedActivity((ChooseLoginActivity) lastActivity);
+    }
   }
 
-  public AuthActivityInt getLastAuthActivity() {
-    return authModel.getLastAuthActivity();
-  }
+  // Not used
+  // public AuthActivityInt getLastAuthActivity() {
+  // return authModel.getLastAuthActivity();
+  // }
 
   public String getDayToQuery() {
     return queryDay;
@@ -196,14 +210,13 @@ public class CoachellerApplication extends Application implements AppControllerI
 
   public FestivalEnum getFestival() {
 
-    return getTestFestival(); // Testing only...
+    // return getTestFestival(); // Testing only...
     // return FestivalEnum.COACHELLA;
+    return FestivalEnum.LOLLAPALOOZA;
   }
 
   private FestivalEnum getTestFestival() {
-    for (int i = 0; i < 5; i++) {
-      LogController.ERROR.logMessage("TEST MODE - TEST MODE - TEST MODE - TEST MODE - TEST MODE - TEST MODE");
-    }
+    FestivalEnum.TESTFEST.announceTestMessage();
     return FestivalEnum.TESTFEST;
   }
 
@@ -428,7 +441,7 @@ public class CoachellerApplication extends Application implements AppControllerI
     String errorString = problem + "\r\n\r\nDetails:\r\n" + details;
     System.out.println(errorString);
 
-    AlertDialog.Builder builder = new AlertDialog.Builder(authModel.getLastAuthActivity().getLastActivity());
+    AlertDialog.Builder builder = new AlertDialog.Builder(authModel.getLastAuthActivity());
     builder.setTitle(title);
     builder.setMessage(errorString).setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener() {
       @Override
@@ -450,6 +463,12 @@ public class CoachellerApplication extends Application implements AppControllerI
 
   public AlertManager getAlertManager() {
     return this.alertManager;
+  }
+
+  public void redrawSetList() {
+    if (this.activityCoacheller != null) {
+      this.activityCoacheller.redrawUI();
+    }
   }
 
 }

@@ -27,7 +27,7 @@ public class FacebookAuthProvider implements AuthProviderInt {
 
   private final String LOGIN_TYPE = AuthConstants.LOGIN_TYPE_FACEBOOK;
   private AuthModel _model;
-  
+
   private Facebook _facebook;
   private AsyncFacebookRunner _AsyncRunner;
 
@@ -52,8 +52,7 @@ public class FacebookAuthProvider implements AuthProviderInt {
   public void login() {
     // Proceeds Asynchronously
     LogController.AUTH_FACEBOOK.logMessage("Acquiring facebook permissions");
-    _facebook.authorize(_model.getLastAuthActivity().getLastActivity(), new String[] { "email",
-        "publish_stream" }, new AuthListener());
+    _facebook.authorize(_model.getLastAuthActivity(), new String[] { "email", "publish_stream" }, new AuthListener());
   }
 
   @Override
@@ -120,8 +119,8 @@ public class FacebookAuthProvider implements AuthProviderInt {
 
   public String postToWall(SocialNetworkPost post) {
     Bundle parameters = new Bundle();
-    String message = "I saw the set by " + post.artistName + " and rated it " + post.rating
-        + " (out of " + AuthConstants.RATING_MAXIMUM + ").";
+    String message = "I saw the set by " + post.artistName + " and rated it " + post.rating + " (out of "
+        + AuthConstants.RATING_MAXIMUM + ").";
     if (post.note != null && !post.note.equals("")) {
       message += "\r\nNotes: " + post.note;
     }
@@ -149,8 +148,7 @@ public class FacebookAuthProvider implements AuthProviderInt {
     @Override
     public void onComplete(Bundle values) {
       // Auth is completed, now we can actually request user data
-      System.out.println("Facebook Authorization Complete, bundle: "
-          + AndroidUtils.bundleValues(values));
+      System.out.println("Facebook Authorization Complete, bundle: " + AndroidUtils.bundleValues(values));
 
       int hours = ((int) (_facebook.getAccessExpires() - System.currentTimeMillis()) / 1000) / 60 / 60;
       System.out.println("Token valid for " + hours + " hours: " + _facebook.getAccessToken());
@@ -163,8 +161,7 @@ public class FacebookAuthProvider implements AuthProviderInt {
     @Override
     public void onFacebookError(FacebookError error) {
       System.out.println("Facebook platform error during authorization");
-      _showError("Facebook Authorization Platform Error",
-          error.getErrorType() + ": " + error.getMessage());
+      _showError("Facebook Authorization Platform Error", error.getErrorType() + ": " + error.getMessage());
       // error.getStackTrace()
     }
 
@@ -178,8 +175,7 @@ public class FacebookAuthProvider implements AuthProviderInt {
     @Override
     public void onCancel() {
       System.out.println("Facebook authorization dialog cancelled by user");
-      _showError(
-          "User Cancelled Authorization",
+      _showError("User Cancelled Authorization",
           "You should only be seeing this message if you declined to authorize this application for your Facebook account.");
     }
   }
@@ -200,8 +196,7 @@ public class FacebookAuthProvider implements AuthProviderInt {
         String userName = json.getString("name");
         // fbEmail = json.getString("email");
 
-        System.out.println("Retrieved from Facebook userID[" + userID + "] username [" + userName
-            + "]");
+        System.out.println("Retrieved from Facebook userID[" + userID + "] username [" + userName + "]");
         _userInfo = json;
 
         _model.loginSuccess(LOGIN_TYPE);
@@ -210,8 +205,8 @@ public class FacebookAuthProvider implements AuthProviderInt {
       } catch (JSONException ex) {
         _showError("Facebook Response Error", "JSONException reading response: " + ex.getMessage());
       } catch (FacebookError e) {
-        _showError("Facebook Response Platform Error", e.getErrorType() + ": " + e.getMessage()
-            + " " + state.toString());
+        _showError("Facebook Response Platform Error",
+            e.getErrorType() + ": " + e.getMessage() + " " + state.toString());
       }
       // TODO Unlock UI here
     }
@@ -223,20 +218,17 @@ public class FacebookAuthProvider implements AuthProviderInt {
 
     @Override
     public void onFileNotFoundException(FileNotFoundException e, Object state) {
-      _showError("Facebook Request Error",
-          "FileNotFoundException while verifying account: " + e.getMessage());
+      _showError("Facebook Request Error", "FileNotFoundException while verifying account: " + e.getMessage());
     }
 
     @Override
     public void onMalformedURLException(MalformedURLException e, Object state) {
-      _showError("Facebook Request Error",
-          "MalformedURLException while verifying account: " + e.getMessage());
+      _showError("Facebook Request Error", "MalformedURLException while verifying account: " + e.getMessage());
     }
 
     @Override
     public void onFacebookError(FacebookError e, Object state) {
-      _showError("Facebook Request Platform Error", e.getErrorType() + ": " + e.getMessage() + " "
-          + state.toString());
+      _showError("Facebook Request Platform Error", e.getErrorType() + ": " + e.getMessage() + " " + state.toString());
     }
 
   }

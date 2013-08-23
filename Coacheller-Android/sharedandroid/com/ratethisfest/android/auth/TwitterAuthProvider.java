@@ -9,9 +9,9 @@ import org.scribe.model.Verb;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.coacheller.ui.TwitterAuthWebpageActivity;
 import com.ratethisfest.android.data.SocialNetworkPost;
 import com.ratethisfest.android.log.LogController;
+import com.ratethisfest.android.ui.TwitterAuthWebpageActivity;
 import com.ratethisfest.auth.TwitterAuthProviderOAuth;
 import com.ratethisfest.auth.verify.TwitterVerifier;
 import com.ratethisfest.shared.AuthConstants;
@@ -69,7 +69,7 @@ public class TwitterAuthProvider implements AuthProviderInt {
   public void login() {
     LogController.AUTH_TWITTER.logMessage("Acquiring Twitter permissions");
     String authReqTokenUrl = _oAuthProvider.getRequestTokenUrl();
-    Activity lastAuthActivity = _model.getLastAuthActivity().getLastActivity();
+    Activity lastAuthActivity = _model.getLastAuthActivity();
 
     Intent twitterAuthIntent = new Intent(lastAuthActivity, TwitterAuthWebpageActivity.class);
     twitterAuthIntent.putExtra(AuthConstants.INTENT_EXTRA_AUTH_URL, authReqTokenUrl);
