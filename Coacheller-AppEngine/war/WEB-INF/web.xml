@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee                http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
 
-    
+
 	<!-- Servlets -->
 
 	<servlet>
@@ -17,7 +17,7 @@
 		<servlet-name>loadDataServlet</servlet-name>
 		<url-pattern>/loadData</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>coachellerServlet</servlet-name>
 		<servlet-class>com.ratethisfest.server.service.CoachellerServlet</servlet-class>
@@ -56,6 +56,24 @@
 	<servlet-mapping>
 		<servlet-name>gwtLollapaloozerServlet</servlet-name>
 		<url-pattern>/coacheller_appengine/greetLolla</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>sessionsTest</servlet-name>
+		<servlet-class>auth.logins.test.sessionsTestServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>sessionsTest</servlet-name>
+		<url-pattern>/sessionsTest</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>LoginStatusServiceImpl</servlet-name>
+		<servlet-class>auth.logins.server.LoginStatusServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LoginStatusServiceImpl</servlet-name>
+		<url-pattern>/login_status_tester/loginStatus</url-pattern>
 	</servlet-mapping>
 
 	<!-- Default page to serve -->
