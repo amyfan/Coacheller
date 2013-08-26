@@ -12,6 +12,7 @@ import auth.logins.data.AuthProviderAccount;
 import auth.logins.data.MasterAccount;
 import auth.logins.other.LoginManager;
 
+import com.google.appengine.api.datastore.Entity;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class LoginStatusServiceImpl extends RemoteServiceServlet implements LoginStatusService {
@@ -30,7 +31,7 @@ public class LoginStatusServiceImpl extends RemoteServiceServlet implements Logi
       long appEngineKeyLong = currentLogin.getAppEngineKeyLong();
       String personName = currentLogin.getProperty(MasterAccount.PROPERTY_PERSON_NAME);
       
-      returnMap.put("AppEngine Datastore Key", appEngineKeyLong+"");
+      returnMap.put(Entity.KEY_RESERVED_PROPERTY, appEngineKeyLong+"");
       returnMap.put("PROPERTY_PERSON_NAME", personName);
       
       //Do we really need to provide info about all their accounts?

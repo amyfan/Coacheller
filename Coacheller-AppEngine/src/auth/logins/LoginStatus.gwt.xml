@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module rename-to='login_status_tester'>
+<module rename-to='login_status'>
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>
 
@@ -12,15 +12,11 @@
   <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
   <!-- Other module inherits                                      -->
-  <inherits name="com.google.gwt.logging.Logging"/>
-  <inherits name='com.google.gwt.visualization.Visualization'/>
-  <inherits name="org.moxieapps.gwt.highcharts.Highcharts"/>
 
   <!-- Specify the app entry point class.                         -->
-  <entry-point class='auth.logins.test.LoginStatusTester'/>
+  <!--   entry-point class='auth.logins.test.LoginStatusTester'/ -->
 
   <!-- Specify the paths for translatable code                    -->
-  <source path='test'/>
   <source path='shared'/>
   <source path='client'/>
 

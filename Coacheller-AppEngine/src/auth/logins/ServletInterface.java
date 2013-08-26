@@ -5,11 +5,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.jsoup.nodes.Document;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.FacebookApi;
 import org.scribe.builder.api.GoogleApi;
@@ -33,6 +30,7 @@ public class ServletInterface {
   }.getClass().getEnclosingClass().getName());
 
   public static final String PARAM_NAME_RTFACTION = "RTFAction";
+  public static final String PARAM_NAME_RETURNHOST = "RTFReturnUrl";
 
   public static final String GOOGLE_PARAM_OAUTH_VERIFIER = "oauth_verifier";
   public static final String GOOGLE_PARAM_OAUTH_TOKEN = "oauth_token";
@@ -78,11 +76,13 @@ public class ServletInterface {
   }
   
   // TODO reduce the complexity of this part....
-  public static String libraryHandleRTFAction(HttpSession session, Map parametersMap) throws IOException, JsonProcessingException, RTFAccountException {
+  // reqHost = host name that client sent the request to, useful for determining target fest
+  public static String libraryHandleRTFAction(HttpSession session, Map parametersMap, String reqHost) throws IOException, JsonProcessingException, RTFAccountException {
     String paramRTFAction = getFirstParameter(parametersMap, PARAM_NAME_RTFACTION);
+    log.info("Routing request for RTF Action: "+ paramRTFAction);
     
     if (ACTION_GOOGLE_AUTH.equals(paramRTFAction)) {
-      return actionUserGoogleAuthStart(session);
+      return actionUserGoogleAuthStart(session, reqHost);
     }
 
     if (ACTION_FACEBOOK_AUTH.equals(paramRTFAction)) {
@@ -91,11 +91,11 @@ public class ServletInterface {
     }
 
     if (ACTION_FACEBOOK_AUTH_SCRIBE.equals(paramRTFAction)) {
-      return actionUserFacebookScribeAuthStart();
+      return actionUserFacebookScribeAuthStart(reqHost);
     }
 
     if (ACTION_TWITTER_AUTH.equals(paramRTFAction)) {
-      return actionUserTwitterAuthStart();
+      return actionUserTwitterAuthStart(reqHost);
     }
 
     if (ACTION_CALLBACK_GOOGLE_AUTH.equals(paramRTFAction)) {
@@ -124,34 +124,64 @@ public class ServletInterface {
     log.info("Unexpectedly did not find an action to handle");
     return null;
   }
+  private static String buildGoogleCallbackUrl(String reqHost) {
+    StringBuilder callbackUrl = new StringBuilder();  //This must be set here, google will redirect to whatever is specified
+    callbackUrl.append(ServletConfig.HTTP).append(reqHost).append(ServletConfig.GOOGLE_USER_AUTH_CALLBACK_PATH);
+    callbackUrl.append("&").append(PARAM_NAME_RETURNHOST).append("=").append(reqHost);
+    return callbackUrl.toString();
+  } 
+  
+  private static String buildFacebookCallbackUrl(String reqHost) {
+    StringBuilder callbackUrl = new StringBuilder();  //This must be set here, google will redirect to whatever is specified
+    callbackUrl.append(ServletConfig.HTTP).append(reqHost).append(ServletConfig.FACEBOOK_USER_AUTH_SCRIBE_CALLBACK_PATH);
+    callbackUrl.append("&").append(PARAM_NAME_RETURNHOST).append("=").append(reqHost);
+    return callbackUrl.toString();
+  }  
+  
+  private static String buildTwitterCallbackUrl(String reqHost) {
+    StringBuilder callbackUrl = new StringBuilder();  //This must be set here, google will redirect to whatever is specified
+    callbackUrl.append(ServletConfig.HTTP).append(reqHost).append(ServletConfig.TWITTER_REDIRECT_PATH);
+    callbackUrl.append("&").append(PARAM_NAME_RETURNHOST).append("=").append(reqHost);
+    return callbackUrl.toString();
+  }
 
-  private static String actionUserGoogleAuthStart(HttpSession session) throws IOException {
+  private static String actionUserGoogleAuthStart(HttpSession session, String reqHost) throws IOException {
+    String callbackUrl = buildGoogleCallbackUrl(reqHost);
+    log.info("Setting Google callback URL: "+ callbackUrl.toString());
+    
     OAuthService service = new ServiceBuilder().provider(GoogleApi.class).apiKey(ServletConfig.GOOGLE_API_KEY)
-        .apiSecret(ServletConfig.GOOGLE_API_SECRET).callback(ServletConfig.GOOGLE_USER_AUTH_CALLBACK_URL)
+        .apiSecret(ServletConfig.GOOGLE_API_SECRET).callback(callbackUrl.toString())
         .scope(ServletConfig.GOOGLE_OAUTH_REQ_SCOPE).build();
 
     // Obtain the Request Token
     Token requestToken = service.getRequestToken();
     session.setAttribute(GOOGLE_REDIRECT_REQUEST_TOKEN, requestToken.getToken());
     session.setAttribute(GOOGLE_REDIRECT_REQUEST_TOKEN_SECRET, requestToken.getSecret());
+    
 
-    String redirectUrl = GOOGLE_REDIRECT_URL_BASE + "?" + GOOGLE_PARAM_OAUTH_TOKEN + "=" + requestToken.getToken();
-    return redirectUrl;
+    StringBuilder redirectUrl = new StringBuilder(GOOGLE_REDIRECT_URL_BASE + "?" + GOOGLE_PARAM_OAUTH_TOKEN + "=" + requestToken.getToken());
+    redirectUrl.append("&").append(PARAM_NAME_RETURNHOST).append("=").append(reqHost);
+   
+    
+    
+    return redirectUrl.toString();
   }
 
-  private static String actionUserFacebookScribeAuthStart() throws IOException {
+  private static String actionUserFacebookScribeAuthStart(String reqHost) throws IOException {
+    String facebookCallbackUrl = buildFacebookCallbackUrl(reqHost);
     // Attempt to implement Facebook with scribe
     OAuthService service = new ServiceBuilder().provider(FacebookApi.class).apiKey(ServletConfig.FACEBOOK_ID)
-        .apiSecret(ServletConfig.FACEBOOK_SECRET).callback(ServletConfig.FACEBOOK_USER_AUTH_SCRIBE_CALLBACK_URL)
+        .apiSecret(ServletConfig.FACEBOOK_SECRET).callback(facebookCallbackUrl)
         .build();
     // Scanner in = new Scanner(System.in);
 
     // Obtain the Authorization URL
     System.out.println("Fetching the Authorization URL...");
-    String authorizationUrl = service.getAuthorizationUrl(null); // Dont need request token here
-    log.info("Facebook User Auth URL: " + authorizationUrl);
+    StringBuilder authorizationUrl = new StringBuilder(service.getAuthorizationUrl(null));
+    authorizationUrl.append("&").append(PARAM_NAME_RETURNHOST).append("=").append(reqHost);
 
-    return authorizationUrl;
+    log.info("Facebook User Auth URL: " + authorizationUrl.toString());
+    return authorizationUrl.toString();
   }
 
   // Done with no OAuth library code, following Facebook's developer instructions 8/1/2013
@@ -164,16 +194,19 @@ public class ServletInterface {
 //    }
 //  }
 
-  private static String actionUserTwitterAuthStart() throws IOException {
+  private static String actionUserTwitterAuthStart(String reqHost) throws IOException {
+    String twitterRedirectUrl = buildTwitterCallbackUrl(reqHost);
 
     OAuthService service = new ServiceBuilder().provider(TwitterApi.class).apiKey(ServletConfig.TWITTER_KEY)
-        .apiSecret(ServletConfig.TWITTER_SECRET).callback(ServletConfig.TWITTER_REDIRECT_URL).build();
+        .apiSecret(ServletConfig.TWITTER_SECRET).callback(twitterRedirectUrl).build();
 
     Token requestToken = service.getRequestToken();
-    String authUrl = service.getAuthorizationUrl(requestToken);
+    StringBuilder authorizationUrl = new StringBuilder(service.getAuthorizationUrl(requestToken));
+    authorizationUrl.append("&").append(PARAM_NAME_RETURNHOST).append("=").append(reqHost);
+    
     // doc.appendText("Twitter Auth URL: " + authUrl);
-    log.info("Twitter Auth URL: " + authUrl);
-    return authUrl;
+    log.info("Twitter Auth URL: " + authorizationUrl.toString());
+    return authorizationUrl.toString();
   }
 
   private static String actionCallbackGoogleAuthScribe(HttpSession session, Map parametersMap)
@@ -184,13 +217,15 @@ public class ServletInterface {
     String paramToken = getFirstParameter(parametersMap, GOOGLE_PARAM_OAUTH_TOKEN);
     // String paramVerifier = req.getParameter(GOOGLE_PARAM_OAUTH_VERIFIER);
     String paramVerifier = getFirstParameter(parametersMap, GOOGLE_PARAM_OAUTH_VERIFIER);
+    String returnHostname = getFirstParameter(parametersMap, PARAM_NAME_RETURNHOST);
+    String callbackUrl = buildGoogleCallbackUrl(returnHostname);
 
     Verifier verifier = new Verifier(paramVerifier);
 
     OAuthRequest request = new OAuthRequest(Verb.GET, GOOGLE_PROTECTED_URL_USERINFO);
 
     OAuthService service = new ServiceBuilder().provider(GoogleApi.class).apiKey(ServletConfig.GOOGLE_API_KEY)
-        .apiSecret(ServletConfig.GOOGLE_API_SECRET).callback(ServletConfig.GOOGLE_USER_AUTH_CALLBACK_URL)
+        .apiSecret(ServletConfig.GOOGLE_API_SECRET).callback(callbackUrl)
         .scope(ServletConfig.GOOGLE_OAUTH_REQ_SCOPE).build();
 
     String reqToken = (String) session.getAttribute(GOOGLE_REDIRECT_REQUEST_TOKEN);
@@ -200,7 +235,10 @@ public class ServletInterface {
     service.signRequest(accessToken, request);
     // request.addHeader("GData-Version", "3.0"); //TODO is this needed? Not sure. Seems like it's not.
     Response response = request.send();
-    log.info(response.getCode() + "\r\n" + response.getBody());
+    // TODO need to handle if user refuses the app
+    // TODO need to handle if user fails auth process
+    
+    log.fine(response.getCode() + "\r\n" + response.getBody());
 
     LoginType loginType = LoginType.GOOGLE;
     AuthProviderAccount newProviderAcct = new AuthProviderAccount(response.getBody(), loginType);
@@ -212,15 +250,17 @@ public class ServletInterface {
     String email = newProviderAcct.getProperty(AuthProviderAccount.LOGIN_EMAIL);
     String picUrl = newProviderAcct.getProperty(AuthProviderAccount.LOGIN_PICTURE_URL);
     log.info("Login Success with:" + loginType.getName());
-    return ServletConfig.PATH_HOME;
+    return ServletConfig.HTTP + returnHostname;
   }
 
   private static String actionCallbackFacebookAuthScribe(HttpSession session, Map parametersMap)
       throws JsonProcessingException, IOException, RTFAccountException {
-
+    String returnHostname = getFirstParameter(parametersMap, PARAM_NAME_RETURNHOST);
+    String callbackUrl = buildFacebookCallbackUrl(returnHostname);
+    
     // Facebook user auth has returned
     OAuthService service = new ServiceBuilder().provider(FacebookApi.class).apiKey(ServletConfig.FACEBOOK_ID)
-        .apiSecret(ServletConfig.FACEBOOK_SECRET).callback(ServletConfig.FACEBOOK_USER_AUTH_SCRIBE_CALLBACK_URL)
+        .apiSecret(ServletConfig.FACEBOOK_SECRET).callback(callbackUrl)
         .build();
     // OAuthService service = (OAuthService)req.getSession().getAttribute("scribeservice");
     // String authorizationUrl = service.getAuthorizationUrl(null);
@@ -238,7 +278,7 @@ public class ServletInterface {
     service.signRequest(accessToken, request);
     Response response = request.send();
     int responseCode = response.getCode();
-    log.info("Response Body: " + response.getBody());
+    log.fine("Response Body: " + response.getBody());
 
     LoginType loginType = LoginType.FACEBOOK;
     AuthProviderAccount newProviderAcct = new AuthProviderAccount(response.getBody(), loginType);
@@ -250,13 +290,16 @@ public class ServletInterface {
     String email = newProviderAcct.getProperty(AuthProviderAccount.LOGIN_EMAIL);
 
     // doc.body().appendText("Got Facebook ID: " + id + " name: " + name + " email: " + email);
-    return ServletConfig.PATH_HOME;
+    return ServletConfig.HTTP + returnHostname;
   }
 
   private static String actionCallbackTwitterAuth(HttpSession session, Map parametersMap)
       throws IOException, JsonProcessingException, RTFAccountException {
     // User approved/cancelled twitter authorization of RateThisFest
 
+    String returnHostname = getFirstParameter(parametersMap, PARAM_NAME_RETURNHOST);
+    String callbackUrl = buildTwitterCallbackUrl(returnHostname);
+    
     String tokenString =  getFirstParameter(parametersMap, TWITTER_PARAM_OAUTH_TOKEN);
     String verifierString = getFirstParameter(parametersMap, TWITTER_PARAM_OAUTH_VERIFIER);
     
@@ -264,13 +307,13 @@ public class ServletInterface {
     Verifier verifier = new Verifier(verifierString);
 
     OAuthService service = new ServiceBuilder().provider(TwitterApi.class).apiKey(ServletConfig.TWITTER_KEY)
-        .apiSecret(ServletConfig.TWITTER_SECRET).callback(ServletConfig.TWITTER_REDIRECT_URL).build();
+        .apiSecret(ServletConfig.TWITTER_SECRET).callback(callbackUrl).build();
     Token accessToken = service.getAccessToken(token, verifier);
 
     OAuthRequest request = new OAuthRequest(Verb.GET, TWITTER_PROTECTED_URL_USERINFO);
     service.signRequest(accessToken, request); // the access token from step 4
     Response response = request.send();
-    log.info(response.getBody());
+    log.fine(response.getBody());
 
     LoginType loginType = LoginType.TWITTER;
     AuthProviderAccount newProviderAcct = new AuthProviderAccount(response.getBody(), loginType);
@@ -279,6 +322,6 @@ public class ServletInterface {
     String id = newProviderAcct.getProperty(AuthProviderAccount.AUTH_PROVIDER_ID);
     String name = newProviderAcct.getProperty(AuthProviderAccount.LOGIN_PERSON_NAME);
     String twitterName = newProviderAcct.getProperty(AuthProviderAccount.LOGIN_SCREEN_NAME);
-    return ServletConfig.PATH_HOME;
+    return ServletConfig.HTTP + returnHostname;
   }
 }

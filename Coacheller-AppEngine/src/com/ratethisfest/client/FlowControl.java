@@ -5,6 +5,9 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.ratethisfest.client.ui.LoginControl;
+import com.ratethisfest.client.ui.LollapaloozerViewComposite;
+import com.ratethisfest.client.ui.RTFTitleBanner;
 
 /**
  * 
@@ -28,6 +31,8 @@ public class FlowControl {
     RootPanel.get().getElement().getStyle().setPosition(Position.RELATIVE);
     // add, determine height/width, center, then move. height/width are unknown
     // until added to document. Catch-22!
+    RootPanel.get().add(new RTFTitleBanner());
+    RootPanel.get().add(new LoginControl());
     RootPanel.get().add(c);
     History.newItem(c.getTitle());
   }

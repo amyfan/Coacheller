@@ -1,6 +1,5 @@
 package auth.logins.other;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -36,8 +35,9 @@ public class LoginManager {
       AuthProviderAccount newAPAccountLogin) throws RTFAccountException {
     MasterAccount RTFAccountToLoginOrUpdate = null;
     MasterAccount currentSessionLogin = getCurrentLogin(session); // Get logged in RTF acct from session
-    MasterAccount ownerOfAddedAPAccount = LoginManager.findRTFAccount(newAPAccountLogin); // See who owns AP account, may
-                                                                                       // be null
+    MasterAccount ownerOfAddedAPAccount = LoginManager.findRTFAccount(newAPAccountLogin); // See who owns AP account,
+                                                                                          // may
+    // be null
 
     if (currentSessionLogin == null) {// if it is not saved in the current session attribute
       RTFAccountToLoginOrUpdate = ownerOfAddedAPAccount; // Assign AP account owner from datastore, might be null
@@ -48,7 +48,8 @@ public class LoginManager {
       }
     } else {
       // Session is already logged in
-      if (ownerOfAddedAPAccount != null && currentSessionLogin.getAppEngineKeyLong() != ownerOfAddedAPAccount.getAppEngineKeyLong()) {
+      if (ownerOfAddedAPAccount != null
+          && currentSessionLogin.getAppEngineKeyLong() != ownerOfAddedAPAccount.getAppEngineKeyLong()) {
         String newAPTypeName = newAPAccountLogin.getProperty(AuthProviderAccount.AUTH_PROVIDER_NAME);
         String newAPDescription = newAPAccountLogin.getDescription();
 
@@ -56,7 +57,7 @@ public class LoginManager {
             + " is already owned by RTF Account:" + ownerOfAddedAPAccount.getAppEngineKeyLong()
             + " but user attempted to add it to RTF Account:" + currentSessionLogin.getAppEngineKeyLong());
         RTFAccountException ex = new RTFAccountException(currentSessionLogin, ownerOfAddedAPAccount, newAPAccountLogin);
-        throw ex;  //Before anything gets modified
+        throw ex; // Before anything gets modified
       }
       RTFAccountToLoginOrUpdate = currentSessionLogin;
     }
@@ -67,18 +68,16 @@ public class LoginManager {
 
     if (RTFAccountToLoginOrUpdate.isLoggedInAPType(loginType)) {
       // APAccount already registered with RTFAccount
-      // Welcome back!!!!!
-
       log.info("Current RTF Account[" + rtfAccountId + "] already owns APAccount type[" + apAccountProviderName
           + "] id[" + apAccountID + "]");
-      RTFAccountToLoginOrUpdate.updateAPAccount(newAPAccountLogin);
     } else {
       log.info("Current RTF Account[" + rtfAccountId + "] does not own APAccount type[" + apAccountProviderName
           + "] id[" + apAccountID + "], adding AP Account");
-      RTFAccountToLoginOrUpdate.addAPAccount(newAPAccountLogin);
     }
+    RTFAccountToLoginOrUpdate.updateAPAccount(newAPAccountLogin);
 
-    // Must save to GAE after // object modification
+    // Must save to GAE session object modification, forces distributed session update
+    log.info("Setting session attribute for RTF Account: " + RTFAccountToLoginOrUpdate.getAppEngineKeyLong());
     session.setAttribute(MasterAccount.LOGIN_HTTPSESSION_ATTRIBUTE, RTFAccountToLoginOrUpdate);
   }
 

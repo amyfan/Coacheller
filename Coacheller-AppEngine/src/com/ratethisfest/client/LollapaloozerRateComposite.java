@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import com.ratethisfest.client.ui.LollapaloozerViewComposite;
 import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.RatingGwt;
 import com.ratethisfest.shared.Set;

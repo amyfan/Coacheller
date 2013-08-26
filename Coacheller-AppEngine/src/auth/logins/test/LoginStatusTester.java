@@ -1,6 +1,8 @@
 package auth.logins.test;
 
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 import auth.logins.client.LoginStatusService;
@@ -22,6 +24,7 @@ public class LoginStatusTester implements EntryPoint {
   private FlexTable loginStatusTable = new FlexTable();
   
   private LoginStatusServiceAsync loginStatusSvc = GWT.create(LoginStatusService.class);
+  private Logger logger = Logger.getLogger(this.getClass().getName());
   
   @Override
   public void onModuleLoad() {
@@ -33,10 +36,12 @@ public class LoginStatusTester implements EntryPoint {
     
     // Setup timer to refresh list automatically.
     Timer refreshTimer = new Timer() {
+
       @Override
       public void run() {
         lastUpdatedLabel.setText("Timer Started");
-       
+        logger.log(Level.SEVERE, "this message should get logged");
+        
         // Initialize the service proxy.
         // TODO is this necessary?  Tutorial app has it in 2 places
         if (loginStatusSvc == null) {

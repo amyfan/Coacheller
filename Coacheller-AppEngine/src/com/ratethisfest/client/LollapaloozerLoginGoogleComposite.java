@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.ratethisfest.client.auth.GoogleAuthUtils;
+import com.ratethisfest.client.ui.LollapaloozerViewComposite;
 import com.ratethisfest.shared.AuthConstants;
 
 public class LollapaloozerLoginGoogleComposite extends Composite {

@@ -1,4 +1,4 @@
-package com.ratethisfest.client;
+package com.ratethisfest.client.ui;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +22,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -36,18 +37,19 @@ import com.google.gwt.visualization.client.visualizations.corechart.AxisOptions;
 import com.google.gwt.visualization.client.visualizations.corechart.BarChart;
 import com.google.gwt.visualization.client.visualizations.corechart.CoreChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
+import com.ratethisfest.client.ComparatorUtils;
+import com.ratethisfest.client.LollapaloozerService;
+import com.ratethisfest.client.LollapaloozerServiceAsync;
+import com.ratethisfest.client.PageToken;
 import com.ratethisfest.shared.DateTimeUtils;
 import com.ratethisfest.shared.Set;
 
 public class LollapaloozerViewComposite extends Composite {
 
   /**
-   * The message displayed to the user when the server cannot be reached or
-   * returns an error.
+   * The message displayed to the user when the server cannot be reached or returns an error.
    */
-  private static final String SERVER_ERROR = "An error occurred while "
-      + "attempting to contact the server. Please check your network "
-      + "connection and try again.";
+  private static final String SERVER_ERROR = "An error occurred while attempting to contact the server. Please check your network connection and try again.";
 
   interface Binder extends UiBinder<Widget, LollapaloozerViewComposite> {
   }
@@ -55,15 +57,10 @@ public class LollapaloozerViewComposite extends Composite {
   private static Binder uiBinder = GWT.create(Binder.class);
 
   /**
-   * Create a remote service proxy to talk to the server-side Lollapaloozer
-   * service.
+   * Create a remote service proxy to talk to the server-side Lollapaloozer service.
    */
-  private final LollapaloozerServiceAsync lollapaloozerService = GWT
-      .create(LollapaloozerService.class);
+  private final LollapaloozerServiceAsync lollapaloozerService = GWT.create(LollapaloozerService.class);
   private List<Set> setsList;
-
-  @UiField
-  Label subtitle;
 
   @UiField
   Anchor androidUrl;
@@ -106,7 +103,6 @@ public class LollapaloozerViewComposite extends Composite {
   }
 
   private void initUiElements() {
-    subtitle.setText("Your unofficial Lolla ratings guide");
     androidUrl.setHref("http://play.google.com/store/apps/details?id=com.lollapaloozer");
     androidUrl.setText("Download Lollapaloozer for Android");
     androidUrl.setTarget("_blank");
@@ -337,8 +333,7 @@ public class LollapaloozerViewComposite extends Composite {
   }
 
   private Chart createChart() {
-    Chart chart = new Chart().setType(Series.Type.BAR).setChartTitleText("2012 RATING RESULTS")
-        .setMarginRight(10);
+    Chart chart = new Chart().setType(Series.Type.BAR).setChartTitleText("2012 RATING RESULTS").setMarginRight(10);
     chart.getXAxis().setAxisTitleText("Artist");
     chart.getYAxis().setAxisTitleText("Score").setMin(0).setMax(5);
     Series series = chart.createSeries().setName("Average Score");
@@ -399,7 +394,7 @@ public class LollapaloozerViewComposite extends Composite {
 
     interface TasksTableResources extends CellTable.Resources {
       @Override
-      @Source("SetsTable.css")
+      @Source("../SetsTable.css")
       TableStyle cellTableStyle();
     }
 

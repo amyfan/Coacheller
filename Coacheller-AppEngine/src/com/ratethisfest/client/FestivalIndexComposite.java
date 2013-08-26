@@ -5,9 +5,11 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.ratethisfest.shared.FestivalEnum;
 
 public class FestivalIndexComposite extends Composite {
 
@@ -27,7 +29,6 @@ public class FestivalIndexComposite extends Composite {
 
   public FestivalIndexComposite() {
     initWidget(uiBinder.createAndBindUi(this));
-
     initUiElements();
   }
 
@@ -37,14 +38,16 @@ public class FestivalIndexComposite extends Composite {
     coachellaButton.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        FlowControl.go(new CoachellerViewComposite());
+        Window.Location.replace("http://"+ FestivalEnum.COACHELLA.getWebClientHostname());
+        //FlowControl.go(new CoachellerViewComposite());
       }
     });
 
     lollaButton.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        FlowControl.go(new LollapaloozerViewComposite());
+        Window.Location.replace("http://"+ FestivalEnum.LOLLAPALOOZA.getWebClientHostname());
+        //FlowControl.go(new LollapaloozerViewComposite());
       }
     });
   }

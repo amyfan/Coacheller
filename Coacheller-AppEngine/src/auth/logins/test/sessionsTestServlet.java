@@ -65,13 +65,13 @@ public class sessionsTestServlet extends HttpServlet {
 
     MasterAccount currentLogin = LoginManager.getCurrentLogin(session);
     if (currentLogin == null) {
-      writeGoogleLoginButton(doc);
+      writeGoogleLoginButton(doc, req.getLocalName());
       writeFacebookLoginButton(doc);
       writeTwitterLoginButton(doc);
     } else {
       // Drawing should come after action handling...
       if (!currentLogin.isLoggedInAPType(LoginType.GOOGLE)) {
-        writeGoogleLoginButton(doc);
+        writeGoogleLoginButton(doc, req.getLocalName());
       }
 
       if (!currentLogin.isLoggedInAPType(LoginType.FACEBOOK)) {
@@ -85,7 +85,8 @@ public class sessionsTestServlet extends HttpServlet {
 
     
     try {
-      String redirectStr = ServletInterface.libraryHandleRTFAction(session, req.getParameterMap());
+      String reqHost = req.getServerName();  //Identify the hostname that the client sent the request to
+      String redirectStr = ServletInterface.libraryHandleRTFAction(session, req.getParameterMap(), reqHost);
       if (redirectStr != null) {
         //Redirect string is null if there was no action requiring a redirect or reload
       resp.sendRedirect(redirectStr);
@@ -179,8 +180,8 @@ public class sessionsTestServlet extends HttpServlet {
     // </form>
   }
 
-  private void writeGoogleLoginButton(Document doc) {
-    String urlToUse = ServletConfig.GOOGLE_USER_AUTH_START_URL;
+  private void writeGoogleLoginButton(Document doc, String reqHost) {
+    String urlToUse = ServletConfig.HTTP + reqHost + ServletConfig.GOOGLE_USER_AUTH_START_PATH;
     doc.body().appendElement("A").attr("href", urlToUse).appendElement("img")
         .attr("src", sessionsTestServlet.IMAGE_URL_SIGNIN_GOOGLE).attr("border", "0").appendElement("br");
   }

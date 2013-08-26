@@ -1,5 +1,6 @@
 @CHARSET "UTF-8";
-.body {	
+
+.body {
 	font-family: "Arial";
 }
 
@@ -74,4 +75,8 @@
 	font-style: italic;
 	margin-top: 10px;
 	margin-bottom: 10px;
+}
+
+.important {
+	font-weight: bold;
 }

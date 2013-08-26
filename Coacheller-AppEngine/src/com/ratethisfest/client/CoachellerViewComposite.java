@@ -61,8 +61,8 @@ public class CoachellerViewComposite extends Composite {
   private final CoachellerServiceAsync coachellerService = GWT.create(CoachellerService.class);
   private List<Set> setsList;
 
-  @UiField
-  Label subtitle;
+  //@UiField
+  //Label subtitle;
 
   @UiField
   Anchor android;
@@ -111,7 +111,7 @@ public class CoachellerViewComposite extends Composite {
   }
 
   private void initUiElements() {
-    subtitle.setText("Your unofficial Coachella ratings guide");
+    //subtitle.setText("Your unofficial Coachella ratings guide");
     android.setHref("http://play.google.com/store/apps/details?id=com.coacheller");
     android.setText("Download Coacheller for Android!");
     android.setTarget("_blank");

@@ -131,29 +131,46 @@ public class MasterAccount implements Serializable {
     return Long.valueOf(_masterAccountProperties.get(APPENGINE_KEY_LONG));
   }
 
-  public void addAPAccount(AuthProviderAccount apAccount) {
-    if (_accounts.containsValue(apAccount)) {
-      throw new RuntimeException("Attempt to add an apAccount already owned by this RTFAccount");
+  //The distinction between adding and updating is rather small
+//  public void addAPAccount(AuthProviderAccount apAccount) {
+//    log.info("Adding new APAccount record");
+//    if (_accounts.containsValue(apAccount)) {
+//      throw new RuntimeException("Attempt to add an apAccount already owned by this RTFAccount");
+//    }
+//
+//    _accounts.put(apAccount.getProperty(AuthProviderAccount.AUTH_PROVIDER_NAME), apAccount);
+//    apAccount.setProperty(AuthProviderAccount.RTFACCOUNT_OWNER_KEY, this.getAppEngineKeyLong()+"");
+//  }
+
+  public void updateAPAccount(AuthProviderAccount apAccountObj_DO_NOT_PERSIST) {
+    log.info("Creating or updating APAccount record");
+    String authProviderName = apAccountObj_DO_NOT_PERSIST.getProperty(AuthProviderAccount.AUTH_PROVIDER_NAME);
+    
+    AuthProviderAccount apAccountObjToPersist = _accounts.get(authProviderName);
+    
+    if (apAccountObjToPersist == null) {
+      log.info("There was no existing APAccount for id: "+ apAccountObj_DO_NOT_PERSIST.getProperty(AuthProviderAccount.AUTH_PROVIDER_ID));
+      apAccountObjToPersist = apAccountObj_DO_NOT_PERSIST;
+    } else {
+      log.info("APAccount object key from this successful login: "+ apAccountObj_DO_NOT_PERSIST.getDatastoreKeyDescription());
+      log.info("Older APAccount object key description: "+ apAccountObjToPersist.getDatastoreKeyDescription());
+      apAccountObj_DO_NOT_PERSIST.copyDataTo(apAccountObjToPersist);  //New gets copied to old, then save the existing (old) including updates
+      
     }
-
-    _accounts.put(apAccount.getProperty(AuthProviderAccount.AUTH_PROVIDER_NAME), apAccount);
-    apAccount.setProperty(AuthProviderAccount.RTFACCOUNT_OWNER_KEY, this.getAppEngineKeyLong()+"");
-  }
-
-  public void updateAPAccount(AuthProviderAccount newAPAccountObj) {
-    String authProviderName = newAPAccountObj.getProperty(AuthProviderAccount.AUTH_PROVIDER_NAME);
+    apAccountObjToPersist.setProperty(AuthProviderAccount.RTFACCOUNT_OWNER_KEY, this.getAppEngineKeyLong()+"");  //Forces save to db
     
-    AuthProviderAccount oldAPAccountObj = _accounts.get(authProviderName);
-    oldAPAccountObj.copyDataTo(newAPAccountObj);
-    oldAPAccountObj.setProperty(AuthProviderAccount.RTFACCOUNT_OWNER_KEY, this.getAppEngineKeyLong()+"");  //Forces save to db
+    log.info("Properties copied and parent ID set, here is info again:");
+    log.info("APAccount object key from this successful login: "+ apAccountObj_DO_NOT_PERSIST.getDatastoreKeyDescription());
+    log.info("Older APAccount object key description: "+ apAccountObjToPersist.getDatastoreKeyDescription());
     
-    _accounts.put(authProviderName, newAPAccountObj);
+    _accounts.put(authProviderName, apAccountObjToPersist);  //SAVE THE ONE TO BE PERSISTED IN HASHTABLE
   }
 
   public Collection<AuthProviderAccount> getAPAccounts() {
     return _accounts.values();
   }
 
+  // Test whether an APAccount of specified loginType is already managed by this MasterAccount
   public boolean isLoggedInAPType(LoginType loginType) {
     Collection<AuthProviderAccount> providerAccounts = getAPAccounts();
     
