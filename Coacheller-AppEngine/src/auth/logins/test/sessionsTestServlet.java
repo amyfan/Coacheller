@@ -85,8 +85,7 @@ public class sessionsTestServlet extends HttpServlet {
 
     
     try {
-      String reqHost = req.getServerName();  //Identify the hostname that the client sent the request to
-      String redirectStr = ServletInterface.libraryHandleRTFAction(session, req.getParameterMap(), reqHost);
+      String redirectStr = ServletInterface.libraryHandleRTFAction(session, req);
       if (redirectStr != null) {
         //Redirect string is null if there was no action requiring a redirect or reload
       resp.sendRedirect(redirectStr);
@@ -129,7 +128,7 @@ public class sessionsTestServlet extends HttpServlet {
 
     doc.body().appendText("Done");
     outWriter.write(doc.toString());
-    resp.sendRedirect(ServletConfig.PATH_HOME);
+    resp.sendRedirect(ServletConfig.SERVLET_BASEPATH);
   }
 
 
@@ -145,24 +144,24 @@ public class sessionsTestServlet extends HttpServlet {
             "The " + apName + " account you are trying to add to your RateThisFest account ID " + contestorRTFAcctId
                 + " is already being used by another RateThisFest user ID " + originalRTFAcctId + ".")
         .appendElement("br").appendElement("br");
-    doc.body().appendElement("a").attr("href", ServletConfig.PATH_HOME).appendText("Back To Home Page")
+    doc.body().appendElement("a").attr("href", ServletConfig.SERVLET_BASEPATH).appendText("Back To Home Page")
         .appendElement("br");
   }
 
 
   private void writeStartOverLink(Document doc) {
-    doc.body().appendElement("a").attr("href", ServletConfig.PATH_HOME).appendText("Home Page").appendElement("br");
+    doc.body().appendElement("a").attr("href", ServletConfig.SERVLET_BASEPATH).appendText("Home Page").appendElement("br");
     doc.body().appendElement("a")
-        .attr("href", ServletConfig.PATH_HOME + "?" + ServletInterface.PARAM_NAME_RTFACTION + "=" + ServletInterface.ACTION_LOGOUT)
+        .attr("href", ServletConfig.SERVLET_BASEPATH + "?" + ServletInterface.PARAM_NAME_RTFACTION + "=" + ServletInterface.ACTION_LOGOUT)
         .appendText("Wipe Login Data").appendElement("br");
     doc.body().appendElement("br").appendElement("a")
-        .attr("href", ServletConfig.PATH_HOME + "?" + ServletInterface.PARAM_NAME_RTFACTION + "=" + ServletInterface.ACTION_DESTROY_ACCOUNT)
+        .attr("href", ServletConfig.SERVLET_BASEPATH + "?" + ServletInterface.PARAM_NAME_RTFACTION + "=" + ServletInterface.ACTION_DESTROY_ACCOUNT)
         .attr("align", "right").appendText("DESTROY MY RateThisFest ACCOUNT").appendElement("br");
   }
 
   private void writeForm(Document doc) {
     // <form action="/sign" method="post">
-    Element formElement = doc.body().appendElement("form").attr("action", ServletConfig.PATH_HOME)
+    Element formElement = doc.body().appendElement("form").attr("action", ServletConfig.SERVLET_BASEPATH)
         .attr("method", "post");
 
     // <div><textarea name="content" rows="3" cols="60"></textarea></div>
@@ -195,7 +194,7 @@ public class sessionsTestServlet extends HttpServlet {
   }
 
   private void writeTwitterLoginButton(Document doc) {
-    String urlToUse = ServletConfig.PATH_HOME + "?" + ServletInterface.PARAM_NAME_RTFACTION + "=" + ServletInterface.ACTION_TWITTER_AUTH;
+    String urlToUse = ServletConfig.SERVLET_BASEPATH + "?" + ServletInterface.PARAM_NAME_RTFACTION + "=" + ServletInterface.ACTION_TWITTER_AUTH;
     doc.body().appendElement("A").attr("href", urlToUse).appendElement("img")
         .attr("src", sessionsTestServlet.IMAGE_URL_SIGNIN_TWITTER).attr("border", "0").appendElement("br");
   }

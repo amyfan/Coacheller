@@ -8,20 +8,22 @@ public class ServletConfig {
 
   public static final String HTTP = "http://";
   public static final String HTTPS = "https://";
+  public static final String HOSTNAME_RATETHISFEST="ratethisfest.appspot.com";
+  public static final String SERVLET_BASEPATH = "/sessionsTest";
 
   public static final String FACEBOOK_ID = "186287061500005";
   public static final String FACEBOOK_SECRET = "87eed9f76050ebd82c10a0ef161ec8a6";
 
-  public static final String FACEBOOK_USER_AUTH_SCRIBE_START_URL = "/sessionsTest?response_type=code&scope=email"
+  public static final String FACEBOOK_USER_AUTH_SCRIBE_START_URL = SERVLET_BASEPATH + "?response_type=code&scope=email"
       + "&" + ServletInterface.PARAM_NAME_RTFACTION + "=" + ServletInterface.ACTION_FACEBOOK_AUTH_SCRIBE;
   // public static final String FACEBOOK_USER_AUTH_SCRIBE_CALLBACK_URL =
   // "http://ratethisfest.appspot.com/sessionsTest?RTFAction=CallbackFacebookUserAuth";
-  public static final String FACEBOOK_USER_AUTH_SCRIBE_CALLBACK_PATH = "/sessionsTest?"
+  public static final String FACEBOOK_USER_AUTH_SCRIBE_CALLBACK_PATH = SERVLET_BASEPATH + "?"
       + ServletInterface.PARAM_NAME_RTFACTION + "=" + ServletInterface.ACTION_CALLBACK_FACEBOOK_AUTH;
 
-  public static final String GOOGLE_USER_AUTH_START_PATH = "/sessionsTest?" + ServletInterface.PARAM_NAME_RTFACTION
+  public static final String GOOGLE_USER_AUTH_START_PATH = SERVLET_BASEPATH + "?" + ServletInterface.PARAM_NAME_RTFACTION
       + "=" + ServletInterface.ACTION_GOOGLE_AUTH;
-  public static final String GOOGLE_USER_AUTH_CALLBACK_PATH = "/sessionsTest?" + ServletInterface.PARAM_NAME_RTFACTION
+  public static final String GOOGLE_USER_AUTH_CALLBACK_PATH = SERVLET_BASEPATH + "?" + ServletInterface.PARAM_NAME_RTFACTION
       + "=" + ServletInterface.ACTION_CALLBACK_GOOGLE_AUTH;
   // public static final String GOOGLE_USER_AUTH_CALLBACK_URL_OLD =
   // "http://ratethisfest.appspot.com/sessionsTest?RTFAction=CallbackGoogleUserAuth";
@@ -38,8 +40,7 @@ public class ServletConfig {
   public static final String TWITTER_SECRET = "rdYvdK4g3ckWVdnvzmAj6JXmj9RoI05rIb4nVYQsoI"; // Server applications ONLY
   public static final String TWITTER_REQ_TOKEN_URL = "https://api.twitter.com/oauth/request_token";
   //public static final String TWITTER_REDIRECT_URL = "http://ratethisfest.appspot.com/sessionsTest?RTFAction=CallbackTwitterUserAuth";
-  public static final String TWITTER_REDIRECT_PATH = "/sessionsTest?" + ServletInterface.PARAM_NAME_RTFACTION + "=" + ServletInterface.ACTION_CALLBACK_TWITTER_AUTH;
+  public static final String TWITTER_REDIRECT_PATH = SERVLET_BASEPATH + "?" + ServletInterface.PARAM_NAME_RTFACTION + "=" + ServletInterface.ACTION_CALLBACK_TWITTER_AUTH;
 
-  public static final String PATH_HOME = "/sessionsTest";
 
 }

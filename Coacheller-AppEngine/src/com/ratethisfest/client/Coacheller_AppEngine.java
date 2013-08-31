@@ -15,6 +15,12 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.HasHandlers;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
@@ -24,41 +30,12 @@ import com.google.gwt.user.client.ui.Composite;
 import com.ratethisfest.client.ui.LollapaloozerViewComposite;
 import com.ratethisfest.shared.FestivalEnum;
 
-public class Coacheller_AppEngine implements EntryPoint, ValueChangeHandler<String> {
+public class Coacheller_AppEngine implements EntryPoint, ValueChangeHandler<String>  {
 
   private LoginStatusServiceAsync loginStatusSvc = GWT.create(LoginStatusService.class);
   private Logger logger = Logger.getLogger(this.getClass().getName());
+  public static EventBus EVENT_BUS = GWT.create(SimpleEventBus.class);
 
-  public void isLoggedIn() {
-    AsyncCallback<HashMap<String, String>> callback = new AsyncCallback<HashMap<String, String>>() {
-      public void onFailure(Throwable caught) {
-        // TODO: Do something with errors.
-        logger.log(Level.SEVERE, "Exception getting login status");
-      }
-
-      public void onSuccess(HashMap<String, String> result) {
-        // TODO Do something with result
-        logger.log(Level.SEVERE, "Got login status");
-        int currentRow = 0;
-        // loginStatusTable.setText(currentRow, 0, "KEY");
-        // loginStatusTable.setText(currentRow, 1, "VALUE");
-        currentRow++;
-
-        for (String keyName : result.keySet()) {
-          String valueName = result.get(keyName);
-          logger.log(Level.SEVERE, "(" + currentRow + ") " + keyName + " = " + valueName);
-          currentRow++;
-        }
-        if (result.containsKey(Entity.KEY_RESERVED_PROPERTY)) {
-          logger.log(Level.SEVERE, "User IS logged in");
-        } else {
-          logger.log(Level.SEVERE, "User NOT logged in");
-        }
-      }
-    };
-
-    loginStatusSvc.getLoginInfo(callback); // Make the call to the login status service.
-  }
 
   // This is the entry point method.
   @Override
@@ -76,7 +53,6 @@ public class Coacheller_AppEngine implements EntryPoint, ValueChangeHandler<Stri
 
   // Makes exceptions visible
   private void onModuleLoad2() {
-
     // AppUserWidget widget = new AppUserWidget();
     // RootPanel.get().add(widget);
     History.addValueChangeHandler(this);
@@ -127,4 +103,7 @@ public class Coacheller_AppEngine implements EntryPoint, ValueChangeHandler<Stri
   public void onValueChange(ValueChangeEvent<String> e) {
     FlowControl.go(History.getToken());
   }
+
+
+  
 }

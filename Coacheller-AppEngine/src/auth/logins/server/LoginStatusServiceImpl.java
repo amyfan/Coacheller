@@ -11,11 +11,14 @@ import auth.logins.client.LoginStatusService;
 import auth.logins.data.AuthProviderAccount;
 import auth.logins.data.MasterAccount;
 import auth.logins.other.LoginManager;
+import auth.logins.other.LoginType;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class LoginStatusServiceImpl extends RemoteServiceServlet implements LoginStatusService {
+  
+  public static final String NOT_LOGGED_IN = "NOT_LOGGED_IN";
 
   @Override
   public HashMap<String, String> getLoginInfo() {
@@ -35,12 +38,17 @@ public class LoginStatusServiceImpl extends RemoteServiceServlet implements Logi
       returnMap.put("PROPERTY_PERSON_NAME", personName);
       
       //Do we really need to provide info about all their accounts?
-      //Collection<AuthProviderAccount> apAccounts = currentLogin.getAPAccounts();
+      Collection<AuthProviderAccount> apAccounts = currentLogin.getAPAccounts();
+      for (AuthProviderAccount apAccount : apAccounts) {
+        String providerName = apAccount.getProperty(AuthProviderAccount.AUTH_PROVIDER_NAME);
+        String description = apAccount.getDescription();
+
+        returnMap.put(providerName, description);
+      }
       
       
     } else {
-      //TODO should throw an exception if the user is not logged in
-      returnMap.put("NOT", "LOGGED-IN");
+      returnMap.put(NOT_LOGGED_IN, NOT_LOGGED_IN);
       
     }
     

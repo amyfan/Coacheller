@@ -16,8 +16,11 @@
   <inherits name='com.google.gwt.visualization.Visualization'/>
   <inherits name="org.moxieapps.gwt.highcharts.Highcharts"/>
 
-  <!-- Specify the app entry point class.                         -->
+  <!-- Stopping this from compiling, this page being phased out  -->
+  <!-- 
   <entry-point class='auth.logins.test.LoginStatusTester'/>
+  
+   -->
 
   <!-- Specify the paths for translatable code                    -->
   <source path='test'/>
