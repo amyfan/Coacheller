@@ -1,17 +1,32 @@
 package com.ratethisfest.server.domain;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+
+import auth.logins.data.AuthProviderAccount;
+import auth.logins.other.LoginType;
 
 import com.googlecode.objectify.annotation.Cached;
 
 @Entity
 @Cached(expirationSeconds = 7200)
-public class AppUser {
+public class AppUser implements Serializable {
+  //Implementing Serializable allows this object to be saved as a property of the servlet Session (HttpSession)
+  //Hopefully this doesn't break anything with Objectify...
+
+  
+  @Transient
+  public static final String LOGIN_HTTPSESSION_ATTRIBUTE = "LOGIN_HTTPSESSION_ATTRIBUTE";
+  //Decided not to use this
+  //@Transient
+  //private HashMap<String, AuthProviderAccount> _accounts = new HashMap<String, AuthProviderAccount>();
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -114,4 +129,6 @@ public class AppUser {
     builder.append("]");
     return builder.toString();
   }
+  
+
 }

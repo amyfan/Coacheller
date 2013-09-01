@@ -33,10 +33,6 @@ public class Alert implements Serializable {
   private Date performanceDateTime;
   private int minutesBeforeSetTime;
 
-  // Should not be members, we don't have context when we deserialize so cannot re-create
-  // private transient Context context; // Do not serialize, not relevant unless alarm is being set
-  // private PendingIntent createdPendingIntent; // Not sure about serializing
-
   // Initializes an object to represent the Alert for this set
   private Alert() {
     LogController.ERROR.logMessage("Class Alert - Default Constructor called");

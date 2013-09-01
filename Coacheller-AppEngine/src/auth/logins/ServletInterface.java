@@ -79,38 +79,17 @@ public class ServletInterface {
   public static String libraryHandleRTFAction(HttpSession session, HttpServletRequest request) throws IOException,
       JsonProcessingException, RTFAccountException {
     String reqHost = request.getServerName(); // Identify the hostname that the client sent the request to
-    Map<String, String[]> parametersMap = request.getParameterMap();
-    String paramRTFAction = getFirstParameter(parametersMap, PARAM_NAME_RTFACTION);
-    String redirectHostName = getFirstParameter(parametersMap, PARAM_NAME_RETURNHOST);
-    if (redirectHostName == null) {
-      log.info("Routing request for RTF Action: " + paramRTFAction);
+    // Map<String, String[]> parametersMap = request.getParameterMap();
+    String paramRTFAction = request.getParameter(PARAM_NAME_RTFACTION);
+    String redirectHostName = request.getParameter(PARAM_NAME_RETURNHOST);
 
-    } else {
+    if (redirectHostName != null) { // Return redirect URL
       log.info("Routing request for RTF Action: " + paramRTFAction + " redirect host: " + redirectHostName);
-      String redirectTargetUrl = request.getScheme() + "://" + redirectHostName + request.getRequestURI();
-
-      if (request.getQueryString() != null) {
-        boolean addedQuestionMark = false;
-        
-        Enumeration<String> parameterNames = request.getParameterNames();
-        while (parameterNames.hasMoreElements()) {
-          String parameterName = parameterNames.nextElement();
-          String parameterValue = request.getParameter(parameterName);
-          if (!parameterName.equals(PARAM_NAME_RETURNHOST)) {  //Discard returnhost parameter
-            if (addedQuestionMark) {
-              redirectTargetUrl += "&";
-            } else {
-              redirectTargetUrl += "?";
-              addedQuestionMark = true;
-            }
-            redirectTargetUrl += parameterName + "=" + parameterValue;
-          }
-        }
-      }
-      
-      log.info("Redirecting request to: " + redirectTargetUrl);
+      String redirectTargetUrl = getRedirectTargetUrl(request, redirectHostName);
       return redirectTargetUrl;
     }
+
+    log.info("Routing request for RTF Action: " + paramRTFAction);
 
     if (ACTION_GOOGLE_AUTH.equals(paramRTFAction)) {
       return actionUserGoogleAuthStart(session, reqHost);
@@ -156,9 +135,36 @@ public class ServletInterface {
     return null;
   }
 
+  private static String getRedirectTargetUrl(HttpServletRequest request, String redirectHostName) {
+    String redirectTargetUrl = request.getScheme() + "://" + redirectHostName + request.getRequestURI();
+
+    if (request.getQueryString() != null) {
+      boolean addedQuestionMark = false;
+
+      Enumeration<String> parameterNames = request.getParameterNames();
+      while (parameterNames.hasMoreElements()) {
+        String parameterName = parameterNames.nextElement();
+        String parameterValue = request.getParameter(parameterName);
+        if (!parameterName.equals(PARAM_NAME_RETURNHOST)) { // Discard returnhost parameter
+          if (addedQuestionMark) {
+            redirectTargetUrl += "&";
+          } else {
+            redirectTargetUrl += "?";
+            addedQuestionMark = true;
+          }
+          redirectTargetUrl += parameterName + "=" + parameterValue;
+        }
+      }
+    }
+
+    log.info("Redirecting request to: " + redirectTargetUrl);
+    return redirectTargetUrl;
+  }
+
   private static String buildGoogleCallbackUrl(String reqHost) {
     StringBuilder callbackUrl = new StringBuilder();
-    callbackUrl.append(ServletConfig.HTTP).append(ServletConfig.HOSTNAME_RATETHISFEST).append(ServletConfig.GOOGLE_USER_AUTH_CALLBACK_PATH);
+    callbackUrl.append(ServletConfig.HTTP).append(ServletConfig.HOSTNAME_RATETHISFEST)
+        .append(ServletConfig.GOOGLE_USER_AUTH_CALLBACK_PATH);
     callbackUrl.append("&").append(PARAM_NAME_RETURNHOST).append("=").append(reqHost);
     return callbackUrl.toString();
   }
@@ -175,7 +181,8 @@ public class ServletInterface {
   private static String buildTwitterCallbackUrl(String reqHost) {
     StringBuilder callbackUrl = new StringBuilder(); // This must be set here, google will redirect to whatever is
                                                      // specified
-    callbackUrl.append(ServletConfig.HTTP).append(ServletConfig.HOSTNAME_RATETHISFEST).append(ServletConfig.TWITTER_REDIRECT_PATH);
+    callbackUrl.append(ServletConfig.HTTP).append(ServletConfig.HOSTNAME_RATETHISFEST)
+        .append(ServletConfig.TWITTER_REDIRECT_PATH);
     callbackUrl.append("&").append(PARAM_NAME_RETURNHOST).append("=").append(reqHost);
     return callbackUrl.toString();
   }
@@ -280,6 +287,10 @@ public class ServletInterface {
 
   private static String actionCallbackFacebookAuthScribe(HttpSession session, HttpServletRequest hsRequest)
       throws JsonProcessingException, IOException, RTFAccountException {
+    
+    log.fine("THIS NEVER GETS LOGGED THIS NEVER GETS LOGGED THIS NEVER GETS LOGGED THIS NEVER GETS LOGGED THIS NEVER GETS LOGGED THIS NEVER GETS LOGGED THIS NEVER GETS LOGGED THIS NEVER GETS LOGGED THIS NEVER GETS LOGGED ");
+    log.fine("THIS NEVER GETS LOGGED");
+
     // TODO handle user refused auth
     // TODO handle user failed auth process
     Map parametersMap = hsRequest.getParameterMap();
@@ -295,32 +306,49 @@ public class ServletInterface {
     Verifier verifier = new Verifier(facebookCodeParam);
 
     // Trade the Request Token and Verfier for the Access Token
-    System.out.println("Trading the Request Token for an Access Token...");
+    log.info("Trading the Request Token for an Access Token...");
+    log.info("What is wrong?  1");
     Token nullToken = null;
+    log.info("What is wrong?  2");
     Token accessToken = service.getAccessToken(nullToken, verifier);
+    log.info("What is wrong?  3");
 
     // Now let's go and ask for a protected resource!
     OAuthRequest request = new OAuthRequest(Verb.GET, FACEBOOK_PROTECTED_URL_USERINFO);
+    log.info("What is wrong?  4");
     service.signRequest(accessToken, request);
+    log.info("What is wrong?  5");
     Response response = request.send();
+    log.info("What is wrong?  6");
     int responseCode = response.getCode();
-    log.fine("Response Body: " + response.getBody());
+    log.info("What is wrong?  7");
+    log.info("Response Body: " + response.getBody());
+    log.info("What is wrong?  8");
 
     LoginType loginType = LoginType.FACEBOOK;
+    log.info("What is wrong?  9");
     AuthProviderAccount newProviderAcct = new AuthProviderAccount(response.getBody(), loginType);
+    log.info("What is wrong?  10");
 
     LoginManager.authProviderLoginAccomplished(session, loginType, newProviderAcct);
+    log.info("What is wrong?  11");
     // Can log something here with this, descriptive info should go here once we stop dumping APAccount to log
     String id = newProviderAcct.getProperty(AuthProviderAccount.AUTH_PROVIDER_ID);
+    log.info("What is wrong?  12");
     String name = newProviderAcct.getProperty(AuthProviderAccount.LOGIN_PERSON_NAME);
+    log.info("What is wrong?  13");
     String email = newProviderAcct.getProperty(AuthProviderAccount.LOGIN_EMAIL);
+    log.info("What is wrong?  14");
 
-    // doc.body().appendText("Got Facebook ID: " + id + " name: " + name + " email: " + email);
+    log.fine("Got Facebook ID: " + id + " name: " + name + " email: " + email);
+    log.info("What is wrong?  15");
+    log.info("Got Facebook ID: " + id + " name: " + name + " email: " + email);
+    log.info("What is wrong?  16");
     return ServletConfig.HTTP + hsRequest.getServerName();
   }
 
-  private static String actionCallbackTwitterAuth(HttpSession session, HttpServletRequest hsRequest) throws IOException,
-      JsonProcessingException, RTFAccountException {
+  private static String actionCallbackTwitterAuth(HttpSession session, HttpServletRequest hsRequest)
+      throws IOException, JsonProcessingException, RTFAccountException {
     // TODO handle user refused auth
     // TODO handle user failed auth process
     Map parametersMap = hsRequest.getParameterMap();

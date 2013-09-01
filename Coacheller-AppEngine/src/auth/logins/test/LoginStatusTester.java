@@ -56,7 +56,6 @@ public class LoginStatusTester implements EntryPoint {
           }
 
           public void onSuccess(HashMap<String, String> result) {
-            //TODO Do something with result
             lastUpdatedLabel.setText("Got successful result");
             int currentRow = 0;
             loginStatusTable.setText(currentRow, 0, "KEY");

@@ -12,7 +12,6 @@ public class FacebookAuthUtils {
     // to prevent cross site forgery
     // urlStringBuilder.append("&state=");
     // urlStringBuilder.append("YOUR_STATE_VALUE");
-    // TODO
     // urlStringBuilder.append("&scope=");
     // urlStringBuilder.append("COMMA_SEPARATED_LIST_OF_PERMISSION_NAMES");
     return urlStringBuilder.toString();

@@ -9,7 +9,6 @@ import org.mortbay.log.Log;
 import auth.logins.ServletInterface;
 import auth.logins.client.LoginStatusService;
 import auth.logins.client.LoginStatusServiceAsync;
-import auth.logins.data.MasterAccount;
 import auth.logins.other.LoginType;
 import auth.logins.server.LoginStatusServiceImpl;
 
@@ -55,7 +54,7 @@ public class LoginControl extends Composite implements HasText {
   @UiField
   InlineHyperlink linkLogOut;
   @UiField
-  Label labelUpdating;
+  Label labelLoading;
   @UiField
   InlineLabel labelUsername;
   @UiField
@@ -83,8 +82,9 @@ public class LoginControl extends Composite implements HasText {
   }
 
   private void customInitWidget() {
+    labelLoading.setVisible(true);
     this.loggedInDisplay.setVisible(false);
-    this.loginProviderOptions.setVisible(true);
+    this.loginProviderOptions.setVisible(false);
 
     // Set up the callback object.
     AsyncCallback<HashMap<String, String>> callback = new AsyncCallback<HashMap<String, String>>() {
@@ -96,7 +96,7 @@ public class LoginControl extends Composite implements HasText {
       public void onSuccess(HashMap<String, String> result) {
         // Start reading login results
         logger.log(Level.SEVERE, "Login Status Service Success");
-        labelUpdating.setVisible(false);
+
 
         //LoginControl.this.updateUI(result);
         LoginStatusEvent event = new LoginStatusEvent(result);
@@ -145,6 +145,8 @@ public class LoginControl extends Composite implements HasText {
   }
 
   private void updateUI(HashMap<String, String> result) {
+    labelLoading.setVisible(false);
+    
     int currentRow = 0;
     currentRow++;
     for (String key : result.keySet()) {
@@ -155,12 +157,16 @@ public class LoginControl extends Composite implements HasText {
 
     // Change UI depending on whether user is logged in
     if (result.containsKey(LoginStatusServiceImpl.NOT_LOGGED_IN)) {
-      loggedInDisplay.setVisible(false);
+      loggedInDisplay.setVisible(false);  //Hide Greeting
+      loginProviderOptions.setVisible(true);  //Show login options
+      
     } else {
-      loggedInDisplay.setVisible(true);
-      String userName = result.get(MasterAccount.PROPERTY_PERSON_NAME);
+      
+      String userName = result.get(LoginStatusServiceImpl.PROPERTY_PERSON_NAME);
       labelUsername.setText("Hello, " + userName + ". [");
-
+      loggedInDisplay.setVisible(true);  //Show Greeting
+      
+      //Login Options display needs to be set up...
       boolean loggedInGoogle = result.containsKey(LoginType.GOOGLE.getName());
       boolean loggedInFacebook = result.containsKey(LoginType.FACEBOOK.getName());
       boolean loggedInTwitter = result.containsKey(LoginType.TWITTER.getName());
@@ -202,6 +208,7 @@ public class LoginControl extends Composite implements HasText {
       }
 
       if (loggedInGoogle && loggedInFacebook && loggedInTwitter) {
+        // Dont even show it if everything is logged in
         loginProviderOptions.setVisible(false);
       } else {
         loginProviderOptions.setVisible(true);

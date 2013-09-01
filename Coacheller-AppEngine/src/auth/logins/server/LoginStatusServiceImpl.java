@@ -9,16 +9,19 @@ import javax.servlet.http.HttpSession;
 
 import auth.logins.client.LoginStatusService;
 import auth.logins.data.AuthProviderAccount;
-import auth.logins.data.MasterAccount;
 import auth.logins.other.LoginManager;
 import auth.logins.other.LoginType;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.ratethisfest.server.domain.AppUser;
+import com.ratethisfest.server.persistence.AppUserDAO;
 
 public class LoginStatusServiceImpl extends RemoteServiceServlet implements LoginStatusService {
   
+  public static final String PROPERTY_PERSON_NAME = "PROPERTY_PERSON_NAME";
   public static final String NOT_LOGGED_IN = "NOT_LOGGED_IN";
+
 
   @Override
   public HashMap<String, String> getLoginInfo() {
@@ -30,15 +33,15 @@ public class LoginStatusServiceImpl extends RemoteServiceServlet implements Logi
     HashMap<String, String> returnMap = new HashMap<String, String>();
     
     if (sessionLoggedIn) {  
-      MasterAccount currentLogin = LoginManager.getCurrentLogin(session);
-      long appEngineKeyLong = currentLogin.getAppEngineKeyLong();
-      String personName = currentLogin.getProperty(MasterAccount.PROPERTY_PERSON_NAME);
+      AppUser currentLogin = LoginManager.getCurrentLogin(session);
+      long appEngineKeyLong = currentLogin.getId();
+      String personName = currentLogin.getName();
       
       returnMap.put(Entity.KEY_RESERVED_PROPERTY, appEngineKeyLong+"");
-      returnMap.put("PROPERTY_PERSON_NAME", personName);
+      returnMap.put(PROPERTY_PERSON_NAME, personName);
       
       //Do we really need to provide info about all their accounts?
-      Collection<AuthProviderAccount> apAccounts = currentLogin.getAPAccounts();
+      Collection<AuthProviderAccount> apAccounts = AppUserDAO.getAuthProviderAccounts(currentLogin);
       for (AuthProviderAccount apAccount : apAccounts) {
         String providerName = apAccount.getProperty(AuthProviderAccount.AUTH_PROVIDER_NAME);
         String description = apAccount.getDescription();

@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.KeyRange;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -22,6 +23,7 @@ import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.ratethisfest.server.persistence.AppUserDAO;
 
 public class AuthProviderAccount implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -168,16 +170,22 @@ public class AuthProviderAccount implements Serializable {
     _loginHash.put(propertyName, value);
     this.saveToDatastore();
   }
+  
+  private Key getParentKey(String parentIdStr) {
+  Long idToLookup = Long.valueOf(parentIdStr);
+  return KeyFactory.createKey(AppUserDAO.getAncestorKey(), DATASTORE_KIND, idToLookup);
+  }
 
   private void saveToDatastore() {
 
     // If we are saving it, we must know what RTFAccount owns it
     String parentIdStr = this.getProperty(RTFACCOUNT_OWNER_KEY);
     // Long parentIdLong = Long.valueOf(parentIdStr);
-    Key RTFAccountKey = MasterAccount.getKey(parentIdStr);
+    
+    Key RTFAccountKey = getParentKey(parentIdStr);
 
     Entity apAccountEntity;
-    // TODO here we need to re-use the existing ID if possible
+    // here we need to re-use the existing ID if possible
     if (_datastoreKey == null) {
       log.info("Saving new APAccount, so key is unknown");
       // This is being saved for the first time, we don't have an ID yet
@@ -261,7 +269,6 @@ public class AuthProviderAccount implements Serializable {
   // This allows us to capture when a user updates their info with the auth provider
   // Note, does not copy the datastore key
   public void copyDataTo(AuthProviderAccount overwriteThisAPAccountData) {
-    // TODO Auto-generated method stub
     overwriteThisAPAccountData._loginHash.putAll(this._loginHash);
   }
 

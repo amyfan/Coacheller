@@ -3,7 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style src="../Coacheller.css" />
 	<g:HTMLPanel>
-		<g:Label text="Loading..." horizontalAlignment="ALIGN_CENTER" ui:field="labelUpdating"/>
+		<g:Label text="Loading..." horizontalAlignment="ALIGN_CENTER" ui:field="labelLoading"/>
 		<div align="center">
 		<g:HorizontalPanel ui:field="loginProviderOptions">
 			<g:InlineLabel text="Login With: ["/>

@@ -1,26 +1,27 @@
 package auth.logins.other;
 
+import com.ratethisfest.server.domain.AppUser;
+
 import auth.logins.data.AuthProviderAccount;
-import auth.logins.data.MasterAccount;
 
 public class RTFAccountException extends Exception {
 
-  private MasterAccount _originalOwner;
-  private MasterAccount _newClaimant;
+  private AppUser _originalOwner;
+  private AppUser _newClaimant;
   private AuthProviderAccount _contestedAPAccount;
 
-  public RTFAccountException(MasterAccount currentSessionLogin, MasterAccount ownerOfAddedAPAccount,
+  public RTFAccountException(AppUser currentSessionLogin, AppUser ownerOfAddedAPAccount,
       AuthProviderAccount newAPAccountLogin) {
     _originalOwner = ownerOfAddedAPAccount;
     _newClaimant = currentSessionLogin;
     _contestedAPAccount = newAPAccountLogin;
   }
   
-  public MasterAccount getOriginalOwner() {
+  public AppUser getOriginalOwner() {
     return _originalOwner;
   }
   
-  public MasterAccount getNewClaimant() {
+  public AppUser getNewClaimant() {
     return _newClaimant;
   }
   

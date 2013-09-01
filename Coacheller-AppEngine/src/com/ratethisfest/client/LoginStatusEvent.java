@@ -18,7 +18,6 @@ public class LoginStatusEvent extends GwtEvent<LoginStatusEventHandler> {
   
   @Override
   public com.google.gwt.event.shared.GwtEvent.Type<LoginStatusEventHandler> getAssociatedType() {
-    // TODO Auto-generated method stub
     return TYPE;
   }
 
