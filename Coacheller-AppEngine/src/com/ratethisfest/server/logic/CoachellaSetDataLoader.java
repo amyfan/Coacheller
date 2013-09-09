@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.server.domain.Rating;
-import com.ratethisfest.shared.FestivalEnum;
 import com.ratethisfest.shared.MathUtils;
 import com.ratethisfest.shared.Set;
 

@@ -1,16 +1,27 @@
 package com.ratethisfest.client.ui;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.logging.Logger;
 
+import org.mortbay.log.Log;
 import org.moxieapps.gwt.highcharts.client.Chart;
+import org.moxieapps.gwt.highcharts.client.Loading;
 import org.moxieapps.gwt.highcharts.client.Point;
 import org.moxieapps.gwt.highcharts.client.Series;
+import org.moxieapps.gwt.highcharts.client.events.ChartLoadEvent;
+import org.moxieapps.gwt.highcharts.client.events.ChartLoadEventHandler;
+
+import auth.logins.data.LoginStatus;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -19,14 +30,16 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.CellPreviewEvent;
+import com.google.gwt.view.client.CellPreviewEvent.Handler;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
@@ -34,33 +47,40 @@ import com.google.gwt.visualization.client.ChartArea;
 import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.corechart.AxisOptions;
-import com.google.gwt.visualization.client.visualizations.corechart.BarChart;
 import com.google.gwt.visualization.client.visualizations.corechart.CoreChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
+import com.googlecode.objectify.Key;
+import com.ratethisfest.client.Coacheller_AppEngine;
 import com.ratethisfest.client.ComparatorUtils;
+import com.ratethisfest.client.LoginStatusEvent;
+import com.ratethisfest.client.LoginStatusEventHandler;
 import com.ratethisfest.client.LollapaloozerService;
 import com.ratethisfest.client.LollapaloozerServiceAsync;
 import com.ratethisfest.client.PageToken;
+import com.ratethisfest.data.FestivalEnum;
+import com.ratethisfest.server.domain.AppUser;
+import com.ratethisfest.server.logic.LollaRatingManager;
+import com.ratethisfest.server.persistence.RatingDAO;
 import com.ratethisfest.shared.DateTimeUtils;
+import com.ratethisfest.shared.DayEnum;
+import com.ratethisfest.shared.RatingGwt;
 import com.ratethisfest.shared.Set;
 
 public class LollapaloozerViewComposite extends Composite {
 
-  /**
-   * The message displayed to the user when the server cannot be reached or returns an error.
-   */
-  private static final String SERVER_ERROR = "An error occurred while attempting to contact the server. Please check your network connection and try again.";
+  private static Binder uiBinder = GWT.create(Binder.class);
 
   interface Binder extends UiBinder<Widget, LollapaloozerViewComposite> {
   }
 
-  private static Binder uiBinder = GWT.create(Binder.class);
+  // The message displayed to the user when the server cannot be reached or returns an error.
+  private static final String SERVER_ERROR = "An error occurred while attempting to contact the server. Please check your network connection and try again.";
+  private static final Logger logger = Logger.getLogger(LollapaloozerViewComposite.class.getName());
 
-  /**
-   * Create a remote service proxy to talk to the server-side Lollapaloozer service.
-   */
+  // Create a remote service proxy to talk to the server-side Lollapaloozer service.
   private final LollapaloozerServiceAsync lollapaloozerService = GWT.create(LollapaloozerService.class);
   private List<Set> setsList;
+  private Chart _chart;
 
   @UiField
   Anchor androidUrl;
@@ -91,6 +111,15 @@ public class LollapaloozerViewComposite extends Composite {
 
     initUiElements();
 
+    Coacheller_AppEngine.EVENT_BUS.addHandler(LoginStatusEvent.TYPE, new LoginStatusEventHandler() {
+
+      @Override
+      public void onLoginStatusChange(LoginStatusEvent event) {
+        // LoginControl.this.updateUI(event.getLoginStatus());
+        LollapaloozerViewComposite.this.onLoginStatusChange(Coacheller_AppEngine.LOGIN_STATUS);
+      }
+    });
+
     retrieveSets();
 
     // TODO: see if we wanna auto refresh
@@ -100,6 +129,10 @@ public class LollapaloozerViewComposite extends Composite {
     // return true;
     // }
     // }, DELAY_MS);
+  }
+
+  protected void onLoginStatusChange(LoginStatus loginStatus) {
+    logger.info(this.getClass().getName() + " notified of change in login status, login?:" + loginStatus.isLoggedIn());
   }
 
   private void initUiElements() {
@@ -116,8 +149,10 @@ public class LollapaloozerViewComposite extends Composite {
     Runnable onLoadCallback = new Runnable() {
       @Override
       public void run() {
-        // Create a bar chart
-        setsChartPanel.add(createChart());
+        logger.info("Init UI visualization API loaded handler");
+        _chart = createChart();
+        setsChartPanel.add(_chart);
+        chartShowLoading("Loading (2)");
       }
     };
 
@@ -184,9 +219,11 @@ public class LollapaloozerViewComposite extends Composite {
         Runnable onLoadCallback = new Runnable() {
           @Override
           public void run() {
-            // Create a bar chart
+            logger.info("Chart type change handler running");
             setsChartPanel.clear();
-            setsChartPanel.add(createChart());
+            _chart = createChart();
+            setsChartPanel.add(_chart);
+            chartShowLoading("Loading (1)");
           }
         };
 
@@ -226,6 +263,24 @@ public class LollapaloozerViewComposite extends Composite {
     // });
   }
 
+  public void chartShowLoading(String message) {
+    if (_chart == null) {
+      logger.info("Unexpected, chart is null (" + message + ")");
+      return;
+    }
+    logger.info("Showing chart loading (" + message + ")");
+    _chart.showLoading(message);
+  }
+
+  public void chartHideLoading() {
+    if (_chart == null) {
+      logger.info("Unexpected, chart is null (tried to hide chart)");
+      return;
+    }
+    logger.info("Hiding chart loading");
+    _chart.hideLoading();
+  }
+
   @Override
   public String getTitle() {
     return PageToken.VIEW.getValue();
@@ -233,8 +288,10 @@ public class LollapaloozerViewComposite extends Composite {
 
   private void retrieveSets() {
     infoBox.setText("");
+    chartShowLoading("Loading (0)");
+    FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();
     String day = dayInput.getItemText(dayInput.getSelectedIndex());
-    lollapaloozerService.getSets("2012", day, new AsyncCallback<List<Set>>() {
+    lollapaloozerService.getSets(fest, "2012", DayEnum.fromValue(day), new AsyncCallback<List<Set>>() {
 
       @Override
       public void onFailure(Throwable caught) {
@@ -254,14 +311,17 @@ public class LollapaloozerViewComposite extends Composite {
         Runnable onLoadCallback = new Runnable() {
           @Override
           public void run() {
-            // Create a bar chart
+            logger.info("Retrieve sets completed callback handler");
             setsChartPanel.clear();
-            setsChartPanel.add(createChart());
+            _chart = createChart();
+            setsChartPanel.add(_chart);
+            chartHideLoading();
           }
         };
 
         // Load the visualization api, passing the onLoadCallback to be called
         // when loading is done.
+
         VisualizationUtils.loadVisualizationApi(onLoadCallback, CoreChart.PACKAGE);
 
       }
@@ -333,54 +393,61 @@ public class LollapaloozerViewComposite extends Composite {
   }
 
   private Chart createChart() {
+    if (setsList == null) {
+      Chart chart = new Chart();
+      chart.setHeight(setsTable.getOffsetHeight() * 1.07);
+
+      return chart;
+    }
+
     Chart chart = new Chart().setType(Series.Type.BAR).setChartTitleText("2012 RATING RESULTS").setMarginRight(10);
     chart.getXAxis().setAxisTitleText("Artist");
     chart.getYAxis().setAxisTitleText("Score").setMin(0).setMax(5);
     Series series = chart.createSeries().setName("Average Score");
-    if (setsList != null) {
-      chart.setHeight(setsList.size() * 22);
-      List<String> artistsList = new ArrayList<String>();
-      List<Point> pointsList = new ArrayList<Point>();
+    // chart.setHeight(setsList.size() * 22);
+    List<String> artistsList = new ArrayList<String>();
+    List<Point> pointsList = new ArrayList<Point>();
 
-      if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Artist Name")) {
-        // sort first
-        Collections.sort(setsList, ComparatorUtils.SET_NAME_COMPARATOR);
+    if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Artist Name")) {
+      // sort first
+      Collections.sort(setsList, ComparatorUtils.SET_NAME_COMPARATOR);
 
-        for (Set set : setsList) {
-          artistsList.add(set.getArtistName());
-          Point point = new Point(set.getArtistName(), set.getAvgScoreOne()).setColor("#FF7800");
-          pointsList.add(point);
-        }
-      } else if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Score")) {
-        // sort first
-        Collections.sort(setsList, ComparatorUtils.SET_SCORE_COMPARATOR);
-
-        for (Set set : setsList) {
-          artistsList.add(set.getArtistName());
-          Point point = new Point(set.getArtistName(), set.getAvgScoreOne()).setColor("#FF7800");
-          pointsList.add(point);
-        }
-      } else {
-        // sort first
-        Collections.sort(setsList, ComparatorUtils.SET_TIME_COMPARATOR);
-
-        for (Set set : setsList) {
-          String timeString = DateTimeUtils.militaryToCivilianTime(set.getTimeOne());
-          String nameCombo = timeString + ": " + set.getArtistName();
-          artistsList.add(nameCombo);
-          Point point = new Point(set.getArtistName(), set.getAvgScoreOne()).setColor("#FF7800");
-          pointsList.add(point);
-        }
+      for (Set set : setsList) {
+        artistsList.add(set.getArtistName());
+        Point point = new Point(set.getArtistName(), set.getAvgScoreOne()).setColor("#FF7800");
+        pointsList.add(point);
       }
+    } else if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Score")) {
+      // sort first
+      Collections.sort(setsList, ComparatorUtils.SET_SCORE_COMPARATOR);
 
-      String[] artistsArray = artistsList.toArray(new String[artistsList.size()]);
-      chart.getXAxis().setCategories(artistsArray);
+      for (Set set : setsList) {
+        artistsList.add(set.getArtistName());
+        Point point = new Point(set.getArtistName(), set.getAvgScoreOne()).setColor("#FF7800");
+        pointsList.add(point);
+      }
+    } else {
+      // sort first
+      Collections.sort(setsList, ComparatorUtils.SET_TIME_COMPARATOR);
 
-      Point[] pointsArray = pointsList.toArray(new Point[pointsList.size()]);
-      series.setPoints(pointsArray);
-
-      chart.addSeries(series);
+      for (Set set : setsList) {
+        String timeString = DateTimeUtils.militaryToCivilianTime(set.getTimeOne());
+        String nameCombo = timeString + ": " + set.getArtistName();
+        artistsList.add(nameCombo);
+        Point point = new Point(set.getArtistName(), set.getAvgScoreOne()).setColor("#FF7800");
+        pointsList.add(point);
+      }
     }
+
+    String[] artistsArray = artistsList.toArray(new String[artistsList.size()]);
+    chart.getXAxis().setCategories(artistsArray);
+
+    Point[] pointsArray = pointsList.toArray(new Point[pointsList.size()]);
+    series.setPoints(pointsArray);
+
+    chart.addSeries(series);
+
+    chart.setHeight(setsTable.getOffsetHeight() * 1.07);
     return chart;
   }
 
@@ -391,6 +458,65 @@ public class LollapaloozerViewComposite extends Composite {
     public Column<Set, String> artistNameColumn;
     public Column<Set, String> avgScoreOneColumn;
     public Column<Set, String> stageOneColumn;
+
+    private final class SetClickHandler implements Handler<Set> {
+      
+      private SetsTable _table;
+      public void setOwner(SetsTable owner) {
+        _table = owner;
+      }
+      
+      @Override
+      public void onCellPreview(CellPreviewEvent<Set> event) {
+        // logger.info("CellPreviewHandler called");
+        if (BrowserEvents.MOUSEOVER.equals(event.getNativeEvent().getType())) {
+          _table.getRowElement(event.getIndex()).getCells().getItem(event.getColumn()).setTitle("Click to Rate this set!");
+          
+//          Element cellElement = event.getNativeEvent().getEventTarget().cast();
+//          if (cellElement.getParentElement()
+//              .getFirstChildElement().isOrHasChild(Element.as(event.getNativeEvent().getEventTarget()))
+//              && cellElement.getTagName().equalsIgnoreCase("span")) {
+//          }
+        }
+        
+       
+        if (BrowserEvents.CLICK.equals(event.getNativeEvent().getType())) {
+          Element cellElement = event.getNativeEvent().getEventTarget().cast();
+          // play with element
+          int column = event.getColumn();
+          int index = event.getIndex();
+          Set targetSet = event.getValue();
+
+          logger.info("CellPreviewHandler found browser click column=" + column + " index=" + index);
+          logger.info("Set ID:" + targetSet.getId() + " Artist Name[" + targetSet.getArtistName() + "]");
+
+          if (Coacheller_AppEngine.LOGIN_STATUS.isLoggedIn()) {
+            logger.info("User is logged in, navigating to rate UI"); // We should already have user's ratings if logged
+                                                                     // in
+
+            String accountId = Coacheller_AppEngine.LOGIN_STATUS.getProperty(LoginStatus.PROPERTY_ACCOUNT_ID);
+            // RatingDAO ratingDAO = new RatingDAO(); //should not be accessed in gwt
+            // Key<AppUser> userKey = new Key<AppUser>(AppUser.class,accountId);
+
+            RateDialogBox rateDialog = new RateDialogBox();
+            rateDialog.clear();
+
+            // If there is an existing rating for this set,
+            // Preconfigure Rate dialog
+            LollapaloozerRateComposite lollapaloozerRateComposite = new LollapaloozerRateComposite(targetSet);
+            rateDialog.add(lollapaloozerRateComposite);
+            FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();
+            rateDialog.setTitle(fest.getRTFAppName()); // Sets tooltip, go figure
+            rateDialog.setText(fest.getRTFAppName()); // Sets title, go figure
+            rateDialog.show();
+          } else {
+            logger.info("User is not logged in: Not doing anything on click");
+            RateDialogBox rateDialog = new RateDialogBox();
+            rateDialog.setText("Please log in first.");
+          }
+        }
+      }
+    }
 
     interface TasksTableResources extends CellTable.Resources {
       @Override
@@ -418,6 +544,9 @@ public class LollapaloozerViewComposite extends Composite {
     public SetsTable() {
       super(100, resources);
 
+      SetClickHandler handler = new SetClickHandler();
+      this.addCellPreviewHandler(handler);
+      handler.setOwner(this);
       dayColumn = new Column<Set, String>(new TextCell()) {
         @Override
         public String getValue(Set object) {

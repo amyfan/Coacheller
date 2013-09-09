@@ -20,5 +20,6 @@
 	<source path='shared' />
 	<source path='client' />
 	<source path='other' />
+	<source path='data' />
 
 </module>

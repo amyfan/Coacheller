@@ -14,7 +14,6 @@
   <!-- Other module inherits                                      -->
   <inherits name="com.google.gwt.logging.Logging"/>
   <inherits name='com.google.gwt.visualization.Visualization'/>
-  <inherits name="org.moxieapps.gwt.highcharts.Highcharts"/>
 
   <!-- Stopping this from compiling, this page being phased out  -->
   <!-- 

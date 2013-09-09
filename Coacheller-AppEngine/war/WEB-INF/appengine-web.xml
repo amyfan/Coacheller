@@ -4,7 +4,7 @@
   <version>1</version>
   <threadsafe>true</threadsafe>
   
-  <!-- Hopefully will fix generation of ID's above max Integer value -->
+  <!-- Hopefully will fix generation of ID's above max Integer value -->  
   <auto-id-policy>legacy</auto-id-policy>
 
 

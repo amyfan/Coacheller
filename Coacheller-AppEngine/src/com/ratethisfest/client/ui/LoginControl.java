@@ -9,6 +9,7 @@ import org.mortbay.log.Log;
 import auth.logins.ServletInterface;
 import auth.logins.client.LoginStatusService;
 import auth.logins.client.LoginStatusServiceAsync;
+import auth.logins.data.LoginStatus;
 import auth.logins.other.LoginType;
 import auth.logins.server.LoginStatusServiceImpl;
 
@@ -75,8 +76,8 @@ public class LoginControl extends Composite implements HasText {
 
       @Override
       public void onLoginStatusChange(LoginStatusEvent event) {
-        LoginControl.this.updateUI(event.getLoginStatus());
-        
+        //LoginControl.this.updateUI(event.getLoginStatus());
+        LoginControl.this.updateUI(Coacheller_AppEngine.LOGIN_STATUS);
       }});
     customInitWidget();
   }
@@ -87,19 +88,20 @@ public class LoginControl extends Composite implements HasText {
     this.loginProviderOptions.setVisible(false);
 
     // Set up the callback object.
-    AsyncCallback<HashMap<String, String>> callback = new AsyncCallback<HashMap<String, String>>() {
+    AsyncCallback<LoginStatus> callback = new AsyncCallback<LoginStatus>() {
       public void onFailure(Throwable caught) {
         // TODO: Do something with errors.
         logger.log(Level.SEVERE, "Login Status Callback Exception Caught");
       }
 
-      public void onSuccess(HashMap<String, String> result) {
+      public void onSuccess(LoginStatus result) {
         // Start reading login results
         logger.log(Level.SEVERE, "Login Status Service Success");
 
 
         //LoginControl.this.updateUI(result);
         LoginStatusEvent event = new LoginStatusEvent(result);
+        Coacheller_AppEngine.LOGIN_STATUS = result;
         Coacheller_AppEngine.EVENT_BUS.fireEvent(event);
       }
     };
@@ -144,32 +146,27 @@ public class LoginControl extends Composite implements HasText {
     Window.Location.replace("/sessionsTest?RTFAction=" + ServletInterface.ACTION_DESTROY_ACCOUNT);
   }
 
-  private void updateUI(HashMap<String, String> result) {
+  private void updateUI(LoginStatus loginStatus) {
     labelLoading.setVisible(false);
     
     int currentRow = 0;
     currentRow++;
-    for (String key : result.keySet()) {
-      String value = result.get(key);
-      logger.log(Level.SEVERE, currentRow + ": " + key + " = " + value);
-      currentRow++;
-    }
 
     // Change UI depending on whether user is logged in
-    if (result.containsKey(LoginStatusServiceImpl.NOT_LOGGED_IN)) {
+    if (!loginStatus.isLoggedIn()) {
       loggedInDisplay.setVisible(false);  //Hide Greeting
       loginProviderOptions.setVisible(true);  //Show login options
       
     } else {
       
-      String userName = result.get(LoginStatusServiceImpl.PROPERTY_PERSON_NAME);
+      String userName = loginStatus.getProperty(LoginStatus.PROPERTY_PERSON_NAME);
       labelUsername.setText("Hello, " + userName + ". [");
       loggedInDisplay.setVisible(true);  //Show Greeting
       
       //Login Options display needs to be set up...
-      boolean loggedInGoogle = result.containsKey(LoginType.GOOGLE.getName());
-      boolean loggedInFacebook = result.containsKey(LoginType.FACEBOOK.getName());
-      boolean loggedInTwitter = result.containsKey(LoginType.TWITTER.getName());
+      boolean loggedInGoogle = loginStatus.isLoggedIn(LoginType.GOOGLE);
+      boolean loggedInFacebook = loginStatus.isLoggedIn(LoginType.FACEBOOK);
+      boolean loggedInTwitter = loginStatus.isLoggedIn(LoginType.TWITTER);
 
       if (loggedInGoogle) {
         linkGoogle.setVisible(false);

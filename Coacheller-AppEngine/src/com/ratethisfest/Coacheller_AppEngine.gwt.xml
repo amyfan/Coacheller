@@ -12,16 +12,17 @@
   <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
   <!-- Other module inherits                                      -->
-  
   <inherits name="com.google.gwt.logging.Logging"/>
   <inherits name='com.google.gwt.visualization.Visualization'/>
   <inherits name="org.moxieapps.gwt.highcharts.Highcharts"/>
+  
  
  <!-- 
+ Put 
  
   -->
-  <inherits name="auth.logins.LoginStatus"/> 
- 
+  <inherits name="auth.logins.LoginStatus"/>
+  <inherits name="com.ratethisfest.otherTest"/>
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='com.ratethisfest.client.Coacheller_AppEngine'/>

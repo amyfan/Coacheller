@@ -11,13 +11,18 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
 
+import auth.logins.other.LoginManager;
+
+import com.ratethisfest.client.Coacheller_AppEngine;
+import com.ratethisfest.data.FestivalEnum;
+import com.ratethisfest.data.HttpConstants;
+import com.ratethisfest.server.domain.AppUser;
 import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.server.logic.JSONUtils;
 import com.ratethisfest.server.logic.LollaEmailSender;
 import com.ratethisfest.server.logic.LollaRatingManager;
 import com.ratethisfest.shared.DayEnum;
 import com.ratethisfest.shared.FieldVerifier;
-import com.ratethisfest.shared.HttpConstants;
 import com.ratethisfest.shared.Set;
 
 /**
@@ -51,13 +56,16 @@ public class LollapaloozerServlet extends HttpServlet {
     String year = checkNull(req.getParameter(HttpConstants.PARAM_YEAR));
 
     String respString = "";
+    FestivalEnum fest = FestivalEnum.fromHostname(req.getServerName());
 
     if (action.equals(HttpConstants.ACTION_GET_SETS)) {
-      respString = getSetsJson(year, day);
+      respString = getSetsJson(fest, year, day);
     } else if (action.equals(HttpConstants.ACTION_GET_RATINGS)) {
+
       if (verifyToken(authType, authId, authToken)) {
         respString = getRatingsJsonByUser(authType, authId, authToken, email, year, day);
       }
+
     }
 
     resp.getWriter().println(respString);
@@ -98,8 +106,8 @@ public class LollapaloozerServlet extends HttpServlet {
         addRating(authType, authId, authToken, email, setId, score, notes);
       }
     } else if (action.equals(HttpConstants.ACTION_EMAIL_RATINGS)) {
-      out.println("Calling emailRatings(authType=" + authType + " authId=" + authId + " email="
-          + email + " authToken=" + authToken + ")");
+      out.println("Calling emailRatings(authType=" + authType + " authId=" + authId + " email=" + email + " authToken="
+          + authToken + ")");
       if (verifyToken(authType, authId, authToken)) {
         String result = LollaEmailSender.emailRatings(authType, authId, authToken, email);
         out.println("Result: " + result);
@@ -116,7 +124,7 @@ public class LollapaloozerServlet extends HttpServlet {
     return true;
   }
 
-  private String getSetsJson(String yearString, String day) {
+  private String getSetsJson(FestivalEnum fest, String yearString, String day) {
     String resp = null;
 
     if (!FieldVerifier.isValidYear(yearString)) {
@@ -127,10 +135,11 @@ public class LollapaloozerServlet extends HttpServlet {
       List<Set> sets = null;
 
       Integer year = Integer.valueOf(yearString);
+      
       if (day != null && !day.isEmpty()) {
-        sets = LollaRatingManager.getInstance().findSetsByYearAndDay(year, DayEnum.fromValue(day));
+        sets = LollaRatingManager.getInstance().findSetsByYearAndDay(fest, year, DayEnum.fromValue(day));
       } else {
-        sets = LollaRatingManager.getInstance().findSetsByYear(year);
+        sets = LollaRatingManager.getInstance().findSetsByYear(fest, year);
       }
 
       JSONArray jsonArray = JSONUtils.convertSetsToJSONArray(sets);
@@ -154,8 +163,8 @@ public class LollapaloozerServlet extends HttpServlet {
    * @param day
    * @return
    */
-  private String getRatingsJsonByUser(String authType, String authId, String authToken,
-      String email, String year, String day) {
+  private String getRatingsJsonByUser(String authType, String authId, String authToken, String email, String year,
+      String day) {
     String resp = null;
 
     List<Rating> ratings = null;
@@ -166,8 +175,8 @@ public class LollapaloozerServlet extends HttpServlet {
       } else if (!FieldVerifier.isValidDay(day)) {
         resp = FieldVerifier.DAY_ERROR;
       } else {
-        ratings = LollaRatingManager.getInstance().findRatingsByUserYearAndDay(authType, authId,
-            authToken, email, Integer.valueOf(year), DayEnum.fromValue(day));
+        ratings = LollaRatingManager.getInstance().findRatingsByUserYearAndDay(authType, authId, authToken, email,
+            Integer.valueOf(year), DayEnum.fromValue(day));
       }
     }
 
@@ -181,8 +190,8 @@ public class LollapaloozerServlet extends HttpServlet {
     return resp;
   }
 
-  private String addRating(String authType, String authId, String authToken, String email,
-      String setId, String score, String notes) {
+  private String addRating(String authType, String authId, String authToken, String email, String setId, String score,
+      String notes) {
 
     String resp = null;
     // if (!FieldVerifier.isValidEmail(email)) {
@@ -191,8 +200,8 @@ public class LollapaloozerServlet extends HttpServlet {
     if (!FieldVerifier.isValidScore(score)) {
       resp = FieldVerifier.SCORE_ERROR;
     } else if (authId != null && setId != null) {
-      resp = LollaRatingManager.getInstance().addRatingBySetId(authType, authId, authToken, email,
-          Long.valueOf(setId), Integer.valueOf(score), notes);
+      resp = LollaRatingManager.getInstance().addRatingBySetId(authType, authId, authToken, email, Long.valueOf(setId),
+          Integer.valueOf(score), notes);
     } else {
       resp = "null args";
     }

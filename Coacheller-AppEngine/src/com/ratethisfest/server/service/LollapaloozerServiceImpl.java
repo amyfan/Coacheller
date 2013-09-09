@@ -8,20 +8,26 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import auth.logins.other.LoginManager;
+
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.googlecode.objectify.Key;
 import com.ratethisfest.client.LollapaloozerService;
+import com.ratethisfest.data.FestivalEnum;
+import com.ratethisfest.server.domain.AppUser;
 import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.server.logic.JSONUtils;
 import com.ratethisfest.server.logic.LollaRatingManager;
 import com.ratethisfest.server.logic.LollaSetDataLoader;
+import com.ratethisfest.server.logic.UserAccountManager;
 import com.ratethisfest.shared.DayEnum;
 import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.RatingGwt;
 import com.ratethisfest.shared.Set;
 
 /**
- * The server side implementation of the RPC service. Currently used for GWT
- * client.
+ * The server side implementation of the RPC service. Currently used for GWT client.
  */
 @SuppressWarnings("serial")
 public class LollapaloozerServiceImpl extends RemoteServiceServlet implements LollapaloozerService {
@@ -43,10 +49,16 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     input = escapeHtml(input);
     userAgent = escapeHtml(userAgent);
 
-    return "Hello, " + input + "!<br><br>I am running " + serverInfo
-        + ".<br><br>It looks like you are using:<br>" + userAgent;
+    return "Hello, " + input + "!<br><br>I am running " + serverInfo + ".<br><br>It looks like you are using:<br>"
+        + userAgent;
   }
 
+  // Gets user logged in persisted in session state -MA
+  private AppUser getCurrentLogin() {
+    AppUser currentLogin = LoginManager.getCurrentLogin(getThreadLocalRequest().getSession());
+    return currentLogin;
+  }
+  
   void createSession(String username) {
     getThreadLocalRequest().getSession().setAttribute("username", username);
   }
@@ -59,33 +71,35 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
     }
   }
 
+
   @Override
-  public List<Set> getSets(String yearString, String day) {
+  public List<Set> getSets(FestivalEnum fest, String yearString, DayEnum day) {
     List<Set> sets = null;
 
     Integer year = Integer.valueOf(yearString);
-    if (day != null && !day.isEmpty()) {
-      sets = LollaRatingManager.getInstance().findSetsByYearAndDay(year, DayEnum.fromValue(day));
+    if (day != null) {
+      sets = LollaRatingManager.getInstance().findSetsByYearAndDay(fest, year, day);
     } else {
-      sets = LollaRatingManager.getInstance().findSetsByYear(year);
+      sets = LollaRatingManager.getInstance().findSetsByYear(fest, year);
     }
 
     return sets;
   }
 
   @Override
-  public String addRating(String email, Long setId, String score, String notes) {
+  public String addRating(Long setId, String weekend, String score, String notes) {
+    AppUser currentLogin = getCurrentLogin();
 
     String resp = null;
 
-    if (!FieldVerifier.isValidEmail(email)) {
-      resp = FieldVerifier.EMAIL_ERROR;
-    } else if (!FieldVerifier.isValidScore(score)) {
+    if (!FieldVerifier.isValidScore(score)) {
       resp = FieldVerifier.SCORE_ERROR;
+    } else if (!FieldVerifier.isValidWeekend(weekend)) {
+      resp = FieldVerifier.WEEKEND_ERROR;
     } else if (setId != null) {
       // TODO: implement GWT login auth!
-      resp = LollaRatingManager.getInstance().addRatingBySetId(null, null, null, email, setId,
-          Integer.valueOf(score), notes);
+     // resp = LollaRatingManager.getInstance().addRatingBySetId(null, null, null, email, setId, Integer.valueOf(score), notes);
+      LollaRatingManager.getInstance().addRating(currentLogin.getId(), setId, Integer.valueOf(weekend), Integer.valueOf(score), notes);
     } else {
       log.log(Level.WARNING, "addRatingBySetArtist: null args");
       resp = "null args";
@@ -95,13 +109,37 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
   }
 
   @Override
-  public List<RatingGwt> getRatingsByUserEmail(String email, Integer year) {
+  public List<RatingGwt> getAllRatings() {
+    AppUser currentLogin = getCurrentLogin();
+    if (currentLogin == null) { // If not logged in, return
+      String error = "Action requires login";
+      log.info(error);
+      return null;
+    }
 
+    List<Rating> ratings = LollaRatingManager.getInstance().findRatingsByUser(currentLogin.getId());
+    return JSONUtils.convertRatingsToRatingGwts(ratings);
+  }
+
+  @Override
+  public List<RatingGwt> getRatingsForSet(Set targetSet) {
+    AppUser currentLogin = getCurrentLogin();
+    if (currentLogin == null) { // If not logged in, return
+      String error = "Action requires login";
+      log.info(error);
+      return null;
+    }
+    List<Rating> ratings = LollaRatingManager.getInstance().findRatingsByUserAndSet(currentLogin.getId(),
+        targetSet.getId());
+    return JSONUtils.convertRatingsToRatingGwts(ratings);
+  }
+
+  @Override
+  public List<RatingGwt> getRatingsByUserEmail(String email, Integer year) {
     List<RatingGwt> ratingGwts = null;
 
     if (email != null) {
-      List<Rating> ratings = LollaRatingManager.getInstance().findRatingsByUserEmailAndYear(email,
-          year);
+      List<Rating> ratings = LollaRatingManager.getInstance().findRatingsByUserEmailAndYear(email, year);
       if (ratings != null) {
         ratingGwts = JSONUtils.convertRatingsToRatingGwts(ratings);
       }
@@ -207,8 +245,7 @@ public class LollapaloozerServiceImpl extends RemoteServiceServlet implements Lo
   }
 
   /**
-   * Escape an html string. Escaping data received from the client helps to
-   * prevent cross-site script vulnerabilities.
+   * Escape an html string. Escaping data received from the client helps to prevent cross-site script vulnerabilities.
    * 
    * @param html
    *          the html string to escape

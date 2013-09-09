@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.ratethisfest.client.ClientResources;
-import com.ratethisfest.shared.FestivalEnum;
+import com.ratethisfest.data.FestivalEnum;
 
 public class RTFTitleBanner extends Composite {
 

@@ -11,13 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
 
+import com.ratethisfest.data.HttpConstants;
 import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.server.logic.CoachellaEmailSender;
 import com.ratethisfest.server.logic.CoachellaRatingManager;
 import com.ratethisfest.server.logic.JSONUtils;
 import com.ratethisfest.shared.DayEnum;
 import com.ratethisfest.shared.FieldVerifier;
-import com.ratethisfest.shared.HttpConstants;
 import com.ratethisfest.shared.Set;
 
 /**

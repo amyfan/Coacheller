@@ -9,7 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.ratethisfest.shared.FestivalEnum;
+import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.shared.Set;
 
 /**

@@ -2,6 +2,8 @@ package com.ratethisfest.client;
 
 import java.util.HashMap;
 
+import auth.logins.data.LoginStatus;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 
@@ -10,9 +12,9 @@ public class LoginStatusEvent extends GwtEvent<LoginStatusEventHandler> {
 
   public static Type<LoginStatusEventHandler> TYPE = new Type<LoginStatusEventHandler>();
   
-  private final HashMap<String, String> _loginStatus;
+  private final LoginStatus _loginStatus;
   
-  public LoginStatusEvent(HashMap loginStatus) {
+  public LoginStatusEvent(LoginStatus loginStatus) {
     _loginStatus = loginStatus;
   }
   
@@ -26,7 +28,7 @@ public class LoginStatusEvent extends GwtEvent<LoginStatusEventHandler> {
     handler.onLoginStatusChange(this);
   }
   
-  public HashMap<String, String> getLoginStatus() {
+  public LoginStatus getLoginStatus() {
     return _loginStatus;
   }
 

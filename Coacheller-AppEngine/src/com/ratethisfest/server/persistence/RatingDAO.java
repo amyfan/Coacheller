@@ -7,9 +7,9 @@ import java.util.logging.Logger;
 import com.google.appengine.api.datastore.QueryResultIterable;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Query;
+import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.server.domain.AppUser;
 import com.ratethisfest.server.domain.Rating;
-import com.ratethisfest.shared.FestivalEnum;
 import com.ratethisfest.shared.Set;
 
 /**
@@ -72,7 +72,15 @@ public class RatingDAO {
     return q.list();
   }
 
-  public List<Rating> findRatingsByUserKeyAndSetKey(Key<AppUser> userKey, Key<Set> setKey,
+  //Derived from similar method -MA
+  public List<Rating> findRatingsByUserKeyAndSetKey(Key<AppUser> userKey, Key<Set> setKey) {
+    Query<Rating> q = dao.getObjectify().query(Rating.class).filter("set", setKey)
+        .filter("rater", userKey);
+    return q.list();
+  }
+  
+  //Changed method name to describe parameters -MA
+  public List<Rating> findRatingsByUserKeyAndSetKeyAndWeek(Key<AppUser> userKey, Key<Set> setKey,
       Integer weekend) {
     Query<Rating> q = dao.getObjectify().query(Rating.class).filter("set", setKey)
         .filter("rater", userKey).filter("weekend", weekend);

@@ -1,4 +1,4 @@
-package com.ratethisfest.data;
+package com.ratethisfest.shared;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,7 +13,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.ratethisfest.android.log.LogController;
-import com.ratethisfest.shared.FestivalEnum;
+import com.ratethisfest.data.AndroidConstants;
+import com.ratethisfest.data.DaysHashMap;
+import com.ratethisfest.data.FestivalEnum;
 
 public class CalendarUtils {
   // public static HashMap<Integer, String> days; //Not used?

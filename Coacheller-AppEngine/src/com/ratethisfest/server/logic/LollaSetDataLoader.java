@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.ratethisfest.shared.FestivalEnum;
+import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.shared.Set;
 
 public class LollaSetDataLoader extends SetDataLoader {

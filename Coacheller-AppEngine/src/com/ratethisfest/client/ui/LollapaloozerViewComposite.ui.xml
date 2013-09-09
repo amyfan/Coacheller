@@ -4,8 +4,9 @@
 	xmlns:v='urn:import:com.google.gwt.visualization.client.visualizations.corechart'>
 
 	<ui:style src="../Coacheller.css" />
-	<ui:with field='res' type='com.ratethisfest.client.ClientResources'/>
 		
+	<ui:with field='res' type='com.ratethisfest.client.ClientResources' />
+
 	<g:HTMLPanel>
 		<div id="container" align="center">
 			<div id="android"></div>
@@ -13,10 +14,6 @@
 				<g:Anchor ui:field="androidUrl" addStyleNames="{style.textLast}" />
 			</div>
 			<div class="roundrect">
-				<!--div class="buttoncell">
-					<g:Button ui:field="rateButton" text="Rate a Set"
-						addStyleNames="{style.button}" />
-				</div-->
 				<div class="infocell">
 					<g:Label ui:field="infoBox" addStyleNames="{style.info}" />
 				</div>
@@ -25,13 +22,15 @@
 					<g:ListBox ui:field="chartTypeInput" />
 					<g:ListBox ui:field="dayInput" addStyleNames="{style.text}" />
 				</div>
-				<div class="chartcell">
-					<g:SimplePanel ui:field="setsChartPanel" />
-				</div>
-				<div class="tablecell">
-					<t:LollapaloozerViewComposite.SetsTable
-						ui:field="setsTable" />
-				</div>
+<g:HorizontalPanel>
+					<!-- <div class="chartcell"> -->
+						<g:SimplePanel ui:field="setsChartPanel" />
+					<!-- </div> -->
+					<!-- <div class="tablecell"> -->
+						<t:LollapaloozerViewComposite.SetsTable
+							ui:field="setsTable" />
+					<!-- </div> -->
+</g:HorizontalPanel>
 			</div>
 		</div>
 	</g:HTMLPanel>

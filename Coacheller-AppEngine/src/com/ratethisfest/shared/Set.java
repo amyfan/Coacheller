@@ -36,6 +36,10 @@ public class Set implements IsSerializable {
 
   public Set() {
   }
+  
+  public String toString() {
+    return "Set id[" + getId() +"] Artist["+ getArtistName() +"] year["+ getYear() +"] day["+ getDay() +"] fest["+ getFestival() +"]";
+  }
 
   public Long getId() {
     return id;

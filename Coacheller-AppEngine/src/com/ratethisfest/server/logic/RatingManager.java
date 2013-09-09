@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.googlecode.objectify.Key;
+import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.server.domain.AppUser;
 import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.server.persistence.RatingDAO;
 import com.ratethisfest.server.persistence.SetDAO;
-import com.ratethisfest.shared.FestivalEnum;
 import com.ratethisfest.shared.Set;
 
 /**
@@ -42,7 +42,7 @@ public abstract class RatingManager {
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     List<Rating> ratings = new ArrayList<Rating>();
     if (setKey != null) {
-      ratings = ratingDao.findRatingsByUserKeyAndSetKey(userKey, setKey, 1);
+      ratings = ratingDao.findRatingsByUserKeyAndSetKeyAndWeek(userKey, setKey, 1);
     }
     return ratings;
   }

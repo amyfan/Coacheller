@@ -1,8 +1,12 @@
-package com.ratethisfest.client;
+package com.ratethisfest.client.ui;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.mortbay.log.Log;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.cell.client.ButtonCell;
@@ -25,6 +29,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
@@ -33,37 +38,41 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-import com.ratethisfest.client.ui.LollapaloozerViewComposite;
+import com.ratethisfest.client.Coacheller_AppEngine;
+import com.ratethisfest.client.ComparatorUtils;
+import com.ratethisfest.client.FlowControl;
+import com.ratethisfest.client.LollapaloozerService;
+import com.ratethisfest.client.LollapaloozerServiceAsync;
+import com.ratethisfest.client.PageToken;
+import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.RatingGwt;
 import com.ratethisfest.shared.Set;
 
 public class LollapaloozerRateComposite extends Composite {
+  
+  
+  private static final Logger logger = Logger.getLogger(LollapaloozerRateComposite.class.getName());
+  private final LollapaloozerServiceAsync lollapaloozerService = GWT.create(LollapaloozerService.class);
 
-  /**
-   * The message displayed to the user when the server cannot be reached or
-   * returns an error.
-   */
-  private static final String SERVER_ERROR = "An error occurred while "
-      + "attempting to contact the server. Please check your network "
-      + "connection and try again.";
 
   private static final String ADMIN_EMAIL = "afan@coacheller.com";
   private static final String ADMIN_ERROR = "You do not have permission to do this. Sorry.";
+  private static final String SERVER_ERROR = "An error occurred while "
+      + "attempting to contact the server. Please check your network " + "connection and try again.";
 
   private String ownerEmail = "";
 
-  interface Binder extends UiBinder<Widget, LollapaloozerRateComposite> {
-  }
 
-  private static Binder uiBinder = GWT.create(Binder.class);
-
-  private final LollapaloozerServiceAsync lollapaloozerService = GWT
-      .create(LollapaloozerService.class);
-  
   private List<Set> setsList = new ArrayList<Set>();
   private List<RatingGwt> ratingsList;
+  private Set _targetSet;
 
+  private static Binder uiBinder = GWT.create(Binder.class);
+  interface Binder extends UiBinder<Widget, LollapaloozerRateComposite> {
+  }
+  
+  
   @UiField
   Label title;
 
@@ -83,7 +92,7 @@ public class LollapaloozerRateComposite extends Composite {
   Label notesLabel;
 
   @UiField
-  ListBox setInput;
+  ListBox weekInput;
 
   @UiField
   RadioButton scoreOneRadioButton;
@@ -128,23 +137,39 @@ public class LollapaloozerRateComposite extends Composite {
   @UiField
   RatingsTable ratingsTable;
 
-  public LollapaloozerRateComposite() {
+
+  public LollapaloozerRateComposite(Set targetSet) {
+    _targetSet = targetSet;
     initWidget(uiBinder.createAndBindUi(this));
-
     initUiElements();
+    retrieveRatings();
   }
 
-  public LollapaloozerRateComposite(String ownerEmail) {
-    this();
-    this.ownerEmail = ownerEmail;
-    retrieveSets();
-    retrieveRatings();
-    emailLabel.setText(ownerEmail);
-  }
+  // public LollapaloozerRateComposite(String ownerEmail) {
+  // this();
+  // this.ownerEmail = ownerEmail;
+  // retrieveSets();
+  // retrieveRatings();
+  // emailLabel.setText(ownerEmail);
+  // }
 
   private void initUiElements() {
-    title.setText("LOLLAPALOOZER 2012");
+    title.setText(_targetSet.getArtistName());
     subtitle.setText("Rate This Set");
+
+    // Compute number of weeks in this fest
+    String hostName = Window.Location.getHostName();
+    FestivalEnum fest = FestivalEnum.fromHostname(hostName);
+    int festivalMaxNumberOfWeeks = fest.getNumberOfWeeks();
+    
+    for (int i = 0; i < festivalMaxNumberOfWeeks; i++) { // Populate weekend selector
+      weekInput.insertItem("Week " + (i+1), i);
+    }
+
+    if (festivalMaxNumberOfWeeks == 1) {
+      weekInput.setVisible(false); // Render weekend selector invisible, value is still needed
+    } 
+    
 
     ListDataProvider<RatingGwt> listDataProvider = new ListDataProvider<RatingGwt>();
     listDataProvider.addDataDisplay(ratingsTable);
@@ -159,7 +184,7 @@ public class LollapaloozerRateComposite extends Composite {
 
     notesLabel.setText("Notes (optional)");
 
-    setInput.addChangeHandler(new ChangeHandler() {
+    weekInput.addChangeHandler(new ChangeHandler() {
       @Override
       public void onChange(ChangeEvent event) {
         loadRatingContents();
@@ -180,14 +205,7 @@ public class LollapaloozerRateComposite extends Composite {
       }
     });
 
-    addRatingButton.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        addRating();
-
-        androidAnimation.run(400);
-      }
-    });
+    addRatingButton.addClickHandler(new RateClickHandler(androidAnimation));
 
     emailButton.addClickHandler(new ClickHandler() {
       @Override
@@ -328,57 +346,38 @@ public class LollapaloozerRateComposite extends Composite {
     return PageToken.RATE.getValue() + "=" + ownerEmail;
   }
 
-  private void retrieveSets() {
-    infoBox.setText("");
-    lollapaloozerService.getSets("2012", null, new AsyncCallback<List<Set>>() {
+  private void retrieveRatings() {
+    // TODO: year input eventually
+    lollapaloozerService.getRatingsForSet(_targetSet, new AsyncCallback<List<RatingGwt>>() {
 
       @Override
       public void onFailure(Throwable caught) {
+        logger.info("Failed to get ratings for set: "+ _targetSet.getId());
         // Show the RPC error message to the user
         infoBox.setText(SERVER_ERROR);
       }
 
       @Override
-      public void onSuccess(List<Set> result) {
-        ArrayList<Set> sortedItems = new ArrayList<Set>(result);
-        Collections.sort(sortedItems, ComparatorUtils.SET_NAME_COMPARATOR);
-        setsList.clear();
-        setsList.addAll(sortedItems);
-
-        setInput.clear();
-        for (Set set : sortedItems) {
-          setInput.addItem(set.getDay() + " " + set.getTimeOne() + " - " + set.getArtistName(), set
-              .getId().toString());
-        }
+      public void onSuccess(List<RatingGwt> result) {
+        logger.info("Got "+ result.size() +" ratings for set: "+ _targetSet.getId());
+        ratingsList.clear();
+        ratingsList.addAll(result);
+        Collections.sort(ratingsList, ComparatorUtils.RATING_NAME_COMPARATOR);
+        loadRatingContents();
       }
     });
   }
 
-  private void retrieveRatings() {
-    // TODO: year input eventually
-    lollapaloozerService.getRatingsByUserEmail(ownerEmail, 2012,
-        new AsyncCallback<List<RatingGwt>>() {
-
-          @Override
-          public void onFailure(Throwable caught) {
-            // Show the RPC error message to the user
-            infoBox.setText(SERVER_ERROR);
-          }
-
-          @Override
-          public void onSuccess(List<RatingGwt> result) {
-            ratingsList.clear();
-            ratingsList.addAll(result);
-            Collections.sort(ratingsList, ComparatorUtils.RATING_NAME_COMPARATOR);
-          }
-        });
-  }
-
   private void loadRatingContents() {
+    logger.info("Configuring dialog with rating info");
     notesInput.setText("");
-    Set set = setsList.get(setInput.getSelectedIndex());
+    //Set set = setsList.get(weekInput.getSelectedIndex());
+    boolean matchFound = false;
     for (RatingGwt rating : ratingsList) {
-      if (set.getId().equals(rating.getSetId())) {
+      if (_targetSet.getId().equals(rating.getSetId()) //Same set
+          && weekInput.getSelectedIndex()+1 == rating.getWeekend()) { //And same week 
+        logger.info("Matched rating and set");
+        matchFound = true;
         if (rating.getScore() == 1) {
           scoreOneRadioButton.setValue(true);
         } else if (rating.getScore() == 2) {
@@ -396,11 +395,23 @@ public class LollapaloozerRateComposite extends Composite {
         break;
       }
     }
+    
+    if (!matchFound) {
+      logger.info("Could not find existing rating, clearing inputs");
+      scoreOneRadioButton.setValue(false);
+      scoreTwoRadioButton.setValue(false);
+      scoreThreeRadioButton.setValue(false);
+      scoreFourRadioButton.setValue(false);
+      scoreFiveRadioButton.setValue(false);
+      notesInput.setValue("");
+    }
   }
 
   private void addRating() {
+    
     infoBox.setText("");
-    Set set = setsList.get(setInput.getSelectedIndex());
+    //Set set = setsList.get(weekInput.getSelectedIndex());
+    Set set = _targetSet;
     String score = null;
     if (scoreOneRadioButton.getValue()) {
       score = scoreOneRadioButton.getText();
@@ -414,30 +425,41 @@ public class LollapaloozerRateComposite extends Composite {
       score = scoreFiveRadioButton.getText();
     }
     String notes = notesInput.getText();
-    if (!FieldVerifier.isValidEmail(ownerEmail)) {
-      infoBox.setText(FieldVerifier.EMAIL_ERROR);
-      return;
-    }
+    
+//    if (!FieldVerifier.isValidEmail(ownerEmail)) {
+//      infoBox.setText(FieldVerifier.EMAIL_ERROR);
+//      return;
+//    }
+    
     if (!FieldVerifier.isValidScore(score)) {
       infoBox.setText(FieldVerifier.SCORE_ERROR);
       return;
     }
 
     // Then, we send the input to the server.
-    lollapaloozerService.addRating(ownerEmail, set.getId(), score, notes,
-        new AsyncCallback<String>() {
-          @Override
-          public void onFailure(Throwable caught) {
-            // Show the RPC error message to the user
-            infoBox.setText(SERVER_ERROR);
-          }
+    int weekValue = weekInput.getSelectedIndex() +1;  //If week 1 is selected, index will be 0
+    lollapaloozerService.addRating(set.getId(), weekValue+"", score, notes, new AsyncCallback<String>() {
+      @Override
+      public void onFailure(Throwable caught) {
+        logger.info("Failed to add rating");
+        // Show the RPC error message to the user
+        infoBox.setText(SERVER_ERROR);
+      }
 
-          @Override
-          public void onSuccess(String result) {
-            infoBox.setText(result);
-            retrieveRatings();
-          }
-        });
+      @Override
+      public void onSuccess(String result) {
+        logger.info("Add rating success");
+        infoBox.setText(result);
+        retrieveRatings();  //Maybe don't do this if we are hiding
+      }
+    });
+    
+    Widget parent = LollapaloozerRateComposite.this.getParent().getParent();
+    if (parent instanceof RateDialogBox) {
+      ((RateDialogBox) parent).hide();
+    } else {
+      logger.log(Level.INFO, "Unexpected - parent is not a RateDialogBox, not hiding");
+    }
   }
 
   private void deleteRating(RatingGwt rating) {
@@ -458,6 +480,33 @@ public class LollapaloozerRateComposite extends Composite {
     ratingsList.remove(rating);
   }
 
+  //Maybe don't need to use this?
+  private void retrieveSets() {
+    infoBox.setText("");
+    FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();
+    lollapaloozerService.getSets(fest, "2012", null, new AsyncCallback<List<Set>>() {
+  
+      @Override
+      public void onFailure(Throwable caught) {
+        // Show the RPC error message to the user
+        infoBox.setText(SERVER_ERROR);
+      }
+  
+      @Override
+      public void onSuccess(List<Set> result) {
+        ArrayList<Set> sortedItems = new ArrayList<Set>(result);
+        Collections.sort(sortedItems, ComparatorUtils.SET_NAME_COMPARATOR);
+        setsList.clear();
+        setsList.addAll(sortedItems);
+  
+        weekInput.clear();
+        for (Set set : sortedItems) {
+          weekInput.addItem(set.getDay() + " " + set.getTimeOne() + " - " + set.getArtistName(), set.getId().toString());
+        }
+      }
+    });
+  }
+
   public static class RatingsTable extends CellTable<RatingGwt> {
 
     public Column<RatingGwt, String> artistNameColumn;
@@ -468,7 +517,7 @@ public class LollapaloozerRateComposite extends Composite {
 
     interface TasksTableResources extends CellTable.Resources {
       @Override
-      @Source("RatingsTable.css")
+      @Source("../RatingsTable.css")
       TableStyle cellTableStyle();
     }
 
@@ -555,6 +604,27 @@ public class LollapaloozerRateComposite extends Composite {
       addColumn(deleteColumn, "\u2717");
       addColumnStyleName(4, "columnFill");
       addColumnStyleName(4, resources.cellTableStyle().columnTrash());
+    }
+  }
+
+  private final class RateClickHandler implements ClickHandler {
+    private final Animation androidAnimation;
+  
+    private RateClickHandler(Animation androidAnimation) {
+      this.androidAnimation = androidAnimation;
+    }
+  
+    @Override
+    public void onClick(ClickEvent event) {
+      logger.info("Add Rating button clicked!");
+      if (event.getSource() == addRatingButton) {
+        logger.info("Click event source works as expected");
+      } else {
+        logger.info("Click event source does not work as expected");
+      }
+      addRating();
+  
+      androidAnimation.run(400);
     }
   }
 

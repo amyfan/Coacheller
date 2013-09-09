@@ -9,7 +9,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import com.ratethisfest.shared.FestivalEnum;
+import com.ratethisfest.data.FestivalEnum;
 
 public class FestivalIndexComposite extends Composite {
 

@@ -7,10 +7,10 @@ import java.util.logging.Logger;
 
 import com.google.appengine.api.datastore.QueryResultIterable;
 import com.googlecode.objectify.Key;
+import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.server.domain.AppUser;
 import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.shared.DayEnum;
-import com.ratethisfest.shared.FestivalEnum;
 import com.ratethisfest.shared.MathUtils;
 import com.ratethisfest.shared.Set;
 
@@ -39,6 +39,51 @@ public class LollaRatingManager extends RatingManager {
 
   public static LollaRatingManager getInstance() {
     return SingletonHolder.instance;
+  }
+  
+  //Get all ratings by user -MA
+  public List<Rating> findRatingsByUser(Long userId) {  //Avoids implementation details of user
+    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyById(userId);
+    return ratingDao.findAllRatingsByUserKey(userKey);
+  }  
+  
+  //Get all ratings by user for one set -MA
+  public List<Rating> findRatingsByUserAndSet(Long userId, Long setId) {  //Avoids implementation details of user, set
+    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyById(userId);
+    Key<Set> setKey = setDao.findSetKeyById(setId);
+    
+    return ratingDao.findRatingsByUserKeyAndSetKey(userKey, setKey);
+  }
+
+  //Derived from similar private method.  Non-browser (i.e. mobile) clients must authenticate every request -MA
+  public Rating addRating(long userId, long setId, Integer week, Integer score, String notes) {
+    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyById(userId);
+    Key<Set> setKey = setDao.findSetKeyById(setId);
+    
+    List<Rating> existingRatingList = ratingDao.findRatingsByUserKeyAndSetKeyAndWeek(userKey, setKey, week);
+    if (existingRatingList.size() == 0) {
+      log.info("No existing rating, creating new");
+      Rating rating = new Rating();
+      rating.setSet(setKey);
+      rating.setScore(score);
+      rating.setWeekend(week);
+      rating.setNotes(notes);
+      rating.setRater(userKey);
+      rating.setDateCreated(new Date());
+      
+      updateScoreAverageAfterAdd(rating);
+      
+      return ratingDao.updateRating(rating);
+      
+    } else if (existingRatingList.size() == 1) {
+      log.info("Rating exists, updating");
+      Rating existingRating = existingRatingList.get(0);
+      return updateRating(existingRating, score, notes);
+      
+    } else {
+      log.info("Unexpected - More than 1 user rating found");
+      return null;
+    }
   }
 
   /**
@@ -294,13 +339,13 @@ public class LollaRatingManager extends RatingManager {
     }
   }
 
-  public List<Set> findSetsByYear(Integer year) {
-    List<Set> ratings = setDao.findSetsByYear(FestivalEnum.LOLLAPALOOZA, year);
+  public List<Set> findSetsByYear(FestivalEnum fest, Integer year) {
+    List<Set> ratings = setDao.findSetsByYear(fest, year);
     return ratings;
   }
 
-  public List<Set> findSetsByYearAndDay(Integer year, DayEnum day) {
-    List<Set> set = setDao.findSetsByYearAndDay(FestivalEnum.LOLLAPALOOZA, year, day);
+  public List<Set> findSetsByYearAndDay(FestivalEnum fest, Integer year, DayEnum day) {
+    List<Set> set = setDao.findSetsByYearAndDay(fest, year, day);
     return set;
   }
 

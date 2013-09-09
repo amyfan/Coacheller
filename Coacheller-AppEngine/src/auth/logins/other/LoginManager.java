@@ -43,10 +43,10 @@ public class LoginManager {
     // be null
 
     if (currentSessionLogin == null) {// if it is not saved in the current session attribute
-      log.fine("No session is currently logged in");
+      log.info("No session is currently logged in");
       RTFAccountToLoginOrUpdate = ownerOfAddedAPAccount; // Assign AP account owner from datastore, might be null
       if (ownerOfAddedAPAccount == null) { // if it is not in datastore either
-        log.fine("No master account owning this APAccount was found");
+        log.info("No master account owning this APAccount was found");
         RTFAccountToLoginOrUpdate = new AppUser(); // Create new account
         RTFAccountToLoginOrUpdate.setName(newAPAccountLogin.getProperty(AuthProviderAccount.LOGIN_PERSON_NAME));
         RTFAccountToLoginOrUpdate.setDateCreated(new Date());
@@ -54,8 +54,8 @@ public class LoginManager {
         appUserDao.updateAppUser(RTFAccountToLoginOrUpdate);
       }
     } else {
-      log.fine("Session is already logged in");
-      if (ownerOfAddedAPAccount != null && currentSessionLogin.getId() != ownerOfAddedAPAccount.getId()) {
+      log.info("Session is already logged in");
+      if (ownerOfAddedAPAccount != null && currentSessionLogin.getId().longValue() != ownerOfAddedAPAccount.getId().longValue()) {
         String newAPTypeName = newAPAccountLogin.getProperty(AuthProviderAccount.AUTH_PROVIDER_NAME);
         String newAPDescription = newAPAccountLogin.getDescription();
 

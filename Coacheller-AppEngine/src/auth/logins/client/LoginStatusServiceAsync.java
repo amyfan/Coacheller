@@ -1,10 +1,10 @@
 package auth.logins.client;
 
-import java.util.HashMap;
+import auth.logins.data.LoginStatus;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface LoginStatusServiceAsync {
 
-  void getLoginInfo(AsyncCallback<HashMap<String, String>> callback);
+  void getLoginInfo(AsyncCallback<LoginStatus> callback);
 }

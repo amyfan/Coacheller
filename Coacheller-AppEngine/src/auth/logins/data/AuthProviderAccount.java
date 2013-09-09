@@ -283,4 +283,9 @@ public class AuthProviderAccount implements Serializable {
     }
   }
 
+  
+  public LoginType getLoginType() {
+    String providerName = _loginHash.get(AUTH_PROVIDER_NAME);
+    return LoginType.fromString(providerName);
+  }
 }

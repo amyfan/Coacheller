@@ -1,4 +1,4 @@
-package com.ratethisfest.data;
+package com.ratethisfest.shared;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,7 +15,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Maps;
 import com.ratethisfest.android.log.LogController;
-import com.ratethisfest.shared.FestivalEnum;
+import com.ratethisfest.data.DaysHashMap;
+import com.ratethisfest.data.FestivalEnum;
+import com.ratethisfest.shared.CalendarUtils;
 
 public enum FestData {
   INSTANCE; // Singleton magic
@@ -31,7 +33,7 @@ public enum FestData {
   private static final ImmutableTable<Integer, String, String> festTable;
 
   static {
-    LogController.MULTIWEEK.logMessage("FestData initializing - should only happen once");
+    //LogController.MULTIWEEK.logMessage("FestData initializing - should only happen once");
     ImmutableTable.Builder<Integer, String, String> tableBuilder = new ImmutableTable.Builder<Integer, String, String>();
 
     String festName;
@@ -185,7 +187,7 @@ public enum FestData {
       rowsToReturn.retainAll(matchingRows);
       size = rowsToReturn.size();
     }
-    LogController.OTHER.logMessage("FestData Search: " + debugSearchParams);
+    //LogController.OTHER.logMessage("FestData Search: " + debugSearchParams);
 
     Predicate<Integer> returnPredicate = Predicates.in(rowsToReturn);
     return Maps.filterKeys(festTable.rowMap(), returnPredicate);

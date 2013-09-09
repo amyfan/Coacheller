@@ -1,4 +1,4 @@
-package com.ratethisfest.shared;
+package com.ratethisfest.data;
 
 public class HttpConstants {
   // TODO ideally placed in resource file

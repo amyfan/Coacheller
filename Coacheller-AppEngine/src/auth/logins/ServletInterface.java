@@ -213,8 +213,7 @@ public class ServletInterface {
     log.info("Setting Facebook callback URL: " + facebookCallbackUrl.toString());
     // Attempt to implement Facebook with scribe
     OAuthService service = new ServiceBuilder().provider(FacebookApi.class).apiKey(ServletConfig.FACEBOOK_ID)
-        .apiSecret(ServletConfig.FACEBOOK_SECRET).callback(facebookCallbackUrl).build();
-    // Scanner in = new Scanner(System.in);
+        .apiSecret(ServletConfig.FACEBOOK_SECRET).callback(facebookCallbackUrl).scope("email").build();
 
     // Obtain the Authorization URL
     System.out.println("Fetching the Authorization URL...");
@@ -275,7 +274,7 @@ public class ServletInterface {
     // TODO need to handle if user refuses the app
     // TODO need to handle if user fails auth process
 
-    log.fine(response.getCode() + "\r\n" + response.getBody());
+    log.info(response.getCode() + "\r\n" + response.getBody());
 
     LoginType loginType = LoginType.GOOGLE;
     AuthProviderAccount newProviderAcct = new AuthProviderAccount(response.getBody(), loginType);
@@ -287,9 +286,6 @@ public class ServletInterface {
 
   private static String actionCallbackFacebookAuthScribe(HttpSession session, HttpServletRequest hsRequest)
       throws JsonProcessingException, IOException, RTFAccountException {
-    
-    log.fine("THIS NEVER GETS LOGGED THIS NEVER GETS LOGGED THIS NEVER GETS LOGGED THIS NEVER GETS LOGGED THIS NEVER GETS LOGGED THIS NEVER GETS LOGGED THIS NEVER GETS LOGGED THIS NEVER GETS LOGGED THIS NEVER GETS LOGGED ");
-    log.fine("THIS NEVER GETS LOGGED");
 
     // TODO handle user refused auth
     // TODO handle user failed auth process
@@ -298,7 +294,9 @@ public class ServletInterface {
 
     // Facebook user auth has returned
     OAuthService service = new ServiceBuilder().provider(FacebookApi.class).apiKey(ServletConfig.FACEBOOK_ID)
-        .apiSecret(ServletConfig.FACEBOOK_SECRET).callback(callbackUrl).build();
+        .apiSecret(ServletConfig.FACEBOOK_SECRET).callback(callbackUrl).scope("email").build();
+//    OAuthService service = new ServiceBuilder().provider(FacebookApi.class).apiKey(ServletConfig.FACEBOOK_ID)
+//        .apiSecret(ServletConfig.FACEBOOK_SECRET).callback(callbackUrl).build();
     // OAuthService service = (OAuthService)req.getSession().getAttribute("scribeservice");
     // String authorizationUrl = service.getAuthorizationUrl(null);
 
@@ -307,43 +305,28 @@ public class ServletInterface {
 
     // Trade the Request Token and Verfier for the Access Token
     log.info("Trading the Request Token for an Access Token...");
-    log.info("What is wrong?  1");
+
     Token nullToken = null;
-    log.info("What is wrong?  2");
     Token accessToken = service.getAccessToken(nullToken, verifier);
-    log.info("What is wrong?  3");
 
     // Now let's go and ask for a protected resource!
     OAuthRequest request = new OAuthRequest(Verb.GET, FACEBOOK_PROTECTED_URL_USERINFO);
-    log.info("What is wrong?  4");
     service.signRequest(accessToken, request);
-    log.info("What is wrong?  5");
     Response response = request.send();
-    log.info("What is wrong?  6");
     int responseCode = response.getCode();
-    log.info("What is wrong?  7");
     log.info("Response Body: " + response.getBody());
-    log.info("What is wrong?  8");
 
     LoginType loginType = LoginType.FACEBOOK;
-    log.info("What is wrong?  9");
     AuthProviderAccount newProviderAcct = new AuthProviderAccount(response.getBody(), loginType);
-    log.info("What is wrong?  10");
 
     LoginManager.authProviderLoginAccomplished(session, loginType, newProviderAcct);
-    log.info("What is wrong?  11");
     // Can log something here with this, descriptive info should go here once we stop dumping APAccount to log
     String id = newProviderAcct.getProperty(AuthProviderAccount.AUTH_PROVIDER_ID);
-    log.info("What is wrong?  12");
     String name = newProviderAcct.getProperty(AuthProviderAccount.LOGIN_PERSON_NAME);
-    log.info("What is wrong?  13");
     String email = newProviderAcct.getProperty(AuthProviderAccount.LOGIN_EMAIL);
-    log.info("What is wrong?  14");
 
-    log.fine("Got Facebook ID: " + id + " name: " + name + " email: " + email);
-    log.info("What is wrong?  15");
     log.info("Got Facebook ID: " + id + " name: " + name + " email: " + email);
-    log.info("What is wrong?  16");
+    log.info("Got Facebook ID: " + id + " name: " + name + " email: " + email);
     return ServletConfig.HTTP + hsRequest.getServerName();
   }
 
@@ -367,7 +350,7 @@ public class ServletInterface {
     OAuthRequest request = new OAuthRequest(Verb.GET, TWITTER_PROTECTED_URL_USERINFO);
     service.signRequest(accessToken, request); // the access token from step 4
     Response response = request.send();
-    log.fine(response.getBody());
+    log.info(response.getBody());
 
     LoginType loginType = LoginType.TWITTER;
     AuthProviderAccount newProviderAcct = new AuthProviderAccount(response.getBody(), loginType);

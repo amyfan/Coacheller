@@ -7,8 +7,8 @@ import java.util.logging.Logger;
 import com.google.appengine.api.datastore.QueryResultIterable;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Query;
+import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.shared.DayEnum;
-import com.ratethisfest.shared.FestivalEnum;
 import com.ratethisfest.shared.Set;
 
 /**

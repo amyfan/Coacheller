@@ -3,6 +3,8 @@ package com.ratethisfest.client;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.ratethisfest.data.FestivalEnum;
+import com.ratethisfest.shared.DayEnum;
 import com.ratethisfest.shared.RatingGwt;
 import com.ratethisfest.shared.Set;
 
@@ -17,12 +19,9 @@ public interface LollapaloozerServiceAsync {
   void updateSetData(AsyncCallback<String> callback) throws IllegalArgumentException;
 
   void recalculateSetRatingAverages(AsyncCallback<String> callback) throws IllegalArgumentException;
+      
 
-  void getSets(String yearString, String day, AsyncCallback<List<Set>> callback)
-      throws IllegalArgumentException;
-
-  void addRating(String email, Long setId, String score, String notes,
-      AsyncCallback<String> callback) throws IllegalArgumentException;
+  void getSets(FestivalEnum fest, String yearString, DayEnum day, AsyncCallback<List<Set>> callback) throws IllegalArgumentException;
 
   void getRatingsByUserEmail(String email, Integer year, AsyncCallback<List<RatingGwt>> callback)
       throws IllegalArgumentException;
@@ -36,5 +35,11 @@ public interface LollapaloozerServiceAsync {
 
   void emailRatingsToUser(String email, AsyncCallback<String> callback)
       throws IllegalArgumentException;
+
+  void getAllRatings(AsyncCallback<List<RatingGwt>> callback);
+
+  void getRatingsForSet(Set targetSet, AsyncCallback<List<RatingGwt>> callback);
+
+  void addRating(Long setId, String weekend, String score, String notes, AsyncCallback<String> callback);
 
 }

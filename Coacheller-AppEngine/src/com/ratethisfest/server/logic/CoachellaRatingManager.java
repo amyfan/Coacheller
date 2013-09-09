@@ -8,10 +8,10 @@ import java.util.logging.Logger;
 
 import com.google.appengine.api.datastore.QueryResultIterable;
 import com.googlecode.objectify.Key;
+import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.server.domain.AppUser;
 import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.shared.DayEnum;
-import com.ratethisfest.shared.FestivalEnum;
 import com.ratethisfest.shared.MathUtils;
 import com.ratethisfest.shared.Set;
 
@@ -171,7 +171,7 @@ public class CoachellaRatingManager extends RatingManager {
     Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
     List<Rating> ratings = new ArrayList<Rating>();
     if (setKey != null) {
-      ratings = ratingDao.findRatingsByUserKeyAndSetKey(userKey, setKey, weekend);
+      ratings = ratingDao.findRatingsByUserKeyAndSetKeyAndWeek(userKey, setKey, weekend);
     }
     return ratings;
   }
