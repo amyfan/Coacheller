@@ -5,7 +5,6 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -26,13 +25,14 @@ import auth.logins.other.LoginType;
 import auth.logins.other.RTFAccountException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ratethisfest.shared.Base64Coder;
 
 public class ServletInterface {
   private static final Logger log = Logger.getLogger(new Object() {
   }.getClass().getEnclosingClass().getName());
 
   public static final String PARAM_NAME_RTFACTION = "RTFAction";
-  public static final String PARAM_NAME_RETURNHOST = "RTFReturnUrl";
+  public static final String SPECIAL_ACTION_REDIRECTURL = "RTFReturnUrl";
 
   public static final String GOOGLE_PARAM_OAUTH_VERIFIER = "oauth_verifier";
   public static final String GOOGLE_PARAM_OAUTH_TOKEN = "oauth_token";
@@ -61,7 +61,8 @@ public class ServletInterface {
   public static final String FACEBOOK_PROTECTED_URL_USERINFO = "https://graph.facebook.com/me";
   public static final String GOOGLE_PROTECTED_URL_USERINFO = "https://www.googleapis.com/oauth2/v2/userinfo";
 
-  // Input is null checked
+  // I think req.getParameter will do the same thing.... // Input is null checked
+  @Deprecated
   public static String getFirstParameter(Map<String, String[]> parameterMap, String parameterName) {
     if (parameterMap == null) {
       return null;
@@ -81,11 +82,17 @@ public class ServletInterface {
     String reqHost = request.getServerName(); // Identify the hostname that the client sent the request to
     // Map<String, String[]> parametersMap = request.getParameterMap();
     String paramRTFAction = request.getParameter(PARAM_NAME_RTFACTION);
-    String redirectHostName = request.getParameter(PARAM_NAME_RETURNHOST);
 
-    if (redirectHostName != null) { // Return redirect URL
-      log.info("Routing request for RTF Action: " + paramRTFAction + " redirect host: " + redirectHostName);
-      String redirectTargetUrl = getRedirectTargetUrl(request, redirectHostName);
+    if (request.getParameter(SPECIAL_ACTION_REDIRECTURL) != null) { // Return redirect URL
+
+      String redirectHostNameEncoded = request.getParameter(SPECIAL_ACTION_REDIRECTURL);
+      // Colon
+      // character
+      // cannot be
+      // encoded! ':'
+      String redirectHostAndUri = Base64Coder.decodeString(redirectHostNameEncoded).trim();
+      log.info("Routing request for RTF Action: " + paramRTFAction + " redirect host: " + redirectHostAndUri);
+      String redirectTargetUrl = getRedirectTargetUrl(request, redirectHostAndUri);
       return redirectTargetUrl;
     }
 
@@ -136,7 +143,8 @@ public class ServletInterface {
   }
 
   private static String getRedirectTargetUrl(HttpServletRequest request, String redirectHostName) {
-    String redirectTargetUrl = request.getScheme() + "://" + redirectHostName + request.getRequestURI();
+    String redirectTargetUrl = request.getScheme() + "://" + redirectHostName;
+    // String redirectTargetUrl = request.getScheme() + "://" + redirectHostName + request.getRequestURI();
 
     if (request.getQueryString() != null) {
       boolean addedQuestionMark = false;
@@ -145,7 +153,7 @@ public class ServletInterface {
       while (parameterNames.hasMoreElements()) {
         String parameterName = parameterNames.nextElement();
         String parameterValue = request.getParameter(parameterName);
-        if (!parameterName.equals(PARAM_NAME_RETURNHOST)) { // Discard returnhost parameter
+        if (!parameterName.equals(SPECIAL_ACTION_REDIRECTURL)) { // Discard returnhost parameter
           if (addedQuestionMark) {
             redirectTargetUrl += "&";
           } else {
@@ -161,29 +169,50 @@ public class ServletInterface {
     return redirectTargetUrl;
   }
 
+  // Important to use these methods because callback URL has to match in multiple stages of OAuth[2]
   private static String buildGoogleCallbackUrl(String reqHost) {
     StringBuilder callbackUrl = new StringBuilder();
     callbackUrl.append(ServletConfig.HTTP).append(ServletConfig.HOSTNAME_RATETHISFEST)
         .append(ServletConfig.GOOGLE_USER_AUTH_CALLBACK_PATH);
-    callbackUrl.append("&").append(PARAM_NAME_RETURNHOST).append("=").append(reqHost);
+    callbackUrl.append("&").append(SPECIAL_ACTION_REDIRECTURL).append("=");
+    String rtfRedirectUrl = reqHost + ServletConfig.SERVLET_BASEPATH;
+    String rtfRedirectUrlEncoded = Base64Coder.encodeStringRTFSpecial(rtfRedirectUrl);
+    callbackUrl.append(rtfRedirectUrlEncoded);
+
+    log.info("Constructed Google callback URL: " + callbackUrl.toString());
     return callbackUrl.toString();
   }
 
+  // Important to use these methods because callback URL has to match in multiple stages of OAuth[2]
   private static String buildFacebookCallbackUrl(String reqHost) {
     StringBuilder callbackUrl = new StringBuilder(); // This must be set here, google will redirect to whatever is
                                                      // specified
     callbackUrl.append(ServletConfig.HTTP).append(ServletConfig.HOSTNAME_RATETHISFEST)
         .append(ServletConfig.FACEBOOK_USER_AUTH_SCRIBE_CALLBACK_PATH);
-    callbackUrl.append("&").append(PARAM_NAME_RETURNHOST).append("=").append(reqHost);
+    callbackUrl.append("&").append(SPECIAL_ACTION_REDIRECTURL).append("=");
+
+    String rtfRedirectUrl = reqHost + ServletConfig.SERVLET_BASEPATH;
+    String rtfRedirectUrlEncoded = Base64Coder.encodeStringRTFSpecial(rtfRedirectUrl);
+    callbackUrl.append(rtfRedirectUrlEncoded);
+
+    log.info("Constructed Facebook callback URL: " + callbackUrl.toString());
     return callbackUrl.toString();
   }
 
+  // Important to use these methods because callback URL has to match in multiple stages of OAuth[2]
   private static String buildTwitterCallbackUrl(String reqHost) {
     StringBuilder callbackUrl = new StringBuilder(); // This must be set here, google will redirect to whatever is
                                                      // specified
     callbackUrl.append(ServletConfig.HTTP).append(ServletConfig.HOSTNAME_RATETHISFEST)
         .append(ServletConfig.TWITTER_REDIRECT_PATH);
-    callbackUrl.append("&").append(PARAM_NAME_RETURNHOST).append("=").append(reqHost);
+
+    callbackUrl.append("&").append(SPECIAL_ACTION_REDIRECTURL).append("=");
+
+    String rtfRedirectUrl = reqHost + ServletConfig.SERVLET_BASEPATH;
+    String rtfRedirectUrlEncoded = Base64Coder.encodeStringRTFSpecial(rtfRedirectUrl);
+    callbackUrl.append(rtfRedirectUrlEncoded);
+
+    log.info("Constructed Twitter callback URL: " + callbackUrl.toString());
     return callbackUrl.toString();
   }
 
@@ -203,7 +232,7 @@ public class ServletInterface {
 
     StringBuilder redirectUrl = new StringBuilder(GOOGLE_REDIRECT_URL_BASE + "?" + GOOGLE_PARAM_OAUTH_TOKEN + "="
         + requestToken.getToken());
-    redirectUrl.append("&").append(PARAM_NAME_RETURNHOST).append("=").append(reqHost);
+    redirectUrl.append("&").append(SPECIAL_ACTION_REDIRECTURL).append("=").append(reqHost);
 
     return redirectUrl.toString();
   }
@@ -218,7 +247,8 @@ public class ServletInterface {
     // Obtain the Authorization URL
     System.out.println("Fetching the Authorization URL...");
     StringBuilder authorizationUrl = new StringBuilder(service.getAuthorizationUrl(null));
-    authorizationUrl.append("&").append(PARAM_NAME_RETURNHOST).append("=").append(reqHost);
+    // Suspect we don't need this...?
+    // authorizationUrl.append("&").append(PARAM_NAME_RETURNHOST).append("=").append(reqHost);
 
     log.info("Facebook User Auth URL: " + authorizationUrl.toString());
     return authorizationUrl.toString();
@@ -242,7 +272,11 @@ public class ServletInterface {
 
     Token requestToken = service.getRequestToken();
     StringBuilder authorizationUrl = new StringBuilder(service.getAuthorizationUrl(requestToken));
-    authorizationUrl.append("&").append(PARAM_NAME_RETURNHOST).append("=").append(reqHost);
+
+    authorizationUrl.append("&").append(SPECIAL_ACTION_REDIRECTURL).append("=").append(reqHost); // should be included
+                                                                                                 // in
+    // callback url, why is this
+    // here?
 
     // doc.appendText("Twitter Auth URL: " + authUrl);
     log.info("Twitter Auth URL: " + authorizationUrl.toString());
@@ -291,12 +325,14 @@ public class ServletInterface {
     // TODO handle user failed auth process
     Map parametersMap = hsRequest.getParameterMap();
     String callbackUrl = buildFacebookCallbackUrl(hsRequest.getServerName());
+    // URLs must match,
+    // callbackUrl = URLEncoder.encode(callbackUrl); // Facebook is particular about this detail
 
     // Facebook user auth has returned
     OAuthService service = new ServiceBuilder().provider(FacebookApi.class).apiKey(ServletConfig.FACEBOOK_ID)
         .apiSecret(ServletConfig.FACEBOOK_SECRET).callback(callbackUrl).scope("email").build();
-//    OAuthService service = new ServiceBuilder().provider(FacebookApi.class).apiKey(ServletConfig.FACEBOOK_ID)
-//        .apiSecret(ServletConfig.FACEBOOK_SECRET).callback(callbackUrl).build();
+    // OAuthService service = new ServiceBuilder().provider(FacebookApi.class).apiKey(ServletConfig.FACEBOOK_ID)
+    // .apiSecret(ServletConfig.FACEBOOK_SECRET).callback(callbackUrl).build();
     // OAuthService service = (OAuthService)req.getSession().getAttribute("scribeservice");
     // String authorizationUrl = service.getAuthorizationUrl(null);
 
@@ -361,4 +397,5 @@ public class ServletInterface {
     String twitterName = newProviderAcct.getProperty(AuthProviderAccount.LOGIN_SCREEN_NAME);
     return ServletConfig.HTTP + hsRequest.getServerName();
   }
+
 }

@@ -16,10 +16,8 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.KeyRange;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -135,13 +133,13 @@ public class AuthProviderAccount implements Serializable {
   public AuthProviderAccount(Entity queriedEntity) {
 
     _datastoreKey = queriedEntity.getKey();
-    log.info("Recovered APAccount from queried Entity with key: " + _datastoreKey.toString() + " id: "
-        + _datastoreKey.getId());
+    // log.info("Recovered APAccount from queried Entity with key: " + _datastoreKey.toString() + " id: "
+    // + _datastoreKey.getId());
     for (String key : queriedEntity.getProperties().keySet()) {
       String value = (String) queriedEntity.getProperty(key);
       _loginHash.put(key, value);
     }
-    log.info("Describing again the APAccount recovered from queried Entity: " + this.getDatastoreKeyDescription());
+    // log.info("Describing again the APAccount recovered from queried Entity: " + this.getDatastoreKeyDescription());
   }
 
   public String getProperty(String propName) {
@@ -170,10 +168,10 @@ public class AuthProviderAccount implements Serializable {
     _loginHash.put(propertyName, value);
     this.saveToDatastore();
   }
-  
+
   private Key getParentKey(String parentIdStr) {
-  Long idToLookup = Long.valueOf(parentIdStr);
-  return KeyFactory.createKey(AppUserDAO.getAncestorKey(), DATASTORE_KIND, idToLookup);
+    Long idToLookup = Long.valueOf(parentIdStr);
+    return KeyFactory.createKey(AppUserDAO.getAncestorKey(), DATASTORE_KIND, idToLookup);
   }
 
   private void saveToDatastore() {
@@ -181,7 +179,7 @@ public class AuthProviderAccount implements Serializable {
     // If we are saving it, we must know what RTFAccount owns it
     String parentIdStr = this.getProperty(RTFACCOUNT_OWNER_KEY);
     // Long parentIdLong = Long.valueOf(parentIdStr);
-    
+
     Key RTFAccountKey = getParentKey(parentIdStr);
 
     Entity apAccountEntity;
@@ -283,7 +281,6 @@ public class AuthProviderAccount implements Serializable {
     }
   }
 
-  
   public LoginType getLoginType() {
     String providerName = _loginHash.get(AUTH_PROVIDER_NAME);
     return LoginType.fromString(providerName);

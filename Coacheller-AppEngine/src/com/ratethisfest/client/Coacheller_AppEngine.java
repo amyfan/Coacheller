@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import auth.logins.client.LoginStatusService;
 import auth.logins.client.LoginStatusServiceAsync;
 import auth.logins.data.LoginStatus;
+import auth.logins.test.sessionsTestServlet;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -19,6 +20,7 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.ratethisfest.client.ui.LollapaloozerViewComposite;
+import com.ratethisfest.client.ui.RateDialogBox;
 import com.ratethisfest.data.FestivalEnum;
 
 public class Coacheller_AppEngine implements EntryPoint, ValueChangeHandler<String> {
@@ -26,12 +28,12 @@ public class Coacheller_AppEngine implements EntryPoint, ValueChangeHandler<Stri
   private LoginStatusServiceAsync loginStatusSvc = GWT.create(LoginStatusService.class);
   private Logger logger = Logger.getLogger(this.getClass().getName());
   public static EventBus EVENT_BUS = GWT.create(SimpleEventBus.class);
-  public static LoginStatus LOGIN_STATUS = null; // Can either be a LoginStatus object or null if not determined yet
+  private static LoginStatus LOGIN_STATUS = LoginStatus.notLoggedIn(); // Not logged in yet or we just dont know...
 
   // This is the entry point method.
   @Override
   public void onModuleLoad() {
-    logger.log(Level.SEVERE, "Coacheller_AppEngine Entry Point");
+    // logger.log(Level.SEVERE, "Coacheller_AppEngine Entry Point"); //Causes a box to pop up in some cases...
 
     // DeferredCommand.addCommand( //Deprecated
     // This change made because otherwise exceptions thrown in onModuleLoad cannot be seen
@@ -40,6 +42,14 @@ public class Coacheller_AppEngine implements EntryPoint, ValueChangeHandler<Stri
         onModuleLoad2();
       }
     });
+  }
+
+  public synchronized static LoginStatus getLoginStatus() {
+    return LOGIN_STATUS;
+  }
+
+  public synchronized static void setLoginStatus(LoginStatus loginStatus) {
+    LOGIN_STATUS = loginStatus;
   }
 
   // Makes exceptions visible
@@ -77,8 +87,34 @@ public class Coacheller_AppEngine implements EntryPoint, ValueChangeHandler<Stri
       // Do something else for debugging?
     }
 
+    // /CHECK IF THIS IS BEING EXECUTED AT ALL
+
     logger.log(Level.SEVERE, "Coacheller_AppEngine About to start navigation with FlowControl.go");
     FlowControl.go(c);
+
+    // If we navigate after showing dialog, dialog is hidden
+    String conflictedApAccountType = Window.Location.getParameter(sessionsTestServlet.ACCOUNT_OWNERSHIP_CONFLICT);
+    if (null != conflictedApAccountType) {
+      logger.info("Detected account ownership conflict");
+      RateDialogBox rateDialog = new RateDialogBox();
+      String targetAccountDescription = Window.Location.getParameter(sessionsTestServlet.DESCRIPTION);
+      rateDialog.setTitle("Account Ownership Conflict"); // Supposed to set tooltip ?
+      rateDialog.setText("Another RateThisFest user registered this " + conflictedApAccountType + " account."); // Supposed
+                                                                                                                // to
+                                                                                                                // set
+                                                                                                                // title
+                                                                                                                // ?
+      String messageString = "The "
+          + conflictedApAccountType
+          + " account ["
+          + targetAccountDescription
+          + "] has already been registered by another RateThisFest user.  Please log out first, or contact RateThisFest staff if you are certain you own this "
+          + conflictedApAccountType + " account.";
+      rateDialog.setMessage(messageString);
+      rateDialog.show();
+      // accountOwnershipConflict //provider name
+    }
+
   }
 
   @Override

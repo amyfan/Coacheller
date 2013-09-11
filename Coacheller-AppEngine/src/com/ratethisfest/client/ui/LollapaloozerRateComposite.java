@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.mortbay.log.Log;
+import auth.logins.ServletConfig;
+import auth.logins.ServletInterface;
+import auth.logins.data.LoginStatus;
+import auth.logins.other.LoginType;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.cell.client.ButtonCell;
@@ -21,6 +24,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.http.client.URL;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -31,13 +36,16 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import com.ratethisfest.client.ClientResources;
 import com.ratethisfest.client.Coacheller_AppEngine;
 import com.ratethisfest.client.ComparatorUtils;
 import com.ratethisfest.client.FlowControl;
@@ -45,16 +53,15 @@ import com.ratethisfest.client.LollapaloozerService;
 import com.ratethisfest.client.LollapaloozerServiceAsync;
 import com.ratethisfest.client.PageToken;
 import com.ratethisfest.data.FestivalEnum;
+import com.ratethisfest.shared.Base64Coder;
 import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.RatingGwt;
 import com.ratethisfest.shared.Set;
 
 public class LollapaloozerRateComposite extends Composite {
-  
-  
+
   private static final Logger logger = Logger.getLogger(LollapaloozerRateComposite.class.getName());
   private final LollapaloozerServiceAsync lollapaloozerService = GWT.create(LollapaloozerService.class);
-
 
   private static final String ADMIN_EMAIL = "afan@coacheller.com";
   private static final String ADMIN_ERROR = "You do not have permission to do this. Sorry.";
@@ -63,16 +70,17 @@ public class LollapaloozerRateComposite extends Composite {
 
   private String ownerEmail = "";
 
-
   private List<Set> setsList = new ArrayList<Set>();
   private List<RatingGwt> ratingsList;
   private Set _targetSet;
+  private String _facebookUrl;
+  private String _twitterUrl;
 
   private static Binder uiBinder = GWT.create(Binder.class);
+
   interface Binder extends UiBinder<Widget, LollapaloozerRateComposite> {
   }
-  
-  
+
   @UiField
   Label title;
 
@@ -113,7 +121,7 @@ public class LollapaloozerRateComposite extends Composite {
   TextBox notesInput;
 
   @UiField
-  com.google.gwt.user.client.ui.Button addRatingButton;
+  com.google.gwt.user.client.ui.Button buttonRate;
 
   @UiField
   com.google.gwt.user.client.ui.Button emailButton;
@@ -136,7 +144,10 @@ public class LollapaloozerRateComposite extends Composite {
 
   @UiField
   RatingsTable ratingsTable;
-
+  @UiField
+  Button buttonRateFacebook;
+  @UiField
+  Button buttonRateTwitter;
 
   public LollapaloozerRateComposite(Set targetSet) {
     _targetSet = targetSet;
@@ -158,18 +169,16 @@ public class LollapaloozerRateComposite extends Composite {
     subtitle.setText("Rate This Set");
 
     // Compute number of weeks in this fest
-    String hostName = Window.Location.getHostName();
-    FestivalEnum fest = FestivalEnum.fromHostname(hostName);
+    FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();
     int festivalMaxNumberOfWeeks = fest.getNumberOfWeeks();
-    
+
     for (int i = 0; i < festivalMaxNumberOfWeeks; i++) { // Populate weekend selector
-      weekInput.insertItem("Week " + (i+1), i);
+      weekInput.insertItem("Week " + (i + 1), i);
     }
 
     if (festivalMaxNumberOfWeeks == 1) {
       weekInput.setVisible(false); // Render weekend selector invisible, value is still needed
-    } 
-    
+    }
 
     ListDataProvider<RatingGwt> listDataProvider = new ListDataProvider<RatingGwt>();
     listDataProvider.addDataDisplay(ratingsTable);
@@ -183,6 +192,32 @@ public class LollapaloozerRateComposite extends Composite {
     scoreFiveRadioButton.setText("5");
 
     notesLabel.setText("Notes (optional)");
+
+    // Set up rate facebook/twitter image buttons
+    ClientResources resources = GWT.create(ClientResources.class);
+    LoginStatus loginStatus = Coacheller_AppEngine.getLoginStatus();
+
+    ImageResource facebookResource;
+    if (loginStatus.isLoggedIn(LoginType.FACEBOOK)) {
+      facebookResource = resources.post_facebook_large();
+    } else {
+      facebookResource = resources.post_facebook_small();
+    }
+    Image facebookImage = new Image(facebookResource);
+    facebookImage.setHeight("42");
+    buttonRateFacebook.getElement().getStyle().setProperty("padding", "0px 0px");
+    buttonRateFacebook.getElement().appendChild(facebookImage.getElement());
+
+    ImageResource twitterResource;
+    if (loginStatus.isLoggedIn(LoginType.TWITTER)) {
+      twitterResource = resources.post_twitter_large();
+    } else {
+      twitterResource = resources.post_twitter_small();
+    }
+    Image twitterImage = new Image(twitterResource);
+    twitterImage.setHeight("42");
+    buttonRateTwitter.getElement().getStyle().setProperty("padding", "0px 0px");
+    buttonRateTwitter.getElement().appendChild(twitterImage.getElement());
 
     weekInput.addChangeHandler(new ChangeHandler() {
       @Override
@@ -205,7 +240,11 @@ public class LollapaloozerRateComposite extends Composite {
       }
     });
 
-    addRatingButton.addClickHandler(new RateClickHandler(androidAnimation));
+    // Handlers
+    RateClickHandler multiButtonClickHandler = new RateClickHandler(androidAnimation);
+    buttonRate.addClickHandler(multiButtonClickHandler);
+    buttonRateFacebook.addClickHandler(multiButtonClickHandler);
+    buttonRateTwitter.addClickHandler(multiButtonClickHandler);
 
     emailButton.addClickHandler(new ClickHandler() {
       @Override
@@ -352,14 +391,14 @@ public class LollapaloozerRateComposite extends Composite {
 
       @Override
       public void onFailure(Throwable caught) {
-        logger.info("Failed to get ratings for set: "+ _targetSet.getId());
+        logger.info("Failed to get ratings for set: " + _targetSet.getId());
         // Show the RPC error message to the user
         infoBox.setText(SERVER_ERROR);
       }
 
       @Override
       public void onSuccess(List<RatingGwt> result) {
-        logger.info("Got "+ result.size() +" ratings for set: "+ _targetSet.getId());
+        logger.info("Got " + result.size() + " ratings for set: " + _targetSet.getId());
         ratingsList.clear();
         ratingsList.addAll(result);
         Collections.sort(ratingsList, ComparatorUtils.RATING_NAME_COMPARATOR);
@@ -368,35 +407,42 @@ public class LollapaloozerRateComposite extends Composite {
     });
   }
 
+  // The value of the week input selector is automatically considered
+  // This works for Coacheller also as the selector still exists in a hidden state
+  private RatingGwt getRatingForSetAndWeekInput(Set set) {
+    for (RatingGwt rating : ratingsList) {
+      if (_targetSet.getId().equals(rating.getSetId()) // Same set
+          && weekInput.getSelectedIndex() + 1 == rating.getWeekend()) { // And same week
+        return rating;
+      }
+    }
+    return null;
+  }
+
   private void loadRatingContents() {
     logger.info("Configuring dialog with rating info");
     notesInput.setText("");
-    //Set set = setsList.get(weekInput.getSelectedIndex());
+    // Set set = setsList.get(weekInput.getSelectedIndex());
     boolean matchFound = false;
-    for (RatingGwt rating : ratingsList) {
-      if (_targetSet.getId().equals(rating.getSetId()) //Same set
-          && weekInput.getSelectedIndex()+1 == rating.getWeekend()) { //And same week 
-        logger.info("Matched rating and set");
-        matchFound = true;
-        if (rating.getScore() == 1) {
-          scoreOneRadioButton.setValue(true);
-        } else if (rating.getScore() == 2) {
-          scoreTwoRadioButton.setValue(true);
-        } else if (rating.getScore() == 3) {
-          scoreThreeRadioButton.setValue(true);
-        } else if (rating.getScore() == 4) {
-          scoreFourRadioButton.setValue(true);
-        } else if (rating.getScore() == 5) {
-          scoreFiveRadioButton.setValue(true);
-        }
-        if (rating.getNotes() != null) {
-          notesInput.setText(rating.getNotes());
-        }
-        break;
+    RatingGwt rating = getRatingForSetAndWeekInput(_targetSet);
+    if (rating != null) {
+      logger.info("Matched rating and set");
+      matchFound = true;
+      if (rating.getScore() == 1) {
+        scoreOneRadioButton.setValue(true);
+      } else if (rating.getScore() == 2) {
+        scoreTwoRadioButton.setValue(true);
+      } else if (rating.getScore() == 3) {
+        scoreThreeRadioButton.setValue(true);
+      } else if (rating.getScore() == 4) {
+        scoreFourRadioButton.setValue(true);
+      } else if (rating.getScore() == 5) {
+        scoreFiveRadioButton.setValue(true);
       }
-    }
-    
-    if (!matchFound) {
+      if (rating.getNotes() != null) {
+        notesInput.setText(rating.getNotes());
+      }
+    } else {
       logger.info("Could not find existing rating, clearing inputs");
       scoreOneRadioButton.setValue(false);
       scoreTwoRadioButton.setValue(false);
@@ -408,9 +454,9 @@ public class LollapaloozerRateComposite extends Composite {
   }
 
   private void addRating() {
-    
+
     infoBox.setText("");
-    //Set set = setsList.get(weekInput.getSelectedIndex());
+    // Set set = setsList.get(weekInput.getSelectedIndex());
     Set set = _targetSet;
     String score = null;
     if (scoreOneRadioButton.getValue()) {
@@ -425,20 +471,20 @@ public class LollapaloozerRateComposite extends Composite {
       score = scoreFiveRadioButton.getText();
     }
     String notes = notesInput.getText();
-    
-//    if (!FieldVerifier.isValidEmail(ownerEmail)) {
-//      infoBox.setText(FieldVerifier.EMAIL_ERROR);
-//      return;
-//    }
-    
+
+    // if (!FieldVerifier.isValidEmail(ownerEmail)) {
+    // infoBox.setText(FieldVerifier.EMAIL_ERROR);
+    // return;
+    // }
+
     if (!FieldVerifier.isValidScore(score)) {
       infoBox.setText(FieldVerifier.SCORE_ERROR);
       return;
     }
 
     // Then, we send the input to the server.
-    int weekValue = weekInput.getSelectedIndex() +1;  //If week 1 is selected, index will be 0
-    lollapaloozerService.addRating(set.getId(), weekValue+"", score, notes, new AsyncCallback<String>() {
+    int weekValue = weekInput.getSelectedIndex() + 1; // If week 1 is selected, index will be 0
+    lollapaloozerService.addRating(set.getId(), weekValue + "", score, notes, new AsyncCallback<String>() {
       @Override
       public void onFailure(Throwable caught) {
         logger.info("Failed to add rating");
@@ -450,10 +496,10 @@ public class LollapaloozerRateComposite extends Composite {
       public void onSuccess(String result) {
         logger.info("Add rating success");
         infoBox.setText(result);
-        retrieveRatings();  //Maybe don't do this if we are hiding
+        retrieveRatings(); // Maybe don't do this if we are hiding
       }
     });
-    
+
     Widget parent = LollapaloozerRateComposite.this.getParent().getParent();
     if (parent instanceof RateDialogBox) {
       ((RateDialogBox) parent).hide();
@@ -480,25 +526,25 @@ public class LollapaloozerRateComposite extends Composite {
     ratingsList.remove(rating);
   }
 
-  //Maybe don't need to use this?
+  // Maybe don't need to use this?
   private void retrieveSets() {
     infoBox.setText("");
     FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();
     lollapaloozerService.getSets(fest, "2012", null, new AsyncCallback<List<Set>>() {
-  
+
       @Override
       public void onFailure(Throwable caught) {
         // Show the RPC error message to the user
         infoBox.setText(SERVER_ERROR);
       }
-  
+
       @Override
       public void onSuccess(List<Set> result) {
         ArrayList<Set> sortedItems = new ArrayList<Set>(result);
         Collections.sort(sortedItems, ComparatorUtils.SET_NAME_COMPARATOR);
         setsList.clear();
         setsList.addAll(sortedItems);
-  
+
         weekInput.clear();
         for (Set set : sortedItems) {
           weekInput.addItem(set.getDay() + " " + set.getTimeOne() + " - " + set.getArtistName(), set.getId().toString());
@@ -609,21 +655,77 @@ public class LollapaloozerRateComposite extends Composite {
 
   private final class RateClickHandler implements ClickHandler {
     private final Animation androidAnimation;
-  
+
     private RateClickHandler(Animation androidAnimation) {
       this.androidAnimation = androidAnimation;
     }
-  
+
     @Override
     public void onClick(ClickEvent event) {
       logger.info("Add Rating button clicked!");
-      if (event.getSource() == addRatingButton) {
-        logger.info("Click event source works as expected");
+      if (event.getSource() == buttonRate) {
+        logger.info("Rate button clicked");
+        addRating();
+      } else if (event.getSource() == buttonRateFacebook) {
+        logger.info("Facebook+Rate button clicked");
+        if (Coacheller_AppEngine.getLoginStatus().isLoggedIn(LoginType.FACEBOOK)) {
+          FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();
+          String facebookLink = ServletConfig.HTTP + fest.getWebClientHostname();
+
+          String rtfAppName = fest.getRTFAppName();
+          String festName = fest.getName();
+          String caption = "I saw " + _targetSet.getArtistName();
+          String description = "";
+
+          String redirectTarget = ServletConfig.HTTP + "ratethisfest.appspot.com/sessionsTest" + "?"
+              + ServletInterface.SPECIAL_ACTION_REDIRECTURL + "="
+              + Base64Coder.encodeStringRTFSpecial(fest.getWebClientHostname());
+
+          // If we found a rating, preload with some of this info
+          RatingGwt rating = getRatingForSetAndWeekInput(_targetSet);
+          if (rating != null) {
+            if (fest.getNumberOfWeeks() == 1) {
+              caption += " at " + festName;
+            } else {
+              caption += " during " + festName + " (Week " + rating.getWeekend() + ")";
+            }
+            caption += " and rated it a " + rating.getScore() + " (out of 5)";
+
+            description = rating.getNotes();
+          }
+
+          facebookLink = URL.encode(facebookLink);
+          caption = URL.encode(caption);
+          description = URL.encode(description);
+          redirectTarget = URL.encode(redirectTarget);
+
+          String finalRedirect = "https://www.facebook.com/dialog/feed?app_id=" + ServletConfig.FACEBOOK_ID + "&link="
+              + facebookLink + "&name=" + rtfAppName + "&caption=" + caption;
+
+          if (description != null && !description.equals("")) {
+            finalRedirect += "&description=" + description;
+          }
+
+          finalRedirect += "&redirect_uri=" + redirectTarget;
+          logger.info("User wants to rate with Facebook, redirecting:");
+          logger.info(finalRedirect);
+
+          Window.Location.replace(finalRedirect);
+        } else {
+          Window.Location.replace(LoginControl.getUrlLoginFacebook());
+        }
+      } else if (event.getSource() == buttonRateTwitter) {
+        logger.info("Twitter+Rate button clicked");
+        if (Coacheller_AppEngine.getLoginStatus().isLoggedIn(LoginType.TWITTER)) {
+          Window.Location.replace("http://www.msnbc.com");
+        } else {
+          Window.Location.replace(LoginControl.getUrlLoginTwitter());
+        }
       } else {
         logger.info("Click event source does not work as expected");
       }
       addRating();
-  
+
       androidAnimation.run(400);
     }
   }

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Map;
@@ -17,25 +18,13 @@ import javax.servlet.http.HttpSession;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.scribe.builder.ServiceBuilder;
-import org.scribe.builder.api.FacebookApi;
-import org.scribe.builder.api.GoogleApi;
-import org.scribe.builder.api.TwitterApi;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
-import org.scribe.model.Verifier;
-import org.scribe.oauth.OAuthService;
 
 import auth.logins.ServletConfig;
 import auth.logins.ServletInterface;
 import auth.logins.data.AuthProviderAccount;
 import auth.logins.other.LoginManager;
-import auth.logins.other.LoginType;
 import auth.logins.other.RTFAccountException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ratethisfest.server.domain.AppUser;
 import com.ratethisfest.server.persistence.AppUserDAO;
 
@@ -43,6 +32,8 @@ public class sessionsTestServlet extends HttpServlet {
 
   private static final Logger log = Logger.getLogger(new Object() {
   }.getClass().getEnclosingClass().getName());
+  public static final String ACCOUNT_OWNERSHIP_CONFLICT = "ACCOUNT_OWNERSHIP_CONFLICT";
+  public static final String DESCRIPTION = "DESCRIPTION";
   public static final String IMAGE_URL_SIGNIN_GOOGLE = "https://developers.google.com/accounts/images/sign-in-with-google.png";
   public static final String IMAGE_URL_SIGNIN_FACEBOOK = "http://dragon.ak.fbcdn.net/hphotos-ak-ash3/851558_153968161448238_508278025_n.png";
   public static final String IMAGE_URL_SIGNIN_TWITTER = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSdYJnRQqyWHMkm9VgP_aHf0gc4wbREFiv0z72T_xVltn4vNWb9NA";
@@ -62,8 +53,8 @@ public class sessionsTestServlet extends HttpServlet {
     writeDebugInfo(req, doc);
 
     AppUser currentLogin = LoginManager.getCurrentLogin(session);
-    
-    //We are no longer writing any buttons
+
+    // We are no longer writing any buttons
 
     // if (currentLogin == null) {
     // writeGoogleLoginButton(doc, req.getLocalName());
@@ -95,6 +86,12 @@ public class sessionsTestServlet extends HttpServlet {
       // TODO The user stays on the page for sessionsTest when this exception is thrown
       e.printStackTrace();
       writeAccountConflictMessage(doc, e);
+      // Do redirect action to error message here
+
+      String redirectUrl = ServletConfig.HTTP + req.getServerName() + "?" + ACCOUNT_OWNERSHIP_CONFLICT + "="
+          + URLEncoder.encode(e.getContestedAPAccount().getLoginType().getName()) + "&" + DESCRIPTION + "="
+          + URLEncoder.encode(e.getContestedAPAccount().getDescription());
+      resp.sendRedirect(redirectUrl);
     }
 
     // writeForm(doc);

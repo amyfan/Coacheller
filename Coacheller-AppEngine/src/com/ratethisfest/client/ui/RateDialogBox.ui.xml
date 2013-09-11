@@ -8,7 +8,7 @@
     </ui:style>
     <g:FlowPanel styleName="{style.panel}">
     <g:VerticalPanel>
-    	<g:Label text="Please log in to start rating Sets.">Dialog Content</g:Label>
+    	<g:Label text="Please log in to start rating Sets." ui:field="labelMessage">Dialog Content</g:Label>
     	<g:Cell horizontalAlignment="ALIGN_CENTER">
     		<g:Button text="OK" ui:field="button"/>
     	</g:Cell>

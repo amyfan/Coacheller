@@ -1,20 +1,13 @@
 package com.ratethisfest.client.ui;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.logging.Logger;
 
-import org.mortbay.log.Log;
 import org.moxieapps.gwt.highcharts.client.Chart;
-import org.moxieapps.gwt.highcharts.client.Loading;
 import org.moxieapps.gwt.highcharts.client.Point;
 import org.moxieapps.gwt.highcharts.client.Series;
-import org.moxieapps.gwt.highcharts.client.events.ChartLoadEvent;
-import org.moxieapps.gwt.highcharts.client.events.ChartLoadEventHandler;
 
 import auth.logins.data.LoginStatus;
 
@@ -30,7 +23,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
@@ -49,7 +41,6 @@ import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.corechart.AxisOptions;
 import com.google.gwt.visualization.client.visualizations.corechart.CoreChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
-import com.googlecode.objectify.Key;
 import com.ratethisfest.client.Coacheller_AppEngine;
 import com.ratethisfest.client.ComparatorUtils;
 import com.ratethisfest.client.LoginStatusEvent;
@@ -58,12 +49,8 @@ import com.ratethisfest.client.LollapaloozerService;
 import com.ratethisfest.client.LollapaloozerServiceAsync;
 import com.ratethisfest.client.PageToken;
 import com.ratethisfest.data.FestivalEnum;
-import com.ratethisfest.server.domain.AppUser;
-import com.ratethisfest.server.logic.LollaRatingManager;
-import com.ratethisfest.server.persistence.RatingDAO;
 import com.ratethisfest.shared.DateTimeUtils;
 import com.ratethisfest.shared.DayEnum;
-import com.ratethisfest.shared.RatingGwt;
 import com.ratethisfest.shared.Set;
 
 public class LollapaloozerViewComposite extends Composite {
@@ -116,7 +103,7 @@ public class LollapaloozerViewComposite extends Composite {
       @Override
       public void onLoginStatusChange(LoginStatusEvent event) {
         // LoginControl.this.updateUI(event.getLoginStatus());
-        LollapaloozerViewComposite.this.onLoginStatusChange(Coacheller_AppEngine.LOGIN_STATUS);
+        LollapaloozerViewComposite.this.onLoginStatusChange(Coacheller_AppEngine.getLoginStatus());
       }
     });
 
@@ -460,26 +447,27 @@ public class LollapaloozerViewComposite extends Composite {
     public Column<Set, String> stageOneColumn;
 
     private final class SetClickHandler implements Handler<Set> {
-      
+
       private SetsTable _table;
+
       public void setOwner(SetsTable owner) {
         _table = owner;
       }
-      
+
       @Override
       public void onCellPreview(CellPreviewEvent<Set> event) {
         // logger.info("CellPreviewHandler called");
         if (BrowserEvents.MOUSEOVER.equals(event.getNativeEvent().getType())) {
-          _table.getRowElement(event.getIndex()).getCells().getItem(event.getColumn()).setTitle("Click to Rate this set!");
-          
-//          Element cellElement = event.getNativeEvent().getEventTarget().cast();
-//          if (cellElement.getParentElement()
-//              .getFirstChildElement().isOrHasChild(Element.as(event.getNativeEvent().getEventTarget()))
-//              && cellElement.getTagName().equalsIgnoreCase("span")) {
-//          }
+          _table.getRowElement(event.getIndex()).getCells().getItem(event.getColumn())
+              .setTitle("Click to Rate this set!");
+
+          // Element cellElement = event.getNativeEvent().getEventTarget().cast();
+          // if (cellElement.getParentElement()
+          // .getFirstChildElement().isOrHasChild(Element.as(event.getNativeEvent().getEventTarget()))
+          // && cellElement.getTagName().equalsIgnoreCase("span")) {
+          // }
         }
-        
-       
+
         if (BrowserEvents.CLICK.equals(event.getNativeEvent().getType())) {
           Element cellElement = event.getNativeEvent().getEventTarget().cast();
           // play with element
@@ -490,22 +478,22 @@ public class LollapaloozerViewComposite extends Composite {
           logger.info("CellPreviewHandler found browser click column=" + column + " index=" + index);
           logger.info("Set ID:" + targetSet.getId() + " Artist Name[" + targetSet.getArtistName() + "]");
 
-          if (Coacheller_AppEngine.LOGIN_STATUS.isLoggedIn()) {
+          if (Coacheller_AppEngine.getLoginStatus().isLoggedIn()) {
             logger.info("User is logged in, navigating to rate UI"); // We should already have user's ratings if logged
                                                                      // in
 
-            String accountId = Coacheller_AppEngine.LOGIN_STATUS.getProperty(LoginStatus.PROPERTY_ACCOUNT_ID);
+            String accountId = Coacheller_AppEngine.getLoginStatus().getProperty(LoginStatus.PROPERTY_ACCOUNT_ID);
             // RatingDAO ratingDAO = new RatingDAO(); //should not be accessed in gwt
             // Key<AppUser> userKey = new Key<AppUser>(AppUser.class,accountId);
 
             RateDialogBox rateDialog = new RateDialogBox();
             rateDialog.clear();
-
             // If there is an existing rating for this set,
             // Preconfigure Rate dialog
             LollapaloozerRateComposite lollapaloozerRateComposite = new LollapaloozerRateComposite(targetSet);
             rateDialog.add(lollapaloozerRateComposite);
             FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();
+
             rateDialog.setTitle(fest.getRTFAppName()); // Sets tooltip, go figure
             rateDialog.setText(fest.getRTFAppName()); // Sets title, go figure
             rateDialog.show();

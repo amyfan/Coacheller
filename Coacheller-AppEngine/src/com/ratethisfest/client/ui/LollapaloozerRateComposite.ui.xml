@@ -5,59 +5,54 @@
 	<ui:style src="../Coacheller.css" />
 		
 	<g:HTMLPanel>
-		<div id="container" align="center">
-			<div id="android"></div>
-			<div class="appname">
-				<g:Label ui:field="title" addStyleNames="{style.header}" />
-				<g:Label ui:field="subtitle" addStyleNames="{style.subheader}" />
-			</div>
-			<div class="roundrect">
-				<div class="inputcell">
-					<g:Label ui:field="emailLabel" addStyleNames="{style.info}" />
-				</div>
-				<div class="inputcell">
-					<g:ListBox ui:field="weekInput" addStyleNames="{style.text}" />
-				</div>
-				<div class="inputcell">
-					<g:Label ui:field="scoreLabel" addStyleNames="{style.label}" />
-					<g:RadioButton ui:name="score" ui:field="scoreOneRadioButton" />
-					<g:RadioButton ui:name="score" ui:field="scoreTwoRadioButton" />
-					<g:RadioButton ui:name="score" ui:field="scoreThreeRadioButton" />
-					<g:RadioButton ui:name="score" ui:field="scoreFourRadioButton" />
-					<g:RadioButton ui:name="score" ui:field="scoreFiveRadioButton" />
-				</div>
-				<div class="inputcell">
-					<g:Label ui:field="notesLabel" addStyleNames="{style.label}" />
-					<g:TextBox ui:field="notesInput" addStyleNames="{style.textLarge}" />
-				</div>
-				<div class="buttoncell">
-					<g:Button ui:field="addRatingButton" text="Add Rating"
-						addStyleNames="{style.button}" />
-				</div>
-				<div class="buttoncell">
-					<g:Button ui:field="emailButton" text="Email Ratings"
-						addStyleNames="{style.button}" />
-				</div>
-				<div class="buttoncell">
-					<g:Button ui:field="backButton" text="Go Back"
-						addStyleNames="{style.button}" />
-				</div>
-				<div class="buttoncell">
-					Temporary Test Buttons:
-					<g:Button ui:field="updateSetButton" text="Update Sets" />
-					<g:Button ui:field="recalculateButton" text="Recalculate Scores" />
-					<g:Button ui:field="clearMyRatingButton" text="Clear My Ratings" />
-					<g:Button ui:field="clearAllRatingButton" text="Clear All Ratings" />
-				</div>
-				<div class="infocell">
-					<g:Label ui:field="infoBox" addStyleNames="{style.info}" />
-				</div>
-				<div class="tablecell">
-					<t:LollapaloozerRateComposite.RatingsTable
-						ui:field="ratingsTable" />
-				</div>
-			</div>
-		</div>
+		<g:Label ui:field="title" addStyleNames="{style.header}" />
+		<g:Label ui:field="subtitle" addStyleNames="{style.subheader}" />
+
+
+
+		<g:Label ui:field="emailLabel" addStyleNames="{style.info}" />
+
+
+		<g:ListBox ui:field="weekInput" addStyleNames="{style.text}" />
+
+
+		<g:Label ui:field="scoreLabel" addStyleNames="{style.label}" />
+		<g:RadioButton ui:name="score" ui:field="scoreOneRadioButton" />
+		<g:RadioButton ui:name="score" ui:field="scoreTwoRadioButton" />
+		<g:RadioButton ui:name="score" ui:field="scoreThreeRadioButton" />
+		<g:RadioButton ui:name="score" ui:field="scoreFourRadioButton" />
+		<g:RadioButton ui:name="score" ui:field="scoreFiveRadioButton" />
+
+
+		<g:Label ui:field="notesLabel" addStyleNames="{style.label}" />
+		<g:TextBox ui:field="notesInput" addStyleNames="{style.textLarge}" />
+		<g:HorizontalPanel>
+			<g:Button ui:field="buttonRate" text="Add Rating"
+			addStyleNames="{style.button}" />
+			<g:Button ui:field="buttonRateFacebook"/>
+			<g:Button ui:field="buttonRateTwitter"/>
+		</g:HorizontalPanel>
+
+
+		<g:Button ui:field="emailButton" text="Email Ratings"
+			addStyleNames="{style.button}" />
+
+
+		<g:Button ui:field="backButton" text="Go Back" addStyleNames="{style.button}" />
+
+
+		Temporary Test Buttons:
+		<g:Button ui:field="updateSetButton" text="Update Sets" />
+		<g:Button ui:field="recalculateButton" text="Recalculate Scores" />
+		<g:Button ui:field="clearMyRatingButton" text="Clear My Ratings" />
+		<g:Button ui:field="clearAllRatingButton" text="Clear All Ratings" />
+
+
+		<g:Label ui:field="infoBox" addStyleNames="{style.info}" />
+
+
+		<t:LollapaloozerRateComposite.RatingsTable ui:field="ratingsTable" />
+
 	</g:HTMLPanel>
 
 </ui:UiBinder>

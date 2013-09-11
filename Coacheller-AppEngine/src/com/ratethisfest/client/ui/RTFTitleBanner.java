@@ -21,20 +21,19 @@ public class RTFTitleBanner extends Composite {
   public RTFTitleBanner() {
     initWidget(uiBinder.createAndBindUi(this));
     String hostName = Window.Location.getHostName();
-    FestivalEnum fest = FestivalEnum.fromHostname(hostName); //may be null
- 
+    FestivalEnum fest = FestivalEnum.fromHostname(hostName); // may be null
 
     ClientResources resources = GWT.create(ClientResources.class);
 
     if (FestivalEnum.COACHELLA.equals(fest)) {
       String bannerUrl = resources.coacheller_banner().getSafeUri().asString();
       bannerImage.setUrl(bannerUrl);
-      bannerSubtitle.setText("Your unofficial "+ fest.getName() + " ratings guide");
+      bannerSubtitle.setText("Your unofficial " + fest.getName() + " ratings guide");
 
     } else if (FestivalEnum.LOLLAPALOOZA.equals(fest)) {
       String bannerUrl = resources.lollapaloozer_banner().getSafeUri().asString();
       bannerImage.setUrl(bannerUrl);
-      bannerSubtitle.setText("Your unofficial "+ fest.getName() + " ratings guide");
+      bannerSubtitle.setText("Your unofficial " + fest.getName() + " ratings guide");
 
     } else if (FestivalEnum.TESTFEST.equals(fest)) {
       bannerImage.setUrl("testfestimageurl");
@@ -48,7 +47,7 @@ public class RTFTitleBanner extends Composite {
 
   @UiField
   Image bannerImage;
-  
+
   @UiField
   Label bannerSubtitle;
 
@@ -56,7 +55,5 @@ public class RTFTitleBanner extends Composite {
   // initWidget(uiBinder.createAndBindUi(this));
   // button.setText(firstName);
   // }
-
-
 
 }

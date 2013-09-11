@@ -1,24 +1,16 @@
 package com.ratethisfest.client.ui;
 
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.mortbay.log.Log;
 
 import auth.logins.ServletInterface;
 import auth.logins.client.LoginStatusService;
 import auth.logins.client.LoginStatusServiceAsync;
 import auth.logins.data.LoginStatus;
 import auth.logins.other.LoginType;
-import auth.logins.server.LoginStatusServiceImpl;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.event.shared.HasHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -36,7 +28,7 @@ import com.ratethisfest.client.LoginStatusEvent;
 import com.ratethisfest.client.LoginStatusEventHandler;
 
 public class LoginControl extends Composite implements HasText {
-  
+
   private static LoginControlUiBinder uiBinder = GWT.create(LoginControlUiBinder.class);
 
   interface LoginControlUiBinder extends UiBinder<Widget, LoginControl> {
@@ -69,6 +61,7 @@ public class LoginControl extends Composite implements HasText {
 
   private LoginStatusServiceAsync loginStatusSvc = GWT.create(LoginStatusService.class);
   private Logger logger = Logger.getLogger(this.getClass().getName());
+  public static final String SERVLET_PATH = "/sessionsTest";
 
   public LoginControl() {
     initWidget(uiBinder.createAndBindUi(this));
@@ -76,9 +69,10 @@ public class LoginControl extends Composite implements HasText {
 
       @Override
       public void onLoginStatusChange(LoginStatusEvent event) {
-        //LoginControl.this.updateUI(event.getLoginStatus());
-        LoginControl.this.updateUI(Coacheller_AppEngine.LOGIN_STATUS);
-      }});
+        // LoginControl.this.updateUI(event.getLoginStatus());
+        LoginControl.this.updateUI(Coacheller_AppEngine.getLoginStatus());
+      }
+    });
     customInitWidget();
   }
 
@@ -98,10 +92,10 @@ public class LoginControl extends Composite implements HasText {
         // Start reading login results
         logger.log(Level.SEVERE, "Login Status Service Success");
 
-
-        //LoginControl.this.updateUI(result);
+        // LoginControl.this.updateUI(result);
         LoginStatusEvent event = new LoginStatusEvent(result);
-        Coacheller_AppEngine.LOGIN_STATUS = result;
+        Coacheller_AppEngine.setLoginStatus(result); // Could probably just have coacheller_appengine respond to the
+                                                     // event
         Coacheller_AppEngine.EVENT_BUS.fireEvent(event);
       }
     };
@@ -123,47 +117,47 @@ public class LoginControl extends Composite implements HasText {
 
   @UiHandler("linkFacebook")
   void onLinkFacebookClick(ClickEvent event) {
-    Window.Location.replace("/sessionsTest?RTFAction=" + ServletInterface.ACTION_FACEBOOK_AUTH_SCRIBE);
+    Window.Location.replace(LoginControl.getUrlLoginFacebook());
   }
 
   @UiHandler("linkGoogle")
   void onLinkGoogleClick(ClickEvent event) {
-    Window.Location.replace("/sessionsTest?RTFAction=" + ServletInterface.ACTION_GOOGLE_AUTH);
+    Window.Location.replace(LoginControl.getUrlLoginGoogle());
   }
 
   @UiHandler("linkTwitter")
   void onLinkTwitterClick(ClickEvent event) {
-    Window.Location.replace("/sessionsTest?RTFAction=" + ServletInterface.ACTION_TWITTER_AUTH);
+    Window.Location.replace(LoginControl.getUrlLoginTwitter());
   }
 
   @UiHandler("linkLogOut")
   void onLinkLogOutClick(ClickEvent event) {
-    Window.Location.replace("/sessionsTest?RTFAction=" + ServletInterface.ACTION_LOGOUT);
+    Window.Location.replace(LoginControl.getUrlLogout());
   }
 
   @UiHandler("linkDestroyAccount")
   void onLinkDestroyAccountClick(ClickEvent event) {
-    Window.Location.replace("/sessionsTest?RTFAction=" + ServletInterface.ACTION_DESTROY_ACCOUNT);
+    Window.Location.replace(LoginControl.getUrlDestroyAccount());
   }
 
   private void updateUI(LoginStatus loginStatus) {
     labelLoading.setVisible(false);
-    
+
     int currentRow = 0;
     currentRow++;
 
     // Change UI depending on whether user is logged in
     if (!loginStatus.isLoggedIn()) {
-      loggedInDisplay.setVisible(false);  //Hide Greeting
-      loginProviderOptions.setVisible(true);  //Show login options
-      
+      loggedInDisplay.setVisible(false); // Hide Greeting
+      loginProviderOptions.setVisible(true); // Show login options
+
     } else {
-      
+
       String userName = loginStatus.getProperty(LoginStatus.PROPERTY_PERSON_NAME);
       labelUsername.setText("Hello, " + userName + ". [");
-      loggedInDisplay.setVisible(true);  //Show Greeting
-      
-      //Login Options display needs to be set up...
+      loggedInDisplay.setVisible(true); // Show Greeting
+
+      // Login Options display needs to be set up...
       boolean loggedInGoogle = loginStatus.isLoggedIn(LoginType.GOOGLE);
       boolean loggedInFacebook = loginStatus.isLoggedIn(LoginType.FACEBOOK);
       boolean loggedInTwitter = loginStatus.isLoggedIn(LoginType.TWITTER);
@@ -212,6 +206,28 @@ public class LoginControl extends Composite implements HasText {
       }
 
     }
+  }
+
+  public static String getUrlLoginGoogle() {
+    return SERVLET_PATH + "?" + ServletInterface.PARAM_NAME_RTFACTION + "=" + ServletInterface.ACTION_GOOGLE_AUTH;
+  }
+
+  // In this class mainly due to GWT compilation issues
+  public static String getUrlLoginFacebook() {
+    return SERVLET_PATH + "?" + ServletInterface.PARAM_NAME_RTFACTION + "="
+        + ServletInterface.ACTION_FACEBOOK_AUTH_SCRIBE;
+  }
+
+  public static String getUrlLoginTwitter() {
+    return SERVLET_PATH + "?" + ServletInterface.PARAM_NAME_RTFACTION + "=" + ServletInterface.ACTION_TWITTER_AUTH;
+  }
+
+  public static String getUrlLogout() {
+    return SERVLET_PATH + "?" + ServletInterface.PARAM_NAME_RTFACTION + "=" + ServletInterface.ACTION_LOGOUT;
+  }
+
+  public static String getUrlDestroyAccount() {
+    return SERVLET_PATH + "?" + ServletInterface.PARAM_NAME_RTFACTION + "=" + ServletInterface.ACTION_DESTROY_ACCOUNT;
   }
 
 }
