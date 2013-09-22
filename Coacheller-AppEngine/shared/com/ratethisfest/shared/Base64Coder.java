@@ -69,13 +69,13 @@ public class Base64Coder {
 
     String processStr = new String(s);
     if (charsToAdd > 0) {
-      processStr += " ";
+      // processStr += " ";
     }
     if (charsToAdd > 1) {
-      processStr += " ";
+      // processStr += " ";
     }
     if (charsToAdd > 2) {
-      processStr += " ";
+      // processStr += " ";
     }
 
     return encodeStringMultipleOfFour(processStr);
@@ -181,9 +181,9 @@ public class Base64Coder {
       int o3 = i2 & 0x3F;
       out[op++] = map1[o0];
       out[op++] = map1[o1];
-      out[op] = op < oDataLen ? map1[o2] : '=';
+      out[op] = op < oDataLen ? map1[o2] : ' ';
       op++;
-      out[op] = op < oDataLen ? map1[o3] : '=';
+      out[op] = op < oDataLen ? map1[o3] : ' ';
       op++;
     }
     return out;
@@ -199,7 +199,21 @@ public class Base64Coder {
    *           If the input is not valid Base64 encoded data.
    */
   public static String decodeString(String s) {
-    return new String(decode(s));
+    int extraChars = s.length() % 4;
+    int charsToAdd = 4 - extraChars;
+
+    String processStr = new String(s);
+    if (charsToAdd > 0) {
+      processStr += "=";
+    }
+    if (charsToAdd > 1) {
+      processStr += "=";
+    }
+    if (charsToAdd > 2) {
+      processStr += "=";
+    }
+
+    return new String(decode(processStr));
   }
 
   /**

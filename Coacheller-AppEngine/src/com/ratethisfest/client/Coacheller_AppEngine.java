@@ -60,18 +60,20 @@ public class Coacheller_AppEngine implements EntryPoint, ValueChangeHandler<Stri
     if (History.getToken().isEmpty()) {
       History.newItem(PageToken.INDEX.getValue());
     }
-
     logger.log(Level.SEVERE, "Updated browser history object");
-
-    Composite c = new FestivalIndexComposite(); // Appears to be overridden by later code
+    Composite c;
 
     FestivalEnum fest = getFestFromSiteName(); // Get fest based on hostname
     if (fest == null) {
       logger.log(Level.SEVERE, "fest obtained is null");
       Window.setTitle("RateThisFest");
+      c = new FestivalIndexComposite(); // Appears to be overridden by later code
+
     } else {
       // logger.log(Level.SEVERE, "fest obtained is non-null: "+ fest.getName());
       Window.setTitle(fest.getRTFAppName()); // Set window title to RTF App Name
+      c = new LollapaloozerViewComposite();
+
     }
 
     // if (Window.Location.getHref().contains("code=4")) {
@@ -80,8 +82,6 @@ public class Coacheller_AppEngine implements EntryPoint, ValueChangeHandler<Stri
     // } else if (Window.Location.getParameter("code") != null && !Window.Location.getParameter("code").equals("")) {
     // String code = Window.Location.getParameter("code");
     // c = new LollapaloozerLoginFacebookComposite(code);
-
-    c = new LollapaloozerViewComposite();
 
     if (Window.Location.getHostName().contains("127.0.0.1")) {
       // Do something else for debugging?

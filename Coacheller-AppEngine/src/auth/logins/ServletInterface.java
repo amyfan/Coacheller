@@ -176,7 +176,7 @@ public class ServletInterface {
         .append(ServletConfig.GOOGLE_USER_AUTH_CALLBACK_PATH);
     callbackUrl.append("&").append(SPECIAL_ACTION_REDIRECTURL).append("=");
     String rtfRedirectUrl = reqHost + ServletConfig.SERVLET_BASEPATH;
-    String rtfRedirectUrlEncoded = Base64Coder.encodeStringRTFSpecial(rtfRedirectUrl);
+    String rtfRedirectUrlEncoded = Base64Coder.encodeStringRTFSpecial(rtfRedirectUrl).trim();
     callbackUrl.append(rtfRedirectUrlEncoded);
 
     log.info("Constructed Google callback URL: " + callbackUrl.toString());
@@ -192,7 +192,7 @@ public class ServletInterface {
     callbackUrl.append("&").append(SPECIAL_ACTION_REDIRECTURL).append("=");
 
     String rtfRedirectUrl = reqHost + ServletConfig.SERVLET_BASEPATH;
-    String rtfRedirectUrlEncoded = Base64Coder.encodeStringRTFSpecial(rtfRedirectUrl);
+    String rtfRedirectUrlEncoded = Base64Coder.encodeStringRTFSpecial(rtfRedirectUrl).trim();
     callbackUrl.append(rtfRedirectUrlEncoded);
 
     log.info("Constructed Facebook callback URL: " + callbackUrl.toString());
@@ -209,7 +209,7 @@ public class ServletInterface {
     callbackUrl.append("&").append(SPECIAL_ACTION_REDIRECTURL).append("=");
 
     String rtfRedirectUrl = reqHost + ServletConfig.SERVLET_BASEPATH;
-    String rtfRedirectUrlEncoded = Base64Coder.encodeStringRTFSpecial(rtfRedirectUrl);
+    String rtfRedirectUrlEncoded = Base64Coder.encodeStringRTFSpecial(rtfRedirectUrl).trim();
     callbackUrl.append(rtfRedirectUrlEncoded);
 
     log.info("Constructed Twitter callback URL: " + callbackUrl.toString());

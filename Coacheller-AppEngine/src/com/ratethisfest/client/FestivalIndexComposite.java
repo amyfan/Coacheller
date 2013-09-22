@@ -33,21 +33,20 @@ public class FestivalIndexComposite extends Composite {
   }
 
   private void initUiElements() {
-    title.setText("CHOOSE YOUR FEST");
 
     coachellaButton.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        Window.Location.replace("http://"+ FestivalEnum.COACHELLA.getWebClientHostname());
-        //FlowControl.go(new CoachellerViewComposite());
+        Window.Location.replace("http://" + FestivalEnum.COACHELLA.getWebClientHostname());
+        // FlowControl.go(new CoachellerViewComposite());
       }
     });
 
     lollaButton.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        Window.Location.replace("http://"+ FestivalEnum.LOLLAPALOOZA.getWebClientHostname());
-        //FlowControl.go(new LollapaloozerViewComposite());
+        Window.Location.replace("http://" + FestivalEnum.LOLLAPALOOZA.getWebClientHostname());
+        // FlowControl.go(new LollapaloozerViewComposite());
       }
     });
   }

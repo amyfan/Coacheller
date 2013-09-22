@@ -15,6 +15,21 @@ a:hover {
 	margin-bottom: 6px;
 }
 
+
+.headerNotBold {
+	font-size: 24px;
+	color: black;
+	margin-bottom: 6px;
+}
+
+
+.headerBoldItalic {
+	font-weight: bold;
+	font-size: 24px;
+	color: black;
+	margin-bottom: 6px;
+}
+
 .header_mobile {
 	font-weight: bold;
 	font-size: 16px;

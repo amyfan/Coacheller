@@ -121,9 +121,6 @@ public class LollapaloozerRateComposite extends Composite {
   TextBox notesInput;
 
   @UiField
-  com.google.gwt.user.client.ui.Button buttonRate;
-
-  @UiField
   com.google.gwt.user.client.ui.Button emailButton;
 
   @UiField
@@ -144,6 +141,8 @@ public class LollapaloozerRateComposite extends Composite {
 
   @UiField
   RatingsTable ratingsTable;
+  @UiField
+  com.google.gwt.user.client.ui.Button buttonRate;
   @UiField
   Button buttonRateFacebook;
   @UiField
@@ -197,6 +196,8 @@ public class LollapaloozerRateComposite extends Composite {
     ClientResources resources = GWT.create(ClientResources.class);
     LoginStatus loginStatus = Coacheller_AppEngine.getLoginStatus();
 
+    buttonRate.setTitle("Add Rating");
+
     ImageResource facebookResource;
     if (loginStatus.isLoggedIn(LoginType.FACEBOOK)) {
       facebookResource = resources.post_facebook_large();
@@ -207,6 +208,7 @@ public class LollapaloozerRateComposite extends Composite {
     facebookImage.setHeight("42");
     buttonRateFacebook.getElement().getStyle().setProperty("padding", "0px 0px");
     buttonRateFacebook.getElement().appendChild(facebookImage.getElement());
+    buttonRateFacebook.setTitle("Share on Facebook");
 
     ImageResource twitterResource;
     if (loginStatus.isLoggedIn(LoginType.TWITTER)) {
@@ -218,6 +220,7 @@ public class LollapaloozerRateComposite extends Composite {
     twitterImage.setHeight("42");
     buttonRateTwitter.getElement().getStyle().setProperty("padding", "0px 0px");
     buttonRateTwitter.getElement().appendChild(twitterImage.getElement());
+    buttonRateTwitter.setTitle("Share on Twitter");
 
     weekInput.addChangeHandler(new ChangeHandler() {
       @Override
@@ -246,131 +249,7 @@ public class LollapaloozerRateComposite extends Composite {
     buttonRateFacebook.addClickHandler(multiButtonClickHandler);
     buttonRateTwitter.addClickHandler(multiButtonClickHandler);
 
-    emailButton.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        infoBox.setText("");
-        lollapaloozerService.emailRatingsToUser(ownerEmail, new AsyncCallback<String>() {
-          @Override
-          public void onFailure(Throwable caught) {
-            // Show the RPC error message to the user
-            infoBox.setText(SERVER_ERROR);
-          }
-
-          @Override
-          public void onSuccess(String result) {
-            infoBox.setText(result);
-          }
-        });
-      }
-    });
-
-    backButton.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        FlowControl.go(new LollapaloozerViewComposite());
-      }
-    });
-
-    updateSetButton.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        if (ownerEmail.equals(ADMIN_EMAIL)) {
-          infoBox.setText("");
-          lollapaloozerService.insertSetData(new AsyncCallback<String>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-              // Show the RPC error message to the user
-              // infoBox.setText(SERVER_ERROR);
-              infoBox.setText(caught.getMessage());
-            }
-
-            @Override
-            public void onSuccess(String result) {
-              infoBox.setText(result);
-            }
-          });
-
-          androidAnimation.run(400);
-        } else {
-          infoBox.setText(ADMIN_ERROR);
-        }
-      }
-    });
-
-    recalculateButton.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        if (ownerEmail.equals(ADMIN_EMAIL)) {
-          infoBox.setText("");
-          lollapaloozerService.recalculateSetRatingAverages(new AsyncCallback<String>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-              // Show the RPC error message to the user
-              // infoBox.setText(SERVER_ERROR);
-              infoBox.setText(caught.getMessage());
-            }
-
-            @Override
-            public void onSuccess(String result) {
-              infoBox.setText(result);
-            }
-          });
-
-          androidAnimation.run(400);
-        } else {
-          infoBox.setText(ADMIN_ERROR);
-        }
-      }
-    });
-
-    clearMyRatingButton.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        infoBox.setText("");
-        lollapaloozerService.deleteRatingsByUser(ownerEmail, new AsyncCallback<String>() {
-          @Override
-          public void onFailure(Throwable caught) {
-            // Show the RPC error message to the user
-            // infoBox.setText(SERVER_ERROR);
-            infoBox.setText(caught.getMessage());
-          }
-
-          @Override
-          public void onSuccess(String result) {
-            infoBox.setText(result);
-          }
-        });
-        androidAnimation.run(400);
-      }
-    });
-
-    clearAllRatingButton.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        if (ownerEmail.equals(ADMIN_EMAIL)) {
-          infoBox.setText("");
-          lollapaloozerService.deleteRatingsByYear(2012, new AsyncCallback<String>() {
-            @Override
-            public void onFailure(Throwable caught) {
-              // Show the RPC error message to the user
-              // infoBox.setText(SERVER_ERROR);
-              infoBox.setText(caught.getMessage());
-            }
-
-            @Override
-            public void onSuccess(String result) {
-              infoBox.setText(result);
-            }
-          });
-          androidAnimation.run(400);
-        } else {
-          infoBox.setText(ADMIN_ERROR);
-        }
-      }
-    });
+    MiscClickHandler miscButtonClickHandler = new MiscClickHandler(androidAnimation);
 
     ratingsTable.deleteColumn.setFieldUpdater(new FieldUpdater<RatingGwt, String>() {
       @Override
@@ -412,11 +291,34 @@ public class LollapaloozerRateComposite extends Composite {
   private RatingGwt getRatingForSetAndWeekInput(Set set) {
     for (RatingGwt rating : ratingsList) {
       if (_targetSet.getId().equals(rating.getSetId()) // Same set
-          && weekInput.getSelectedIndex() + 1 == rating.getWeekend()) { // And same week
+          && getSelectedWeekFromUi() == rating.getWeekend()) { // And same week
         return rating;
       }
     }
     return null;
+  }
+
+  // Returns the fest week the user has selected on the UI, NOT THE [zero-based] INDEX
+  // For fests with 1 week, the control will be set to week 1 and hidden so it cannot be changed
+  private int getSelectedWeekFromUi() {
+    return weekInput.getSelectedIndex() + 1;
+  }
+
+  // Returns the score the user has selected on the UI
+  private String getSelectedScoreFromUi() {
+    String score = null;
+    if (scoreOneRadioButton.getValue()) {
+      score = scoreOneRadioButton.getText();
+    } else if (scoreTwoRadioButton.getValue()) {
+      score = scoreTwoRadioButton.getText();
+    } else if (scoreThreeRadioButton.getValue()) {
+      score = scoreThreeRadioButton.getText();
+    } else if (scoreFourRadioButton.getValue()) {
+      score = scoreFourRadioButton.getText();
+    } else if (scoreFiveRadioButton.getValue()) {
+      score = scoreFiveRadioButton.getText();
+    }
+    return score;
   }
 
   private void loadRatingContents() {
@@ -453,23 +355,27 @@ public class LollapaloozerRateComposite extends Composite {
     }
   }
 
-  private void addRating() {
-
+  private boolean verifyInput() {
     infoBox.setText("");
+
+    if (!FieldVerifier.isValidScore(getSelectedScoreFromUi())) {
+      infoBox.setText(FieldVerifier.SCORE_ERROR);
+      return false;
+    }
+    return true;
+  }
+
+  // Add rating and do nothing else
+  private void addRating() {
+    addRating(null);
+  }
+
+  // Add rating and redirect browser after rating is successfully added
+  private void addRating(final String redirectUrl) {
+
     // Set set = setsList.get(weekInput.getSelectedIndex());
     Set set = _targetSet;
-    String score = null;
-    if (scoreOneRadioButton.getValue()) {
-      score = scoreOneRadioButton.getText();
-    } else if (scoreTwoRadioButton.getValue()) {
-      score = scoreTwoRadioButton.getText();
-    } else if (scoreThreeRadioButton.getValue()) {
-      score = scoreThreeRadioButton.getText();
-    } else if (scoreFourRadioButton.getValue()) {
-      score = scoreFourRadioButton.getText();
-    } else if (scoreFiveRadioButton.getValue()) {
-      score = scoreFiveRadioButton.getText();
-    }
+    String score = getSelectedScoreFromUi();
     String notes = notesInput.getText();
 
     // if (!FieldVerifier.isValidEmail(ownerEmail)) {
@@ -477,13 +383,8 @@ public class LollapaloozerRateComposite extends Composite {
     // return;
     // }
 
-    if (!FieldVerifier.isValidScore(score)) {
-      infoBox.setText(FieldVerifier.SCORE_ERROR);
-      return;
-    }
-
     // Then, we send the input to the server.
-    int weekValue = weekInput.getSelectedIndex() + 1; // If week 1 is selected, index will be 0
+    int weekValue = getSelectedWeekFromUi();
     lollapaloozerService.addRating(set.getId(), weekValue + "", score, notes, new AsyncCallback<String>() {
       @Override
       public void onFailure(Throwable caught) {
@@ -496,6 +397,10 @@ public class LollapaloozerRateComposite extends Composite {
       public void onSuccess(String result) {
         logger.info("Add rating success");
         infoBox.setText(result);
+
+        if (redirectUrl != null) {
+          Window.Location.replace(redirectUrl);
+        }
         retrieveRatings(); // Maybe don't do this if we are hiding
       }
     });
@@ -546,6 +451,7 @@ public class LollapaloozerRateComposite extends Composite {
         setsList.addAll(sortedItems);
 
         weekInput.clear();
+        // Not yet sure what this does or why, good for now because we are not using this code
         for (Set set : sortedItems) {
           weekInput.addItem(set.getDay() + " " + set.getTimeOne() + " - " + set.getArtistName(), set.getId().toString());
         }
@@ -663,70 +569,214 @@ public class LollapaloozerRateComposite extends Composite {
     @Override
     public void onClick(ClickEvent event) {
       logger.info("Add Rating button clicked!");
+
+      if (verifyInput() == false) {
+        return;
+      }
+
       if (event.getSource() == buttonRate) {
         logger.info("Rate button clicked");
         addRating();
-      } else if (event.getSource() == buttonRateFacebook) {
-        logger.info("Facebook+Rate button clicked");
-        if (Coacheller_AppEngine.getLoginStatus().isLoggedIn(LoginType.FACEBOOK)) {
-          FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();
-          String facebookLink = ServletConfig.HTTP + fest.getWebClientHostname();
+      } else if (event.getSource() == buttonRateFacebook || event.getSource() == buttonRateTwitter) {
+        // Twitter and facebook common vars
+        FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();
+        String linkToRTFApp = ServletConfig.HTTP + fest.getWebClientHostname();
 
-          String rtfAppName = fest.getRTFAppName();
-          String festName = fest.getName();
-          String caption = "I saw " + _targetSet.getArtistName();
-          String description = "";
-
-          String redirectTarget = ServletConfig.HTTP + "ratethisfest.appspot.com/sessionsTest" + "?"
-              + ServletInterface.SPECIAL_ACTION_REDIRECTURL + "="
-              + Base64Coder.encodeStringRTFSpecial(fest.getWebClientHostname());
-
-          // If we found a rating, preload with some of this info
-          RatingGwt rating = getRatingForSetAndWeekInput(_targetSet);
-          if (rating != null) {
-            if (fest.getNumberOfWeeks() == 1) {
-              caption += " at " + festName;
-            } else {
-              caption += " during " + festName + " (Week " + rating.getWeekend() + ")";
-            }
-            caption += " and rated it a " + rating.getScore() + " (out of 5)";
-
-            description = rating.getNotes();
-          }
-
-          facebookLink = URL.encode(facebookLink);
-          caption = URL.encode(caption);
-          description = URL.encode(description);
-          redirectTarget = URL.encode(redirectTarget);
-
-          String finalRedirect = "https://www.facebook.com/dialog/feed?app_id=" + ServletConfig.FACEBOOK_ID + "&link="
-              + facebookLink + "&name=" + rtfAppName + "&caption=" + caption;
-
-          if (description != null && !description.equals("")) {
-            finalRedirect += "&description=" + description;
-          }
-
-          finalRedirect += "&redirect_uri=" + redirectTarget;
-          logger.info("User wants to rate with Facebook, redirecting:");
-          logger.info(finalRedirect);
-
-          Window.Location.replace(finalRedirect);
+        String score = getSelectedScoreFromUi();
+        int week = getSelectedWeekFromUi();
+        String rtfAppName = fest.getRTFAppName();
+        String festName = fest.getName();
+        String caption = "I saw " + _targetSet.getArtistName();
+        String description = notesInput.getText();
+        if (fest.getNumberOfWeeks() == 1) {
+          caption += " at " + festName;
         } else {
-          Window.Location.replace(LoginControl.getUrlLoginFacebook());
+          caption += " during " + festName + " (Week " + week + ")";
         }
-      } else if (event.getSource() == buttonRateTwitter) {
-        logger.info("Twitter+Rate button clicked");
-        if (Coacheller_AppEngine.getLoginStatus().isLoggedIn(LoginType.TWITTER)) {
-          Window.Location.replace("http://www.msnbc.com");
-        } else {
-          Window.Location.replace(LoginControl.getUrlLoginTwitter());
+        caption += " and rated it a " + score + " (out of 5)";
+
+        caption = URL.encode(caption);
+        description = URL.encode(description);
+        linkToRTFApp = URL.encode(linkToRTFApp);
+
+        if (event.getSource() == buttonRateFacebook) {
+          logger.info("Facebook+Rate button clicked");
+
+          if (Coacheller_AppEngine.getLoginStatus().isLoggedIn(LoginType.FACEBOOK)) { // If facebook is logged in
+
+            String redirectTarget = ServletConfig.HTTP + "ratethisfest.appspot.com/sessionsTest" + "?"
+                + ServletInterface.SPECIAL_ACTION_REDIRECTURL + "="
+                + Base64Coder.encodeStringRTFSpecial(fest.getWebClientHostname());
+            redirectTarget = URL.encode(redirectTarget);
+
+            String finalRedirect = "https://www.facebook.com/dialog/feed?app_id=" + ServletConfig.FACEBOOK_ID
+                + "&link=" + linkToRTFApp + "&name=" + rtfAppName + "&caption=" + caption;
+
+            if (description != null && !description.equals("")) {
+              finalRedirect += "&description=" + description;
+            }
+            finalRedirect += "&redirect_uri=" + redirectTarget;
+
+            logger.info("User wants to rate with Facebook: " + finalRedirect);
+            addRating(finalRedirect);
+          } else { // If facebook is not logged in
+            Window.Location.replace(LoginControl.getUrlLoginFacebook());
+          }
+
+        } else if (event.getSource() == buttonRateTwitter) { // Twitter-only block
+          logger.info("Twitter+Rate button clicked");
+          if (Coacheller_AppEngine.getLoginStatus().isLoggedIn(LoginType.TWITTER)) { // If twitter is logged in
+            String redirectTarget = ServletConfig.HTTPS + "twitter.com/intent/tweet?" + "url=" + linkToRTFApp + "&"
+                + "text=" + caption;
+            addRating(); // Hides this dialog
+            Window.open(redirectTarget, "_blank", "enabled");
+            // Window.Location.replace("http://www.msnbc.com");
+          } else { // If twitter is not logged in
+            Window.Location.replace(LoginControl.getUrlLoginTwitter());
+          }
+
+        } else { // End twitter + facebook common block
+          logger.info("Unexpected: Facebook or Twitter post was supposed to execute");
         }
       } else {
         logger.info("Click event source does not work as expected");
       }
-      addRating();
 
       androidAnimation.run(400);
+    }
+  }
+
+  private final class MiscClickHandler implements ClickHandler {
+    private final Animation androidAnimation;
+
+    public MiscClickHandler(Animation androidAnimation2) {
+      androidAnimation = androidAnimation2;
+    }
+
+    @Override
+    public void onClick(ClickEvent event) {
+      logger.info("Misc click handler called!");
+
+      if (event.getSource() == emailButton) {
+        logger.info("emailButton was clicked");
+
+        infoBox.setText("");
+        lollapaloozerService.emailRatingsToUser(ownerEmail, new AsyncCallback<String>() {
+          @Override
+          public void onFailure(Throwable caught) {
+            // Show the RPC error message to the user
+            infoBox.setText(SERVER_ERROR);
+          }
+
+          @Override
+          public void onSuccess(String result) {
+            infoBox.setText(result);
+          }
+        });
+
+      } else if (event.getSource() == backButton) {
+        logger.info("backButton was clicked");
+        FlowControl.go(new LollapaloozerViewComposite());
+
+      } else if (event.getSource() == updateSetButton) {
+        logger.info("updateSetButton was clicked");
+        if (ownerEmail.equals(ADMIN_EMAIL)) {
+          infoBox.setText("");
+          lollapaloozerService.insertSetData(new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+              // Show the RPC error message to the user
+              // infoBox.setText(SERVER_ERROR);
+              infoBox.setText(caught.getMessage());
+            }
+
+            @Override
+            public void onSuccess(String result) {
+              infoBox.setText(result);
+            }
+          });
+
+          androidAnimation.run(400);
+        } else {
+          infoBox.setText(ADMIN_ERROR);
+        }
+
+      } else if (event.getSource() == recalculateButton) {
+        logger.info("recalculateButton was clicked");
+        if (ownerEmail.equals(ADMIN_EMAIL)) {
+          infoBox.setText("");
+          lollapaloozerService.recalculateSetRatingAverages(new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+              // Show the RPC error message to the user
+              // infoBox.setText(SERVER_ERROR);
+              infoBox.setText(caught.getMessage());
+            }
+
+            @Override
+            public void onSuccess(String result) {
+              infoBox.setText(result);
+            }
+          });
+
+          androidAnimation.run(400);
+        } else {
+          infoBox.setText(ADMIN_ERROR);
+        }
+
+      } else if (event.getSource() == clearMyRatingButton) {
+        logger.info("clearMyRatingButton was clicked");
+        infoBox.setText("");
+        lollapaloozerService.deleteRatingsByUser(ownerEmail, new AsyncCallback<String>() {
+          @Override
+          public void onFailure(Throwable caught) {
+            // Show the RPC error message to the user
+            // infoBox.setText(SERVER_ERROR);
+            infoBox.setText(caught.getMessage());
+          }
+
+          @Override
+          public void onSuccess(String result) {
+            infoBox.setText(result);
+          }
+        });
+        androidAnimation.run(400);
+
+      } else if (event.getSource() == clearAllRatingButton) {
+        logger.info("clearAllRatingButton was clicked");
+        // Commented this because we have real live ratings in the datastore
+        // And also the app is being changed to handle any year
+
+        // if (ownerEmail.equals(ADMIN_EMAIL)) {
+        // infoBox.setText("");
+        // lollapaloozerService.deleteRatingsByYear(2012, new AsyncCallback<String>() {
+        // @Override
+        // public void onFailure(Throwable caught) {
+        // // Show the RPC error message to the user
+        // // infoBox.setText(SERVER_ERROR);
+        // infoBox.setText(caught.getMessage());
+        // }
+        //
+        // @Override
+        // public void onSuccess(String result) {
+        // infoBox.setText(result);
+        // }
+        // });
+        // androidAnimation.run(400);
+        // } else {
+        // infoBox.setText(ADMIN_ERROR);
+        // }
+
+        // } else if (event.getSource() == backButton) {
+        // logger.info("backButton was clicked");
+        // } else if (event.getSource() == backButton) {
+        // logger.info("backButton was clicked");
+      } else {
+        logger.info("Click event was from unknown source!");
+      }
+
     }
   }
 

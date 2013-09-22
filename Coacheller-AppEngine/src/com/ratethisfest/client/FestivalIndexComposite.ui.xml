@@ -8,7 +8,7 @@
 		<div id="container" align="center">
 			<div id="android"></div>
 			<div class="appname">
-				<g:Label ui:field="title" addStyleNames="{style.header}" />
+				<g:Label ui:field="title" addStyleNames="{style.header}" text="CHOOSE YOUR FEST" />
 			</div>
 			<div class="roundrect">
 				<div class="buttoncell">
@@ -18,6 +18,21 @@
 						addStyleNames="{style.button}" />
 				</div>
 			</div>
+			<br/>
+			<hr width="75%" />
+			<br/>
+			<g:Label ui:field="Text1" addStyleNames="{style.headerNotBold}" text="What is RateThisFest?" /><br/>
+			<br/>
+			<g:Label ui:field="Text2" addStyleNames="{style.headerNotBold}" text="Rate your favorite (and less than favorite?) sets from Coachella and Lollapalooza" /><br/>
+			<g:Label ui:field="Text3" addStyleNames="{style.headerNotBold}" text="Compare ratings with those of other users" /><br/>
+			<g:Label ui:field="Text4" addStyleNames="{style.headerNotBold}" text="Use your existing Google, Facebook, and/or Twitter account to login - " />
+			<g:Label ui:field="Text5" addStyleNames="{style.headerBoldItalic}" text="No new Usernames or Passwords to Remember, EVER!" /><br/>
+			<g:Label ui:field="Text7" addStyleNames="{style.headerNotBold}" text="Share your ratings on Facebook and Twitter" /><br/>
+			<g:Label ui:field="Text8" addStyleNames="{style.headerNotBold}" text="If you log out, log back into RateThisFest with any (Google, Facebook, Twitter) account you used previously" /><br/>
+			<g:Label ui:field="Text9" addStyleNames="{style.headerNotBold}" text="Move things using only your mind*" /><br/>
+			<br/>
+			<g:Label ui:field="Text10" addStyleNames="{style.header_mobile}" text="*May have additional requirements" /><br/>
+			
 		</div>
 	</g:HTMLPanel>
 

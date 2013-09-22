@@ -26,6 +26,7 @@
 
 		<g:Label ui:field="notesLabel" addStyleNames="{style.label}" />
 		<g:TextBox ui:field="notesInput" addStyleNames="{style.textLarge}" />
+		<g:Label ui:field="infoBox" addStyleNames="{style.info}" />
 		<g:HorizontalPanel>
 			<g:Button ui:field="buttonRate" text="Add Rating"
 			addStyleNames="{style.button}" />
@@ -48,7 +49,6 @@
 		<g:Button ui:field="clearAllRatingButton" text="Clear All Ratings" />
 
 
-		<g:Label ui:field="infoBox" addStyleNames="{style.info}" />
 
 
 		<t:LollapaloozerRateComposite.RatingsTable ui:field="ratingsTable" />

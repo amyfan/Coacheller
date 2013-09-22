@@ -57,6 +57,44 @@ public class LollapaloozerViewComposite extends Composite {
 
   private static Binder uiBinder = GWT.create(Binder.class);
 
+  private final class DropdownChangeHandler implements ChangeHandler {
+    @Override
+    public void onChange(ChangeEvent event) {
+      if (event.getSource() == dayInput) {
+        logger.info("Dropdown change of Day");
+        retrieveSets();
+        // androidAnimation.run(400);
+
+      } else if (event.getSource() == yearInput) {
+        logger.info("Dropdown change of Year");
+        retrieveSets();
+        // androidAnimation.run(400);
+
+      } else if (event.getSource() == chartDataSortInput) {
+        logger.info("Dropdown change of chart data sort type");
+        // final DataTable dataTable = (DataTable) createChartDataTable();
+
+        // Create a callback to be called when the visualization API
+        // has been loaded.
+        Runnable onLoadCallback = new Runnable() {
+          @Override
+          public void run() {
+            chartShowLoading("Loading...");
+            logger.info("Chart type change handler running");
+            changeChart(_chart);
+          }
+        };
+
+        // Load the visualization api, passing the onLoadCallback to be called when loading is done.
+        VisualizationUtils.loadVisualizationApi(onLoadCallback, CoreChart.PACKAGE);
+
+      } else {
+        logger.info("Unexpected:  Dropdown change from unknown source");
+      }
+
+    }
+  }
+
   interface Binder extends UiBinder<Widget, LollapaloozerViewComposite> {
   }
 
@@ -67,7 +105,7 @@ public class LollapaloozerViewComposite extends Composite {
   // Create a remote service proxy to talk to the server-side Lollapaloozer service.
   private final LollapaloozerServiceAsync lollapaloozerService = GWT.create(LollapaloozerService.class);
   private List<Set> setsList;
-  private Chart _chart;
+  private Chart _chart = null;
 
   @UiField
   Anchor androidUrl;
@@ -79,13 +117,15 @@ public class LollapaloozerViewComposite extends Composite {
   ListBox dayInput;
 
   @UiField
-  ListBox chartTypeInput;
+  ListBox chartDataSortInput;
 
   @UiField
   SimplePanel setsChartPanel;
 
   @UiField
   SetsTable setsTable;
+  @UiField
+  ListBox yearInput;
 
   // @UiField
   // com.google.gwt.user.client.ui.Button queryButton;
@@ -123,6 +163,8 @@ public class LollapaloozerViewComposite extends Composite {
   }
 
   private void initUiElements() {
+    setsChartPanel.setVisible(false);
+
     androidUrl.setHref("http://play.google.com/store/apps/details?id=com.lollapaloozer");
     androidUrl.setText("Download Lollapaloozer for Android");
     androidUrl.setTarget("_blank");
@@ -137,9 +179,11 @@ public class LollapaloozerViewComposite extends Composite {
       @Override
       public void run() {
         logger.info("Init UI visualization API loaded handler");
-        _chart = createChart();
-        setsChartPanel.add(_chart);
-        chartShowLoading("Loading (2)");
+
+        if (_chart != null) {
+          changeChart(_chart);
+          chartShowLoading("Loading (2)");
+        }
       }
     };
 
@@ -180,45 +224,20 @@ public class LollapaloozerViewComposite extends Composite {
     // }
     // });
 
-    dayInput.addItem("Friday");
-    dayInput.addItem("Saturday");
-    dayInput.addItem("Sunday");
+    DropdownChangeHandler dropdownHandler = new DropdownChangeHandler();
+    yearInput.addItem("2013");
+    yearInput.addItem("2012");
+    yearInput.addChangeHandler(dropdownHandler);
 
-    dayInput.addChangeHandler(new ChangeHandler() {
-      @Override
-      public void onChange(ChangeEvent event) {
-        retrieveSets();
-        // androidAnimation.run(400);
-      }
-    });
+    dayInput.addItem(DayEnum.FRIDAY.getValue());
+    dayInput.addItem(DayEnum.SATURDAY.getValue());
+    dayInput.addItem(DayEnum.SUNDAY.getValue());
+    dayInput.addChangeHandler(dropdownHandler);
 
-    chartTypeInput.addItem("Score");
-    chartTypeInput.addItem("Set Time");
-    chartTypeInput.addItem("Artist Name");
-
-    chartTypeInput.addChangeHandler(new ChangeHandler() {
-      @Override
-      public void onChange(ChangeEvent event) {
-        // final DataTable dataTable = (DataTable) createChartDataTable();
-
-        // Create a callback to be called when the visualization API
-        // has been loaded.
-        Runnable onLoadCallback = new Runnable() {
-          @Override
-          public void run() {
-            logger.info("Chart type change handler running");
-            setsChartPanel.clear();
-            _chart = createChart();
-            setsChartPanel.add(_chart);
-            chartShowLoading("Loading (1)");
-          }
-        };
-
-        // Load the visualization api, passing the onLoadCallback to be called
-        // when loading is done.
-        VisualizationUtils.loadVisualizationApi(onLoadCallback, CoreChart.PACKAGE);
-      }
-    });
+    chartDataSortInput.addItem("Score");
+    chartDataSortInput.addItem("Set Time");
+    chartDataSortInput.addItem("Artist Name");
+    chartDataSortInput.addChangeHandler(dropdownHandler);
 
     // userNameInput.addKeyUpHandler(new KeyUpHandler() {
     // public void onKeyUp(KeyUpEvent event) {
@@ -250,6 +269,13 @@ public class LollapaloozerViewComposite extends Composite {
     // });
   }
 
+  public void changeChart(Chart chart) {
+    setsChartPanel.setVisible(true);
+    setsChartPanel.clear();
+    setsChartPanel.add(chart);
+    chartHideLoading();
+  }
+
   public void chartShowLoading(String message) {
     if (_chart == null) {
       logger.info("Unexpected, chart is null (" + message + ")");
@@ -275,10 +301,11 @@ public class LollapaloozerViewComposite extends Composite {
 
   private void retrieveSets() {
     infoBox.setText("");
-    chartShowLoading("Loading (0)");
+    chartShowLoading("Loading...");
     FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();
     String day = dayInput.getItemText(dayInput.getSelectedIndex());
-    lollapaloozerService.getSets(fest, "2012", DayEnum.fromValue(day), new AsyncCallback<List<Set>>() {
+    String year = yearInput.getItemText(yearInput.getSelectedIndex());
+    lollapaloozerService.getSets(fest, year, DayEnum.fromValue(day), new AsyncCallback<List<Set>>() {
 
       @Override
       public void onFailure(Throwable caught) {
@@ -299,10 +326,9 @@ public class LollapaloozerViewComposite extends Composite {
           @Override
           public void run() {
             logger.info("Retrieve sets completed callback handler");
-            setsChartPanel.clear();
             _chart = createChart();
-            setsChartPanel.add(_chart);
-            chartHideLoading();
+            changeChart(_chart);
+
           }
         };
 
@@ -342,7 +368,7 @@ public class LollapaloozerViewComposite extends Composite {
       data.addColumn(ColumnType.STRING, "Artist Name");
       data.addColumn(ColumnType.NUMBER, "Average Score");
       data.addRows(setsList.size());
-      if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Artist Name")) {
+      if (chartDataSortInput.getItemText(chartDataSortInput.getSelectedIndex()).equals("Artist Name")) {
         // sort first
         Collections.sort(setsList, ComparatorUtils.SET_NAME_COMPARATOR);
 
@@ -352,7 +378,7 @@ public class LollapaloozerViewComposite extends Composite {
           data.setValue(setNum, 1, set.getAvgScoreOne());
           setNum++;
         }
-      } else if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Score")) {
+      } else if (chartDataSortInput.getItemText(chartDataSortInput.getSelectedIndex()).equals("Score")) {
         // sort first
         Collections.sort(setsList, ComparatorUtils.SET_SCORE_COMPARATOR);
 
@@ -387,7 +413,12 @@ public class LollapaloozerViewComposite extends Composite {
       return chart;
     }
 
-    Chart chart = new Chart().setType(Series.Type.BAR).setChartTitleText("2012 RATING RESULTS").setMarginRight(10);
+    String title = "RATING RESULTS";
+    String year = yearInput.getItemText(yearInput.getSelectedIndex());
+    if (year != null) {
+      title = year + " " + title;
+    }
+    Chart chart = new Chart().setType(Series.Type.BAR).setChartTitleText(title).setMarginRight(10);
     chart.getXAxis().setAxisTitleText("Artist");
     chart.getYAxis().setAxisTitleText("Score").setMin(0).setMax(5);
     Series series = chart.createSeries().setName("Average Score");
@@ -395,7 +426,7 @@ public class LollapaloozerViewComposite extends Composite {
     List<String> artistsList = new ArrayList<String>();
     List<Point> pointsList = new ArrayList<Point>();
 
-    if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Artist Name")) {
+    if (chartDataSortInput.getItemText(chartDataSortInput.getSelectedIndex()).equals("Artist Name")) {
       // sort first
       Collections.sort(setsList, ComparatorUtils.SET_NAME_COMPARATOR);
 
@@ -404,7 +435,7 @@ public class LollapaloozerViewComposite extends Composite {
         Point point = new Point(set.getArtistName(), set.getAvgScoreOne()).setColor("#FF7800");
         pointsList.add(point);
       }
-    } else if (chartTypeInput.getItemText(chartTypeInput.getSelectedIndex()).equals("Score")) {
+    } else if (chartDataSortInput.getItemText(chartDataSortInput.getSelectedIndex()).equals("Score")) {
       // sort first
       Collections.sort(setsList, ComparatorUtils.SET_SCORE_COMPARATOR);
 

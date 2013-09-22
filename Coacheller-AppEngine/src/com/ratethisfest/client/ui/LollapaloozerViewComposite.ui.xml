@@ -19,18 +19,21 @@
 				</div>
 				<div class="inputcell">
 					Sort By
-					<g:ListBox ui:field="chartTypeInput" />
+					<g:ListBox ui:field="chartDataSortInput" />
+					Day:
 					<g:ListBox ui:field="dayInput" addStyleNames="{style.text}" />
+					Year:
+					<g:ListBox ui:field="yearInput" />
 				</div>
-<g:HorizontalPanel>
+				<g:HorizontalPanel>
 					<!-- <div class="chartcell"> -->
-						<g:SimplePanel ui:field="setsChartPanel" />
+					<g:SimplePanel ui:field="setsChartPanel" />
 					<!-- </div> -->
 					<!-- <div class="tablecell"> -->
-						<t:LollapaloozerViewComposite.SetsTable
-							ui:field="setsTable" />
+					<t:LollapaloozerViewComposite.SetsTable
+						ui:field="setsTable" />
 					<!-- </div> -->
-</g:HorizontalPanel>
+				</g:HorizontalPanel>
 			</div>
 		</div>
 	</g:HTMLPanel>
