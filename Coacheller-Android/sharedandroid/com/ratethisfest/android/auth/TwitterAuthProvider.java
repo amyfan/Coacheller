@@ -117,13 +117,15 @@ public class TwitterAuthProvider implements AuthProviderInt {
     }
 
     Response response = _oAuthProvider.accessResource(Verb.GET,
-        "http://api.twitter.com/1/account/verify_credentials.xml");
+        "https://api.twitter.com/1.1/account/verify_credentials.json");
     String responseBody = response.getBody();
     // System.out.println(response.getBody());
 
     _twitterAccountProperties.clear();
     for (String s : _twitterAccountPropertyNames) {
-      _twitterAccountProperties.put(s, Helper.readXmlProperty(s, responseBody));
+      String gotProperty = Helper.readSimpleJsonProperty(s, responseBody);
+      _twitterAccountProperties.put(s, gotProperty);
+      System.out.println("Got JSON property: " + s + " = " + gotProperty);
     }
 
     // If data is meaningful, set logged in flag;
@@ -147,7 +149,7 @@ public class TwitterAuthProvider implements AuthProviderInt {
     HashMap<String, String> bodyParameters = new HashMap<String, String>();
     bodyParameters.put("status", message);
 
-    Response response = _oAuthProvider.accessResource(Verb.POST, "https://api.twitter.com/1/statuses/update.json",
+    Response response = _oAuthProvider.accessResource(Verb.POST, "https://api.twitter.com/1.1/statuses/update.json",
         bodyParameters);
     return response.getBody();
   }

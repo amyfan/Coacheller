@@ -24,7 +24,7 @@ import org.json.JSONTokener;
 import android.content.Context;
 
 import com.ratethisfest.android.log.LogController;
-import com.ratethisfest.shared.HttpConstants;
+import com.ratethisfest.data.HttpConstants;
 
 public class ServiceUtils {
   private final static String HTTP_SUCCESS = "Received HTTP Response";

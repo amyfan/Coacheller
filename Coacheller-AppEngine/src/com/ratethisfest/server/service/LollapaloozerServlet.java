@@ -11,12 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
 
-import auth.logins.other.LoginManager;
-
-import com.ratethisfest.client.Coacheller_AppEngine;
 import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.data.HttpConstants;
-import com.ratethisfest.server.domain.AppUser;
 import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.server.logic.JSONUtils;
 import com.ratethisfest.server.logic.LollaEmailSender;
@@ -57,6 +53,9 @@ public class LollapaloozerServlet extends HttpServlet {
 
     String respString = "";
     FestivalEnum fest = FestivalEnum.fromHostname(req.getServerName());
+    if (fest == null) {
+      fest = FestivalEnum.LOLLAPALOOZA; // Only because this is lollapaloozerservlet
+    }
 
     if (action.equals(HttpConstants.ACTION_GET_SETS)) {
       respString = getSetsJson(fest, year, day);
@@ -135,7 +134,7 @@ public class LollapaloozerServlet extends HttpServlet {
       List<Set> sets = null;
 
       Integer year = Integer.valueOf(yearString);
-      
+
       if (day != null && !day.isEmpty()) {
         sets = LollaRatingManager.getInstance().findSetsByYearAndDay(fest, year, DayEnum.fromValue(day));
       } else {

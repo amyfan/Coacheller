@@ -21,8 +21,8 @@ import android.content.Intent;
 
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.data.AndroidConstants;
-import com.ratethisfest.data.CalendarUtils;
-import com.ratethisfest.shared.FestivalEnum;
+import com.ratethisfest.data.FestivalEnum;
+import com.ratethisfest.shared.CalendarUtils;
 
 public class AlertManager implements AlertListAdapterDataSource {
 

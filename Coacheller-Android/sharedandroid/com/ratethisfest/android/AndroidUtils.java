@@ -5,12 +5,13 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.ratethisfest.android.data.LoginData;
-import com.ratethisfest.shared.HttpConstants;
+import com.ratethisfest.data.HttpConstants;
 
 public class AndroidUtils {
 
@@ -31,8 +32,10 @@ public class AndroidUtils {
   /**
    * populateSpinnerWithArray Populates dropdown boxes with options, based on string arrays.
    * 
-   * @param spinner  Spinner object representing he UI widget
-   * @param stringArrayResId  Resource ID of the spinner object
+   * @param spinner
+   *          Spinner object representing he UI widget
+   * @param stringArrayResId
+   *          Resource ID of the spinner object
    */
   public static void populateSpinnerWithArray(Spinner spinner, int textViewResId, String[] stringArray,
       int dropDownViewResId) {

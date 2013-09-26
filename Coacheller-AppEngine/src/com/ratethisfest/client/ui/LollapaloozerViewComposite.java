@@ -72,6 +72,9 @@ public class LollapaloozerViewComposite extends Composite {
 
       } else if (event.getSource() == chartDataSortInput) {
         logger.info("Dropdown change of chart data sort type");
+        chartShowLoading("Loading...");
+
+        _chart = createChart(); // Probably not the best solution but I have not refactored the sorting code yet -MA
         // final DataTable dataTable = (DataTable) createChartDataTable();
 
         // Create a callback to be called when the visualization API
@@ -79,7 +82,6 @@ public class LollapaloozerViewComposite extends Composite {
         Runnable onLoadCallback = new Runnable() {
           @Override
           public void run() {
-            chartShowLoading("Loading...");
             logger.info("Chart type change handler running");
             changeChart(_chart);
           }

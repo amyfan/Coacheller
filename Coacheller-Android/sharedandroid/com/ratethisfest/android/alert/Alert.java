@@ -18,9 +18,9 @@ import com.lollapaloozer.R;
 import com.ratethisfest.android.RTFIntentReceiver;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.data.AndroidConstants;
-import com.ratethisfest.data.CalendarUtils;
+import com.ratethisfest.data.FestivalEnum;
+import com.ratethisfest.shared.CalendarUtils;
 import com.ratethisfest.shared.DateTimeUtils;
-import com.ratethisfest.shared.FestivalEnum;
 
 public class Alert implements Serializable {
   private static final long serialVersionUID = 1L;

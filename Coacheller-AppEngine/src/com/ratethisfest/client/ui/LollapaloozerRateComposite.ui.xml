@@ -41,13 +41,10 @@
 
 		<g:Button ui:field="backButton" text="Go Back" addStyleNames="{style.button}" />
 
-
-		Temporary Test Buttons:
 		<g:Button ui:field="updateSetButton" text="Update Sets" />
 		<g:Button ui:field="recalculateButton" text="Recalculate Scores" />
 		<g:Button ui:field="clearMyRatingButton" text="Clear My Ratings" />
 		<g:Button ui:field="clearAllRatingButton" text="Clear All Ratings" />
-
 
 
 

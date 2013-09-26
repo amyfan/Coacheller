@@ -15,8 +15,8 @@ import com.coacheller.CoachellerApplication;
 import com.lollapaloozer.R;
 import com.ratethisfest.android.AndroidUtils;
 import com.ratethisfest.android.log.LogController;
-import com.ratethisfest.data.CalendarUtils;
-import com.ratethisfest.data.FestData;
+import com.ratethisfest.shared.CalendarUtils;
+import com.ratethisfest.shared.FestData;
 
 public class SearchSetsActivity extends Activity implements OnClickListener {
   public final static String YEAR = "YEAR";

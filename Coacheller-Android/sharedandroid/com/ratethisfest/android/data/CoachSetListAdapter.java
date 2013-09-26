@@ -14,9 +14,9 @@ import com.coacheller.CoachellerApplication;
 import com.lollapaloozer.R;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.data.AndroidConstants;
+import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.DateTimeUtils;
-import com.ratethisfest.shared.FestivalEnum;
 
 public class CoachSetListAdapter extends CustomSetListAdapter {
 

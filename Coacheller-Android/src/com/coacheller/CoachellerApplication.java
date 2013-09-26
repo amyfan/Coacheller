@@ -32,10 +32,10 @@ import com.ratethisfest.android.ui.ChooseLoginActivity;
 import com.ratethisfest.android.ui.CoachellerActivity;
 import com.ratethisfest.android.ui.SearchSetsActivity;
 import com.ratethisfest.data.AndroidConstants;
-import com.ratethisfest.data.CalendarUtils;
+import com.ratethisfest.data.FestivalEnum;
+import com.ratethisfest.data.HttpConstants;
 import com.ratethisfest.shared.AuthConstants;
-import com.ratethisfest.shared.FestivalEnum;
-import com.ratethisfest.shared.HttpConstants;
+import com.ratethisfest.shared.CalendarUtils;
 
 /**
  * Class to maintain global application state. Serves as controller & model.
@@ -70,10 +70,10 @@ public class CoachellerApplication extends Application implements AppControllerI
 
     // Set logging options here
     // LogController.LIFECYCLE_ACTIVITY.disable();
-    LogController.LIFECYCLE_THREAD.disable();
+    // LogController.LIFECYCLE_THREAD.disable();
     // LogController.USER_ACTION_UI.disable();
-    LogController.MULTIWEEK.disable();
-    // LogController.allCategoriesOn();
+    // LogController.MULTIWEEK.disable();
+    LogController.allCategoriesOn();
 
     HashMap<String, String> appConstants = new HashMap<String, String>();
 

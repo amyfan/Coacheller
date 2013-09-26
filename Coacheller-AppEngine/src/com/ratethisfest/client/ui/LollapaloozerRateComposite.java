@@ -257,6 +257,14 @@ public class LollapaloozerRateComposite extends Composite {
         deleteRating(rating);
       }
     });
+
+    emailButton.setVisible(false);
+    backButton.setVisible(false);
+    updateSetButton.setVisible(false);
+    recalculateButton.setVisible(false);
+    clearMyRatingButton.setVisible(false);
+    clearAllRatingButton.setVisible(false);
+    ratingsTable.setVisible(false);
   }
 
   @Override

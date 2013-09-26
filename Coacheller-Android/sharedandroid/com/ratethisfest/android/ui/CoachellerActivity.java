@@ -52,11 +52,11 @@ import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.android.data.SocialNetworkPost;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.data.AndroidConstants;
-import com.ratethisfest.data.CalendarUtils;
+import com.ratethisfest.data.FestivalEnum;
+import com.ratethisfest.data.HttpConstants;
 import com.ratethisfest.shared.AuthConstants;
-import com.ratethisfest.shared.FestivalEnum;
+import com.ratethisfest.shared.CalendarUtils;
 import com.ratethisfest.shared.FieldVerifier;
-import com.ratethisfest.shared.HttpConstants;
 
 /**
  * Main Coacheller Activity. Serves as view controller.
@@ -669,7 +669,13 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
       e.printStackTrace();
     }
 
-    int weeksOver = CalendarUtils.getlastFestWeekExpired(_application.getFestival());
+    int festNumberOfWeeks = CalendarUtils.getFestivalMaxNumberOfWeeks(_application.getFestival());
+    int weeksOver;
+    if (festNumberOfWeeks == 1) {
+      weeksOver = 0;
+    } else {
+      weeksOver = CalendarUtils.getlastFestWeekExpired(_application.getFestival());
+    }
 
     RadioGroup weekGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_week);
     RadioButton buttonWeek1 = (RadioButton) dialogRate.findViewById(R.id.radio_button_week1);
@@ -678,13 +684,14 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
     int idChanged = -1;
 
     if (weeksOver == 0) { // Still in week 1, disable rating week 2
+      LogController.MULTIWEEK.logMessage(("Recommending week 1 for ratings based on schedule"));
       buttonWeek1.setClickable(true);
       buttonWeek2.setClickable(false);
       buttonWeek1.setChecked(true);
       idChanged = buttonWeek1.getId();
 
-    } else if (weeksOver <= 1) { // Week 2 or later, enable rating week 2
-
+    } else if (weeksOver >= 1) { // Week 2 or later, enable rating week 2
+      LogController.MULTIWEEK.logMessage(("Recommending week 2 for ratings based on schedule"));
       buttonWeek1.setClickable(true);
       buttonWeek2.setClickable(true);
       buttonWeek2.setChecked(true);
@@ -692,10 +699,11 @@ public class CoachellerActivity extends Activity implements View.OnClickListener
 
     } else {
       // Don't suggest a week
+      LogController.MULTIWEEK.logMessage(("Unable to guess what week this Fest is in"));
       weekGroup.clearCheck();
     }
 
-    int numWeeks = CalendarUtils.getFestivalMaxNumberOfWeeks(_application.getFestival());
+    int numWeeks = festNumberOfWeeks;
     if (numWeeks == 1) {
       weekGroup.setVisibility(View.INVISIBLE);
       TextView selectWeekText = (TextView) dialogRate.findViewById(R.id.layout_radio_choice_minutes_textline_text);
