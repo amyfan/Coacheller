@@ -1,51 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lollapaloozer"
-    android:versionCode="13"
-    android:versionName="1.12" >
+    android:versionCode="15"
+    android:versionName="2.0.1" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="8" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-sdk android:minSdkVersion="8" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
 
     <application
-        android:debuggable="true"
+        android:name=".LollapaloozerApplication"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:name=".LollapaloozerApplication" >
+        android:label="@string/app_name" >
         <uses-library android:name="com.google.android.maps" />
 
         <activity
+            android:name="com.lollapaloozer.LollapaloozerActivity"
             android:label="@string/app_name"
             android:launchMode="standard"
-            android:name=".ui.LollapaloozerActivity"
             android:screenOrientation="portrait" >
-            <intent-filter >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
+            android:name="com.ratethisfest.android.ui.SearchSetsActivity"
             android:launchMode="standard"
-            android:name=".ui.SearchSetsActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.ratethisfest.android.ui.ChooseLoginActivity"
             android:launchMode="standard"
-            android:name=".ui.ChooseLoginActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.ratethisfest.android.ui.TwitterAuthWebpageActivity"
             android:launchMode="standard"
-            android:name=".ui.TwitterAuthWebpageActivity"
             android:screenOrientation="portrait" >
         </activity>
-    </application>
 
+        <receiver android:name="com.ratethisfest.android.RTFIntentReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="com.ratethisfest.android.alert.AlertsActivity"
+            android:label="Manage Alerts" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.coacheller.ui.CoachellerActivity" />
+        </activity>
+        <activity android:name="com.ratethisfest.android.alert.AlertAlarmActivity" android:theme="@android:style/Theme.Dialog"></activity>
+    </application>
+    
 </manifest>

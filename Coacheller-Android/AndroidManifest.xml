@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.lollapaloozer"
+    package="com.coacheller"
     android:versionCode="15"
     android:versionName="2.0.1" >
 
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="8" />
+
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-sdk android:minSdkVersion="8" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
@@ -18,13 +19,13 @@
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
 
     <application
-        android:name="com.coacheller.CoachellerApplication"
+        android:name=".CoachellerApplication"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <uses-library android:name="com.google.android.maps" />
 
         <activity
-            android:name="com.ratethisfest.android.ui.CoachellerActivity"
+            android:name=".CoachellerActivity"
             android:label="@string/app_name"
             android:launchMode="standard"
             android:screenOrientation="portrait" >

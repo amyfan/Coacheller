@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="libs/gson-2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/guava-14.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/scribe.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/RateThisFest-Data"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

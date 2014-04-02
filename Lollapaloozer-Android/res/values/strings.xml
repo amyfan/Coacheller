@@ -1,35 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<string name="app_name">Lollapaloozer (Unofficial)</string>
-	<string name="currLocation">Address</string>
-	<string name="defaultLocation">Current Location</string>
-	<string name="distance">Distance</string>
-	<string name="dateBackTo">Dating Back To</string>
-	<string name="save_file_path">/Lollapaloozer/</string>
-	<string name="save_file_name">LollapaloozerData.dat</string>
-
-	<string-array name="dateArray">
-		<item>2011</item>
-	</string-array>
-	<string name="title_sets_search">Choose Day to Load</string>
-	<string name="year_search_sets">Year</string>
-	<string name="week_search_sets">Week</string>
-	<string name="day_search_sets">Day</string>
-	<string name="buttonlabel_search_sets">Go!</string>
-	<string-array name="names_week">
-		<item>August 3-5, 2012</item>
-	</string-array>
-	<string-array name="names_day">
-		<item>Friday</item>
-		<item>Saturday</item>
-		<item>Sunday</item>
-	</string-array>
-	<string name="set_rate">Rate</string>
-	<string-array name="search_types">
-		<item>Time</item>
-		<item>Artist</item>
-        <item>Stage</item>
-	</string-array>
+    <string name="app_name">Lollapaloozer (Unofficial)</string>
+    <string name="save_file_path">/Lollapaloozer/</string>
+    <string name="save_file_name">LollapaloozerData.dat</string>
 
 </resources>

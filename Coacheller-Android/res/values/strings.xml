@@ -1,50 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Lollapaloozer</string>
-    <string name="currLocation">Address</string>
-    <string name="defaultLocation">Current Location</string>
-    <string name="distance">Distance</string>
-    <string name="dateBackTo">Dating Back To</string>
+    <string name="app_name">Coacheller (Unofficial)</string>
     <string name="save_file_path">/Coacheller/</string>
     <string name="save_file_name">CoachellerData.dat</string>
-
-    <string-array name="dateArray">
-        <item>2011</item>
-    </string-array>
-
-    <string name="title_sets_search">Choose Day to Load</string>
-    <string name="year_search_sets">Year</string>
-    <string name="week_search_sets">Week</string>
-    <string name="day_search_sets">Day</string>
-    <string name="buttonlabel_search_sets">Go!</string>
-
-    <string-array name="names_year_deprecated">
-        <item>2013</item>
-        <item>2012</item>
-    </string-array>
-    <string-array name="names_week_deprecated">
-        <item>Weekend 1</item>
-        <item>Weekend 2</item>
-    </string-array>
-    <string-array name="names_day_deprecated">
-        <item>Friday</item>
-        <item>Saturday</item>
-        <item>Sunday</item>
-    </string-array>
-
-    <string name="set_rate">Rate</string>
-
-    <string-array name="search_types">
-        <item>Time</item>
-        <item>Artist</item>
-        <item>Stage</item>
-    </string-array>
-
-    <string name="name_week1_short">Week 1</string>
-    <string name="name_week2_short">Week 2</string>
-    <string name="title_activity_alerts">Manage Alerts</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-
+    
 </resources>
