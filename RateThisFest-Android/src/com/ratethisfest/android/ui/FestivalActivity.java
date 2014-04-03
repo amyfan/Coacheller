@@ -61,7 +61,7 @@ import com.ratethisfest.shared.FieldVerifier;
  * 
  */
 public abstract class FestivalActivity extends Activity implements View.OnClickListener, OnItemSelectedListener,
-    OnItemClickListener, OnCheckedChangeListener {
+    OnItemClickListener {
 
   protected static final int REFRESH_INTERVAL__SECONDS = 15;
 
@@ -94,26 +94,6 @@ public abstract class FestivalActivity extends Activity implements View.OnClickL
   protected SocialNetworkPost _queuedFacebookPost;
 
   /** Called by Android Framework when the activity is first created. */
-
-  @Deprecated
-  protected void checkForExtraData() {
-    Intent intent = getIntent();
-    Bundle bundle = intent.getExtras();
-
-    if (bundle == null) {
-      return;
-    }
-
-    String year = intent.getExtras().getString(SearchSetsActivity.YEAR);
-    String week = intent.getExtras().getString(SearchSetsActivity.WEEK);
-    String day = intent.getExtras().getString(SearchSetsActivity.DAY);
-
-    LogController.OTHER.logMessage("FestivalActivity setting search suggestion of year[" + year + "] week[" + week
-        + "] day[" + day + "]");
-    _application.setYearToQuery(Integer.valueOf(year));
-    _application.setDayToQuery(day);
-    _application.setWeekToQuery(Integer.valueOf(week));
-  }
 
   /** Called by Android Framework when activity (re)gains foreground status */
   @Override
@@ -290,6 +270,11 @@ public abstract class FestivalActivity extends Activity implements View.OnClickL
     setIntent(intent);// must store the new intent unless getIntent() will
     // return the old one
     checkForExtraData();
+  }
+
+  // TODO: Create Interface for Overridden Methods
+  @Deprecated
+  protected void checkForExtraData() { 
   }
 
   protected void clickDialogFirstUseButtonOK() {
@@ -517,46 +502,6 @@ public abstract class FestivalActivity extends Activity implements View.OnClickL
   }
 
   @Override
-  public void onCheckedChanged(RadioGroup clickedGroup, int checkedId) {
-    // todo should use switch
-    RadioGroup scoreGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_score);
-    EditText noteWidget = (EditText) dialogRate.findViewById(R.id.editText_commentsForSet);
-
-    // Selection changed week 1<->2
-    if (clickedGroup == dialogRate.findViewById(R.id.radio_pick_week)) {
-      try {
-        if (checkedId != R.id.radio_button_week1 && checkedId != R.id.radio_button_week2) {
-          // Not sure what is selected, clear rating check
-          scoreGroup.clearCheck();
-          noteWidget.setText("");
-        } else {
-          JSONObject ratingToCheck = null;
-          ;
-          if (checkedId == R.id.radio_button_week1) {
-            ratingToCheck = lastRatingPair.first;
-          } else if (checkedId == R.id.radio_button_week2) {
-            ratingToCheck = lastRatingPair.second;
-          }
-          if (ratingToCheck != null) {
-            int buttonIdToCheck = _ratingSelectedValueToId.get(ratingToCheck
-                .getString(AndroidConstants.JSON_KEY_RATINGS__SCORE));
-            RadioButton buttonToCheck = (RadioButton) dialogRate.findViewById(buttonIdToCheck);
-            buttonToCheck.setChecked(true);
-            noteWidget.setText(ratingToCheck.getString(AndroidConstants.JSON_KEY_RATINGS__NOTES));
-          } else {
-            scoreGroup.clearCheck();
-            noteWidget.setText("");
-          }
-
-        }
-      } catch (JSONException e) {
-        e.printStackTrace();
-      }
-      scoreGroup.invalidate();
-    }
-  }
-
-  @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.menu_global_options, menu);
@@ -636,35 +581,9 @@ public abstract class FestivalActivity extends Activity implements View.OnClickL
     return dialogAlerts;
   }
 
-  private Dialog createDialogRate() {
-    dialogRate = new Dialog(this);
-    dialogRate.requestWindowFeature(Window.FEATURE_NO_TITLE);
-    dialogRate.setContentView(R.layout.dialog_rate_set);
-
-    RadioGroup weekGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_week);
-    weekGroup.setOnCheckedChangeListener(this);
-
-    // Setup 'X' close widget
-    ImageView close_dialog = (ImageView) dialogRate.findViewById(R.id.imageView_custom_dialog_close);
-    close_dialog.setOnClickListener(new View.OnClickListener() {
-      public void onClick(View v) {
-        dialogRate.dismiss();
-      }
-    });
-
-    Button buttonRateAbove = (Button) dialogRate.findViewById(R.id.button_go_rate_above);
-    buttonRateAbove.setOnClickListener(this);
-
-    Button buttonRateInline = (Button) dialogRate.findViewById(R.id.button_go_rate_inline);
-    buttonRateInline.setOnClickListener(this);
-
-    ImageButton buttonFB = (ImageButton) dialogRate.findViewById(R.id.button_go_fb);
-    buttonFB.setOnClickListener(this);
-
-    ImageButton buttonTweet = (ImageButton) dialogRate.findViewById(R.id.button_go_tweet);
-    buttonTweet.setOnClickListener(this);
-
-    return dialogRate;
+  // TODO: Create Interface for Overridden Methods
+  protected Dialog createDialogRate() {
+    return null;
   }
 
   private Dialog createDialogNetworkError() {
@@ -694,6 +613,10 @@ public abstract class FestivalActivity extends Activity implements View.OnClickL
     if (id == AndroidConstants.DIALOG_ALERTS) {
       prepareDialogAlerts();
     }
+  }
+
+  // TODO: Create Interface for Overridden Methods
+  protected void prepareDialogRateSet() {
   }
 
   private void prepareDialogAlerts() {
@@ -738,89 +661,6 @@ public abstract class FestivalActivity extends Activity implements View.OnClickL
     numberBox.selectAll(); // Easily allows user to overwrite
   }
 
-  private void prepareDialogRateSet() {
-    // _lastRateDialog.setTitle("Rate this Set!");
-    try {
-      TextView subtitleText = (TextView) dialogRate.findViewById(R.id.text_rateBand_subtitle);
-      subtitleText.setText(lastSetSelected.getString("artist")); // TODO
-      // NPE
-      // Here
-
-    } catch (JSONException e) {
-      LogController.OTHER.logMessage("JSONException assigning Artist name to Rating dialog");
-      e.printStackTrace();
-    }
-
-    int festNumberOfWeeks = CalendarUtils.getFestivalMaxNumberOfWeeks(_application.getFestival());
-    int weeksOver;
-    if (festNumberOfWeeks == 1) {
-      weeksOver = 0;
-    } else {
-      weeksOver = CalendarUtils.getlastFestWeekExpired(_application.getFestival());
-    }
-
-    RadioGroup weekGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_week);
-    RadioButton buttonWeek1 = (RadioButton) dialogRate.findViewById(R.id.radio_button_week1);
-    RadioButton buttonWeek2 = (RadioButton) dialogRate.findViewById(R.id.radio_button_week2);
-
-    int idChanged = -1;
-
-    if (weeksOver == 0) { // Still in week 1, disable rating week 2
-      LogController.MULTIWEEK.logMessage(("Recommending week 1 for ratings based on schedule"));
-      buttonWeek1.setClickable(true);
-      buttonWeek2.setClickable(false);
-      buttonWeek1.setChecked(true);
-      idChanged = buttonWeek1.getId();
-
-    } else if (weeksOver >= 1) { // Week 2 or later, enable rating week 2
-      LogController.MULTIWEEK.logMessage(("Recommending week 2 for ratings based on schedule"));
-      buttonWeek1.setClickable(true);
-      buttonWeek2.setClickable(true);
-      buttonWeek2.setChecked(true);
-      idChanged = buttonWeek2.getId();
-
-    } else {
-      // Don't suggest a week
-      LogController.MULTIWEEK.logMessage(("Unable to guess what week this Fest is in"));
-      weekGroup.clearCheck();
-    }
-
-    int numWeeks = festNumberOfWeeks;
-    if (numWeeks == 1) {
-      weekGroup.setVisibility(View.INVISIBLE);
-      TextView selectWeekText = (TextView) dialogRate.findViewById(R.id.layout_radio_choice_minutes_textline_text);
-      selectWeekText.setVisibility(View.GONE);
-    }
-
-    // TODO pick user's last rating
-    onCheckedChanged(weekGroup, idChanged);
-
-    if (_application.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)) {
-      ImageButton buttonFB = (ImageButton) dialogRate.findViewById(R.id.button_go_fb);
-      buttonFB.setImageResource(R.drawable.post_facebook_large);
-      System.out.println(buttonFB.getPaddingTop() + " " + buttonFB.getPaddingLeft() + " " + buttonFB.getPaddingBottom()
-          + " " + buttonFB.getPaddingRight());
-      buttonFB.setPadding(7, 3, 7, 10);
-
-    }
-
-    if (_application.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
-      ImageButton buttonTweet = (ImageButton) dialogRate.findViewById(R.id.button_go_tweet);
-      buttonTweet.setImageResource(R.drawable.post_twitter_large);
-      buttonTweet.setPadding(7, 3, 7, 10);
-    }
-
-    if (_application.getAuthModel().havePermission(AuthModel.PERMISSION_FACEBOOK_POSTWALL)
-        && _application.getAuthModel().havePermission(AuthModel.PERMISSION_TWITTER_TWEET)) {
-
-      Button buttonRateAbove = (Button) dialogRate.findViewById(R.id.button_go_rate_above);
-      buttonRateAbove.setVisibility(View.VISIBLE);
-
-      Button buttonRateInline = (Button) dialogRate.findViewById(R.id.button_go_rate_inline);
-      buttonRateInline.setVisibility(View.GONE);
-    }
-  }
-
   private void prepareDialogGetEmail() {
     EditText emailField = (EditText) dialogEmail.findViewById(R.id.textField_enterEmail);
     if (_application.getLoginData().emailAddress == null) {
@@ -832,74 +672,7 @@ public abstract class FestivalActivity extends Activity implements View.OnClickL
     }
   }
 
-  // Any button in any view or dialog was clicked
-  @Override
-  public void onClick(View viewClicked) {
-
-    // OK clicked on first use dialog
-    if (viewClicked.getId() == R.id.button_firstuse_ok) {
-      clickDialogFirstUseButtonOK();
-    }
-
-    // "OK" clicked to submit email address
-    if (viewClicked.getId() == R.id.button_provideEmail) {
-      clickDialogConfirmEmailButtonOK();
-    }
-
-    if (viewClicked.getId() == R.id.button_declineEmail) {
-      dialogEmail.dismiss();
-    }
-
-    if (viewClicked.getId() == R.id.buttonChangeToSearchSets) {
-      System.out.println("Button: Switch Day");
-      Intent intent = new Intent();
-      intent.setClass(this, SearchSetsActivity.class);
-      startActivity(intent);
-    }
-
-    // Submit rating for a set
-    if (viewClicked.getId() == R.id.button_go_rate_inline) { // Selections
-      clickDialogSubmitRatingButtonOK();
-    } // End rating dialog submitted
-
-    // Submit rating for a set
-    if (viewClicked.getId() == R.id.button_go_rate_above) { // Selections
-      clickDialogSubmitRatingButtonOK();
-    } // End rating dialog submitted
-
-    // Submit rating for a set and do Facebook post
-    if (viewClicked.getId() == R.id.button_go_fb) {
-      try {
-        clickDialogSubmitRatingFacebook();
-      } catch (JSONException e) {
-        System.out.println("JSONException gathering data for Facebook post");
-        e.printStackTrace();
-      }
-    }
-
-    // Submit rating for a set and do Twitter post
-    if (viewClicked.getId() == R.id.button_go_tweet) {
-      try {
-        clickDialogSubmitRatingTwitter();
-      } catch (JSONException e) {
-        System.out.println("JSONException gathering data for Twitter post");
-        e.printStackTrace();
-      }
-    }
-
-    if (viewClicked.getId() == R.id.button_network_error_ok) {
-      System.out.println("Clicked dismiss network error dialog");
-      dialogNetworkError.dismiss();
-    }
-
-    if (dialogAlerts != null && dialogAlerts.isShowing()) {
-      // This should work instead of having to give a globally unique ID
-      // to each button
-      handleClickDialogAlerts(viewClicked);
-    }
-  }
-
-  private void handleClickDialogAlerts(View viewClicked) {
+  protected void handleClickDialogAlerts(View viewClicked) {
     final RadioButton radioNearNumbers = (RadioButton) dialogAlerts.findViewById(R.id.radioNearNumberfield);
     final RadioButton radioWithText = (RadioButton) dialogAlerts.findViewById(R.id.radioWithText);
     final EditText numberBox = (EditText) dialogAlerts.findViewById(R.id.numberBox);
@@ -960,7 +733,7 @@ public abstract class FestivalActivity extends Activity implements View.OnClickL
   }
 
   // TODO: deprecate?
-  private void clickDialogConfirmEmailButtonOK() {
+  protected void clickDialogConfirmEmailButtonOK() {
     EditText emailField = (EditText) dialogEmail.findViewById(R.id.textField_enterEmail);
     String email = emailField.getText().toString();
 
@@ -1045,69 +818,17 @@ public abstract class FestivalActivity extends Activity implements View.OnClickL
     launchGetDataThread(); // TODO multithread this
   }
 
+  // TODO: Create Interface for Overridden Methods
   protected void rateDialogSubmitRating() {
-    // TODO this is in the code in 2 places
-    // RadioGroup weekGroup = (RadioGroup)
-    // rateDialog.findViewById(R.id.radio_pick_week);
-    int weekSelectedId = ((RadioGroup) dialogRate.findViewById(R.id.radio_pick_week)).getCheckedRadioButtonId();
-
-    RadioGroup scoreGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_score);
-    int scoreSelectedId = scoreGroup.getCheckedRadioButtonId();
-    String submittedRating = _selectedIdToValue.get(scoreSelectedId).toString();
-
-    EditText noteWidget = (EditText) dialogRate.findViewById(R.id.editText_commentsForSet);
-    String submittedNote = noteWidget.getText().toString();
-
-    dialogRate.dismiss();
-
-    String weekNumber = _selectedIdToValue.get(weekSelectedId) + "";
-
-    LogController.OTHER.logMessage("Selected Week[" + weekNumber + "] Score[" + submittedRating + "] WeekId["
-        + weekSelectedId + "] ScoreId[" + scoreSelectedId + "]");
-    try {
-
-      lastRating = new JSONObject();
-
-      lastRating.put(AndroidConstants.JSON_KEY_RATINGS__SET_ID,
-          lastSetSelected.get(AndroidConstants.JSON_KEY_SETS__SET_ID));
-      lastRating.put(AndroidConstants.JSON_KEY_RATINGS__WEEK, weekNumber);
-      lastRating.put(AndroidConstants.JSON_KEY_RATINGS__SCORE, submittedRating);
-      lastRating.put(AndroidConstants.JSON_KEY_RATINGS__NOTES, submittedNote);
-
-      LogController.OTHER.logMessage("State of last rating object before launching submit thread: "
-          + lastRating.toString());
-      launchSubmitRatingThread();
-    } catch (JSONException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
   }
 
+  // TODO: Create Interface for Overridden Methods
   protected SocialNetworkPost _buildSocialNetworkPost() throws JSONException {
-    SocialNetworkPost post = new SocialNetworkPost();
-    // Build data from dialog here
-    // TODO this is in the code in 2 places
-    RadioGroup scoreGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_score);
-    String submittedRating = _selectedIdToValue.get(scoreGroup.getCheckedRadioButtonId()).toString();
-
-    EditText noteWidget = (EditText) dialogRate.findViewById(R.id.editText_commentsForSet);
-    String submittedNote = noteWidget.getText().toString();
-    String artistName = lastSetSelected.getString("artist");
-
-    post.rating = submittedRating;
-    post.note = submittedNote;
-    post.artistName = artistName;
-    return post;
+    return null;
   }
 
+  // TODO: Create Interface for Overridden Methods
   protected boolean _lastRateDialogVerify() {
-    RadioGroup scoreGroup = (RadioGroup) dialogRate.findViewById(R.id.radio_pick_score);
-    int scoreSelectedId = scoreGroup.getCheckedRadioButtonId();
-    if (scoreSelectedId == -1) {
-      Toast selectEverything = Toast.makeText(this, "Please select a rating for this Set", 25);
-      selectEverything.show();
-      return false;
-    }
-    return true;
+    return false;
   }
 }

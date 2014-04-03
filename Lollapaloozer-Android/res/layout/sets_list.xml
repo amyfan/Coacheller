@@ -2,30 +2,34 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#000033"
-    android:orientation="horizontal">
-    
+    android:background="#335066"
+    android:orientation="horizontal" >
+
     <TextView
         android:id="@+id/text_set_list_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4px"
         android:layout_marginTop="4px"
+        android:layout_marginBottom="4px"
+        android:gravity="center_horizontal"
         android:text="Date and Day"
+        android:textColor="#FFDD99"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textStyle="bold" />
-
+
     <TableRow
         android:id="@+id/SetsLayoutRow20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:baselineAligned="false" >
-
+
         <Button
             android:id="@+id/buttonChangeToSearchSets"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:textColor="#000000"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Switch Day" />
 
         <LinearLayout
@@ -41,24 +45,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-
+
             <TextView
-                android:id="@+id/layout_radio_choice_minutes_textline_text"
+                android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:text="Sort By:"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
-
+                android:textColor="#FFDD99"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
             <Spinner
                 android:id="@+id/spinner_sort_by"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
         </LinearLayout>
     </TableRow>
-
-
+
     <ListView
         android:id="@+id/viewSetsList"
         android:layout_width="fill_parent"

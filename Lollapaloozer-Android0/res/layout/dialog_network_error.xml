@@ -1,29 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_dialog_network_error"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical" >
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Where possible, older data may be shown.  Some features may be unavailable.  Please check your device&apos;s Internet connection."
-        android:textAppearance="?android:attr/textAppearanceLarge" android:padding="10dp"/>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="20dp" >
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/button_network_error_ok"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="50dp"
-        android:text="OK" />
-
-</LinearLayout>

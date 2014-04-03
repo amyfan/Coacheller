@@ -2,8 +2,10 @@ package com.lollapaloozer;
 
 import java.util.HashMap;
 
+import com.lollapaloozer.ui.SearchSetsActivity;
 import com.ratethisfest.android.FestivalApplication;
 import com.ratethisfest.android.auth.AuthModel;
+import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.shared.AuthConstants;
 
@@ -12,6 +14,8 @@ import com.ratethisfest.shared.AuthConstants;
  * 
  */
 public class LollapaloozerApplication extends FestivalApplication {
+
+  private SearchSetsActivity activitySearchSets = null;
 
   public LollapaloozerApplication() {
     super();
@@ -34,4 +38,25 @@ public class LollapaloozerApplication extends FestivalApplication {
   public FestivalEnum getFestival() {
     return FestivalEnum.LOLLAPALOOZA;
   }
+
+  public void registerSearchSetsActivity(SearchSetsActivity act) {
+    if (activitySearchSets != null) {
+      if (activitySearchSets == act) {
+        LogController.LIFECYCLE_ACTIVITY.logMessage("Identical SetsSearchActivity was registered with Application");
+      } else {
+        LogController.LIFECYCLE_ACTIVITY
+            .logMessage("Warning: Different SetsSearchActivity was registered with Application");
+      }
+    }
+    activitySearchSets = act;
+  }
+
+  public SearchSetsActivity getSearchSetsActivity() {
+    return activitySearchSets;
+  }
+
+  public void unregisterSearchSetsActivity() {
+    activitySearchSets = null;
+  }
+
 }

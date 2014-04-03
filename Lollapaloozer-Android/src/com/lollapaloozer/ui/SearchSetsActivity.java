@@ -1,4 +1,4 @@
-package com.ratethisfest.android.ui;
+package com.lollapaloozer.ui;
 
 import java.util.Calendar;
 
@@ -11,9 +11,9 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.ratethisfest.R;
+import com.lollapaloozer.LollapaloozerApplication;
+import com.lollapaloozer.R;
 import com.ratethisfest.android.AndroidUtils;
-import com.ratethisfest.android.FestivalApplication;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.shared.CalendarUtils;
 import com.ratethisfest.shared.FestData;
@@ -27,7 +27,7 @@ public class SearchSetsActivity extends Activity implements OnClickListener {
   private String weekSelected;
   private String daySelected;
 
-  private FestivalApplication appController;
+  private LollapaloozerApplication appController;
   private Spinner _weekendSpinner;
   private Spinner _daySpinner;
   private Spinner _yearSpinner;
@@ -37,7 +37,7 @@ public class SearchSetsActivity extends Activity implements OnClickListener {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     LogController.LIFECYCLE_ACTIVITY.logMessage("Search Sets Activity Launched");
-    appController = (FestivalApplication) getApplication();
+    appController = (LollapaloozerApplication) getApplication();
     appController.registerSearchSetsActivity(SearchSetsActivity.this);
     this.initializeApp();
   }

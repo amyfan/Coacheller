@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ratethisfest.R;
+import com.lollapaloozer.R;
 import com.ratethisfest.android.FestivalApplication;
 import com.ratethisfest.android.data.CustomSetListAdapter;
 import com.ratethisfest.android.data.JSONArrayHashMap;
@@ -27,10 +27,8 @@ public class LollaSetListAdapter extends CustomSetListAdapter {
     public TextView textArtist;
     public TextView textStage;
     public TextView ratingWk1;
-    public TextView ratingWk2;
     public TextView myRating;
     public TextView myComment1;
-    public TextView myComment2;
     public ImageView alertImage;
   }
 
@@ -57,10 +55,8 @@ public class LollaSetListAdapter extends CustomSetListAdapter {
       viewHolder.textArtist = (TextView) rowView.findViewById(R.id.text_artist_name);
       viewHolder.textStage = (TextView) rowView.findViewById(R.id.text_stage);
       viewHolder.ratingWk1 = (TextView) rowView.findViewById(R.id.text_wk1_rating);
-      viewHolder.ratingWk2 = (TextView) rowView.findViewById(R.id.text_in);
       viewHolder.myRating = (TextView) rowView.findViewById(R.id.text_my_rating);
-      viewHolder.myComment1 = (TextView) rowView.findViewById(R.id.text_note1);
-      viewHolder.myComment2 = (TextView) rowView.findViewById(R.id.text_note2);
+      viewHolder.myComment1 = (TextView) rowView.findViewById(R.id.text_note);
       viewHolder.alertImage = (ImageView) rowView.findViewById(R.id.image_alert_scheduled);
       rowView.setTag(viewHolder);
     }
@@ -116,7 +112,6 @@ public class LollaSetListAdapter extends CustomSetListAdapter {
       }
 
       holder.ratingWk1.setText(week1Avg);
-      holder.ratingWk2.setText(week2Avg);
 
       if (!score1.equals("*") || !score2.equals("*")) {
         holder.myRating.setText("My Rtg: " + score1 + "/" + score2);
@@ -144,16 +139,6 @@ public class LollaSetListAdapter extends CustomSetListAdapter {
         }
         holder.myComment1.setText(myNote1);
         holder.myComment1.setVisibility(View.VISIBLE);
-      }
-
-      if (myNote2.equals("")) {
-        holder.myComment2.setVisibility(View.GONE);
-      } else {
-        if (myNote2.length() > AuthConstants.DATA_NOTE_VISIBLE_MAX_LENGTH) {
-          myNote2 = myNote2.substring(0, AuthConstants.DATA_NOTE_VISIBLE_MAX_LENGTH) + "...";
-        }
-        holder.myComment2.setText(myNote2);
-        holder.myComment2.setVisibility(View.VISIBLE);
       }
 
       FestivalEnum currentFest = this.application.getFestival();

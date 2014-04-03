@@ -2,8 +2,10 @@ package com.coacheller;
 
 import java.util.HashMap;
 
+import com.coacheller.ui.SearchSetsActivity;
 import com.ratethisfest.android.FestivalApplication;
 import com.ratethisfest.android.auth.AuthModel;
+import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.shared.AuthConstants;
 
@@ -12,6 +14,8 @@ import com.ratethisfest.shared.AuthConstants;
  * 
  */
 public class CoachellerApplication extends FestivalApplication {
+
+  private SearchSetsActivity activitySearchSets = null;
 
   public CoachellerApplication() {
     super();
@@ -34,4 +38,25 @@ public class CoachellerApplication extends FestivalApplication {
   public FestivalEnum getFestival() {
     return FestivalEnum.COACHELLA;
   }
+
+  public void registerSearchSetsActivity(SearchSetsActivity act) {
+    if (activitySearchSets != null) {
+      if (activitySearchSets == act) {
+        LogController.LIFECYCLE_ACTIVITY.logMessage("Identical SetsSearchActivity was registered with Application");
+      } else {
+        LogController.LIFECYCLE_ACTIVITY
+            .logMessage("Warning: Different SetsSearchActivity was registered with Application");
+      }
+    }
+    activitySearchSets = act;
+  }
+
+  public SearchSetsActivity getSearchSetsActivity() {
+    return activitySearchSets;
+  }
+
+  public void unregisterSearchSetsActivity() {
+    activitySearchSets = null;
+  }
+
 }

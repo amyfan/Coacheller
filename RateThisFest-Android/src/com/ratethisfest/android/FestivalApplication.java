@@ -26,7 +26,6 @@ import com.ratethisfest.android.data.LoginData;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.android.ui.ChooseLoginActivity;
 import com.ratethisfest.android.ui.FestivalActivity;
-import com.ratethisfest.android.ui.SearchSetsActivity;
 import com.ratethisfest.data.AndroidConstants;
 import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.data.HttpConstants;
@@ -45,7 +44,6 @@ public class FestivalApplication extends Application implements AppControllerInt
   private AlertManager alertManager = new AlertManager(this);
   private ChooseLoginActivity activityChooseLogin = null;
   private FestivalActivity activityFestival = null;
-  private SearchSetsActivity activitySearchSets = null;
 
   private boolean dataFirstUse = true;
   private StorageManager storageManager;
@@ -124,26 +122,6 @@ public class FestivalApplication extends Application implements AppControllerInt
 
   public void unregisterFestivalActivity() {
     activityFestival = null;
-  }
-
-  public void registerSearchSetsActivity(SearchSetsActivity act) {
-    if (activitySearchSets != null) {
-      if (activitySearchSets == act) {
-        LogController.LIFECYCLE_ACTIVITY.logMessage("Identical SetsSearchActivity was registered with Application");
-      } else {
-        LogController.LIFECYCLE_ACTIVITY
-            .logMessage("Warning: Different SetsSearchActivity was registered with Application");
-      }
-    }
-    activitySearchSets = act;
-  }
-
-  public SearchSetsActivity getSearchSetsActivity() {
-    return activitySearchSets;
-  }
-
-  public void unregisterSearchSetsActivity() {
-    activitySearchSets = null;
   }
 
   public AuthModel getAuthModel() {
