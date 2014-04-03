@@ -163,9 +163,10 @@ public class FestivalApplication extends Application implements AppControllerInt
     this.queryYear = yearToQuery;
   }
 
+  // TODO: Create Interface for Overridden Methods
   public FestivalEnum getFestival() {
     // return getTestFestival(); // Testing only...
-    return FestivalEnum.LOLLAPALOOZA;
+    return null;
   }
 
   private FestivalEnum getTestFestival() {

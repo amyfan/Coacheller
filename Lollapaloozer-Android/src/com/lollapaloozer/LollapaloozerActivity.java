@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -34,6 +35,7 @@ import com.ratethisfest.android.data.SocialNetworkPost;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.android.ui.FestivalActivity;
 import com.ratethisfest.data.AndroidConstants;
+import com.ratethisfest.shared.CalendarUtils;
 
 public class LollapaloozerActivity extends FestivalActivity {
 
@@ -66,7 +68,7 @@ public class LollapaloozerActivity extends FestivalActivity {
     _ratingSelectedValueToId.put("4", R.id.radio_button_score4);
     _ratingSelectedValueToId.put("5", R.id.radio_button_score5);
 
-    setContentView(R.layout.sets_list);
+    setContentView(R.layout.sets_header);
     lollaSetListAdapter = new LollaSetListAdapter(this, _application, AndroidConstants.JSON_KEY_SETS__TIME_ONE,
         AndroidConstants.JSON_KEY_SETS__STAGE_ONE, _application.getUserRatingsJAHM());
     getSetListAdapter().setData(new JSONArray());
@@ -151,7 +153,8 @@ public class LollapaloozerActivity extends FestivalActivity {
     String year = intent.getExtras().getString(SearchSetsActivity.YEAR);
     String day = intent.getExtras().getString(SearchSetsActivity.DAY);
 
-    LogController.OTHER.logMessage("LollapaloozerActivity setting search suggestion of year[" + year + "] day[" + day + "]");
+    LogController.OTHER.logMessage("LollapaloozerActivity setting search suggestion of year[" + year + "] day[" + day
+        + "]");
     _application.setYearToQuery(Integer.valueOf(year));
     _application.setDayToQuery(day);
     _application.setWeekToQuery(1);
@@ -302,8 +305,6 @@ public class LollapaloozerActivity extends FestivalActivity {
 
     dialogRate.dismiss();
 
-    String weekNumber = "1";
-
     LogController.OTHER.logMessage("ScoreId[" + scoreSelectedId + "]");
     try {
 
@@ -311,7 +312,7 @@ public class LollapaloozerActivity extends FestivalActivity {
 
       lastRating.put(AndroidConstants.JSON_KEY_RATINGS__SET_ID,
           lastSetSelected.get(AndroidConstants.JSON_KEY_SETS__SET_ID));
-      lastRating.put(AndroidConstants.JSON_KEY_RATINGS__WEEK, weekNumber);
+      lastRating.put(AndroidConstants.JSON_KEY_RATINGS__WEEK, "1");
       lastRating.put(AndroidConstants.JSON_KEY_RATINGS__SCORE, submittedRating);
       lastRating.put(AndroidConstants.JSON_KEY_RATINGS__NOTES, submittedNote);
 
@@ -322,6 +323,71 @@ public class LollapaloozerActivity extends FestivalActivity {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
+  }
+
+  @Override
+  public void onNothingSelected(AdapterView<?> arg0) {
+    LogController.USER_ACTION_UI.logMessage("Search Type Spinner: Nothing Selected");
+    Spinner spinnerSortType = (Spinner) findViewById(R.id.spinner_sort_by);
+    spinnerSortType.setSelection(0);
+  }
+
+  // Spinner drop-down selection was made
+  @Override
+  public void onItemSelected(AdapterView<?> parent, View arg1, int arg2, long arg3) {
+
+    // TODO Auto-generated method stub
+    LogController.USER_ACTION_UI.logMessage("Search Type Spinner: Selected -> " + parent.getSelectedItem() + "(" + arg2
+        + ")");
+    ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
+
+    try {
+      sortMode = parent.getSelectedItem().toString().toLowerCase();
+      getSetListAdapter().resortSetList(sortMode);
+      viewSetsList.invalidateViews();
+    } catch (JSONException e) {
+      LogController.OTHER.logMessage("JSONException re-sorting data");
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void redrawUI() {
+    try {
+      getSetListAdapter().resortSetList(sortMode);
+    } catch (JSONException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
+    viewSetsList.invalidateViews();
+
+    LogController.OTHER.logMessage("Data Refresh is complete");
+    _lastRefresh = System.currentTimeMillis();
+
+    if (!_application.saveData()) {
+      showDialog(AndroidConstants.DIALOG_NETWORK_ERROR);
+    }
+  }
+
+  @Override
+  public void refreshData() {
+    getSetListAdapter().setTimeFieldName(AndroidConstants.JSON_KEY_SETS__TIME_ONE);
+    getSetListAdapter().setStageFieldName(AndroidConstants.JSON_KEY_SETS__STAGE_ONE);
+
+    TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
+    String titleString = _application.getFestival().getName() + " " + _application.getYearToQuery() + " - "
+        + _application.getDayToQuery();
+    // TODO: won't need following case unless restoring this method to RTF level
+    if (CalendarUtils.getFestivalMaxNumberOfWeeks(_application.getFestival()) > 1) {
+      titleString += ", Weekend " + _application.getWeekToQuery();
+    }
+    titleView.setText(titleString);
+
+    _application.refreshDataFromStorage();
+
+    launchGetDataThread(); // TODO multithread this
   }
 
   @Override

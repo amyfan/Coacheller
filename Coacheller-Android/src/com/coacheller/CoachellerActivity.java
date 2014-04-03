@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -72,7 +73,7 @@ public class CoachellerActivity extends FestivalActivity implements OnCheckedCha
     _ratingSelectedValueToId.put("4", R.id.radio_button_score4);
     _ratingSelectedValueToId.put("5", R.id.radio_button_score5);
 
-    setContentView(R.layout.sets_list);
+    setContentView(R.layout.sets_header);
     coachSetListAdapter = new CoachSetListAdapter(this, _application, AndroidConstants.JSON_KEY_SETS__TIME_ONE,
         AndroidConstants.JSON_KEY_SETS__STAGE_ONE, _application.getUserRatingsJAHM());
     getSetListAdapter().setData(new JSONArray());
@@ -425,6 +426,75 @@ public class CoachellerActivity extends FestivalActivity implements OnCheckedCha
       }
       scoreGroup.invalidate();
     }
+  }
+
+  @Override
+  public void onNothingSelected(AdapterView<?> arg0) {
+    LogController.USER_ACTION_UI.logMessage("Search Type Spinner: Nothing Selected");
+    Spinner spinnerSortType = (Spinner) findViewById(R.id.spinner_sort_by);
+    spinnerSortType.setSelection(0);
+  }
+
+  // Spinner drop-down selection was made
+  @Override
+  public void onItemSelected(AdapterView<?> parent, View arg1, int arg2, long arg3) {
+
+    // TODO Auto-generated method stub
+    LogController.USER_ACTION_UI.logMessage("Search Type Spinner: Selected -> " + parent.getSelectedItem() + "(" + arg2
+        + ")");
+    ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
+
+    try {
+      sortMode = parent.getSelectedItem().toString().toLowerCase();
+      getSetListAdapter().resortSetList(sortMode);
+      viewSetsList.invalidateViews();
+    } catch (JSONException e) {
+      LogController.OTHER.logMessage("JSONException re-sorting data");
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void redrawUI() {
+    try {
+      getSetListAdapter().resortSetList(sortMode);
+    } catch (JSONException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    ListView viewSetsList = (ListView) findViewById(R.id.viewSetsList);
+    viewSetsList.invalidateViews();
+
+    LogController.OTHER.logMessage("Data Refresh is complete");
+    _lastRefresh = System.currentTimeMillis();
+
+    if (!_application.saveData()) {
+      showDialog(AndroidConstants.DIALOG_NETWORK_ERROR);
+    }
+  }
+
+  @Override
+  public void refreshData() {
+    if (_application.getWeekToQuery() == 1) {
+      getSetListAdapter().setTimeFieldName(AndroidConstants.JSON_KEY_SETS__TIME_ONE);
+      getSetListAdapter().setStageFieldName(AndroidConstants.JSON_KEY_SETS__STAGE_ONE);
+    } else if (_application.getWeekToQuery() == 2) {
+      getSetListAdapter().setTimeFieldName(AndroidConstants.JSON_KEY_SETS__TIME_TWO);
+      getSetListAdapter().setStageFieldName(AndroidConstants.JSON_KEY_SETS__STAGE_TWO);
+    }
+
+    TextView titleView = (TextView) this.findViewById(R.id.text_set_list_title);
+    String titleString = _application.getFestival().getName() + " " + _application.getYearToQuery() + " - "
+        + _application.getDayToQuery();
+    if (CalendarUtils.getFestivalMaxNumberOfWeeks(_application.getFestival()) > 1) {
+      titleString += ", Weekend " + _application.getWeekToQuery();
+    }
+    titleView.setText(titleString);
+
+    _application.refreshDataFromStorage();
+
+    launchGetDataThread(); // TODO multithread this
   }
 
   @Override
