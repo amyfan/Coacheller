@@ -46,7 +46,7 @@ public class FestivalIndexComposite extends Composite {
       @Override
       public void onClick(ClickEvent event) {
         Window.Location.replace("http://" + FestivalEnum.LOLLAPALOOZA.getWebClientHostname());
-        // FlowControl.go(new LollapaloozerViewComposite());
+        // FlowControl.go(new MainViewComposite());
       }
     });
   }

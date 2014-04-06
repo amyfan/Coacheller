@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.ratethisfest.client.auth.GoogleAuthUtils;
-import com.ratethisfest.client.ui.LollapaloozerViewComposite;
+import com.ratethisfest.client.ui.MainViewComposite;
 import com.ratethisfest.shared.AuthConstants;
 
 public class LollapaloozerLoginGoogleComposite extends Composite {
@@ -48,7 +48,7 @@ public class LollapaloozerLoginGoogleComposite extends Composite {
   }
 
   private void goHome() {
-    FlowControl.go(new LollapaloozerViewComposite());
+    FlowControl.go(new MainViewComposite());
   }
 
   private void getAccessToken(String code) {

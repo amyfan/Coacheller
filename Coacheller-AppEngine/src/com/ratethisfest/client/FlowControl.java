@@ -3,15 +3,13 @@ package com.ratethisfest.client;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.ratethisfest.client.ui.LoginControl;
-import com.ratethisfest.client.ui.LollapaloozerRateComposite;
-import com.ratethisfest.client.ui.LollapaloozerViewComposite;
+import com.ratethisfest.client.ui.MainViewComposite;
 import com.ratethisfest.client.ui.RTFTitleBanner;
 
 /**
@@ -37,18 +35,18 @@ public class FlowControl {
     RootPanel.get().getElement().getStyle().setPosition(Position.RELATIVE);
     // add, determine height/width, center, then move. height/width are unknown
     // until added to document. Catch-22!
-    
+
     RootPanel.get().add(new RTFTitleBanner());
-    
-    if (c instanceof LollapaloozerViewComposite) {
+
+    if (c instanceof MainViewComposite) {
       RootPanel.get().add(new LoginControl());
     }
-    
+
     RootPanel.get().add(c);
-    if (c instanceof LollapaloozerViewComposite) {
-      ((LollapaloozerViewComposite) c).chartShowLoading("Loading...");  //Must be done after chart is made visible by adding
+    if (c instanceof MainViewComposite) {
+      ((MainViewComposite) c).chartShowLoading("Loading..."); // Must be done after chart is made visible by adding
     }
-    
+
     History.newItem(c.getTitle());
   }
 
@@ -58,26 +56,23 @@ public class FlowControl {
     String param = getParamFromToken(tokenString);
 
     if (token == null) {
-      go(new LollapaloozerViewComposite());
+      go(new MainViewComposite());
     } else {
       String hostName = Window.Location.getHostName();
-      if (hostName == null
-          || (!hostName.contains("coacheller") && !hostName.contains("lollapaloozer"))) {
+      if (hostName == null || (!hostName.contains("coacheller") && !hostName.contains("lollapaloozer"))) {
         // for now, localhost/ratethisfest will default to lollapaloozer
         hostName = "lollapaloozer";
       }
 
-
-      //Lollapaloozer code will handle both fests going forward
-        if (PageToken.VIEW.equals(token)) {
-          go(new LollapaloozerViewComposite());
-        } else if (PageToken.EMAIL.equals(token)) {
-          go(new LollapaloozerEmailComposite());
-        } else if (PageToken.LOGIN.equals(token)) {
-          go(new LollapaloozerLoginComposite());
-        } else if (PageToken.RATE.equals(token)) {
-          logger.info("Unexpected:  URL Rate token processed");
-        }
+      if (PageToken.VIEW.equals(token)) {
+        go(new MainViewComposite());
+      } else if (PageToken.EMAIL.equals(token)) {
+        go(new LollapaloozerEmailComposite());
+      } else if (PageToken.LOGIN.equals(token)) {
+        go(new LollapaloozerLoginComposite());
+      } else if (PageToken.RATE.equals(token)) {
+        logger.info("Unexpected:  URL Rate token processed");
+      }
     } // End if email is provided
 
     // TODO: add retrievePoll to PollPhotoWidget

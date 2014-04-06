@@ -19,7 +19,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import com.ratethisfest.client.ui.LollapaloozerViewComposite;
+import com.ratethisfest.client.ui.MainViewComposite;
 import com.ratethisfest.client.ui.RateDialogBox;
 import com.ratethisfest.data.FestivalEnum;
 
@@ -72,7 +72,7 @@ public class Coacheller_AppEngine implements EntryPoint, ValueChangeHandler<Stri
     } else {
       // logger.log(Level.SEVERE, "fest obtained is non-null: "+ fest.getName());
       Window.setTitle(fest.getRTFAppName()); // Set window title to RTF App Name
-      c = new LollapaloozerViewComposite();
+      c = new MainViewComposite();
 
     }
 

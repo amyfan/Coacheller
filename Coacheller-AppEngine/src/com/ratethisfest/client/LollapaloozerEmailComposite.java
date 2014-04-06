@@ -15,8 +15,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.ratethisfest.client.ui.LollapaloozerRateComposite;
-import com.ratethisfest.client.ui.LollapaloozerViewComposite;
+import com.ratethisfest.client.ui.MainRateComposite;
+import com.ratethisfest.client.ui.MainViewComposite;
 import com.ratethisfest.shared.FieldVerifier;
 
 public class LollapaloozerEmailComposite extends Composite {
@@ -76,7 +76,7 @@ public class LollapaloozerEmailComposite extends Composite {
     backButton.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
-        FlowControl.go(new LollapaloozerViewComposite());
+        FlowControl.go(new MainViewComposite());
       }
     });
   }
@@ -88,7 +88,7 @@ public class LollapaloozerEmailComposite extends Composite {
       infoBox.setText(FieldVerifier.EMAIL_ERROR);
     } else {
       log.info("Unexpected: submitEmail() called");
-      //FlowControl.go(new LollapaloozerRateComposite(email));
+      //FlowControl.go(new MainRateComposite(email));
     }
   }
 
