@@ -12,7 +12,7 @@ import com.ratethisfest.shared.Set;
 /**
  * The client side stub for the RPC service.
  */
-@RemoteServiceRelativePath("greetLolla")
+@RemoteServiceRelativePath("greetRTF")
 public interface FestivalService extends RemoteService {
   String greetServer(String name) throws IllegalArgumentException;
 

@@ -12,7 +12,6 @@
 		<servlet-name>loadDataServlet</servlet-name>
 		<servlet-class>com.ratethisfest.server.service.LoadDataServlet</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>loadDataServlet</servlet-name>
 		<url-pattern>/loadData</url-pattern>
@@ -22,7 +21,6 @@
 		<servlet-name>coachellerServlet</servlet-name>
 		<servlet-class>com.ratethisfest.server.service.CoachellerServlet</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>coachellerServlet</servlet-name>
 		<url-pattern>/coachellerServlet</url-pattern>
@@ -32,7 +30,6 @@
 		<servlet-name>lollapaloozerServlet</servlet-name>
 		<servlet-class>com.ratethisfest.server.service.LollapaloozerServlet</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>lollapaloozerServlet</servlet-name>
 		<url-pattern>/lollapaloozerServlet</url-pattern>
@@ -42,22 +39,20 @@
 		<servlet-name>gwtCoachellerServlet</servlet-name>
 		<servlet-class>com.ratethisfest.server.service.CoachellerServiceImpl</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>gwtCoachellerServlet</servlet-name>
 		<url-pattern>/coacheller_appengine/greetCoachella</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>gwtLollapaloozerServlet</servlet-name>
-		<servlet-class>com.ratethisfest.server.service.LollapaloozerServiceImpl</servlet-class>
+		<servlet-name>gwtFestivalServlet</servlet-name>
+		<servlet-class>com.ratethisfest.server.service.FestivalServiceImpl</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
-		<servlet-name>gwtLollapaloozerServlet</servlet-name>
-		<url-pattern>/coacheller_appengine/greetLolla</url-pattern>
+		<servlet-name>gwtFestivalServlet</servlet-name>
+		<url-pattern>/coacheller_appengine/greetRTF</url-pattern>
 	</servlet-mapping>
-
+	
 	<servlet>
 		<servlet-name>sessionsTest</servlet-name>
 		<servlet-class>auth.logins.test.sessionsTestServlet</servlet-class>

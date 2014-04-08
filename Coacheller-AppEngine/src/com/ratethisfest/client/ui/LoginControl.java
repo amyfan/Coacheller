@@ -65,6 +65,8 @@ public class LoginControl extends Composite implements HasText {
 
   public LoginControl() {
     initWidget(uiBinder.createAndBindUi(this));
+    labelDebug.setVisible(false);
+    linkDestroyAccount.setVisible(false);
     Coacheller_AppEngine.EVENT_BUS.addHandler(LoginStatusEvent.TYPE, new LoginStatusEventHandler() {
 
       @Override
