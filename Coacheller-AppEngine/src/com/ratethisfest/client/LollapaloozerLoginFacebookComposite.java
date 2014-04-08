@@ -27,8 +27,8 @@ public class LollapaloozerLoginFacebookComposite extends Composite {
 
   private static Binder uiBinder = GWT.create(Binder.class);
 
-  private final LollapaloozerServiceAsync lollapaloozerService = GWT
-      .create(LollapaloozerService.class);
+  private final FestivalServiceAsync lollapaloozerService = GWT
+      .create(FestivalService.class);
   private String token = null;
 
   @UiField

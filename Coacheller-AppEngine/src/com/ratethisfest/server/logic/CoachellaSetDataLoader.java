@@ -26,12 +26,12 @@ public class CoachellaSetDataLoader extends SetDataLoader {
 
   // Private constructor prevents instantiation from other classes
   private CoachellaSetDataLoader() {
-    super(CoachellaRatingManager.getInstance());
+    super(RatingManager.getInstance());
   }
 
   /**
-   * SingletonHolder is loaded on the first execution of Singleton.getInstance()
-   * or the first access to SingletonHolder.INSTANCE, not before.
+   * SingletonHolder is loaded on the first execution of Singleton.getInstance() or the first access to
+   * SingletonHolder.INSTANCE, not before.
    */
   private static class SingletonHolder {
     public static final CoachellaSetDataLoader instance = new CoachellaSetDataLoader();
@@ -136,21 +136,10 @@ public class CoachellaSetDataLoader extends SetDataLoader {
   }
 
   /**
-   * TODO: Temporary test method
-   */
-  public void updateSetFestival() {
-    List<Set> sets = ratingMgr.findAllSets();
-    for (Set set : sets) {
-      set.setFestival(FestivalEnum.COACHELLA.getValue());
-      ratingMgr.updateSet(set);
-    }
-  }
-
-  /**
    * TODO: take in year as param
    */
   public void recalculateSetRatingAverages() {
-    List<Set> sets = CoachellaRatingManager.getInstance().findSetsByYear(2013);
+    List<Set> sets = RatingManager.getInstance().findSetsByYear(FestivalEnum.COACHELLA, 2014);
     for (Set set : sets) {
       List<Rating> ratings = ratingMgr.findRatingsBySetId(set.getId());
       int wkndOneCount = 0;

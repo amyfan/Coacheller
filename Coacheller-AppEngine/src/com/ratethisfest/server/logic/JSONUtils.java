@@ -157,7 +157,7 @@ public class JSONUtils {
     for (Rating rating : ratings) {
       // need to fix bug that's causing null rater
       if (rating.getRater() != null) {
-        Set set = CoachellaRatingManager.getInstance().findSet(rating.getSet().getId());
+        Set set = RatingManager.getInstance().findSet(rating.getSet().getId());
         RatingGwt ratingGwt = new RatingGwt();
         ratingGwt.setId(rating.getId());
         ratingGwt.setRaterId(rating.getRater().getId());

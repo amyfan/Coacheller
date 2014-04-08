@@ -17,6 +17,7 @@ import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.server.logic.JSONUtils;
 import com.ratethisfest.server.logic.LollaEmailSender;
 import com.ratethisfest.server.logic.LollaRatingManager;
+import com.ratethisfest.server.logic.RatingManager;
 import com.ratethisfest.shared.DayEnum;
 import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.Set;
@@ -136,9 +137,9 @@ public class LollapaloozerServlet extends HttpServlet {
       Integer year = Integer.valueOf(yearString);
 
       if (day != null && !day.isEmpty()) {
-        sets = LollaRatingManager.getInstance().findSetsByYearAndDay(fest, year, DayEnum.fromValue(day));
+        sets = RatingManager.getInstance().findSetsByYearAndDay(fest, year, DayEnum.fromValue(day));
       } else {
-        sets = LollaRatingManager.getInstance().findSetsByYear(fest, year);
+        sets = RatingManager.getInstance().findSetsByYear(fest, year);
       }
 
       JSONArray jsonArray = JSONUtils.convertSetsToJSONArray(sets);
@@ -174,8 +175,8 @@ public class LollapaloozerServlet extends HttpServlet {
       } else if (!FieldVerifier.isValidDay(day)) {
         resp = FieldVerifier.DAY_ERROR;
       } else {
-        ratings = LollaRatingManager.getInstance().findRatingsByUserYearAndDay(authType, authId, authToken, email,
-            Integer.valueOf(year), DayEnum.fromValue(day));
+        ratings = RatingManager.getInstance().findRatingsByUserYearAndDay(FestivalEnum.LOLLAPALOOZA, authType, authId,
+            authToken, email, Integer.valueOf(year), DayEnum.fromValue(day));
       }
     }
 
@@ -199,7 +200,7 @@ public class LollapaloozerServlet extends HttpServlet {
     if (!FieldVerifier.isValidScore(score)) {
       resp = FieldVerifier.SCORE_ERROR;
     } else if (authId != null && setId != null) {
-      resp = LollaRatingManager.getInstance().addRatingBySetId(authType, authId, authToken, email, Long.valueOf(setId),
+      resp = RatingManager.getInstance().addRatingBySetId(authType, authId, authToken, email, Long.valueOf(setId), 1,
           Integer.valueOf(score), notes);
     } else {
       resp = "null args";

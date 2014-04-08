@@ -11,11 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
 
+import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.data.HttpConstants;
 import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.server.logic.CoachellaEmailSender;
-import com.ratethisfest.server.logic.CoachellaRatingManager;
 import com.ratethisfest.server.logic.JSONUtils;
+import com.ratethisfest.server.logic.RatingManager;
 import com.ratethisfest.shared.DayEnum;
 import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.Set;
@@ -114,10 +115,9 @@ public class CoachellerServlet extends HttpServlet {
 
       Integer year = Integer.valueOf(yearString);
       if (day != null && !day.isEmpty()) {
-        sets = CoachellaRatingManager.getInstance().findSetsByYearAndDay(year,
-            DayEnum.fromValue(day));
+        sets = RatingManager.getInstance().findSetsByYearAndDay(FestivalEnum.COACHELLA, year, DayEnum.fromValue(day));
       } else {
-        sets = CoachellaRatingManager.getInstance().findSetsByYear(year);
+        sets = RatingManager.getInstance().findSetsByYear(FestivalEnum.COACHELLA, year);
       }
 
       JSONArray jsonArray = JSONUtils.convertSetsToJSONArray(sets);
@@ -141,8 +141,8 @@ public class CoachellerServlet extends HttpServlet {
    * @param day
    * @return
    */
-  private String getRatingsJsonByUser(String authType, String authId, String authToken,
-      String email, String year, String day) {
+  private String getRatingsJsonByUser(String authType, String authId, String authToken, String email, String year,
+      String day) {
     String resp = null;
 
     List<Rating> ratings = null;
@@ -153,8 +153,8 @@ public class CoachellerServlet extends HttpServlet {
       } else if (!FieldVerifier.isValidDay(day)) {
         resp = FieldVerifier.DAY_ERROR;
       } else {
-        ratings = CoachellaRatingManager.getInstance().findRatingsByUserYearAndDay(authType,
-            authId, authToken, email, Integer.valueOf(year), DayEnum.fromValue(day));
+        ratings = RatingManager.getInstance().findRatingsByUserYearAndDay(FestivalEnum.COACHELLA, authType, authId, authToken, email,
+            Integer.valueOf(year), DayEnum.fromValue(day));
       }
     }
 
@@ -168,8 +168,8 @@ public class CoachellerServlet extends HttpServlet {
     return resp;
   }
 
-  private String addRating(String authType, String authId, String authToken, String email,
-      String setId, String weekend, String score, String notes) {
+  private String addRating(String authType, String authId, String authToken, String email, String setId,
+      String weekend, String score, String notes) {
 
     String resp = null;
 
@@ -181,8 +181,8 @@ public class CoachellerServlet extends HttpServlet {
     } else if (!FieldVerifier.isValidScore(score)) {
       resp = FieldVerifier.SCORE_ERROR;
     } else if (authId != null && setId != null) {
-      resp = CoachellaRatingManager.getInstance().addRatingBySetId(authType, authId, authToken,
-          email, Long.valueOf(setId), Integer.valueOf(weekend), Integer.valueOf(score), notes);
+      resp = RatingManager.getInstance().addRatingBySetId(authType, authId, authToken, email,
+          Long.valueOf(setId), Integer.valueOf(weekend), Integer.valueOf(score), notes);
     } else {
       resp = "null args";
     }

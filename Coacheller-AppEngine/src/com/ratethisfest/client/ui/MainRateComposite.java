@@ -49,8 +49,8 @@ import com.ratethisfest.client.ClientResources;
 import com.ratethisfest.client.Coacheller_AppEngine;
 import com.ratethisfest.client.ComparatorUtils;
 import com.ratethisfest.client.FlowControl;
-import com.ratethisfest.client.LollapaloozerService;
-import com.ratethisfest.client.LollapaloozerServiceAsync;
+import com.ratethisfest.client.FestivalService;
+import com.ratethisfest.client.FestivalServiceAsync;
 import com.ratethisfest.client.PageToken;
 import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.shared.Base64Coder;
@@ -61,20 +61,16 @@ import com.ratethisfest.shared.Set;
 public class MainRateComposite extends Composite {
 
   private static final Logger logger = Logger.getLogger(MainRateComposite.class.getName());
-  private final LollapaloozerServiceAsync lollapaloozerService = GWT.create(LollapaloozerService.class);
+  private final FestivalServiceAsync festivalService = GWT.create(FestivalService.class);
 
-  private static final String ADMIN_EMAIL = "afan@coacheller.com";
+  private static final String ADMIN_NAME = "Amy Fan";
   private static final String ADMIN_ERROR = "You do not have permission to do this. Sorry.";
   private static final String SERVER_ERROR = "An error occurred while "
       + "attempting to contact the server. Please check your network " + "connection and try again.";
 
-  private String ownerEmail = "";
-
   private List<Set> setsList = new ArrayList<Set>();
   private List<RatingGwt> ratingsList;
   private Set _targetSet;
-  private String _facebookUrl;
-  private String _twitterUrl;
 
   private static Binder uiBinder = GWT.create(Binder.class);
 
@@ -121,6 +117,14 @@ public class MainRateComposite extends Composite {
   TextBox notesInput;
 
   @UiField
+  com.google.gwt.user.client.ui.Button buttonRate;
+  @UiField
+  Button buttonRateFacebook;
+  @UiField
+  Button buttonRateTwitter;
+
+  // DISABLED FOR NOW
+  @UiField
   com.google.gwt.user.client.ui.Button emailButton;
 
   @UiField
@@ -141,12 +145,6 @@ public class MainRateComposite extends Composite {
 
   @UiField
   RatingsTable ratingsTable;
-  @UiField
-  com.google.gwt.user.client.ui.Button buttonRate;
-  @UiField
-  Button buttonRateFacebook;
-  @UiField
-  Button buttonRateTwitter;
 
   public MainRateComposite(Set targetSet) {
     _targetSet = targetSet;
@@ -164,6 +162,8 @@ public class MainRateComposite extends Composite {
   // }
 
   private void initUiElements() {
+    LoginStatus loginStatus = Coacheller_AppEngine.getLoginStatus();
+
     title.setText(_targetSet.getArtistName());
     subtitle.setText("Rate This Set");
 
@@ -194,7 +194,6 @@ public class MainRateComposite extends Composite {
 
     // Set up rate facebook/twitter image buttons
     ClientResources resources = GWT.create(ClientResources.class);
-    LoginStatus loginStatus = Coacheller_AppEngine.getLoginStatus();
 
     buttonRate.setTitle("Add Rating");
 
@@ -249,8 +248,6 @@ public class MainRateComposite extends Composite {
     buttonRateFacebook.addClickHandler(multiButtonClickHandler);
     buttonRateTwitter.addClickHandler(multiButtonClickHandler);
 
-    MiscClickHandler miscButtonClickHandler = new MiscClickHandler(androidAnimation);
-
     ratingsTable.deleteColumn.setFieldUpdater(new FieldUpdater<RatingGwt, String>() {
       @Override
       public void update(int index, RatingGwt rating, String value) {
@@ -260,21 +257,33 @@ public class MainRateComposite extends Composite {
 
     emailButton.setVisible(false);
     backButton.setVisible(false);
+    clearAllRatingButton.setVisible(false);
+    ratingsTable.setVisible(false);
+
     updateSetButton.setVisible(false);
     recalculateButton.setVisible(false);
     clearMyRatingButton.setVisible(false);
-    clearAllRatingButton.setVisible(false);
-    ratingsTable.setVisible(false);
+
+    // admin functions
+    if (loginStatus.getProperty(LoginStatus.PROPERTY_PERSON_NAME).equals(ADMIN_NAME)) {
+      MiscClickHandler miscButtonClickHandler = new MiscClickHandler(androidAnimation);
+      updateSetButton.setVisible(true);
+      updateSetButton.addClickHandler(miscButtonClickHandler);
+      recalculateButton.setVisible(true);
+      recalculateButton.addClickHandler(miscButtonClickHandler);
+      clearMyRatingButton.setVisible(true);
+      clearMyRatingButton.addClickHandler(miscButtonClickHandler);
+    }
   }
 
   @Override
   public String getTitle() {
-    return PageToken.RATE.getValue() + "=" + ownerEmail;
+    return PageToken.RATE.getValue();
   }
 
   private void retrieveRatings() {
     // TODO: year input eventually
-    lollapaloozerService.getRatingsForSet(_targetSet, new AsyncCallback<List<RatingGwt>>() {
+    festivalService.getRatingsForSet(_targetSet, new AsyncCallback<List<RatingGwt>>() {
 
       @Override
       public void onFailure(Throwable caught) {
@@ -393,7 +402,7 @@ public class MainRateComposite extends Composite {
 
     // Then, we send the input to the server.
     int weekValue = getSelectedWeekFromUi();
-    lollapaloozerService.addRating(set.getId(), weekValue + "", score, notes, new AsyncCallback<String>() {
+    festivalService.addRating(set.getId(), weekValue + "", score, notes, new AsyncCallback<String>() {
       @Override
       public void onFailure(Throwable caught) {
         logger.info("Failed to add rating");
@@ -409,7 +418,8 @@ public class MainRateComposite extends Composite {
         if (redirectUrl != null) {
           Window.Location.replace(redirectUrl);
         }
-        retrieveRatings(); // Maybe don't do this if we are hiding
+        // TODO Maybe don't do this if we are hiding
+        // retrieveRatings();
       }
     });
 
@@ -423,7 +433,7 @@ public class MainRateComposite extends Composite {
 
   private void deleteRating(RatingGwt rating) {
     infoBox.setText("");
-    lollapaloozerService.deleteRating(rating.getId(), new AsyncCallback<String>() {
+    festivalService.deleteRating(rating.getId(), new AsyncCallback<String>() {
       @Override
       public void onFailure(Throwable caught) {
         // Show the RPC error message to the user
@@ -443,7 +453,7 @@ public class MainRateComposite extends Composite {
   private void retrieveSets() {
     infoBox.setText("");
     FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();
-    lollapaloozerService.getSets(fest, "2012", null, new AsyncCallback<List<Set>>() {
+    festivalService.getSets(fest, "2012", null, new AsyncCallback<List<Set>>() {
 
       @Override
       public void onFailure(Throwable caught) {
@@ -665,22 +675,25 @@ public class MainRateComposite extends Composite {
     public void onClick(ClickEvent event) {
       logger.info("Misc click handler called!");
 
+      LoginStatus loginStatus = Coacheller_AppEngine.getLoginStatus();
+
       if (event.getSource() == emailButton) {
         logger.info("emailButton was clicked");
 
         infoBox.setText("");
-        lollapaloozerService.emailRatingsToUser(ownerEmail, new AsyncCallback<String>() {
-          @Override
-          public void onFailure(Throwable caught) {
-            // Show the RPC error message to the user
-            infoBox.setText(SERVER_ERROR);
-          }
-
-          @Override
-          public void onSuccess(String result) {
-            infoBox.setText(result);
-          }
-        });
+        // TODO: Update code!
+        // festivalService.emailRatingsToUser(ownerEmail, new AsyncCallback<String>() {
+        // @Override
+        // public void onFailure(Throwable caught) {
+        // // Show the RPC error message to the user
+        // infoBox.setText(SERVER_ERROR);
+        // }
+        //
+        // @Override
+        // public void onSuccess(String result) {
+        // infoBox.setText(result);
+        // }
+        // });
 
       } else if (event.getSource() == backButton) {
         logger.info("backButton was clicked");
@@ -688,9 +701,9 @@ public class MainRateComposite extends Composite {
 
       } else if (event.getSource() == updateSetButton) {
         logger.info("updateSetButton was clicked");
-        if (ownerEmail.equals(ADMIN_EMAIL)) {
+        if (loginStatus.getProperty(LoginStatus.PROPERTY_PERSON_NAME).equals(ADMIN_NAME)) {
           infoBox.setText("");
-          lollapaloozerService.insertSetData(new AsyncCallback<String>() {
+          festivalService.insertSetData(new AsyncCallback<String>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -712,22 +725,23 @@ public class MainRateComposite extends Composite {
 
       } else if (event.getSource() == recalculateButton) {
         logger.info("recalculateButton was clicked");
-        if (ownerEmail.equals(ADMIN_EMAIL)) {
+        if (loginStatus.getProperty(LoginStatus.PROPERTY_PERSON_NAME).equals(ADMIN_NAME)) {
           infoBox.setText("");
-          lollapaloozerService.recalculateSetRatingAverages(new AsyncCallback<String>() {
+          festivalService.recalculateSetRatingAverages(Coacheller_AppEngine.getFestFromSiteName(),
+              new AsyncCallback<String>() {
 
-            @Override
-            public void onFailure(Throwable caught) {
-              // Show the RPC error message to the user
-              // infoBox.setText(SERVER_ERROR);
-              infoBox.setText(caught.getMessage());
-            }
+                @Override
+                public void onFailure(Throwable caught) {
+                  // Show the RPC error message to the user
+                  // infoBox.setText(SERVER_ERROR);
+                  infoBox.setText(caught.getMessage());
+                }
 
-            @Override
-            public void onSuccess(String result) {
-              infoBox.setText(result);
-            }
-          });
+                @Override
+                public void onSuccess(String result) {
+                  infoBox.setText(result);
+                }
+              });
 
           androidAnimation.run(400);
         } else {
@@ -737,19 +751,20 @@ public class MainRateComposite extends Composite {
       } else if (event.getSource() == clearMyRatingButton) {
         logger.info("clearMyRatingButton was clicked");
         infoBox.setText("");
-        lollapaloozerService.deleteRatingsByUser(ownerEmail, new AsyncCallback<String>() {
-          @Override
-          public void onFailure(Throwable caught) {
-            // Show the RPC error message to the user
-            // infoBox.setText(SERVER_ERROR);
-            infoBox.setText(caught.getMessage());
-          }
-
-          @Override
-          public void onSuccess(String result) {
-            infoBox.setText(result);
-          }
-        });
+        // TODO: Update code!
+        // festivalService.deleteRatingsByUser(ownerEmail, new AsyncCallback<String>() {
+        // @Override
+        // public void onFailure(Throwable caught) {
+        // // Show the RPC error message to the user
+        // // infoBox.setText(SERVER_ERROR);
+        // infoBox.setText(caught.getMessage());
+        // }
+        //
+        // @Override
+        // public void onSuccess(String result) {
+        // infoBox.setText(result);
+        // }
+        // });
         androidAnimation.run(400);
 
       } else if (event.getSource() == clearAllRatingButton) {
@@ -757,9 +772,9 @@ public class MainRateComposite extends Composite {
         // Commented this because we have real live ratings in the datastore
         // And also the app is being changed to handle any year
 
-        // if (ownerEmail.equals(ADMIN_EMAIL)) {
+        // if (ownerEmail.equals(ADMIN_NAME)) {
         // infoBox.setText("");
-        // lollapaloozerService.deleteRatingsByYear(2012, new AsyncCallback<String>() {
+        // festivalService.deleteRatingsByYear(2012, new AsyncCallback<String>() {
         // @Override
         // public void onFailure(Throwable caught) {
         // // Show the RPC error message to the user

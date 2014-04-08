@@ -66,11 +66,10 @@ public class SetDAO {
   public Set findSetByArtistAndYear(FestivalEnum festival, String artist, Integer year) {
     Query<Set> q;
     if (year != null) {
-      q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue())
-          .filter("artist", artist).filter("year", year);
+      q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue()).filter("artist", artist)
+          .filter("year", year);
     } else {
-      q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue())
-          .filter("artist", artist);
+      q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue()).filter("artist", artist);
     }
 
     if (q.iterator().hasNext()) {
@@ -87,11 +86,11 @@ public class SetDAO {
 
     Iterable<Key<Set>> q;
     if (year != null) {
-      q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue())
-          .filter("artistName", artist).filter("year", year).fetchKeys();
+      q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue()).filter("artistName", artist)
+          .filter("year", year).fetchKeys();
     } else {
-      q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue())
-          .filter("artistName", artist).fetchKeys();
+      q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue()).filter("artistName", artist)
+          .fetchKeys();
     }
     if (q.iterator().hasNext()) {
       return q.iterator().next();
@@ -100,34 +99,31 @@ public class SetDAO {
     }
   }
 
-  public List<Set> findAllSets() {
-    Query<Set> q = dao.getObjectify().query(Set.class);
+  public List<Set> findAllSets(FestivalEnum festival) {
+    Query<Set> q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue());
     return q.list();
   }
 
   public List<Set> findSetsByYear(FestivalEnum festival, Integer year) {
-    Query<Set> q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue())
-        .filter("year", year);
+    Query<Set> q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue()).filter("year", year);
     return q.list();
   }
 
   public List<Set> findSetsByYearAndDay(FestivalEnum festival, Integer year, DayEnum day) {
-    Query<Set> q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue())
-        .filter("year", year).filter("day", day.getValue());
+    Query<Set> q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue()).filter("year", year)
+        .filter("day", day.getValue());
     return q.list();
   }
 
   public QueryResultIterable<Key<Set>> findSetKeysByYear(FestivalEnum festival, Integer year) {
-    QueryResultIterable<Key<Set>> q = dao.getObjectify().query(Set.class)
-        .filter("festival", festival.getValue()).filter("year", year).fetchKeys();
+    QueryResultIterable<Key<Set>> q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue())
+        .filter("year", year).fetchKeys();
     return q;
   }
 
-  public QueryResultIterable<Key<Set>> findSetKeysByYearAndDay(FestivalEnum festival, Integer year,
-      DayEnum day) {
-    QueryResultIterable<Key<Set>> q = dao.getObjectify().query(Set.class)
-        .filter("festival", festival.getValue()).filter("year", year).filter("day", day.getValue())
-        .fetchKeys();
+  public QueryResultIterable<Key<Set>> findSetKeysByYearAndDay(FestivalEnum festival, Integer year, DayEnum day) {
+    QueryResultIterable<Key<Set>> q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue())
+        .filter("year", year).filter("day", day.getValue()).fetchKeys();
     return q;
   }
 
@@ -144,11 +140,9 @@ public class SetDAO {
   }
 
   public void deleteAllSetsByFestivalAndYear(FestivalEnum festival, Integer year) {
-    System.out.println("Deleting all " + year + " " + festival.getValue()
-        + " Sets from datastore: ");
+    System.out.println("Deleting all " + year + " " + festival.getValue() + " Sets from datastore: ");
     dao.getObjectify().delete(
-        dao.getObjectify().query(Set.class).filter("festival", festival.getValue())
-            .filter("year", year).fetchKeys());
+        dao.getObjectify().query(Set.class).filter("festival", festival.getValue()).filter("year", year).fetchKeys());
   }
 
   public int getSetCount() {

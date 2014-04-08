@@ -2,6 +2,7 @@ package com.ratethisfest.server.logic;
 
 import java.util.List;
 
+import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.shared.MathUtils;
 import com.ratethisfest.shared.Set;
@@ -19,8 +20,8 @@ public abstract class SetDataLoader {
     this.ratingMgr = ratingMgr;
   }
 
-  public void clearSetRatingAverages() {
-    List<Set> sets = ratingMgr.findAllSets();
+  public void clearSetRatingAverages(FestivalEnum fest) {
+    List<Set> sets = ratingMgr.findAllSets(fest);
     for (Set set : sets) {
       set.setNumRatingsOne(0);
       set.setScoreSumOne(0);
@@ -32,8 +33,8 @@ public abstract class SetDataLoader {
     }
   }
 
-  public void recalculateAllSetRatingAverages() {
-    List<Set> sets = ratingMgr.findAllSets();
+  public void recalculateAllSetRatingAverages(FestivalEnum fest) {
+    List<Set> sets = ratingMgr.findAllSets(fest);
     for (Set set : sets) {
       List<Rating> ratings = ratingMgr.findRatingsBySetId(set.getId());
       int wkndOneCount = 0;

@@ -26,12 +26,12 @@ public class LollaSetDataLoader extends SetDataLoader {
 
   // Private constructor prevents instantiation from other classes
   private LollaSetDataLoader() {
-    super(LollaRatingManager.getInstance());
+    super(RatingManager.getInstance());
   }
 
   /**
-   * SingletonHolder is loaded on the first execution of Singleton.getInstance()
-   * or the first access to SingletonHolder.INSTANCE, not before.
+   * SingletonHolder is loaded on the first execution of Singleton.getInstance() or the first access to
+   * SingletonHolder.INSTANCE, not before.
    */
   private static class SingletonHolder {
     public static final LollaSetDataLoader instance = new LollaSetDataLoader();

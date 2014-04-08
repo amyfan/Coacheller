@@ -10,19 +10,20 @@ import java.util.logging.Logger;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ratethisfest.client.CoachellerService;
+import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.server.logic.CoachellaEmailSender;
-import com.ratethisfest.server.logic.CoachellaRatingManager;
+import com.ratethisfest.server.logic.RatingManager;
 import com.ratethisfest.server.logic.CoachellaSetDataLoader;
 import com.ratethisfest.server.logic.JSONUtils;
+import com.ratethisfest.server.logic.RatingManager;
 import com.ratethisfest.shared.DayEnum;
 import com.ratethisfest.shared.FieldVerifier;
 import com.ratethisfest.shared.RatingGwt;
 import com.ratethisfest.shared.Set;
 
 /**
- * The server side implementation of the RPC service. Currently used for GWT
- * client.
+ * The server side implementation of the RPC service. Currently used for GWT client.
  */
 @SuppressWarnings("serial")
 public class CoachellerServiceImpl extends RemoteServiceServlet implements CoachellerService {
@@ -44,8 +45,8 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     input = escapeHtml(input);
     userAgent = escapeHtml(userAgent);
 
-    return "Hello, " + input + "!<br><br>I am running " + serverInfo
-        + ".<br><br>It looks like you are using:<br>" + userAgent;
+    return "Hello, " + input + "!<br><br>I am running " + serverInfo + ".<br><br>It looks like you are using:<br>"
+        + userAgent;
   }
 
   @Override
@@ -54,10 +55,9 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
 
     Integer year = Integer.valueOf(yearString);
     if (day != null && !day.isEmpty()) {
-      sets = CoachellaRatingManager.getInstance()
-          .findSetsByYearAndDay(year, DayEnum.fromValue(day));
+      sets = RatingManager.getInstance().findSetsByYearAndDay(FestivalEnum.COACHELLA, year, DayEnum.fromValue(day));
     } else {
-      sets = CoachellaRatingManager.getInstance().findSetsByYear(year);
+      sets = RatingManager.getInstance().findSetsByYear(FestivalEnum.COACHELLA, year);
     }
 
     return sets;
@@ -76,7 +76,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
       resp = FieldVerifier.SCORE_ERROR;
     } else if (setId != null) {
       // TODO: IMPL AFTER SERVER SIDE AUTH IMPLEMENTED!
-      // resp = CoachellaRatingManager.getInstance().addRatingBySetId(email,
+      // resp = RatingManager.getInstance().addRatingBySetId(email,
       // setId,
       // Integer.valueOf(weekend), Integer.valueOf(score), notes);
     } else {
@@ -93,8 +93,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     List<RatingGwt> ratingGwts = null;
 
     if (email != null) {
-      List<Rating> ratings = CoachellaRatingManager.getInstance().findRatingsByUserEmailAndYear(
-          email, year);
+      List<Rating> ratings = RatingManager.getInstance().findRatingsByUserEmailAndYear(FestivalEnum.COACHELLA, email, year);
       if (ratings != null) {
         ratingGwts = JSONUtils.convertRatingsToRatingGwts(ratings);
       }
@@ -107,7 +106,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
   public String deleteRating(Long ratingId) {
     String resp = "fail";
     if (ratingId != null) {
-      CoachellaRatingManager.getInstance().deleteRatingById(ratingId);
+      RatingManager.getInstance().deleteRatingById(ratingId);
       resp = "rating deleted";
     }
     return resp;
@@ -116,7 +115,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
   @Override
   public String deleteRatingsByUser(String email) {
     String resp = "fail";
-    CoachellaRatingManager.getInstance().deleteRatingsByUser(email);
+    RatingManager.getInstance().deleteRatingsByUser(email);
     resp = "ratings deleted";
     return resp;
   }
@@ -136,13 +135,6 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     // url = "http://127.0.0.1:8888/resources/sets_coachella_2013.txt";
     success = loadFile(url);
 
-    return success;
-  }
-
-  public String updateSetFestivalData() {
-    String success = "something happened";
-    CoachellaSetDataLoader.getInstance().updateSetFestival();
-    success = "success i believe";
     return success;
   }
 
@@ -170,8 +162,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
   }
 
   /**
-   * Escape an html string. Escaping data received from the client helps to
-   * prevent cross-site script vulnerabilities.
+   * Escape an html string. Escaping data received from the client helps to prevent cross-site script vulnerabilities.
    * 
    * @param html
    *          the html string to escape

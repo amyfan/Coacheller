@@ -15,6 +15,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.shared.Set;
 
@@ -59,17 +60,16 @@ public class LollaEmailSender {
     return result;
   }
 
-  private static String generateMessageBody(String authType, String authId, String authToken,
-      String email) {
+  private static String generateMessageBody(String authType, String authId, String authToken, String email) {
     // TODO: dude, why is year hardcoded HERE (maybe create method not constrained by year)
-    List<Rating> ratings = LollaRatingManager.getInstance().findRatingsByUserAndYear(authType,
+    List<Rating> ratings = RatingManager.getInstance().findRatingsByUserAndYear(FestivalEnum.LOLLAPALOOZA, authType,
         authId, authToken, email, 2012);
     if (ratings == null) {
       return null;
     }
     List<String> ratingStrings = new ArrayList<String>();
     for (Rating rating : ratings) {
-      Set set = LollaRatingManager.getInstance().findSet(rating.getSet().getId());
+      Set set = RatingManager.getInstance().findSet(rating.getSet().getId());
       StringBuilder ratingString = new StringBuilder();
       ratingString.append(set.getYear());
       ratingString.append(" ");

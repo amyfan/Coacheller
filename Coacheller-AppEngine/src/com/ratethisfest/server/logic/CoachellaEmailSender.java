@@ -15,6 +15,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.shared.Set;
 
@@ -62,13 +63,14 @@ public class CoachellaEmailSender {
    */
   private static String generateMessageBody(String email) {
     // TODO: don't constrain by (& definitely don't hardcode) year here
-    List<Rating> ratings = CoachellaRatingManager.getInstance().findRatingsByUserEmailAndYear(email, 2012);
+    List<Rating> ratings = RatingManager.getInstance().findRatingsByUserEmailAndYear(FestivalEnum.COACHELLA, email,
+        2012);
     if (ratings == null) {
       return null;
     }
     List<String> ratingStrings = new ArrayList<String>();
     for (Rating rating : ratings) {
-      Set set = CoachellaRatingManager.getInstance().findSet(rating.getSet().getId());
+      Set set = RatingManager.getInstance().findSet(rating.getSet().getId());
       StringBuilder ratingString = new StringBuilder();
       ratingString.append(set.getYear());
       ratingString.append(" Weekend ");

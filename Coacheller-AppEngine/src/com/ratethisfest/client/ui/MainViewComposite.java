@@ -45,8 +45,8 @@ import com.ratethisfest.client.Coacheller_AppEngine;
 import com.ratethisfest.client.ComparatorUtils;
 import com.ratethisfest.client.LoginStatusEvent;
 import com.ratethisfest.client.LoginStatusEventHandler;
-import com.ratethisfest.client.LollapaloozerService;
-import com.ratethisfest.client.LollapaloozerServiceAsync;
+import com.ratethisfest.client.FestivalService;
+import com.ratethisfest.client.FestivalServiceAsync;
 import com.ratethisfest.client.PageToken;
 import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.shared.DateTimeUtils;
@@ -105,7 +105,7 @@ public class MainViewComposite extends Composite {
   private static final Logger logger = Logger.getLogger(MainViewComposite.class.getName());
 
   // Create a remote service proxy to talk to the server-side Lollapaloozer service.
-  private final LollapaloozerServiceAsync lollapaloozerService = GWT.create(LollapaloozerService.class);
+  private final FestivalServiceAsync lollapaloozerService = GWT.create(FestivalService.class);
   private List<Set> setsList;
   private Chart _chart = null;
 

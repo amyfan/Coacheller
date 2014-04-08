@@ -46,8 +46,6 @@
 		<g:Button ui:field="clearMyRatingButton" text="Clear My Ratings" />
 		<g:Button ui:field="clearAllRatingButton" text="Clear All Ratings" />
 
-
-
 		<t:MainRateComposite.RatingsTable ui:field="ratingsTable" />
 
 	</g:HTMLPanel>
