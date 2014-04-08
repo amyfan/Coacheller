@@ -24,6 +24,7 @@
     <string name="buttonlabel_search_sets">Go!</string>
 
     <string-array name="names_year_deprecated">
+        <item>2014</item>
         <item>2013</item>
         <item>2012</item>
     </string-array>

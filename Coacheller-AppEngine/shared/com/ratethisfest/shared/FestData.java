@@ -19,6 +19,10 @@ import com.ratethisfest.data.DaysHashMap;
 import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.shared.CalendarUtils;
 
+/**
+ * This class could REALLY use some comments -AF
+ * 
+ */
 public enum FestData {
   INSTANCE; // Singleton magic
 
@@ -33,47 +37,49 @@ public enum FestData {
   private static final ImmutableTable<Integer, String, String> festTable;
 
   static {
-    //LogController.MULTIWEEK.logMessage("FestData initializing - should only happen once");
+    // LogController.MULTIWEEK.logMessage("FestData initializing - should only happen once");
     ImmutableTable.Builder<Integer, String, String> tableBuilder = new ImmutableTable.Builder<Integer, String, String>();
 
     String festName;
+    int festYear;
     int festWeek;
     int row = 0;
 
     festName = "Coachella";
+    festYear = 2014;
     festWeek = 1;
 
     row++;
     tableBuilder.put(row, FEST_NAME, festName);
     tableBuilder.put(row, FEST_WEEK, festWeek + "");
-    addFestTableRow(tableBuilder, row, 2013, 4, 12);
+    addFestTableRow(tableBuilder, row, festYear, 4, 11);
 
     row++;
     tableBuilder.put(row, FEST_NAME, festName);
     tableBuilder.put(row, FEST_WEEK, festWeek + "");
-    addFestTableRow(tableBuilder, row, 2013, 4, 13);
+    addFestTableRow(tableBuilder, row, festYear, 4, 12);
 
     row++;
     tableBuilder.put(row, FEST_NAME, festName);
     tableBuilder.put(row, FEST_WEEK, festWeek + "");
-    addFestTableRow(tableBuilder, row, 2013, 4, 14);
+    addFestTableRow(tableBuilder, row, festYear, 4, 13);
 
     festWeek = 2;
 
     row++;
     tableBuilder.put(row, FEST_NAME, festName);
     tableBuilder.put(row, FEST_WEEK, festWeek + "");
-    addFestTableRow(tableBuilder, row, 2013, 4, 19);
+    addFestTableRow(tableBuilder, row, festYear, 4, 18);
 
     row++;
     tableBuilder.put(row, FEST_NAME, festName);
     tableBuilder.put(row, FEST_WEEK, festWeek + "");
-    addFestTableRow(tableBuilder, row, 2013, 4, 20);
+    addFestTableRow(tableBuilder, row, festYear, 4, 19);
 
     row++;
     tableBuilder.put(row, FEST_NAME, festName);
     tableBuilder.put(row, FEST_WEEK, festWeek + "");
-    addFestTableRow(tableBuilder, row, 2013, 4, 21);
+    addFestTableRow(tableBuilder, row, festYear, 4, 20);
 
     festName = "Lollapalooza";
     festWeek = 1;
@@ -187,7 +193,7 @@ public enum FestData {
       rowsToReturn.retainAll(matchingRows);
       size = rowsToReturn.size();
     }
-    //LogController.OTHER.logMessage("FestData Search: " + debugSearchParams);
+    // LogController.OTHER.logMessage("FestData Search: " + debugSearchParams);
 
     Predicate<Integer> returnPredicate = Predicates.in(rowsToReturn);
     return Maps.filterKeys(festTable.rowMap(), returnPredicate);

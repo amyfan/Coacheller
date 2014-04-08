@@ -13,7 +13,7 @@ public class AuthConstants {
   public static final String MSG_SIGNIN_REQUIRED = "Sign in so we can remember this for you.";
 
   public static final String DIALOG_TITLE_GET_EMAIL = "Keep Track of Everything";
-  // public static final String DIALOG_TITLE_FIRST_USE = "Welcome, Fellow Lollapaloozer";
+  public static final String DIALOG_TITLE_FIRST_USE = "Welcome!";
 
   // Not used?
   // public static final int DEFAULT_PORT_HTTP = 80;

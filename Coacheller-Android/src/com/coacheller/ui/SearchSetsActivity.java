@@ -152,10 +152,13 @@ public class SearchSetsActivity extends Activity implements OnClickListener {
     LogController.OTHER.logMessage("SearchSetsActivity found last queried day[" + lastQueriedDay + "] week["
         + lastQueriedWeek + "] year[" + lastQueriedYear + "]");
 
-    if (lastQueriedYear == 2013) {
+    // TODO: this hard-coding needs to be removed
+    if (lastQueriedYear == 2014) {
       _yearSpinner.setSelection(0);
-    } else if (lastQueriedYear == 2012) {
+    } else if (lastQueriedYear == 2013) {
       _yearSpinner.setSelection(1);
+    } else if (lastQueriedYear == 2012) {
+      _yearSpinner.setSelection(2);
     }
 
     if (lastQueriedWeek == 1) {

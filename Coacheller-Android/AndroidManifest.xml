@@ -36,7 +36,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ratethisfest.android.ui.SearchSetsActivity"
+            android:name="com.coacheller.ui.SearchSetsActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" >
         </activity>

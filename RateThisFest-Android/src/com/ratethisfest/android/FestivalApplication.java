@@ -102,13 +102,11 @@ public class FestivalApplication extends Application implements AppControllerInt
     }
     activityFestival = act;
 
-    // TODO: TEMP until we import 2014 data
-    this.queryYear = 2013;
-    this.queryWeek = 1;
-    this.queryDay = "Friday";
-    // this.queryYear = CalendarUtils.currentYear();
-    // this.queryWeek = CalendarUtils.suggestWeekToQuery(getFestival());
-    // this.queryDay = CalendarUtils.suggestDayToQueryString(getFestival());
+    // this.queryWeek = 1;
+    // this.queryDay = "Friday";
+    this.queryWeek = CalendarUtils.suggestWeekToQuery(getFestival());
+    this.queryDay = CalendarUtils.suggestDayToQueryString(getFestival());
+    this.queryYear = CalendarUtils.currentYear();
 
     storageManager = new StorageManager(this, getString(R.string.save_file_name));
 
