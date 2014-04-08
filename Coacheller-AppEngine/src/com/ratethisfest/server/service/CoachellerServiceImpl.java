@@ -93,7 +93,8 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     List<RatingGwt> ratingGwts = null;
 
     if (email != null) {
-      List<Rating> ratings = RatingManager.getInstance().findRatingsByUserEmailAndYear(FestivalEnum.COACHELLA, email, year);
+      List<Rating> ratings = RatingManager.getInstance().findRatingsByUserEmailAndYear(FestivalEnum.COACHELLA, email,
+          year);
       if (ratings != null) {
         ratingGwts = JSONUtils.convertRatingsToRatingGwts(ratings);
       }
@@ -131,7 +132,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
     String success;
     String url;
     // TODO: move this to res file
-    url = "http://ratethisfest.appspot.com/resources/sets_coachella_2013.txt";
+    url = "http://ratethisfest.appspot.com/resources/sets_coachella_2014.txt";
     // url = "http://127.0.0.1:8888/resources/sets_coachella_2013.txt";
     success = loadFile(url);
 
@@ -140,7 +141,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
 
   @Override
   public String recalculateSetRatingAverages() {
-    CoachellaSetDataLoader.getInstance().recalculateSetRatingAverages();
+    CoachellaSetDataLoader.getInstance().recalculateSetRatingAveragesByYear(FestivalEnum.COACHELLA, 2014);
     return "success i believe";
   }
 
@@ -151,7 +152,7 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
       URLConnection urlConn = inputData.openConnection();
       InputStreamReader is = new InputStreamReader(urlConn.getInputStream(), "UTF8");
       BufferedReader in = new BufferedReader(is);
-      CoachellaSetDataLoader.getInstance().updateSets(in);
+      CoachellaSetDataLoader.getInstance().updateSetsFromFile(in);
       success = "success i believe";
     } catch (Exception e) {
       success = "something happened";

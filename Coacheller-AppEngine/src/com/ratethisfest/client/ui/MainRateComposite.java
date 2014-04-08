@@ -703,7 +703,7 @@ public class MainRateComposite extends Composite {
         logger.info("updateSetButton was clicked");
         if (loginStatus.getProperty(LoginStatus.PROPERTY_PERSON_NAME).equals(ADMIN_NAME)) {
           infoBox.setText("");
-          festivalService.insertSetData(new AsyncCallback<String>() {
+          festivalService.updateSetData(Coacheller_AppEngine.getFestFromSiteName(), new AsyncCallback<String>() {
 
             @Override
             public void onFailure(Throwable caught) {

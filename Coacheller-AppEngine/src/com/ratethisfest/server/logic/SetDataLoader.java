@@ -33,8 +33,13 @@ public abstract class SetDataLoader {
     }
   }
 
-  public void recalculateAllSetRatingAverages(FestivalEnum fest) {
-    List<Set> sets = ratingMgr.findAllSets(fest);
+  /**
+   * 
+   * @param fest
+   * @param year
+   */
+  public void recalculateSetRatingAveragesByYear(FestivalEnum fest, Integer year) {
+    List<Set> sets = ratingMgr.findSetsByYear(fest, year);
     for (Set set : sets) {
       List<Rating> ratings = ratingMgr.findRatingsBySetId(set.getId());
       int wkndOneCount = 0;

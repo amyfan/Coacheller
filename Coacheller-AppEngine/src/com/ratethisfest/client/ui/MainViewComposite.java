@@ -244,6 +244,7 @@ public class MainViewComposite extends Composite {
     // });
 
     DropdownChangeHandler dropdownHandler = new DropdownChangeHandler();
+    yearInput.addItem("2014");
     yearInput.addItem("2013");
     yearInput.addItem("2012");
     yearInput.addChangeHandler(dropdownHandler);

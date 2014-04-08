@@ -15,6 +15,7 @@ import com.ratethisfest.client.FestivalService;
 import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.server.domain.AppUser;
 import com.ratethisfest.server.domain.Rating;
+import com.ratethisfest.server.logic.CoachellaSetDataLoader;
 import com.ratethisfest.server.logic.JSONUtils;
 import com.ratethisfest.server.logic.LollaSetDataLoader;
 import com.ratethisfest.server.logic.RatingManager;
@@ -55,7 +56,7 @@ public class FestivalServiceImpl extends RemoteServiceServlet implements Festiva
     AppUser currentLogin = LoginManager.getCurrentLogin(getThreadLocalRequest().getSession());
     return currentLogin;
   }
-  
+
   void createSession(String username) {
     getThreadLocalRequest().getSession().setAttribute("username", username);
   }
@@ -67,7 +68,6 @@ public class FestivalServiceImpl extends RemoteServiceServlet implements Festiva
       return false;
     }
   }
-
 
   @Override
   public List<Set> getSets(FestivalEnum fest, String yearString, DayEnum day) {
@@ -95,8 +95,10 @@ public class FestivalServiceImpl extends RemoteServiceServlet implements Festiva
       resp = FieldVerifier.WEEKEND_ERROR;
     } else if (setId != null) {
       // TODO: implement GWT login auth!
-     // resp = LollaRatingManager.getInstance().addRatingBySetId(null, null, null, email, setId, Integer.valueOf(score), notes);
-      RatingManager.getInstance().addRating(currentLogin.getId(), setId, Integer.valueOf(weekend), Integer.valueOf(score), notes);
+      // resp = LollaRatingManager.getInstance().addRatingBySetId(null, null, null, email, setId,
+      // Integer.valueOf(score), notes);
+      RatingManager.getInstance().addRating(currentLogin.getId(), setId, Integer.valueOf(weekend),
+          Integer.valueOf(score), notes);
     } else {
       log.log(Level.WARNING, "addRatingBySetArtist: null args");
       resp = "null args";
@@ -126,8 +128,7 @@ public class FestivalServiceImpl extends RemoteServiceServlet implements Festiva
       log.info(error);
       return null;
     }
-    List<Rating> ratings = RatingManager.getInstance().findRatingsByUserAndSet(currentLogin.getId(),
-        targetSet.getId());
+    List<Rating> ratings = RatingManager.getInstance().findRatingsByUserAndSet(currentLogin.getId(), targetSet.getId());
     return JSONUtils.convertRatingsToRatingGwts(ratings);
   }
 
@@ -186,26 +187,26 @@ public class FestivalServiceImpl extends RemoteServiceServlet implements Festiva
   }
 
   /**
-   * THIS SHOULD BE CALLED SPARINGLY
+   * Called only by Lolla API
    */
-  @Override
-  public String insertSetData() {
+  private String insertSetDataFromApi() {
     String success = "something happened";
     // LollaRatingManager.getInstance().deleteSetsByYear(2012);
-    LollaSetDataLoader.getInstance().insertSetsFromApi(2012);
+    // LollaSetDataLoader.getInstance().insertSetsFromApi(2012);
     success = "success i believe";
     return success;
   }
 
   @Override
-  public String updateSetData() {
+  public String updateSetData(FestivalEnum fest) {
     String success;
     String url;
     // TODO: move this to res file
-    // url =
+    url = "http://ratethisfest.appspot.com/resources/sets_coachella_2014.txt";
+    // url = "http://127.0.0.1:8888/resources/sets_coachella_2013.txt";
     // "http://ratethisfest.appspot.com/resources/sets_lolla_2012.txt";
-    url = "http://127.0.0.1:8888/resources/sets_lolla_2012.txt";
-    success = loadFile(url);
+    // url = "http://127.0.0.1:8888/resources/sets_lolla_2012.txt";
+    success = loadFile(fest, url);
 
     return success;
   }
@@ -219,11 +220,21 @@ public class FestivalServiceImpl extends RemoteServiceServlet implements Festiva
 
   @Override
   public String recalculateSetRatingAverages(FestivalEnum fest) {
-    LollaSetDataLoader.getInstance().recalculateAllSetRatingAverages(fest);
+    switch (fest) {
+    case COACHELLA:
+      CoachellaSetDataLoader.getInstance().recalculateSetRatingAveragesByYear(fest, 2014);
+      break;
+    case LOLLAPALOOZA:
+      LollaSetDataLoader.getInstance().recalculateSetRatingAveragesByYear(fest, 2014);
+      break;
+    case TESTFEST:
+      break;
+    }
+
     return "success i believe";
   }
 
-  private String loadFile(String url) {
+  private String loadFile(FestivalEnum fest, String url) {
     String success = "something happened";
     try {
       URL inputData = new URL(url);
@@ -231,7 +242,18 @@ public class FestivalServiceImpl extends RemoteServiceServlet implements Festiva
       InputStreamReader is = new InputStreamReader(urlConn.getInputStream(), "UTF8");
       BufferedReader in = new BufferedReader(is);
       // RatingManager.getInstance().deleteAllSets();
-      LollaSetDataLoader.getInstance().updateSetsFromFile(in);
+
+      switch (fest) {
+      case COACHELLA:
+        CoachellaSetDataLoader.getInstance().updateSetsFromFile(in);
+        break;
+      case LOLLAPALOOZA:
+        LollaSetDataLoader.getInstance().updateSetsFromFile(in);
+        break;
+      case TESTFEST:
+        break;
+      }
+
       success = "success i believe";
     } catch (Exception e) {
       success = "something happened";

@@ -16,9 +16,7 @@ import com.ratethisfest.shared.Set;
 public interface FestivalService extends RemoteService {
   String greetServer(String name) throws IllegalArgumentException;
 
-  String insertSetData() throws IllegalArgumentException;
-
-  String updateSetData() throws IllegalArgumentException;
+  String updateSetData(FestivalEnum fest) throws IllegalArgumentException;
 
   String recalculateSetRatingAverages(FestivalEnum fest) throws IllegalArgumentException;
 

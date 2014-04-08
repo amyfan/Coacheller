@@ -35,9 +35,7 @@ public interface FestivalServiceAsync {
 
   void addRating(Long setId, String weekend, String score, String notes, AsyncCallback<String> callback);
 
-  void insertSetData(AsyncCallback<String> callback) throws IllegalArgumentException;
-
-  void updateSetData(AsyncCallback<String> callback) throws IllegalArgumentException;
+  void updateSetData(FestivalEnum fest, AsyncCallback<String> callback) throws IllegalArgumentException;
 
   void recalculateSetRatingAverages(FestivalEnum fest, AsyncCallback<String> callback) throws IllegalArgumentException;
 
