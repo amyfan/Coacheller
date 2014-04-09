@@ -17,6 +17,7 @@ import com.ratethisfest.android.auth.AuthActivityInt;
 import com.ratethisfest.android.auth.AuthProviderInt;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.shared.AuthConstants;
+import com.ratethisfest.shared.LoginType;
 
 /**
  * Activity to choose login type
@@ -119,7 +120,7 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
 
     if (_app.getAuthModel().isLoggedInPrimary()) {
       result = RESULT_OK;
-      returnIntent.putExtra(AuthConstants.INTENT_EXTRA_LOGIN_TYPE, _app.getAuthModel().getCurrentAuthProviderType());
+      returnIntent.putExtra(AuthConstants.INTENT_EXTRA_LOGIN_TYPE, _app.getAuthModel().getCurrentAuthProviderType().getName());
 
       returnIntent.putExtra(AuthConstants.INTENT_EXTRA_ACCOUNT_IDENTIFIER, _app.getAuthModel().getCurrentAuthProvider()
           .getVerifiedAccountIdentifier());
@@ -217,18 +218,18 @@ public class ChooseLoginActivity extends Activity implements OnClickListener, Au
     System.out.println("Button Click: " + buttonClickedName);
 
     if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_google))) {
-      _app.getAuthModel().primaryLogin(AuthConstants.LOGIN_TYPE_GOOGLE);
+      _app.getAuthModel().primaryLogin(LoginType.GOOGLE);
     }
 
     if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_twitter))) {
-      _app.getAuthModel().primaryLogin(AuthConstants.LOGIN_TYPE_TWITTER);
+      _app.getAuthModel().primaryLogin(LoginType.TWITTER);
     }
     if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_facebook))) {
-      _app.getAuthModel().primaryLogin(AuthConstants.LOGIN_TYPE_FACEBOOK);
+      _app.getAuthModel().primaryLogin(LoginType.FACEBOOK);
     }
 
     if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_login_facebook_browser))) {
-      _app.getAuthModel().primaryLogin(AuthConstants.LOGIN_TYPE_FACEBOOK_BROWSER);
+      _app.getAuthModel().primaryLogin(LoginType.FACEBOOK_BROWSER);
     }
 
     if (buttonClickedName.equals(this.getResources().getResourceEntryName(R.id.btn_invalidate_tokens))) {

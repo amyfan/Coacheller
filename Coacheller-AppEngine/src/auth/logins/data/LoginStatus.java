@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import com.google.appengine.api.datastore.Entity;
-
-import auth.logins.other.LoginType;
+import com.ratethisfest.shared.LoginType;
 
 public class LoginStatus implements Serializable {
   

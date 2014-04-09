@@ -31,6 +31,7 @@ import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.data.HttpConstants;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.CalendarUtils;
+import com.ratethisfest.shared.LoginType;
 
 public class FestivalApplication extends Application implements AppControllerInt {
 
@@ -227,8 +228,8 @@ public class FestivalApplication extends Application implements AppControllerInt
     loginData.accountIdentifier = results.getString(AuthConstants.INTENT_EXTRA_ACCOUNT_IDENTIFIER);
     loginData.accountToken = results.getString(AuthConstants.INTENT_EXTRA_LOGIN_TOKEN);
 
-    if (loginData.loginType.equals(AuthConstants.LOGIN_TYPE_GOOGLE)
-        || loginData.loginType.equals(AuthConstants.LOGIN_TYPE_FACEBOOK)) {
+    if (LoginType.GOOGLE.getName().equals(loginData.loginType)
+        || LoginType.FACEBOOK.getName().equals(loginData.loginType)) {
       loginData.emailAddress = loginData.accountIdentifier;
     } else {
       loginData.emailAddress = null;

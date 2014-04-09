@@ -141,7 +141,7 @@ public enum FestData {
     tableBuilder.put(row, FEST_NAME, festName);
     tableBuilder.put(row, FEST_WEEK, festWeek + "");
     addFestTableRow(tableBuilder, row, 2012, 4, 22);
-    
+
     festName = "Lollapalooza";
     festWeek = 1;
 
@@ -289,7 +289,7 @@ public enum FestData {
   }
 
   // Return primitive string array representing the years that we have data for the specified fest
-  // Sorted in ascending order!
+  // Sorted in descending order!
   public static String[] getArrayYears(FestivalEnum fest) {
     HashMap<String, String> criteria = new HashMap<String, String>();
     criteria.put(FestData.FEST_NAME, fest.getName());
@@ -305,7 +305,7 @@ public enum FestData {
         years.add(festYear);
       }
     }
-    Collections.sort(years);
+    Collections.sort(years, Collections.reverseOrder());
 
     // Now build and return a primitive array
     String[] yearsPrimitive = new String[years.size()];

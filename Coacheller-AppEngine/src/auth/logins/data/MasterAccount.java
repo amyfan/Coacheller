@@ -139,7 +139,7 @@
 ////    }
 ////
 ////    _accounts.put(apAccount.getProperty(AuthProviderAccount.AUTH_PROVIDER_NAME), apAccount);
-////    apAccount.setProperty(AuthProviderAccount.RTFACCOUNT_OWNER_KEY, this.getAppEngineKeyLong()+"");
+////    apAccount.setProperty(AuthProviderAccount.APPUSER_KEY, this.getAppEngineKeyLong()+"");
 ////  }
 //
 //  public void updateAPAccount(AuthProviderAccount apAccountObj_DO_NOT_PERSIST) {
@@ -157,7 +157,7 @@
 //      apAccountObj_DO_NOT_PERSIST.copyDataTo(apAccountObjToPersist);  //New gets copied to old, then save the existing (old) including updates
 //      
 //    }
-//    apAccountObjToPersist.setProperty(AuthProviderAccount.RTFACCOUNT_OWNER_KEY, this.getAppEngineKeyLong()+"");  //Forces save to db
+//    apAccountObjToPersist.setProperty(AuthProviderAccount.APPUSER_KEY, this.getAppEngineKeyLong()+"");  //Forces save to db
 //    
 //    log.info("Properties copied and parent ID set, here is info again:");
 //    log.info("APAccount object key from this successful login: "+ apAccountObj_DO_NOT_PERSIST.getDatastoreKeyDescription());

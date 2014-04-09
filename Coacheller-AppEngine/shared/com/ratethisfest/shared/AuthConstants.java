@@ -33,11 +33,6 @@ public class AuthConstants {
   public static final String INTENT_EXTRA_ACCOUNT_IDENTIFIER = "intent.extra.account.identifier";
   public static final String INTENT_EXTRA_LOGIN_TOKEN = "intent.extra.login.token";
 
-  public static final String LOGIN_TYPE_GOOGLE = "LOGIN_TYPE_GOOGLE";
-  public static final String LOGIN_TYPE_FACEBOOK = "LOGIN_TYPE_FACEBOOK";
-  public static final String LOGIN_TYPE_TWITTER = "LOGIN_TYPE_TWITTER";
-  public static final String LOGIN_TYPE_FACEBOOK_BROWSER = "LOGIN_TYPE_FACEBOOK_BROWSER";
-
   // TODO: FILL OUT!
 
   // Used for login with google account, These map to the application registered for google APIs

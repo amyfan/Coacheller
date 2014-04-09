@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import auth.logins.client.LoginStatusService;
 import auth.logins.client.LoginStatusServiceAsync;
 import auth.logins.data.LoginStatus;
-import auth.logins.other.LoginType;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.gwt.core.client.EntryPoint;
@@ -18,6 +17,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.ratethisfest.shared.LoginType;
 
 public class LoginStatusTester implements EntryPoint {
 

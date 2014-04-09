@@ -9,7 +9,7 @@ import android.content.Intent;
 import com.facebook.android.Facebook;
 import com.ratethisfest.android.data.SocialNetworkPost;
 import com.ratethisfest.android.ui.ChooseLoginActivity;
-import com.ratethisfest.shared.AuthConstants;
+import com.ratethisfest.shared.LoginType;
 
 public class AuthModel {
 
@@ -23,7 +23,7 @@ public class AuthModel {
   private FacebookAuthProvider _authProviderFacebook;
   private TwitterAuthProvider _authProviderTwitter;
   private FacebookWebAuthProvider _authProviderFacebookWeb;
-  private String _primaryLoginType;
+  private LoginType _primaryLoginType;
   // private ChooseLoginActivity _activity;
 
   private String _verifiedAccountName = null;
@@ -50,16 +50,16 @@ public class AuthModel {
     }
   }
 
-  public void loginSuccess(String loginType) {
+  public void loginSuccess(LoginType loginType) {
     if (_primaryLoginType == null) {
       _primaryLoginType = loginType;
     }
 
-    if (loginType.equals(AuthConstants.LOGIN_TYPE_FACEBOOK)) {
+    if (loginType.equals(LoginType.FACEBOOK)) {
       _addPermission(PERMISSION_FACEBOOK_POSTWALL);
     }
 
-    if (loginType.equals(AuthConstants.LOGIN_TYPE_TWITTER)) {
+    if (loginType.equals(LoginType.TWITTER)) {
       _addPermission(PERMISSION_TWITTER_TWEET);
     }
 
@@ -129,26 +129,23 @@ public class AuthModel {
   }
 
   public AuthProviderInt getCurrentAuthProvider() {
-    if (AuthConstants.LOGIN_TYPE_GOOGLE.equals(_primaryLoginType)) {
-      return _authProviderGoogle;
-    }
-
-    if (AuthConstants.LOGIN_TYPE_FACEBOOK.equals(_primaryLoginType)) {
-      return _authProviderFacebook;
-    }
-
-    if (AuthConstants.LOGIN_TYPE_FACEBOOK_BROWSER.equals(_primaryLoginType)) {
-      return _authProviderFacebookWeb;
-    }
-
-    if (AuthConstants.LOGIN_TYPE_TWITTER.equals(_primaryLoginType)) {
-      return _authProviderTwitter;
+    if (_primaryLoginType != null) {
+      switch (_primaryLoginType) {
+      case GOOGLE:
+        return _authProviderGoogle;
+      case FACEBOOK:
+        return _authProviderFacebook;
+      case FACEBOOK_BROWSER:
+        return _authProviderFacebookWeb;
+      case TWITTER:
+        return _authProviderTwitter;
+      }
     }
 
     return null;
   }
 
-  public String getCurrentAuthProviderType() {
+  public LoginType getCurrentAuthProviderType() {
     return _primaryLoginType;
   }
 
@@ -205,20 +202,21 @@ public class AuthModel {
     _permissions.clear();
   }
 
-  public void primaryLogin(String loginType) {
-    if (AuthConstants.LOGIN_TYPE_GOOGLE.equals(loginType)) {
+  public void primaryLogin(LoginType loginType) {
+    switch (loginType) {
+    case GOOGLE:
       loginToGoogle();
-
-    } else if (AuthConstants.LOGIN_TYPE_FACEBOOK.equals(loginType)) {
+      break;
+    case FACEBOOK:
       loginToFacebook();
-
-    } else if (AuthConstants.LOGIN_TYPE_FACEBOOK_BROWSER.equals(loginType)) {
+      break;
+    case FACEBOOK_BROWSER:
       loginToFacebookBrowser();
-
-    } else if (AuthConstants.LOGIN_TYPE_TWITTER.equals(loginType)) {
+      break;
+    case TWITTER:
       loginToTwitter();
-
-    } else {
+      break;
+    default:
       throw new RuntimeException("Invalid login type, unexpected code path");
     }
   }

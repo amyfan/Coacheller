@@ -26,6 +26,7 @@ import com.ratethisfest.shared.Set;
  * The server side implementation of the RPC service. Currently used for GWT client.
  */
 @SuppressWarnings("serial")
+@Deprecated
 public class CoachellerServiceImpl extends RemoteServiceServlet implements CoachellerService {
   private static final Logger log = Logger.getLogger(CoachellerServiceImpl.class.getName());
 

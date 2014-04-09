@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import auth.logins.ServletConfig;
 import auth.logins.ServletInterface;
 import auth.logins.data.LoginStatus;
-import auth.logins.other.LoginType;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.cell.client.ButtonCell;
@@ -55,6 +54,7 @@ import com.ratethisfest.client.PageToken;
 import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.shared.Base64Coder;
 import com.ratethisfest.shared.FieldVerifier;
+import com.ratethisfest.shared.LoginType;
 import com.ratethisfest.shared.RatingGwt;
 import com.ratethisfest.shared.Set;
 

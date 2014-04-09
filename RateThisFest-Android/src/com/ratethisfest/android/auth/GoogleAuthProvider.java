@@ -15,10 +15,11 @@ import android.util.Log;
 
 import com.ratethisfest.auth.verify.GoogleAuthVerifier;
 import com.ratethisfest.shared.AuthConstants;
+import com.ratethisfest.shared.LoginType;
 
 public class GoogleAuthProvider implements AuthProviderInt {
 
-  private final String LOGIN_TYPE = AuthConstants.LOGIN_TYPE_GOOGLE;
+  private final LoginType LOGIN_TYPE = LoginType.GOOGLE;
   private final String ACCOUNT_TYPE_REQUESTED = "com.google";
   private final int TOKEN_RETRIES = 2;
 

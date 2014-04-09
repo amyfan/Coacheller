@@ -11,9 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 
 import auth.logins.data.AuthProviderAccount;
-import auth.logins.other.LoginType;
 
 import com.googlecode.objectify.annotation.Cached;
+import com.ratethisfest.shared.LoginType;
 
 @Entity
 @Cached(expirationSeconds = 7200)
@@ -122,10 +122,22 @@ public class AppUser implements Serializable {
     StringBuilder builder = new StringBuilder();
     builder.append("AppUser [dateCreated=");
     builder.append(dateCreated);
+    builder.append(", dateModified=");
+    builder.append(dateModified);
+    builder.append(", id=");
+    builder.append(id);
+    builder.append(", email=");
+    builder.append(email);
     builder.append(", active=");
     builder.append(active);
     builder.append(", name=");
     builder.append(name);
+    builder.append(", authType=");
+    builder.append(authType);
+    builder.append(", authId=");
+    builder.append(authId);
+    builder.append(", authToken=");
+    builder.append(authToken);
     builder.append("]");
     return builder.toString();
   }

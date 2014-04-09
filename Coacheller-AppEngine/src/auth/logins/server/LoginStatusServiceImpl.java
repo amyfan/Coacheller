@@ -11,7 +11,6 @@ import auth.logins.data.AuthProviderAccount;
 import auth.logins.data.LoginStatus;
 import auth.logins.other.LoginManager;
 
-import com.google.appengine.api.datastore.Entity;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ratethisfest.server.domain.AppUser;
 import com.ratethisfest.server.persistence.AppUserDAO;

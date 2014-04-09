@@ -7,7 +7,6 @@ import auth.logins.ServletInterface;
 import auth.logins.client.LoginStatusService;
 import auth.logins.client.LoginStatusServiceAsync;
 import auth.logins.data.LoginStatus;
-import auth.logins.other.LoginType;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -26,6 +25,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.ratethisfest.client.Coacheller_AppEngine;
 import com.ratethisfest.client.LoginStatusEvent;
 import com.ratethisfest.client.LoginStatusEventHandler;
+import com.ratethisfest.shared.LoginType;
 
 public class LoginControl extends Composite implements HasText {
 

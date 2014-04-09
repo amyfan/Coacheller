@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-import auth.logins.other.LoginType;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +20,7 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.ratethisfest.server.persistence.AppUserDAO;
+import com.ratethisfest.shared.LoginType;
 
 public class AuthProviderAccount implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -34,8 +33,8 @@ public class AuthProviderAccount implements Serializable {
   // public static final String LOGIN_SETTING_PREFIX = "LOGIN"; //No longer needed, using AuthProviderAccount object
 
   // After data is live, ONLY change the name, not the value
-  public static final String RTFACCOUNT_OWNER_KEY = "RTFACCOUNT_OWNER"; // datastore ID of RTFAccount that owns this
-                                                                        // APAccount
+  public static final String APPUSER_KEY = "APPUSER_KEY"; // datastore ID of RTFAccount that owns this
+                                                          // APAccount
   public static final String AUTH_PROVIDER_NAME = "AUTH_PROVIDER_NAME";
   public static final String AUTH_PROVIDER_ID = "AUTH_PROVIDER_ID";
   public static final String LOGIN_EMAIL = "LOGIN_EMAIL";
@@ -64,7 +63,7 @@ public class AuthProviderAccount implements Serializable {
     if (_indexedProperties.isEmpty()) {
       _indexedProperties.add(AUTH_PROVIDER_NAME);
       _indexedProperties.add(AUTH_PROVIDER_ID);
-      _indexedProperties.add(RTFACCOUNT_OWNER_KEY);
+      _indexedProperties.add(APPUSER_KEY);
     }
 
     return _indexedProperties;
@@ -177,7 +176,7 @@ public class AuthProviderAccount implements Serializable {
   private void saveToDatastore() {
 
     // If we are saving it, we must know what RTFAccount owns it
-    String parentIdStr = this.getProperty(RTFACCOUNT_OWNER_KEY);
+    String parentIdStr = this.getProperty(APPUSER_KEY);
     // Long parentIdLong = Long.valueOf(parentIdStr);
 
     Key RTFAccountKey = getParentKey(parentIdStr);
@@ -230,7 +229,7 @@ public class AuthProviderAccount implements Serializable {
     // String authProviderName = apAccount.getProperty(AuthProviderAccount.AUTH_PROVIDER_NAME);
     // String authProviderID = apAccount.getProperty(AuthProviderAccount.AUTH_PROVIDER_ID);
 
-    Filter idFilter = new FilterPredicate(AuthProviderAccount.RTFACCOUNT_OWNER_KEY, FilterOperator.EQUAL, RTFAccountID);
+    Filter idFilter = new FilterPredicate(AuthProviderAccount.APPUSER_KEY, FilterOperator.EQUAL, RTFAccountID);
 
     // Use CompositeFilter to combine multiple filters
 

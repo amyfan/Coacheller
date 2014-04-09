@@ -12,6 +12,7 @@ import com.ratethisfest.server.logic.JSONUtils;
 import com.ratethisfest.server.logic.RatingManager;
 import com.ratethisfest.shared.DayEnum;
 import com.ratethisfest.shared.FieldVerifier;
+import com.ratethisfest.shared.LoginType;
 import com.ratethisfest.shared.Set;
 
 @SuppressWarnings("serial")
@@ -114,5 +115,24 @@ public abstract class FestivalServlet extends HttpServlet {
       return "";
     }
     return s;
+  }
+
+  /**
+   * temporary method to convert older auth_type format to LoginType enum val
+   */
+  protected String updateAuthType(String authType) {
+    String returnString = authType;
+    if (LoginType.fromString(authType) == null) {
+      if (authType.contains("GOOGLE")) {
+        returnString = LoginType.GOOGLE.getName();
+      } else if (authType.contains("FACEBOOK_BROWSER")) {
+        returnString = LoginType.FACEBOOK_BROWSER.getName();
+      } else if (authType.contains("FACEBOOK")) {
+        returnString = LoginType.FACEBOOK.getName();
+      } else if (authType.contains("TWITTER")) {
+        returnString = LoginType.TWITTER.getName();
+      }
+    }
+    return returnString;
   }
 }

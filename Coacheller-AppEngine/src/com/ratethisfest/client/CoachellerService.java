@@ -11,6 +11,7 @@ import com.ratethisfest.shared.Set;
  * The client side stub for the RPC service.
  */
 @RemoteServiceRelativePath("greetCoachella")
+@Deprecated
 public interface CoachellerService extends RemoteService {
   String greetServer(String name) throws IllegalArgumentException;
 

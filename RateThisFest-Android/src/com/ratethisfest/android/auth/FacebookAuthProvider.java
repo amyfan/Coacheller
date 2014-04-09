@@ -22,10 +22,11 @@ import com.ratethisfest.android.data.SocialNetworkPost;
 import com.ratethisfest.android.log.LogController;
 import com.ratethisfest.auth.verify.FacebookVerifier;
 import com.ratethisfest.shared.AuthConstants;
+import com.ratethisfest.shared.LoginType;
 
 public class FacebookAuthProvider implements AuthProviderInt {
 
-  private final String LOGIN_TYPE = AuthConstants.LOGIN_TYPE_FACEBOOK;
+  private final LoginType LOGIN_TYPE = LoginType.FACEBOOK;
   private AuthModel _model;
 
   private Facebook _facebook;

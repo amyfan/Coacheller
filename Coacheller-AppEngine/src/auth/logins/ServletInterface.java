@@ -21,11 +21,11 @@ import org.scribe.oauth.OAuthService;
 
 import auth.logins.data.AuthProviderAccount;
 import auth.logins.other.LoginManager;
-import auth.logins.other.LoginType;
 import auth.logins.other.RTFAccountException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ratethisfest.shared.Base64Coder;
+import com.ratethisfest.shared.LoginType;
 
 public class ServletInterface {
   private static final Logger log = Logger.getLogger(new Object() {

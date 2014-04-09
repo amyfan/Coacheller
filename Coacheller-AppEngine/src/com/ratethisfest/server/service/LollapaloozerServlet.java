@@ -31,7 +31,7 @@ public class LollapaloozerServlet extends FestivalServlet {
     resp.setContentType("text/plain");
 
     String action = checkNull(req.getParameter(HttpConstants.PARAM_ACTION));
-    String authType = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TYPE));
+    String authType = updateAuthType(checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TYPE)));
     String authId = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_ID));
     String authToken = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TOKEN));
     String email = checkNull(req.getParameter(HttpConstants.PARAM_EMAIL));
@@ -72,7 +72,7 @@ public class LollapaloozerServlet extends FestivalServlet {
     // above just helpful println's
 
     String action = checkNull(req.getParameter(HttpConstants.PARAM_ACTION));
-    String authType = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TYPE));
+    String authType = updateAuthType(checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TYPE)));
     String authId = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_ID));
     String authToken = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TOKEN));
     String email = checkNull(req.getParameter(HttpConstants.PARAM_EMAIL));

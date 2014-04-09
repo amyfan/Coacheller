@@ -540,8 +540,8 @@ public class MainViewComposite extends Composite {
             rateDialog.clear();
             // If there is an existing rating for this set,
             // Preconfigure Rate dialog
-            MainRateComposite lollapaloozerRateComposite = new MainRateComposite(targetSet);
-            rateDialog.add(lollapaloozerRateComposite);
+            MainRateComposite rateComposite = new MainRateComposite(targetSet);
+            rateDialog.add(rateComposite);
             FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();
 
             rateDialog.setTitle(fest.getRTFAppName()); // Sets tooltip, go figure

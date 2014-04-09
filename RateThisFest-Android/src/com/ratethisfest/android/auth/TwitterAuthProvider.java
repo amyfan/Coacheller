@@ -16,11 +16,12 @@ import com.ratethisfest.auth.TwitterAuthProviderOAuth;
 import com.ratethisfest.auth.verify.TwitterVerifier;
 import com.ratethisfest.shared.AuthConstants;
 import com.ratethisfest.shared.Helper;
+import com.ratethisfest.shared.LoginType;
 
 public class TwitterAuthProvider implements AuthProviderInt {
   // private ChooseLoginActivity _activity;
   private AuthModel _model;
-  private final String LOGIN_TYPE = AuthConstants.LOGIN_TYPE_TWITTER;
+  private final LoginType LOGIN_TYPE = LoginType.TWITTER;
   private final String CONSUMER_KEY;
   private final String CONSUMER_SECRET;
   private final String OAUTH_CALLBACK_URL;

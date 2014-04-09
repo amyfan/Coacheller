@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import auth.logins.data.AuthProviderAccount;
-import auth.logins.other.LoginType;
 import auth.logins.other.RTFConstants;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -16,6 +15,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Query;
 import com.ratethisfest.server.domain.AppUser;
+import com.ratethisfest.shared.LoginType;
 
 /**
  * 
@@ -173,7 +173,7 @@ public class AppUserDAO {
 
     } 
     // Forces save to db
-    apAccountObjToPersist.setProperty(AuthProviderAccount.RTFACCOUNT_OWNER_KEY, masterAccount.getId() + "");
+    apAccountObjToPersist.setProperty(AuthProviderAccount.APPUSER_KEY, masterAccount.getId() + "");
 
     log.info("Properties copied and parent ID set, here is info again:");
     log.info("APAccount object key from this successful login: "

@@ -9,6 +9,7 @@ import com.ratethisfest.shared.Set;
 /**
  * The async counterpart of <code>CoachellerService</code>.
  */
+@Deprecated
 public interface CoachellerServiceAsync {
   void greetServer(String input, AsyncCallback<String> callback) throws IllegalArgumentException;
 
