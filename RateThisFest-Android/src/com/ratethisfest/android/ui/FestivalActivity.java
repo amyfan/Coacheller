@@ -266,7 +266,7 @@ public abstract class FestivalActivity extends Activity implements View.OnClickL
 
   // TODO: Create Interface for Overridden Methods
   @Deprecated
-  protected void checkForExtraData() { 
+  protected void checkForExtraData() {
   }
 
   protected void clickDialogFirstUseButtonOK() {
@@ -731,7 +731,7 @@ public abstract class FestivalActivity extends Activity implements View.OnClickL
         if (loginData.emailAddress != null) {
           parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_EMAIL, loginData.emailAddress));
         }
-        String result = ServiceUtils.emailMyRatings(parameterList, this, HttpConstants.SERVER_URL_LOLLAPALOOZER);
+        String result = ServiceUtils.emailMyRatings(parameterList, this, _application.getFestival().getServerUrl());
 
       } catch (Exception e) {
         // TODO Auto-generated catch block

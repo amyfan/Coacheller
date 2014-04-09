@@ -2,24 +2,14 @@ package com.ratethisfest.server.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONArray;
-
 import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.data.HttpConstants;
-import com.ratethisfest.server.domain.Rating;
 import com.ratethisfest.server.logic.CoachellaEmailSender;
-import com.ratethisfest.server.logic.JSONUtils;
-import com.ratethisfest.server.logic.RatingManager;
-import com.ratethisfest.shared.DayEnum;
-import com.ratethisfest.shared.FieldVerifier;
-import com.ratethisfest.shared.Set;
 
 /**
  * HTTP Servlet, intended for Android/etc. device use.
@@ -28,7 +18,7 @@ import com.ratethisfest.shared.Set;
  * 
  */
 @SuppressWarnings("serial")
-public class CoachellerServlet extends HttpServlet {
+public class CoachellerServlet extends FestivalServlet {
 
   /**
    * This method is accessible by visiting the URL
@@ -52,9 +42,9 @@ public class CoachellerServlet extends HttpServlet {
     String respString = "";
 
     if (action.equals(HttpConstants.ACTION_GET_SETS)) {
-      respString = getSetsJson(year, day);
+      respString = getSetsJson(FestivalEnum.COACHELLA, year, day);
     } else if (action.equals(HttpConstants.ACTION_GET_RATINGS)) {
-      respString = getRatingsJsonByUser(authType, authId, authToken, email, year, day);
+      respString = getRatingsJsonByUser(FestivalEnum.COACHELLA, authType, authId, authToken, email, year, day);
     }
 
     resp.getWriter().println(respString);
@@ -91,109 +81,24 @@ public class CoachellerServlet extends HttpServlet {
     String score = checkNull(req.getParameter(HttpConstants.PARAM_SCORE));
     String notes = checkNull(req.getParameter(HttpConstants.PARAM_NOTES));
 
-    if (notes.isEmpty()) {
-      // TODO: this is temp until notes implemented on android
-      notes = null;
-    }
     if (action.equals(HttpConstants.ACTION_ADD_RATING)) {
-      addRating(authType, authId, authToken, email, setId, weekend, score, notes);
+      out.println("Calling addRating()");
+      if (verifyToken(authType, authId, authToken)) {
+        addRating(authType, authId, authToken, email, setId, weekend, score, notes);
+      }
     } else if (action.equals(HttpConstants.ACTION_EMAIL_RATINGS)) {
-      CoachellaEmailSender.emailRatings(email);
-    }
-
-  }
-
-  private String getSetsJson(String yearString, String day) {
-    String resp = null;
-
-    if (!FieldVerifier.isValidYear(yearString)) {
-      resp = FieldVerifier.YEAR_ERROR;
-    } else if (!FieldVerifier.isValidDay(day)) {
-      resp = FieldVerifier.DAY_ERROR;
-    } else {
-      List<Set> sets = null;
-
-      Integer year = Integer.valueOf(yearString);
-      if (day != null && !day.isEmpty()) {
-        sets = RatingManager.getInstance().findSetsByYearAndDay(FestivalEnum.COACHELLA, year, DayEnum.fromValue(day));
+      out.println("Calling emailRatings(authType=" + authType + " authId=" + authId + " email=" + email + " authToken="
+          + authToken + ")");
+      if (verifyToken(authType, authId, authToken)) {
+        // String result = CoachellaEmailSender.emailRatings(authType, authId, authToken, email);
+        String result = CoachellaEmailSender.emailRatings(email);
+        out.println("Result: " + result);
       } else {
-        sets = RatingManager.getInstance().findSetsByYear(FestivalEnum.COACHELLA, year);
+        out.println("Request is refused because user account did not pass verification");
       }
-
-      JSONArray jsonArray = JSONUtils.convertSetsToJSONArray(sets);
-      if (jsonArray != null) {
-        resp = jsonArray.toString();
-      }
-    }
-
-    if (resp == null) {
-      resp = "no data hrm";
-    }
-
-    return resp;
+    } // end Email Ratings
+    out.println("Done!");
+    out.close();
   }
 
-  /**
-   * TODO: filter by year & day
-   * 
-   * @param email
-   * @param year
-   * @param day
-   * @return
-   */
-  private String getRatingsJsonByUser(String authType, String authId, String authToken, String email, String year,
-      String day) {
-    String resp = null;
-
-    List<Rating> ratings = null;
-
-    if (authId != null) {
-      if (!FieldVerifier.isValidYear(year)) {
-        resp = FieldVerifier.YEAR_ERROR;
-      } else if (!FieldVerifier.isValidDay(day)) {
-        resp = FieldVerifier.DAY_ERROR;
-      } else {
-        ratings = RatingManager.getInstance().findRatingsByUserYearAndDay(FestivalEnum.COACHELLA, authType, authId, authToken, email,
-            Integer.valueOf(year), DayEnum.fromValue(day));
-      }
-    }
-
-    if (ratings != null) {
-      JSONArray jsonArray = JSONUtils.convertRatingsToJSONArray(ratings);
-      if (jsonArray != null) {
-        resp = jsonArray.toString();
-      }
-    }
-
-    return resp;
-  }
-
-  private String addRating(String authType, String authId, String authToken, String email, String setId,
-      String weekend, String score, String notes) {
-
-    String resp = null;
-
-    // if (!FieldVerifier.isValidEmail(email)) {
-    // resp = FieldVerifier.EMAIL_ERROR;
-    // } else
-    if (!FieldVerifier.isValidWeekend(weekend)) {
-      resp = FieldVerifier.WEEKEND_ERROR;
-    } else if (!FieldVerifier.isValidScore(score)) {
-      resp = FieldVerifier.SCORE_ERROR;
-    } else if (authId != null && setId != null) {
-      resp = RatingManager.getInstance().addRatingBySetId(authType, authId, authToken, email,
-          Long.valueOf(setId), Integer.valueOf(weekend), Integer.valueOf(score), notes);
-    } else {
-      resp = "null args";
-    }
-
-    return resp;
-  }
-
-  private String checkNull(String s) {
-    if (s == null) {
-      return "";
-    }
-    return s;
-  }
 }

@@ -3,10 +3,10 @@ package com.ratethisfest.data;
 import java.util.EnumSet;
 
 public enum FestivalEnum {
-  COACHELLA("Coachella", 2, HttpConstants.readCommentgetCoachellerServerUrlReadComment(),
+  COACHELLA("Coachella", 2, HttpConstants.getCoachellerServerUrl(),
       HttpConstants.CLIENT_HOST_COACHELLER, "Coacheller"),
   /* */
-  LOLLAPALOOZA("Lollapalooza", 1, HttpConstants.SERVER_URL_LOLLAPALOOZER, HttpConstants.CLIENT_HOST_LOLLAPALOOZER,
+  LOLLAPALOOZA("Lollapalooza", 1, HttpConstants.getLollapaloozerServerUrl(), HttpConstants.CLIENT_HOST_LOLLAPALOOZER,
       "Lollapaloozer"),
   /* */
   TESTFEST("TestFest", 3, HttpConstants.SERVER_URL_TEST, HttpConstants.CLIENT_HOST_TESTFEST, "TestFestER");
@@ -73,7 +73,7 @@ public enum FestivalEnum {
     return this.value;
   }
 
-  public String getUrl() {
+  public String getServerUrl() {
     return this.serverURL;
   }
 

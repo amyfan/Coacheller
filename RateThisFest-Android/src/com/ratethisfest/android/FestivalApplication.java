@@ -271,7 +271,7 @@ public class FestivalApplication extends Application implements AppControllerInt
         List<NameValuePair> params = AndroidUtils.createGetQueryParamsArrayList(queryYear + "", queryDay,
             getLoginData());
 
-        myRatings = ServiceUtils.getRatings(params, this, getFestival().getUrl());
+        myRatings = ServiceUtils.getRatings(params, this, getFestival().getServerUrl());
 
         storageManager.putJSONArray(AndroidConstants.DATA_RATINGS, myRatings);
       } catch (Exception e1) {
@@ -320,7 +320,7 @@ public class FestivalApplication extends Application implements AppControllerInt
       if (getFestival().equals(FestivalEnum.TESTFEST)) {
         setData = FakeDataSource.getData(params);
       } else {
-        setData = ServiceUtils.getSets(params, this, getFestival().getUrl());
+        setData = ServiceUtils.getSets(params, this, getFestival().getServerUrl());
       }
       storageManager.putJSONArray(AndroidConstants.DATA_SETS, setData);
     } catch (Exception e) {
@@ -357,7 +357,7 @@ public class FestivalApplication extends Application implements AppControllerInt
       }
       List<NameValuePair> nameValuePairs = AndroidUtils.createSubmitRatingParamsArrayList(queryYear + "", setId,
           scoreSelectedValue, notes, getLoginData(), weekNumber + "");
-      ServiceUtils.addRating(nameValuePairs, this, getFestival().getUrl());
+      ServiceUtils.addRating(nameValuePairs, this, getFestival().getServerUrl());
 
       // Need this in order to make the new rating appear in real time
 

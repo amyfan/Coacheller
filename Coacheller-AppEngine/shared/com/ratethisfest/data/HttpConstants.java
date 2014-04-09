@@ -5,9 +5,11 @@ public class HttpConstants {
   public static final String CLIENT_HOST_COACHELLER = "coacheller.com";
   public static final String CLIENT_HOST_LOLLAPALOOZER = "lollapaloozer.com";
   public static final String CLIENT_HOST_TESTFEST = "te-s-t.appspot.com";
-  
+
+  // deprecated
   private static final String SERVER_URL_COACHELLER = "https://ratethisfest.appspot.com/coachellerServlet";
-  public static final String SERVER_URL_LOLLAPALOOZER = "https://ratethisfest.appspot.com/lollapaloozerServlet";
+  // deprecated
+  private static final String SERVER_URL_LOLLAPALOOZER = "https://ratethisfest.appspot.com/lollapaloozerServlet";
   public static final String SERVER_URL_TEST = "https://www.google.com"; // Not really used
 
   public static final String PARAM_ACTION = "action";
@@ -27,10 +29,15 @@ public class HttpConstants {
   public static final String ACTION_ADD_RATING = "add_rating";
   public static final String ACTION_EMAIL_RATINGS = "email_ratings";
 
+  // Only FestivalEnum should use this.
+  // A class wanting the fest URL should be asking whatever instance of FestivalEnum it can reach
+  public static String getCoachellerServerUrl() {
+    return SERVER_URL_COACHELLER;
+  }
 
   // Only FestivalEnum should use this.
   // A class wanting the fest URL should be asking whatever instance of FestivalEnum it can reach
-  public static String readCommentgetCoachellerServerUrlReadComment() {
-    return SERVER_URL_COACHELLER;
+  public static String getLollapaloozerServerUrl() {
+    return SERVER_URL_LOLLAPALOOZER;
   }
 }

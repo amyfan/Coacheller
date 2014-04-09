@@ -2,25 +2,14 @@ package com.ratethisfest.server.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONArray;
-
 import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.data.HttpConstants;
-import com.ratethisfest.server.domain.Rating;
-import com.ratethisfest.server.logic.JSONUtils;
 import com.ratethisfest.server.logic.LollaEmailSender;
-import com.ratethisfest.server.logic.LollaRatingManager;
-import com.ratethisfest.server.logic.RatingManager;
-import com.ratethisfest.shared.DayEnum;
-import com.ratethisfest.shared.FieldVerifier;
-import com.ratethisfest.shared.Set;
 
 /**
  * HTTP Servlet, intended for Android/etc. device use.
@@ -29,8 +18,7 @@ import com.ratethisfest.shared.Set;
  * 
  */
 @SuppressWarnings("serial")
-public class LollapaloozerServlet extends HttpServlet {
-
+public class LollapaloozerServlet extends FestivalServlet {
   /**
    * This method is accessible by visiting the URL
    * 
@@ -40,8 +28,6 @@ public class LollapaloozerServlet extends HttpServlet {
    */
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    String methodName = "doGet";
-
     resp.setContentType("text/plain");
 
     String action = checkNull(req.getParameter(HttpConstants.PARAM_ACTION));
@@ -53,17 +39,13 @@ public class LollapaloozerServlet extends HttpServlet {
     String year = checkNull(req.getParameter(HttpConstants.PARAM_YEAR));
 
     String respString = "";
-    FestivalEnum fest = FestivalEnum.fromHostname(req.getServerName());
-    if (fest == null) {
-      fest = FestivalEnum.LOLLAPALOOZA; // Only because this is lollapaloozerservlet
-    }
 
     if (action.equals(HttpConstants.ACTION_GET_SETS)) {
-      respString = getSetsJson(fest, year, day);
+      respString = getSetsJson(FestivalEnum.LOLLAPALOOZA, year, day);
     } else if (action.equals(HttpConstants.ACTION_GET_RATINGS)) {
 
       if (verifyToken(authType, authId, authToken)) {
-        respString = getRatingsJsonByUser(authType, authId, authToken, email, year, day);
+        respString = getRatingsJsonByUser(FestivalEnum.LOLLAPALOOZA, authType, authId, authToken, email, year, day);
       }
 
     }
@@ -79,10 +61,8 @@ public class LollapaloozerServlet extends HttpServlet {
    */
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    String methodName = "doPost";
     PrintWriter out = resp.getWriter();
-
-    out.println(methodName + " handling request for the following parameters:");
+    out.println("doPost: handling request for the following parameters:");
 
     // Value is not a string but rather an array of strings
     Map<String, String[]> parameterMap = req.getParameterMap();
@@ -97,13 +77,14 @@ public class LollapaloozerServlet extends HttpServlet {
     String authToken = checkNull(req.getParameter(HttpConstants.PARAM_AUTH_TOKEN));
     String email = checkNull(req.getParameter(HttpConstants.PARAM_EMAIL));
     String setId = checkNull(req.getParameter(HttpConstants.PARAM_SET_ID));
+    String weekend = checkNull(req.getParameter(HttpConstants.PARAM_WEEKEND));
     String score = checkNull(req.getParameter(HttpConstants.PARAM_SCORE));
     String notes = checkNull(req.getParameter(HttpConstants.PARAM_NOTES));
 
     if (action.equals(HttpConstants.ACTION_ADD_RATING)) {
       out.println("Calling addRating()");
       if (verifyToken(authType, authId, authToken)) {
-        addRating(authType, authId, authToken, email, setId, score, notes);
+        addRating(authType, authId, authToken, email, setId, weekend, score, notes);
       }
     } else if (action.equals(HttpConstants.ACTION_EMAIL_RATINGS)) {
       out.println("Calling emailRatings(authType=" + authType + " authId=" + authId + " email=" + email + " authToken="
@@ -119,100 +100,4 @@ public class LollapaloozerServlet extends HttpServlet {
     out.close();
   }
 
-  private boolean verifyToken(String authType, String authId, String authToken) {
-    // TODO: you may put the verification code here
-    return true;
-  }
-
-  private String getSetsJson(FestivalEnum fest, String yearString, String day) {
-    String resp = null;
-
-    if (!FieldVerifier.isValidYear(yearString)) {
-      resp = FieldVerifier.YEAR_ERROR;
-    } else if (!FieldVerifier.isValidDay(day)) {
-      resp = FieldVerifier.DAY_ERROR;
-    } else {
-      List<Set> sets = null;
-
-      Integer year = Integer.valueOf(yearString);
-
-      if (day != null && !day.isEmpty()) {
-        sets = RatingManager.getInstance().findSetsByYearAndDay(fest, year, DayEnum.fromValue(day));
-      } else {
-        sets = RatingManager.getInstance().findSetsByYear(fest, year);
-      }
-
-      JSONArray jsonArray = JSONUtils.convertSetsToJSONArray(sets);
-      if (jsonArray != null) {
-        resp = jsonArray.toString();
-      }
-    }
-
-    if (resp == null) {
-      resp = "no data hrm";
-    }
-
-    return resp;
-  }
-
-  /**
-   * TODO: filter by year & day
-   * 
-   * @param email
-   * @param year
-   * @param day
-   * @return
-   */
-  private String getRatingsJsonByUser(String authType, String authId, String authToken, String email, String year,
-      String day) {
-    String resp = null;
-
-    List<Rating> ratings = null;
-
-    if (authId != null) {
-      if (!FieldVerifier.isValidYear(year)) {
-        resp = FieldVerifier.YEAR_ERROR;
-      } else if (!FieldVerifier.isValidDay(day)) {
-        resp = FieldVerifier.DAY_ERROR;
-      } else {
-        ratings = RatingManager.getInstance().findRatingsByUserYearAndDay(FestivalEnum.LOLLAPALOOZA, authType, authId,
-            authToken, email, Integer.valueOf(year), DayEnum.fromValue(day));
-      }
-    }
-
-    if (ratings != null) {
-      JSONArray jsonArray = JSONUtils.convertRatingsToJSONArray(ratings);
-      if (jsonArray != null) {
-        resp = jsonArray.toString();
-      }
-    }
-
-    return resp;
-  }
-
-  private String addRating(String authType, String authId, String authToken, String email, String setId, String score,
-      String notes) {
-
-    String resp = null;
-    // if (!FieldVerifier.isValidEmail(email)) {
-    // resp = FieldVerifier.EMAIL_ERROR;
-    // }
-    if (!FieldVerifier.isValidScore(score)) {
-      resp = FieldVerifier.SCORE_ERROR;
-    } else if (authId != null && setId != null) {
-      resp = RatingManager.getInstance().addRatingBySetId(authType, authId, authToken, email, Long.valueOf(setId), 1,
-          Integer.valueOf(score), notes);
-    } else {
-      resp = "null args";
-    }
-
-    return resp;
-  }
-
-  private String checkNull(String s) {
-    if (s == null) {
-      return "";
-    }
-    return s;
-  }
 }
