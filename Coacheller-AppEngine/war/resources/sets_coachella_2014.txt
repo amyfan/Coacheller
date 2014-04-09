@@ -1,166 +1,184 @@
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,A$AP Ferg
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,AFI
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Aloe Blacc
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Anthony Green
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Anti Flag
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Austra
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Bastille
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Bonobo
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Broken Bells
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Bryan Ferry
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Caravan Palace
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Carnage
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Chromeo
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Crosses
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Damian Lazarus
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Davide Squillace
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Deorro
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Dixon
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,DJ Falcon
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Duke Dumont
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Dum Dum Girls
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Ellie Goulding
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Flatbush Zombies
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Flume
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Gabba-Gabba Heys
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Gareth Emery
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Girl Talk
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Goat
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Grouplove
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Haim
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Hot Since 82
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Jaguar Ma
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Kate Nash
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Mako
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Martin Garrix
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Michael Brun
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,MS MR
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Neko Case
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Nina Kraviz
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Outkast
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Shlohmo
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Solomun
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,The Afghan Whigs
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,The Bots
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,The Cult
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,The Glitch Mob
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,The Jon Spencer Blues Explosion
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,The Knife
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,The Preatures
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,The Replacements
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Title Fight
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Tom Odell
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Waxahatchee
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Woodkid
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Wye Oak
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,Zedd
-Coachella,2014,Friday,0000,0000,Gobi,Gobi,ZZ Ward
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Banks
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Bear Hands
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Bombay Bicycle Club
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Cage the Elephant
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Cajmere
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Capital Cities
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Carbon Airways
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Chvrches
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,City and Colour
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Darkside
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Dillon Francis
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Drowners
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Empire of the Sun
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Fatboy Slim
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Foster the People
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Foxygen
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Future Islands
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Galantis
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Graveyard
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,GTA
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Guy Gerber
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Headhunterz
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Holy Ghost!
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Kid Cudi
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Laura Mvula
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Lorde
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Makj
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,MGMT
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Mogwai
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Muse
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Nas
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Netsky
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Nicole Moudaber
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Pet Shop Boys
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Pharrell Williams
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Queens of the Stone Age
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,RL Grime
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Saints of Valory
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Skrillex
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Sleigh Bells
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Solange
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Syd Arthur
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Temples
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,The Dismemberment Plan
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,The Head and the Heart
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,The Internet
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,The Magician
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Tiga
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,TJR
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Ty Segall
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Unlocking the Truth
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,UZ
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Warpaint
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Washed Out
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,White Lies
-Coachella,2014,Saturday,0000,0000,Gobi,Gobi,Young and Sick
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Adventure Club
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Aeroplane
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Alesso
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,AlunaGeorge
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Anna Lunoe
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Arcade Fire
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Art Department
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Beck
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Bicep
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Big Gigantic
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Blood Orange
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Bo Ningen
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Bombino
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Calvin Harris
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Chance the Rapper
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Classixx
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Courtney Barnett
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Daughter
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Disclosure
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Duck Sauce
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Factory Floor
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Fishbone
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Flight Faculties
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Flosstradamus
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Frank Turner
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,J Roddy Walston and the Business
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,James Vincent McMorrow
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Jhene Aiko
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,John Beaver
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,John Newman
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Krewella
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Lana Del Rey
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Laurent Garnier
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Lee Burridge
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Little Dragon
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Maceo Plex
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Motorhead
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Neutral Milk Hotel
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Poolside
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Preservation Hill Jazz Band
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Ratking
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Rudimental
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Scuba
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Showtek
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,STRKFR
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Superchunk
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Surfer Blood
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,The 1975
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,The Martinez Brothers
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,The Naked and Famous
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,The Toy Dolls
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Trombone Shorty & Orleans Avenue
-Coachella,2014,Sunday,0000,0000,Gobi,Gobi,Zoe
+Coachella,2014,Friday,1540,1540,Outdoor,Outdoor,A$AP Ferg
+Coachella,2014,Friday,1720,1720,Coachella,Coachella,AFI
+Coachella,2014,Friday,1615,1615,Mojave,Mojave,Aloe Blacc
+Coachella,2014,Friday,1340,1340,Coachella,Coachella,Anthony Green
+Coachella,2014,Friday,2400,2400,Gobi,Gobi,Anti-Flag
+Coachella,2014,Friday,1410,1410,Gobi,Gobi,Austra
+Coachella,2014,Friday,1725,1725,Mojave,Mojave,Bastille
+Coachella,2014,Friday,1955,1955,Mojave,Mojave,Bonobo
+Coachella,2014,Friday,1130,1130,Sahara,Sahara,Boubakiki
+Coachella,2014,Friday,1930,1930,Outdoor,Outdoor,Broken Bells
+Coachella,2014,Friday,2115,2115,Mojave,Mojave,Bryan Ferry
+Coachella,2014,Friday,2245,2245,Gobi,Gobi,Caravan Palace
+Coachella,2014,Friday,1815,1815,Sahara,Sahara,Carnage
+Coachella,2014,Friday,1955,1955,Coachella,Coachella,Chromeo
+Coachella,2014,Friday,1100,1100,Mojave,Mojave,Co.Fee
+Coachella,2014,Friday,2355,2355,Mojave,Mojave,Crosses
+Coachella,2014,Friday,1530,1530,Yuma,Yuma,Damian Lazarus
+Coachella,2014,Friday,1415,1415,Yuma,Yuma,Davide Squillace
+Coachella,2014,Friday,1550,1550,Sahara,Sahara,Deorro
+Coachella,2014,Friday,2315,2315,Yuma,Yuma,Dixon
+Coachella,2014,Friday,1440,1440,Sahara,Sahara,DJ Falcon
+Coachella,2014,Friday,1230,1230,Sahara,Sahara,DJP
+Coachella,2014,Friday,1815,1815,Yuma,Yuma,Duke Dumont
+Coachella,2014,Friday,1430,1430,Outdoor,Outdoor,Dum Dum Girls
+Coachella,2014,Friday,1840,1840,Coachella,Coachella,Ellie Goulding
+Coachella,2014,Friday,1225,1225,Outdoor,Outdoor,Flatbush Zombies
+Coachella,2014,Friday,2130,2130,Gobi,Gobi,Flume
+Coachella,2014,Friday,1200,1200,Gobi,Gobi,Gabba-Gabba Heys
+Coachella,2014,Friday,1700,1700,Sahara,Sahara,Gareth Emery
+Coachella,2014,Friday,2140,2140,Coachella,Coachella,Girl Talk
+Coachella,2014,Friday,1325,1325,Outdoor,Outdoor,GOAT
+Coachella,2014,Friday,1600,1600,Coachella,Coachella,Grouplove
+Coachella,2014,Friday,1655,1655,Outdoor,Outdoor,HAIM
+Coachella,2014,Friday,2200,2200,Yuma,Yuma,Hot Since 82
+Coachella,2014,Friday,1520,1520,Gobi,Gobi,Jaguar Ma
+Coachella,2014,Friday,1100,1100,Yuma,Yuma,Jimbo Jenkins
+Coachella,2014,Friday,1750,1750,Gobi,Gobi,Kate Nash
+Coachella,2014,Friday,1300,1300,Yuma,Yuma,Lee Wells
+Coachella,2014,Friday,1340,1340,Sahara,Sahara,Mako
+Coachella,2014,Friday,2045,2045,Sahara,Sahara,Martin Garrix
+Coachella,2014,Friday,2345,2345,Sahara,Sahara,Michael Brun
+Coachella,2014,Friday,1450,1450,Coachella,Coachella,MS MR
+Coachella,2014,Friday,1815,1815,Outdoor,Outdoor,Neko Case
+Coachella,2014,Friday,1930,1930,Yuma,Yuma,Nicholas Jaar
+Coachella,2014,Friday,1645,1645,Yuma,Yuma,Nina Kraviz
+Coachella,2014,Friday,2330,2330,Coachella,Coachella,Outkast
+Coachella,2014,Friday,1900,1900,Gobi,Gobi,Shlohmo
+Coachella,2014,Friday,2045,2045,Yuma,Yuma,Solomun
+Coachella,2014,Friday,1840,1840,Mojave,Mojave,The Afghan Whigs
+Coachella,2014,Friday,1140,1140,Outdoor,Outdoor,The Bots
+Coachella,2014,Friday,2240,2240,Mojave,Mojave,The Cult
+Coachella,2014,Friday,1930,1930,Sahara,Sahara,The Glitch Mob
+Coachella,2014,Friday,1635,1635,Gobi,Gobi,The Jon Spencer Blues Explosion
+Coachella,2014,Friday,2230,2230,Outdoor,Outdoor,The Knife
+Coachella,2014,Friday,1230,1230,Coachella,Coachella,The Preatures
+Coachella,2014,Friday,2045,2045,Outdoor,Outdoor,The Replacements
+Coachella,2014,Friday,1505,1505,Mojave,Mojave,Title Fight
+Coachella,2014,Friday,1200,1200,Mojave,Mojave,Tom Odell
+Coachella,2014,Friday,1300,1300,Mojave,Mojave,Waxahatchee
+Coachella,2014,Friday,2015,2015,Gobi,Gobi,Woodkid
+Coachella,2014,Friday,1305,1305,Gobi,Gobi,Wye Oak
+Coachella,2014,Friday,2205,2205,Sahara,Sahara,Zedd
+Coachella,2014,Friday,1400,1400,Mojave,Mojave,ZZ Ward
+Coachella,2014,Saturday,1500,1500,Yuma,Yuma,Aeroplane
+Coachella,2014,Saturday,1130,1130,Gobi,Gobi,AFTA-1
+Coachella,2014,Saturday,1545,1545,Gobi,Gobi,Banks
+Coachella,2014,Saturday,1250,1250,Mojave,Mojave,Bear Hands
+Coachella,2014,Saturday,1550,1550,Mojave,Mojave,Bombay Bicycle Club
+Coachella,2014,Saturday,1515,1515,Coachella,Coachella,Cage the Elephant
+Coachella,2014,Saturday,1800,1800,Yuma,Yuma,Cajmere
+Coachella,2014,Saturday,1835,1835,Outdoor,Outdoor,Capital Cities
+Coachella,2014,Saturday,1640,1640,Sahara,Sahara,Carbon Airways
+Coachella,2014,Saturday,1605,1605,Outdoor,Outdoor,CHVRCHES
+Coachella,2014,Saturday,1630,1630,Coachella,Coachella,City and Colour
+Coachella,2014,Saturday,2250,2250,Gobi,Gobi,DARKSIDE
+Coachella,2014,Saturday,1845,1845,Sahara,Sahara,Dillon Francis
+Coachella,2014,Saturday,1345,1345,Mojave,Mojave,Drowners
+Coachella,2014,Saturday,2150,2150,Sahara,Sahara,Empire of the Sun
+Coachella,2014,Saturday,2015,2015,Sahara,Sahara,Fatboy Slim
+Coachella,2014,Saturday,2020,2020,Coachella,Coachella,Foster the People
+Coachella,2014,Saturday,1345,1345,Outdoor,Outdoor,Foxygen
+Coachella,2014,Saturday,1905,1905,Gobi,Gobi,Future Islands
+Coachella,2014,Saturday,2135,2135,Gobi,Gobi,Galantis
+Coachella,2014,Saturday,1405,1405,Coachella,Coachella,Graveyard
+Coachella,2014,Saturday,1730,1730,Sahara,Sahara,GTA
+Coachella,2014,Saturday,1630,1630,Yuma,Yuma,Guy Gerber
+Coachella,2014,Saturday,1430,1430,Sahara,Sahara,Headhunterz
+Coachella,2014,Saturday,1645,1645,Gobi,Gobi,Holy Ghost!
+Coachella,2014,Saturday,1705,1705,Mojave,Mojave,Julian Casablancas
+Coachella,2014,Saturday,1745,1745,Coachella,Coachella,Kid Cudi
+Coachella,2014,Saturday,1230,1230,Gobi,Gobi,Laura Mvula
+Coachella,2014,Saturday,1100,1100,Yuma,Yuma,Lesto
+Coachella,2014,Saturday,1955,1955,Outdoor,Outdoor,Lorde
+Coachella,2014,Saturday,1330,1330,Sahara,Sahara,MAKJ
+Coachella,2014,Saturday,1905,1905,Coachella,Coachella,MGMT
+Coachella,2014,Saturday,2205,2205,Mojave,Mojave,Mogwai
+Coachella,2014,Saturday,2330,2330,Coachella,Coachella,Muse
+Coachella,2014,Saturday,2400,2400,Outdoor,Outdoor,Nas
+Coachella,2014,Saturday,1930,1930,Yuma,Yuma,Nicole Moudaber
+Coachella,2014,Saturday,2335,2335,Mojave,Mojave,Pet Shop Boys
+Coachella,2014,Saturday,2050,2050,Mojave,Mojave,Pixies
+Coachella,2014,Saturday,2235,2235,Outdoor,Outdoor,Pharrell Williams
+Coachella,2014,Saturday,2140,2140,Coachella,Coachella,Queens of the Stone Age
+Coachella,2014,Saturday,1130,1130,Sahara,Sahara,Revell
+Coachella,2014,Saturday,1245,1245,Yuma,Yuma,Ricoshei
+Coachella,2014,Saturday,1930,1930,Mojave,Mojave,RL Grime
+Coachella,2014,Saturday,1200,1200,Outdoor,Outdoor,Saints of Valory
+Coachella,2014,Saturday,1345,1345,Yuma,Yuma,Sander Kleinenberg
+Coachella,2014,Saturday,2325,2325,Sahara,Sahara,Skrillex
+Coachella,2014,Saturday,2110,2110,Outdoor,Outdoor,Sleigh Bells
+Coachella,2014,Saturday,2025,2025,Gobi,Gobi,Solange
+Coachella,2014,Saturday,1245,1245,Outdoor,Outdoor,Syd Arthur
+Coachella,2014,Saturday,1440,1440,Mojave,Mojave,Temples
+Coachella,2014,Saturday,0005,0005,Gobi,Gobi,The Dismemberment Plan
+Coachella,2014,Saturday,1720,1720,Outdoor,Outdoor,The Head and the Heart
+Coachella,2014,Saturday,1330,1330,Gobi,Gobi,The Internet
+Coachella,2014,Saturday,2100,2100,Yuma,Yuma,The Magician
+Coachella,2014,Saturday,2230,2230,Yuma,Yuma,Tiga
+Coachella,2014,Saturday,1530,1530,Sahara,Sahara,TJR
+Coachella,2014,Saturday,1455,1455,Outdoor,Outdoor,Ty Segall
+Coachella,2014,Saturday,1300,1300,Coachella,Coachella,Unlocking the Truth
+Coachella,2014,Saturday,1230,1230,Sahara,Sahara,UZ
+Coachella,2014,Saturday,1815,1815,Mojave,Mojave,Warpaint
+Coachella,2014,Saturday,1755,1755,Gobi,Gobi,Washed Out
+Coachella,2014,Saturday,1435,1435,Gobi,Gobi,White Lies
+Coachella,2014,Saturday,1115,1115,Mojave,Mojave,WoodysProduce
+Coachella,2014,Saturday,1200,1200,Mojave,Mojave,Young & Sick
+Coachella,2014,Sunday,2110,2110,Sahara,Sahara,Adventure Club
+Coachella,2014,Sunday,1815,1815,Sahara,Sahara,Alesso
+Coachella,2014,Sunday,1825,1825,Gobi,Gobi,AlunaGeorge
+Coachella,2014,Sunday,1310,1310,Sahara,Sahara,Anna Lunoe
+Coachella,2014,Sunday,2220,2220,Coachella,Coachella,Arcade Fire
+Coachella,2014,Sunday,1745,1745,Yuma,Yuma,Art Department
+Coachella,2014,Sunday,2055,2055,Coachella,Coachella,Beck
+Coachella,2014,Sunday,2215,2215,Yuma,Yuma,Bicep
+Coachella,2014,Sunday,1955,1955,Sahara,Sahara,Big Gigantic
+Coachella,2014,Sunday,1715,1715,Outdoor,Outdoor,Blood Orange
+Coachella,2014,Sunday,1200,1200,Gobi,Gobi,Bo Ningen
+Coachella,2014,Sunday,1345,1345,Gobi,Gobi,Bombino
+Coachella,2014,Sunday,1930,1930,Coachella,Coachella,Calvin Harris
+Coachella,2014,Sunday,1510,1510,Coachella,Coachella,Chance the Rapper
+Coachella,2014,Sunday,1535,1535,Mojave,Mojave,Classixx
+Coachella,2014,Sunday,1215,1215,Yuma,Yuma,Cooper Saver
+Coachella,2014,Sunday,1450,1450,Gobi,Gobi,Courtney Barnett
+Coachella,2014,Sunday,2030,2030,Mojave,Mojave,Daughter
+Coachella,2014,Sunday,2135,2135,Outdoor,Outdoor,Disclosure
+Coachella,2014,Sunday,2225,2225,Sahara,Sahara,Duck Sauce
+Coachella,2014,Sunday,1100,1100,Yuma,Yuma,Equip
+Coachella,2014,Sunday,1240,1240,Gobi,Gobi,Factory Floor
+Coachella,2014,Sunday,1355,1355,Coachella,Coachella,Fishbone
+Coachella,2014,Sunday,1425,1425,Gobi,Gobi,Flight Facilities
+Coachella,2014,Sunday,1800,1800,Mojave,Mojave,Flosstradamus
+Coachella,2014,Sunday,1555,1555,Gobi,Gobi,Frank Turner
+Coachella,2014,Sunday,1250,1250,Outdoor,Outdoor,J. Roddy Walston & the Business
+Coachella,2014,Sunday,1215,1215,Mojave,Mojave,James Vincent McMorrow
+Coachella,2014,Sunday,2200,2200,Gobi,Gobi,Jhene Aiko
+Coachella,2014,Sunday,1130,1130,Sahara,Sahara,John Beaver
+Coachella,2014,Sunday,2050,2050,Gobi,Gobi,John Newman
+Coachella,2014,Sunday,1700,1700,Sahara,Sahara,Krewella
+Coachella,2014,Sunday,2015,2015,Outdoor,Outdoor,Lana Del Rey
+Coachella,2014,Sunday,2015,2015,Yuma,Yuma,Laurent Garnier
+Coachella,2014,Sunday,1630,1630,Yuma,Yuma,Lee Burridge
+Coachella,2014,Sunday,1915,1915,Mojave,Mojave,Little Dragon
+Coachella,2014,Sunday,2310,2310,Gobi,Gobi,Lucent Dossier Experience
+Coachella,2014,Sunday,1900,1900,Yuma,Yuma,Maceo Plex
+Coachella,2014,Sunday,1125,1125,Mojave,Mojave,Machin'
+Coachella,2014,Sunday,2150,2150,Mojave,Mojave,Motorhead
+Coachella,2014,Sunday,2310,2310,Mojave,Mojave,Netsky
+Coachella,2014,Sunday,1835,1835,Outdoor,Outdoor,Neutral Milk Hotel
+Coachella,2014,Sunday,1430,1430,Mojave,Mojave,Poolside
+Coachella,2014,Sunday,1320,1320,Mojave,Mojave,Preservation Hall Jazz Band
+Coachella,2014,Sunday,1200,1200,Outdoor,Outdoor,Ratking
+Coachella,2014,Sunday,1645,1645,Mojave,Mojave,Rudimental
+Coachella,2014,Sunday,1515,1515,Yuma,Yuma,Scuba
+Coachella,2014,Sunday,1545,1545,Sahara,Sahara,Showtek
+Coachella,2014,Sunday,1455,1455,Outdoor,Outdoor,STRFKR
+Coachella,2014,Sunday,1710,1710,Gobi,Gobi,Superchunk
+Coachella,2014,Sunday,1345,1345,Outdoor,Outdoor,Surfer Blood
+Coachella,2014,Sunday,1605,1605,Outdoor,Outdoor,The 1975
+Coachella,2014,Sunday,1345,1345,Yuma,Yuma,The Martinez Brothers
+Coachella,2014,Sunday,1740,1740,Coachella,Coachella,The Naked and Famous
+Coachella,2014,Sunday,1935,1935,Gobi,Gobi,The Toy Dolls
+Coachella,2014,Sunday,1240,1240,Coachella,Coachella,Trombone Shorty & Orleans Avenue
+Coachella,2014,Sunday,1625,1625,Coachella,Coachella,Zoe
