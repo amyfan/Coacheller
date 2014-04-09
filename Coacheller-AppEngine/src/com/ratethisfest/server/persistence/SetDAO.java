@@ -66,10 +66,10 @@ public class SetDAO {
   public Set findSetByArtistAndYear(FestivalEnum festival, String artist, Integer year) {
     Query<Set> q;
     if (year != null) {
-      q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue()).filter("artist", artist)
+      q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue()).filter("artistName", artist)
           .filter("year", year);
     } else {
-      q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue()).filter("artist", artist);
+      q = dao.getObjectify().query(Set.class).filter("festival", festival.getValue()).filter("artistName", artist);
     }
 
     if (q.iterator().hasNext()) {
