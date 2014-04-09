@@ -212,11 +212,6 @@ public class FestivalApplication extends Application implements AppControllerInt
     saveDataLoginInfo(null);
   }
 
-  @Deprecated
-  public void setLoginEmail(String email) {
-    // this is deprecated
-  }
-
   public boolean getIsLoggedIn() {
     if (getLoginData() == null) {
       return false;

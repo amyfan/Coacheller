@@ -27,7 +27,7 @@
         android:id="@+id/layout_radio_choice_minutes_textline_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lollapaloozer has a reputation to worry about and will NEVER disappoint the fans by misusing your email address"
+        android:text="We have a reputation to worry about and will NEVER disappoint the fans by misusing your email address"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#FF5050" />
 

@@ -21,7 +21,7 @@ import com.ratethisfest.shared.Set;
 
 public class LollaEmailSender {
   // TODO: put this in resource file
-  public static final String SENDER_EMAIL = "info@lollapaloozer.com";
+  public static final String SENDER_EMAIL = "support@lollapaloozer.com";
   public static final String SENDER_TITLE = "Lollapaloozer";
   public static final String SUBJECT = "Your Lollapalooza Set Ratings";
 

@@ -21,7 +21,7 @@ import com.ratethisfest.shared.Set;
 
 public class CoachellaEmailSender {
   // TODO: put this in resource file
-  public static final String SENDER_EMAIL = "info@coacheller.com";
+  public static final String SENDER_EMAIL = "support@coacheller.com";
   public static final String SENDER_TITLE = "Coacheller";
   public static final String SUBJECT = "Your Coachella Set Ratings";
 

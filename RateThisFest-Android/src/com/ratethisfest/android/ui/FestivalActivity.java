@@ -21,20 +21,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.ratethisfest.R;
@@ -706,7 +698,6 @@ public abstract class FestivalActivity extends Activity implements View.OnClickL
     }
   }
 
-  // TODO: deprecate?
   protected void clickDialogConfirmEmailButtonOK() {
     EditText emailField = (EditText) dialogEmail.findViewById(R.id.textField_enterEmail);
     String email = emailField.getText().toString();
@@ -719,9 +710,7 @@ public abstract class FestivalActivity extends Activity implements View.OnClickL
       Toast invalidEmail = Toast.makeText(this, "Please enter your real email address.", 25);
       invalidEmail.show();
 
-    } else { // Email is valid. Save email and email ratings
-      _application.setLoginEmail(email);
-
+    } else { // Email is valid. Send ratings.
       if (!_application.saveData()) {
         showDialog(AndroidConstants.DIALOG_NETWORK_ERROR);
       }
