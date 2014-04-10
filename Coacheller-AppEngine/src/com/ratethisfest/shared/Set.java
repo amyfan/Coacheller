@@ -11,7 +11,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import com.googlecode.objectify.annotation.Cached;
 
 @Entity
-@Cached(expirationSeconds = 7200)
+@Cached
 public class Set implements IsSerializable {
 
   @Id

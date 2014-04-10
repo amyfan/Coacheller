@@ -90,7 +90,8 @@ public class LollapaloozerServlet extends FestivalServlet {
       out.println("Calling emailRatings(authType=" + authType + " authId=" + authId + " email=" + email + " authToken="
           + authToken + ")");
       if (verifyToken(authType, authId, authToken)) {
-        String result = LollaEmailSender.emailRatings(authType, authId, authToken, email);
+        LollaEmailSender emailSender = new LollaEmailSender(authType, authId, authToken, email);
+        String result = emailSender.emailRatings();
         out.println("Result: " + result);
       } else {
         out.println("Request is refused because user account did not pass verification");

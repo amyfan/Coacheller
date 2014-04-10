@@ -90,7 +90,7 @@ public abstract class FacebookWebAuthProvider implements AuthProviderInt {
     }
 
     Response response = _oAuthProvider.accessResource(Verb.GET,
-        "http://api.twitter.com/1/account/verify_credentials.xml");
+        "https://api.twitter.com/1/account/verify_credentials.xml");
     String responseBody = response.getBody();
     // System.out.println(response.getBody());
 

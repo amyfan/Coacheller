@@ -124,8 +124,9 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
 
   @Override
   public String emailRatingsToUser(String email) {
-    String resp = CoachellaEmailSender.emailRatings(email);
-    return resp;
+    // String resp = CoachellaEmailSender.emailRatings(email);
+    // return resp;
+    return "";
   }
 
   @Override

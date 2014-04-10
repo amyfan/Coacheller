@@ -728,9 +728,10 @@ public abstract class FestivalActivity extends Activity implements View.OnClickL
         parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TYPE, loginData.loginType + ""));
         parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_ID, loginData.accountIdentifier));
         parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_AUTH_TOKEN, loginData.accountToken));
-        if (loginData.emailAddress != null) {
-          parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_EMAIL, loginData.emailAddress));
-        }
+        // AF: why is the following line in here when we had already validated 'email'?
+        // if (loginData.emailAddress != null) {
+        // parameterList.add(new BasicNameValuePair(HttpConstants.PARAM_EMAIL, loginData.emailAddress));
+        // }
         String result = ServiceUtils.emailMyRatings(parameterList, this, _application.getFestival().getServerUrl());
 
       } catch (Exception e) {

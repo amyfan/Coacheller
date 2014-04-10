@@ -12,7 +12,7 @@ import com.googlecode.objectify.annotation.Cached;
 import com.ratethisfest.shared.Set;
 
 @Entity
-@Cached(expirationSeconds = 7200)
+@Cached
 public class Rating {
 
   @Id

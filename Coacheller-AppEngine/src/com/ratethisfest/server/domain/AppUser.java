@@ -16,7 +16,7 @@ import com.googlecode.objectify.annotation.Cached;
 import com.ratethisfest.shared.LoginType;
 
 @Entity
-@Cached(expirationSeconds = 7200)
+@Cached
 public class AppUser implements Serializable {
   //Implementing Serializable allows this object to be saved as a property of the servlet Session (HttpSession)
   //Hopefully this doesn't break anything with Objectify...

@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.data.HttpConstants;
 import com.ratethisfest.server.logic.CoachellaEmailSender;
+import com.ratethisfest.server.logic.LollaEmailSender;
 
 /**
  * HTTP Servlet, intended for Android/etc. device use.
@@ -91,7 +92,8 @@ public class CoachellerServlet extends FestivalServlet {
           + authToken + ")");
       if (verifyToken(authType, authId, authToken)) {
         // String result = CoachellaEmailSender.emailRatings(authType, authId, authToken, email);
-        String result = CoachellaEmailSender.emailRatings(email);
+        CoachellaEmailSender emailSender = new CoachellaEmailSender(authType, authId, authToken, email);
+        String result = emailSender.emailRatings();
         out.println("Result: " + result);
       } else {
         out.println("Request is refused because user account did not pass verification");
