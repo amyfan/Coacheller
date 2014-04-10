@@ -128,19 +128,25 @@ public class AppUser implements Serializable {
     builder.append(id);
     builder.append(", email=");
     builder.append(email);
-    builder.append(", active=");
-    builder.append(active);
     builder.append(", name=");
     builder.append(name);
-    builder.append(", authType=");
-    builder.append(authType);
-    builder.append(", authId=");
-    builder.append(authId);
-    builder.append(", authToken=");
-    builder.append(authToken);
+    builder.append(", active=");
+    builder.append(active);
+    // builder.append(", authType=");
+    // builder.append(authType);
+    // builder.append(", authId=");
+    // builder.append(authId);
+    // builder.append(", authToken=");
+    // builder.append(authToken);
     builder.append("]");
     return builder.toString();
   }
   
+  protected String checkNull(String s) {
+    if (s == null) {
+      return "";
+    }
+    return s;
+  }
 
 }

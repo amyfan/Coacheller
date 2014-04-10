@@ -638,7 +638,7 @@ public class MainRateComposite extends Composite {
             logger.info("User wants to rate with Facebook: " + finalRedirect);
             addRating(finalRedirect);
           } else { // If facebook is not logged in
-            Window.Location.replace(LoginControl.getUrlLoginFacebook());
+            Window.Location.replace(LoginControlView.getUrlLoginFacebook());
           }
 
         } else if (event.getSource() == buttonRateTwitter) { // Twitter-only block
@@ -650,7 +650,7 @@ public class MainRateComposite extends Composite {
             Window.open(redirectTarget, "_blank", "enabled");
             // Window.Location.replace("http://www.msnbc.com");
           } else { // If twitter is not logged in
-            Window.Location.replace(LoginControl.getUrlLoginTwitter());
+            Window.Location.replace(LoginControlView.getUrlLoginTwitter());
           }
 
         } else { // End twitter + facebook common block

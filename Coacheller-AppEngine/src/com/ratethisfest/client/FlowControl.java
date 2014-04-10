@@ -8,7 +8,7 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.ratethisfest.client.ui.LoginControl;
+import com.ratethisfest.client.ui.LoginControlView;
 import com.ratethisfest.client.ui.MainViewComposite;
 import com.ratethisfest.client.ui.RTFTitleBanner;
 
@@ -39,7 +39,7 @@ public class FlowControl {
     RootPanel.get().add(new RTFTitleBanner());
 
     if (c instanceof MainViewComposite) {
-      RootPanel.get().add(new LoginControl());
+      RootPanel.get().add(new LoginControlView());
     }
 
     RootPanel.get().add(c);

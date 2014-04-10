@@ -1,0 +1,29 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style src="../Coacheller.css" />
+	<g:HTMLPanel>
+		<g:Label text="Loading..." horizontalAlignment="ALIGN_CENTER" ui:field="labelLoading"/>
+		<div align="center">
+		<g:HorizontalPanel ui:field="loginProviderOptions">
+			<g:InlineLabel text="Login With: ["/>
+			<g:InlineHyperlink text="Google" ui:field="linkGoogle"/>
+			<g:InlineLabel text="] - [" ui:field="labelDecorationGoogleAndFacebook"/>
+			<g:InlineHyperlink text="Facebook" ui:field="linkFacebook"/>
+			<g:InlineLabel text="] - [" ui:field="labelDecorationFacebookAndTwitter"/>
+			<g:InlineHyperlink text="Twitter"  ui:field="linkTwitter"/>
+			<g:InlineLabel text="]"/>
+		</g:HorizontalPanel>
+		<g:HorizontalPanel>
+			<g:InlineLabel text="-"/>
+		</g:HorizontalPanel>
+		<g:HorizontalPanel ui:field="loggedInDisplay">
+			<g:InlineLabel text="Hello -user name- [" ui:field="labelUsername"/>
+			<g:InlineHyperlink text="Log Out" targetHistoryToken="newHistoryToken" ui:field="linkLogOut"/>
+			<g:InlineLabel text="]"/>
+			<g:InlineLabel text="---------DEBUG&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;" ui:field="labelDebug"/>
+			<g:InlineHyperlink text="Destroy Account" targetHistoryToken="newHistoryToken" ui:field="linkDestroyAccount"/>
+		</g:HorizontalPanel>
+		</div>
+	</g:HTMLPanel>
+</ui:UiBinder> 

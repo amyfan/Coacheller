@@ -69,19 +69,13 @@ public abstract class EmailSender {
     while (year < 2015) {
       List<Rating> ratings = RatingManager.getInstance().findRatingsByUserAndYear(festival, authType, authId,
           authToken, email, year);
-      if (ratings != null) {
-        messageBody.append("YEAR: ");
-        messageBody.append(year);
-        messageBody.append("\n");
-        messageBody.append("\n");
+      if (ratings != null && !ratings.isEmpty()) {
 
         ArrayList<String> sortedItems = getSortedRatingStrings(ratings);
 
         for (String ratingString : sortedItems) {
           messageBody.append(ratingString);
         }
-        messageBody.append("\n");
-        messageBody.append("\n");
         messageBody.append("---");
         messageBody.append("\n");
         messageBody.append("\n");

@@ -151,7 +151,7 @@ public class MainViewComposite extends Composite {
 
       @Override
       public void onLoginStatusChange(LoginStatusEvent event) {
-        // LoginControl.this.updateUI(event.getLoginStatus());
+        // LoginControlView.this.updateUI(event.getLoginStatus());
         MainViewComposite.this.onLoginStatusChange(Coacheller_AppEngine.getLoginStatus());
       }
     });
