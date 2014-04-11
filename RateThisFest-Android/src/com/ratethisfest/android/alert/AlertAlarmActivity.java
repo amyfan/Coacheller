@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.ratethisfest.R;
 import com.ratethisfest.android.log.LogController;
-import com.ratethisfest.android.ui.FestivalActivity;
 
 // <uses-permission android:name="android.permission.VIBRATE"/>
 // <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
@@ -78,16 +77,16 @@ public class AlertAlarmActivity extends Activity implements OnClickListener {
         TextView textView = (TextView) findViewById(R.id.textDialogMessage);
         textView.setText(value);
       } else if (key.equals(Alert.LEFT_BUTTON_TEXT)) {
-        Button btn = (Button) findViewById(R.id.leftBigButton);
-        btn.setText(value);
+        // Button btn = (Button) findViewById(R.id.leftBigButton);
+        // btn.setText(value);
       } else if (key.equals(Alert.RIGHT_BUTTON_TEXT)) {
         Button btn = (Button) findViewById(R.id.rightSmallButton);
         btn.setText(value);
       }
     }
 
-    Button btnLeft = (Button) findViewById(R.id.leftBigButton);
-    btnLeft.setOnClickListener(this);
+    // Button btnLeft = (Button) findViewById(R.id.leftBigButton);
+    // btnLeft.setOnClickListener(this);
     Button btnRight = (Button) findViewById(R.id.rightSmallButton);
     btnRight.setOnClickListener(this);
 
@@ -149,14 +148,15 @@ public class AlertAlarmActivity extends Activity implements OnClickListener {
   @Override
   public void onClick(View viewClicked) {
 
-    if (viewClicked == findViewById(R.id.leftBigButton)) {
-      externalActionsStop();
-      finish();
-      Intent intent = new Intent(this, FestivalActivity.class);
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-      startActivity(intent);
-
-    } else if (viewClicked == findViewById(R.id.rightSmallButton)) {
+    // if (viewClicked == findViewById(R.id.leftBigButton)) {
+    // externalActionsStop();
+    // finish();
+    // Intent intent = new Intent(this, FestivalActivity.class);
+    // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    // startActivity(intent);
+    //
+    // } else
+      if (viewClicked == findViewById(R.id.rightSmallButton)) {
       externalActionsStop();
       finish();
     }
