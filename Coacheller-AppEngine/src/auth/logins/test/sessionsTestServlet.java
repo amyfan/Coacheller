@@ -52,7 +52,7 @@ public class sessionsTestServlet extends HttpServlet {
 
     writeDebugInfo(req, doc);
 
-    AppUser currentLogin = LoginManager.getCurrentLogin(session);
+    AppUser currentLogin = LoginManager.getLoggedInUser(session);
 
     // We are no longer writing any buttons
 
@@ -244,7 +244,7 @@ public class sessionsTestServlet extends HttpServlet {
       doc.body().appendText(parameter + " = " + parameters.get(parameter)[0]).appendElement("br");
     }
 
-    AppUser currentLogin = LoginManager.getCurrentLogin(session);
+    AppUser currentLogin = LoginManager.getLoggedInUser(session);
     if (currentLogin != null) {
       long rtfAccountId = currentLogin.getId();
       String personName = currentLogin.getName();

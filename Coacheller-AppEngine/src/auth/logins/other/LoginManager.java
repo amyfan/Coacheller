@@ -29,31 +29,35 @@ public class LoginManager {
 
   public static void authProviderLoginAccomplished(HttpSession session, LoginType loginType,
       AuthProviderAccount newAPAccountLogin) throws RTFAccountException {
-    AppUser appUserToLoginOrUpdate = null;
-    AppUser currentSessionLogin = getCurrentLogin(session); // Get logged in RTF acct from session
-    AppUser ownerOfAddedAPAccount = LoginManager.findAppUserAccount(newAPAccountLogin); // See who owns AP account,
-    // may
-    // be null
 
-    if (currentSessionLogin == null) {
+    // Get logged in RTF acct from session
+    AppUser appUserToLoginOrUpdate = getLoggedInUser(session);
+
+    // See who owns AP account
+    AppUser aPAccountAppUser = LoginManager.findAppUserAccount(newAPAccountLogin);
+
+    if (appUserToLoginOrUpdate == null) {
       // if it is not saved in the current session attribute
       log.info("No session is currently logged in");
       // Assign AP account owner from datastore, should not be null
-      appUserToLoginOrUpdate = ownerOfAddedAPAccount;
+      appUserToLoginOrUpdate = aPAccountAppUser;
+
+      if (appUserToLoginOrUpdate.getName() == null) {
+        appUserToLoginOrUpdate.setName(newAPAccountLogin.getProperty(AuthProviderAccount.LOGIN_PERSON_NAME));
+      }
     } else {
       log.info("Session is already logged in");
-      if (ownerOfAddedAPAccount != null
-          && currentSessionLogin.getId().longValue() != ownerOfAddedAPAccount.getId().longValue()) {
+      if (aPAccountAppUser != null
+          && appUserToLoginOrUpdate.getId().longValue() != aPAccountAppUser.getId().longValue()) {
         String newAPTypeName = newAPAccountLogin.getProperty(AuthProviderAccount.AUTH_PROVIDER_NAME);
         String newAPDescription = newAPAccountLogin.getDescription();
 
         log.info("Auth Provider Account ownership conflict: " + newAPTypeName + " account " + newAPDescription
-            + " is already owned by RTF Account:" + ownerOfAddedAPAccount.getId()
-            + " but user attempted to add it to RTF Account:" + currentSessionLogin.getId());
-        RTFAccountException ex = new RTFAccountException(currentSessionLogin, ownerOfAddedAPAccount, newAPAccountLogin);
+            + " is already owned by RTF Account:" + aPAccountAppUser.getId()
+            + " but user attempted to add it to RTF Account:" + appUserToLoginOrUpdate.getId());
+        RTFAccountException ex = new RTFAccountException(appUserToLoginOrUpdate, aPAccountAppUser, newAPAccountLogin);
         throw ex; // Before anything gets modified
       }
-      appUserToLoginOrUpdate = currentSessionLogin;
     }
 
     long rtfAccountId = appUserToLoginOrUpdate.getId();
@@ -94,60 +98,15 @@ public class LoginManager {
     com.googlecode.objectify.Key<AppUser> appUserKey = UserAccountManager.getInstance().manageAppUser(authProviderName,
         authProviderID, authToken, email);
     return UserAccountManager.getInstance().getAppUserByKey(appUserKey);
-
-    // AF: SO not necessary thanks to my existing UserAccountManager.manageAppUser() logic
-    // AF: Also, the following code was failing because it was too specific & AUTH_PROVIDER_NAME format was NOT matching
-    // w/ LOGIN_TYPE formats used everywhere else in the system
-
-    // // Prepare single filters
-    // Filter apNamefilter = new FilterPredicate(AuthProviderAccount.AUTH_PROVIDER_NAME, FilterOperator.EQUAL,
-    // authProviderName);
-    // Filter apIDFilter = new FilterPredicate(AuthProviderAccount.AUTH_PROVIDER_ID, FilterOperator.EQUAL,
-    // authProviderID);
-    //
-    // // Use CompositeFilter to combine filters
-    // Filter nameAndIDFilter = CompositeFilterOperator.and(apNamefilter, apIDFilter);
-    //
-    // // Use class Query to assemble a query
-    // Query q = new Query(AuthProviderAccount.DATASTORE_KIND).setFilter(nameAndIDFilter);
-    //
-    // // Use PreparedQuery interface to retrieve results
-    // PreparedQuery pq = datastore.prepare(q);
-    //
-    // log.info("Query Results for AuthProvider:" + authProviderName + " ID:" + authProviderID);
-    // String RTFAccountID = null;
-    // for (Entity result : pq.asIterable()) {
-    // StringBuilder resultBuilder = new StringBuilder();
-    // for (String propertyName : result.getProperties().keySet()) {
-    // Object propertyValue = result.getProperty(propertyName);
-    // String valueString;
-    // if (propertyValue != null) {
-    // valueString = propertyValue.toString();
-    // } else {
-    // valueString = "null";
-    // }
-    // resultBuilder.append(propertyName + "=" + valueString + " ");
-    // RTFAccountID = result.getProperty(AuthProviderAccount.APPUSER_KEY).toString();
-    // }
-    // log.info(resultBuilder.toString());
-    // }
-    //
-    // log.info("Parent RTFAccount has ID:" + RTFAccountID);
-    //
-    // if (RTFAccountID == null) {
-    // return null;
-    // } else {
-    // return appUserDao.findAppUser(Long.valueOf(RTFAccountID));
-    // }
   }
 
   // May return NULL
-  public static AppUser getCurrentLogin(HttpSession session) {
+  public static AppUser getLoggedInUser(HttpSession session) {
     return (AppUser) session.getAttribute(AppUser.LOGIN_HTTPSESSION_ATTRIBUTE);
   }
 
   public static boolean isSessionLoggedIn(HttpSession session) {
-    AppUser currentRTFAccountLoggedIn = getCurrentLogin(session);
+    AppUser currentRTFAccountLoggedIn = getLoggedInUser(session);
     if (currentRTFAccountLoggedIn == null) {
       return false;
     } else {
@@ -161,7 +120,7 @@ public class LoginManager {
   }
 
   public static void destroyRTFAccount(HttpSession session) {
-    AppUser currentRTFAccountLoggedIn = getCurrentLogin(session);
+    AppUser currentRTFAccountLoggedIn = getLoggedInUser(session);
     if (currentRTFAccountLoggedIn == null) {
       log.info("No RTF account is logged in");
       return;

@@ -12,6 +12,7 @@ import org.moxieapps.gwt.highcharts.client.Series;
 import auth.logins.data.LoginStatus;
 
 import com.google.gwt.animation.client.Animation;
+import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.BrowserEvents;
@@ -19,6 +20,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -26,6 +28,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -41,12 +44,13 @@ import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.corechart.AxisOptions;
 import com.google.gwt.visualization.client.visualizations.corechart.CoreChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
+import com.ratethisfest.client.ClientResources;
 import com.ratethisfest.client.Coacheller_AppEngine;
 import com.ratethisfest.client.ComparatorUtils;
-import com.ratethisfest.client.LoginStatusEvent;
-import com.ratethisfest.client.LoginStatusEventHandler;
 import com.ratethisfest.client.FestivalService;
 import com.ratethisfest.client.FestivalServiceAsync;
+import com.ratethisfest.client.LoginStatusEvent;
+import com.ratethisfest.client.LoginStatusEventHandler;
 import com.ratethisfest.client.PageToken;
 import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.shared.DateTimeUtils;
@@ -178,7 +182,7 @@ public class MainViewComposite extends Composite {
       androidUrl.setHref("http://play.google.com/store/apps/details?id=com.coacheller");
       androidUrl.setText("Download Coacheller for Android!");
       androidUrl.setTarget("_blank");
-      
+
       iosUrl.setHref("https://itunes.apple.com/us/app/coacheller-unofficial/id634889261?ls=1&mt=8");
       iosUrl.setText("Download Coacheller for iPhone!");
       iosUrl.setTarget("_blank");
@@ -495,6 +499,7 @@ public class MainViewComposite extends Composite {
     public Column<Set, String> artistNameColumn;
     public Column<Set, String> avgScoreOneColumn;
     public Column<Set, String> stageOneColumn;
+    public Column<Set, ImageResource> starsColumn;
 
     private final class SetClickHandler implements Handler<Set> {
 
@@ -575,12 +580,16 @@ public class MainViewComposite extends Composite {
       String columnCount();
 
       String columnStage();
+
+      String columnStars();
     }
 
     private static TasksTableResources resources = GWT.create(TasksTableResources.class);
 
     public SetsTable() {
       super(100, resources);
+
+      final ClientResources clientResources = GWT.create(ClientResources.class);
 
       SetClickHandler handler = new SetClickHandler();
       this.addCellPreviewHandler(handler);
@@ -641,6 +650,59 @@ public class MainViewComposite extends Composite {
       addColumn(avgScoreOneColumn, "Average Score");
       addColumnStyleName(4, "columnFill");
       addColumnStyleName(4, resources.cellTableStyle().columnScore());
+
+      starsColumn = new Column<Set, ImageResource>(new ImageResourceCell()) {
+        @Override
+        public ImageResource getValue(Set object) {
+          if (object.getAvgScoreOne() != null) {
+            Double score1 = object.getAvgScoreOne();
+            if (score1 > 4.87)
+              return clientResources.five_stars_100();
+            if (score1 > 4.62)
+              return clientResources.five_stars_95();
+            if (score1 > 4.37)
+              return clientResources.five_stars_90();
+            if (score1 > 4.12)
+              return clientResources.five_stars_85();
+            if (score1 > 3.87)
+              return clientResources.five_stars_80();
+            if (score1 > 3.62)
+              return clientResources.five_stars_75();
+            if (score1 > 3.37)
+              return clientResources.five_stars_70();
+            if (score1 > 3.12)
+              return clientResources.five_stars_65();
+            if (score1 > 2.87)
+              return clientResources.five_stars_60();
+            if (score1 > 2.62)
+              return clientResources.five_stars_55();
+            if (score1 > 2.37)
+              return clientResources.five_stars_50();
+            if (score1 > 2.12)
+              return clientResources.five_stars_45();
+            if (score1 > 1.87)
+              return clientResources.five_stars_40();
+            if (score1 > 1.62)
+              return clientResources.five_stars_35();
+            if (score1 > 1.37)
+              return clientResources.five_stars_30();
+            if (score1 > 1.12)
+              return clientResources.five_stars_25();
+            if (score1 > 0.87)
+              return clientResources.five_stars_20();
+            if (score1 > 0.62)
+              return clientResources.five_stars_15();
+            if (score1 > 0.37)
+              return clientResources.five_stars_10();
+            if (score1 > 0.12)
+              return clientResources.five_stars_5();
+          }
+          return clientResources.five_stars_0();
+        }
+      };
+      addColumn(starsColumn, " ");
+      addColumnStyleName(4, "columnFill");
+      addColumnStyleName(4, resources.cellTableStyle().columnStars());
 
     }
   }

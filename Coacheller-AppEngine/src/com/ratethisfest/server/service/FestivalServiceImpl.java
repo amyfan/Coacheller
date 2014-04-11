@@ -53,7 +53,7 @@ public class FestivalServiceImpl extends RemoteServiceServlet implements Festiva
 
   // Gets user logged in persisted in session state -MA
   private AppUser getCurrentLogin() {
-    AppUser currentLogin = LoginManager.getCurrentLogin(getThreadLocalRequest().getSession());
+    AppUser currentLogin = LoginManager.getLoggedInUser(getThreadLocalRequest().getSession());
     return currentLogin;
   }
 

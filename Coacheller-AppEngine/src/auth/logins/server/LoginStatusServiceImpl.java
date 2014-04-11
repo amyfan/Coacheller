@@ -24,7 +24,7 @@ public class LoginStatusServiceImpl extends RemoteServiceServlet implements Logi
 
     if (sessionLoggedIn) {
       LoginStatus returnMap = new LoginStatus();
-      AppUser currentLogin = LoginManager.getCurrentLogin(session);
+      AppUser currentLogin = LoginManager.getLoggedInUser(session);
       long appEngineKeyLong = currentLogin.getId();
       String personName = currentLogin.getName();
 

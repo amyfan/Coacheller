@@ -43,6 +43,10 @@
 	width: 30px;
 }
 
+.columnStars {
+	width: 10px;
+}
+
 .cellTableWidget {
 	width: 75%;
 }
