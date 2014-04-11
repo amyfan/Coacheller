@@ -407,7 +407,11 @@ public class MainViewComposite extends Composite {
         }
       } else if (chartDataSortInput.getItemText(chartDataSortInput.getSelectedIndex()).equals("Score")) {
         // sort first
-        Collections.sort(setsList, ComparatorUtils.SET_SCORE_COMPARATOR);
+        if (fest.equals(FestivalEnum.COACHELLA)) {
+          Collections.sort(setsList, ComparatorUtils.DOUBLE_SET_SCORE_COMPARATOR);
+        } else {
+          Collections.sort(setsList, ComparatorUtils.SET_SCORE_COMPARATOR);
+        }
 
         int setNum = 0;
         for (Set set : setsList) {
@@ -464,7 +468,11 @@ public class MainViewComposite extends Composite {
       }
     } else if (chartDataSortInput.getItemText(chartDataSortInput.getSelectedIndex()).equals("Score")) {
       // sort first
-      Collections.sort(setsList, ComparatorUtils.SET_SCORE_COMPARATOR);
+      if (fest.equals(FestivalEnum.COACHELLA)) {
+        Collections.sort(setsList, ComparatorUtils.DOUBLE_SET_SCORE_COMPARATOR);
+      } else {
+        Collections.sort(setsList, ComparatorUtils.SET_SCORE_COMPARATOR);
+      }
 
       for (Set set : setsList) {
         artistsList.add(set.getArtistName());

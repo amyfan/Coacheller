@@ -19,7 +19,7 @@ public class ServletConfig {
   // public static final String FACEBOOK_USER_AUTH_SCRIBE_CALLBACK_URL =
   // "http://ratethisfest.appspot.com/sessionsTest?RTFAction=CallbackFacebookUserAuth";
   public static final String FACEBOOK_USER_AUTH_SCRIBE_CALLBACK_PATH = SERVLET_BASEPATH + "?"
-      + ServletInterface.PARAM_NAME_RTFACTION + "=" + ServletInterface.ACTION_CALLBACK_FACEBOOK_AUTH;
+      + ServletInterface.PARAM_NAME_RTFACTION + "=" + ServletInterface.ACTION_CALLBACK_FACEBOOK_AUTH + "/";
 
   public static final String GOOGLE_USER_AUTH_START_PATH = SERVLET_BASEPATH + "?" + ServletInterface.PARAM_NAME_RTFACTION
       + "=" + ServletInterface.ACTION_GOOGLE_AUTH;

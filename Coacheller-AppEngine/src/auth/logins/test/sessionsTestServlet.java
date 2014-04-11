@@ -153,14 +153,14 @@ public class sessionsTestServlet extends HttpServlet {
             "href",
             ServletConfig.SERVLET_BASEPATH + "?" + ServletInterface.PARAM_NAME_RTFACTION + "="
                 + ServletInterface.ACTION_LOGOUT).appendText("Wipe Login Data").appendElement("br");
-    doc.body()
-        .appendElement("br")
-        .appendElement("a")
-        .attr(
-            "href",
-            ServletConfig.SERVLET_BASEPATH + "?" + ServletInterface.PARAM_NAME_RTFACTION + "="
-                + ServletInterface.ACTION_DESTROY_ACCOUNT).attr("align", "right")
-        .appendText("DESTROY MY RateThisFest ACCOUNT").appendElement("br");
+    // doc.body()
+    // .appendElement("br")
+    // .appendElement("a")
+    // .attr(
+    // "href",
+    // ServletConfig.SERVLET_BASEPATH + "?" + ServletInterface.PARAM_NAME_RTFACTION + "="
+    // + ServletInterface.ACTION_DESTROY_ACCOUNT).attr("align", "right")
+    // .appendText("DESTROY MY RateThisFest ACCOUNT").appendElement("br");
   }
 
   private void writeForm(Document doc) {
