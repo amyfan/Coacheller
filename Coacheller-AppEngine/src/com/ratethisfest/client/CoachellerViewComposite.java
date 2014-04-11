@@ -458,8 +458,6 @@ public class CoachellerViewComposite extends Composite {
 
       String columnScore();
 
-      String columnCount();
-
       String columnStage();
     }
 

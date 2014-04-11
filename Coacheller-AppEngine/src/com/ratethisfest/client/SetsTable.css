@@ -35,10 +35,6 @@
 	font-weight: bold;
 }
 
-.columnCount {
-	width: 10px;
-}
-
 .columnStage {
 	width: 30px;
 }
@@ -108,7 +104,7 @@
 
 .cellTableEvenRow {
 	border-bottom: 1px solid #ddd;
-	padding: 3px 0px 3px 13px;
+	padding: 3px 0px 3px 8px;
 	list-style-type: none;
 	/*background-color: navy;*/
 	color: navy;
@@ -127,7 +123,7 @@
 
 .cellTableOddRow {
 	border-bottom: 1px solid #ddd;
-	padding: 3px 0px 3px 13px;
+	padding: 3px 0px 3px 8px;
 	list-style-type: none;
 	/*background-color: gray;*/
 	color: gray;

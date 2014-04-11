@@ -12,6 +12,10 @@ import org.moxieapps.gwt.highcharts.client.Series;
 import auth.logins.data.LoginStatus;
 
 import com.google.gwt.animation.client.Animation;
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.CompositeCell;
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
@@ -21,6 +25,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -28,7 +33,6 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -497,9 +501,11 @@ public class MainViewComposite extends Composite {
     public Column<Set, String> dayColumn;
     public Column<Set, String> timeOneColumn;
     public Column<Set, String> artistNameColumn;
-    public Column<Set, String> avgScoreOneColumn;
+    public Column<Set, String> avgScoreColumn;
+    public Column<Set, Set> coachAvgScoreColumn;
     public Column<Set, String> stageOneColumn;
-    public Column<Set, ImageResource> starsColumn;
+    public Column<Set, Set> coachellaStarsColumn;
+    public Column<Set, ImageResource> lollaStarsColumn;
 
     private final class SetClickHandler implements Handler<Set> {
 
@@ -577,8 +583,6 @@ public class MainViewComposite extends Composite {
 
       String columnScore();
 
-      String columnCount();
-
       String columnStage();
 
       String columnStars();
@@ -589,7 +593,7 @@ public class MainViewComposite extends Composite {
     public SetsTable() {
       super(100, resources);
 
-      final ClientResources clientResources = GWT.create(ClientResources.class);
+      FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();
 
       SetClickHandler handler = new SetClickHandler();
       this.addCellPreviewHandler(handler);
@@ -634,76 +638,244 @@ public class MainViewComposite extends Composite {
       addColumnStyleName(3, "columnFill");
       addColumnStyleName(3, resources.cellTableStyle().columnName());
 
-      avgScoreOneColumn = new Column<Set, String>(new TextCell()) {
-        @Override
-        public String getValue(Set object) {
-          String value = "";
-          if (object.getAvgScoreOne() != null) {
-            value = object.getAvgScoreOne().toString();
-          }
-          if (object.getNumRatingsOne() != null) {
-            value += " (" + object.getNumRatingsOne().toString() + ")";
-          }
-          return value;
-        }
-      };
-      addColumn(avgScoreOneColumn, "Average Score");
-      addColumnStyleName(4, "columnFill");
-      addColumnStyleName(4, resources.cellTableStyle().columnScore());
+      if (fest.equals(FestivalEnum.LOLLAPALOOZA)) {
 
-      starsColumn = new Column<Set, ImageResource>(new ImageResourceCell()) {
-        @Override
-        public ImageResource getValue(Set object) {
-          if (object.getAvgScoreOne() != null) {
-            Double score1 = object.getAvgScoreOne();
-            if (score1 > 4.87)
-              return clientResources.five_stars_100();
-            if (score1 > 4.62)
-              return clientResources.five_stars_95();
-            if (score1 > 4.37)
-              return clientResources.five_stars_90();
-            if (score1 > 4.12)
-              return clientResources.five_stars_85();
-            if (score1 > 3.87)
-              return clientResources.five_stars_80();
-            if (score1 > 3.62)
-              return clientResources.five_stars_75();
-            if (score1 > 3.37)
-              return clientResources.five_stars_70();
-            if (score1 > 3.12)
-              return clientResources.five_stars_65();
-            if (score1 > 2.87)
-              return clientResources.five_stars_60();
-            if (score1 > 2.62)
-              return clientResources.five_stars_55();
-            if (score1 > 2.37)
-              return clientResources.five_stars_50();
-            if (score1 > 2.12)
-              return clientResources.five_stars_45();
-            if (score1 > 1.87)
-              return clientResources.five_stars_40();
-            if (score1 > 1.62)
-              return clientResources.five_stars_35();
-            if (score1 > 1.37)
-              return clientResources.five_stars_30();
-            if (score1 > 1.12)
-              return clientResources.five_stars_25();
-            if (score1 > 0.87)
-              return clientResources.five_stars_20();
-            if (score1 > 0.62)
-              return clientResources.five_stars_15();
-            if (score1 > 0.37)
-              return clientResources.five_stars_10();
-            if (score1 > 0.12)
-              return clientResources.five_stars_5();
+        avgScoreColumn = new Column<Set, String>(new TextCell()) {
+          @Override
+          public String getValue(Set object) {
+            String value = "";
+            if (object.getAvgScoreOne() != null) {
+              value += object.getAvgScoreOne().toString();
+            }
+            if (object.getNumRatingsOne() != null) {
+              value += " (" + object.getNumRatingsOne().toString() + ")";
+            }
+            return value;
           }
-          return clientResources.five_stars_0();
-        }
-      };
-      addColumn(starsColumn, " ");
-      addColumnStyleName(4, "columnFill");
-      addColumnStyleName(4, resources.cellTableStyle().columnStars());
+        };
+        addColumn(avgScoreColumn, "Average Score");
+        addColumnStyleName(4, "columnFill");
+        addColumnStyleName(4, resources.cellTableStyle().columnScore());
 
+        lollaStarsColumn = new Column<Set, ImageResource>(new ImageResourceCell()) {
+          @Override
+          public ImageResource getValue(Set object) {
+            return getStarImage(object.getAvgScoreOne());
+          }
+        };
+        addColumn(lollaStarsColumn, " ");
+        addColumnStyleName(5, "columnFill");
+        addColumnStyleName(5, resources.cellTableStyle().columnStars());
+      } else {
+
+        // avgScoreColumn = new Column<Set, String>(new TextCell()) {
+        // @Override
+        // public String getValue(Set object) {
+        //
+        // String value = "Week 1: ";
+        // if (object.getAvgScoreOne() != null) {
+        // value += object.getAvgScoreOne().toString();
+        // }
+        // if (object.getNumRatingsOne() != null) {
+        // value += " (" + object.getNumRatingsOne().toString() + ")";
+        // }
+        //
+        // value += "<br>Week 2: ";
+        // if (object.getAvgScoreTwo() != null) {
+        // value += object.getAvgScoreTwo().toString();
+        // }
+        // if (object.getNumRatingsTwo() != null) {
+        // value += " (" + object.getNumRatingsTwo().toString() + ")";
+        // }
+        // return value;
+        // }
+        // };
+
+        final ArrayList<HasCell<Set, ?>> textCells = new ArrayList<HasCell<Set, ?>>();
+
+        // then define the cells and add them to the list
+        HasCell<Set, String> weekOne = new HasCell<Set, String>() {
+          @Override
+          public Cell<String> getCell() {
+            return new TextCell();
+          }
+
+          @Override
+          public FieldUpdater<Set, String> getFieldUpdater() {
+            return null;
+          }
+
+          @Override
+          public String getValue(Set object) {
+            String value = "Week 1: ";
+            if (object.getAvgScoreOne() != null) {
+              value += object.getAvgScoreOne().toString();
+            }
+            if (object.getNumRatingsOne() != null) {
+              value += " (" + object.getNumRatingsOne().toString() + ")";
+            }
+            return value;
+          }
+        };
+        textCells.add(weekOne);
+
+        HasCell<Set, String> weekTwo = new HasCell<Set, String>() {
+          @Override
+          public Cell<String> getCell() {
+            return new TextCell();
+          }
+
+          @Override
+          public FieldUpdater<Set, String> getFieldUpdater() {
+            return null;
+          }
+
+          @Override
+          public String getValue(Set object) {
+            String value = "Week 2: ";
+            if (object.getAvgScoreTwo() != null) {
+              value += object.getAvgScoreTwo().toString();
+            }
+            if (object.getNumRatingsTwo() != null) {
+              value += " (" + object.getNumRatingsTwo().toString() + ")";
+            }
+            return value;
+          }
+        };
+        textCells.add(weekTwo);
+
+        coachAvgScoreColumn = new Column<Set, Set>(new MyCompositeCell<Set>(textCells)) {
+          @Override
+          public Set getValue(Set object) {
+            return object;
+          }
+        };
+
+        addColumn(coachAvgScoreColumn, "Average Score");
+        addColumnStyleName(4, "columnFill");
+        addColumnStyleName(4, resources.cellTableStyle().columnScore());
+
+        // first make a list to store the cells, you want to combine
+        final ArrayList<HasCell<Set, ?>> imgCells = new ArrayList<HasCell<Set, ?>>();
+
+        // then define the cells and add them to the list
+        HasCell<Set, ImageResource> weekOneImg = new HasCell<Set, ImageResource>() {
+          @Override
+          public Cell<ImageResource> getCell() {
+            return new ImageResourceCell();
+          }
+
+          @Override
+          public FieldUpdater<Set, ImageResource> getFieldUpdater() {
+            return null;
+          }
+
+          @Override
+          public ImageResource getValue(Set object) {
+            return getStarImage(object.getAvgScoreOne());
+          }
+        };
+        imgCells.add(weekOneImg);
+
+        HasCell<Set, ImageResource> weekTwoImg = new HasCell<Set, ImageResource>() {
+          @Override
+          public Cell<ImageResource> getCell() {
+            return new ImageResourceCell();
+          }
+
+          @Override
+          public FieldUpdater<Set, ImageResource> getFieldUpdater() {
+            return null;
+          }
+
+          @Override
+          public ImageResource getValue(Set object) {
+            return getStarImage(object.getAvgScoreTwo());
+          }
+        };
+        imgCells.add(weekTwoImg);
+
+        coachellaStarsColumn = new Column<Set, Set>(new MyCompositeCell<Set>(imgCells)) {
+          @Override
+          public Set getValue(Set object) {
+            return object;
+          }
+        };
+        addColumn(coachellaStarsColumn, " ");
+        addColumnStyleName(5, "columnFill");
+        addColumnStyleName(5, resources.cellTableStyle().columnStars());
+      }
+    }
+
+    private ImageResource getStarImage(Double score) {
+      final ClientResources clientResources = GWT.create(ClientResources.class);
+      if (score != null) {
+        if (score > 4.87)
+          return clientResources.five_stars_100();
+        if (score > 4.62)
+          return clientResources.five_stars_95();
+        if (score > 4.37)
+          return clientResources.five_stars_90();
+        if (score > 4.12)
+          return clientResources.five_stars_85();
+        if (score > 3.87)
+          return clientResources.five_stars_80();
+        if (score > 3.62)
+          return clientResources.five_stars_75();
+        if (score > 3.37)
+          return clientResources.five_stars_70();
+        if (score > 3.12)
+          return clientResources.five_stars_65();
+        if (score > 2.87)
+          return clientResources.five_stars_60();
+        if (score > 2.62)
+          return clientResources.five_stars_55();
+        if (score > 2.37)
+          return clientResources.five_stars_50();
+        if (score > 2.12)
+          return clientResources.five_stars_45();
+        if (score > 1.87)
+          return clientResources.five_stars_40();
+        if (score > 1.62)
+          return clientResources.five_stars_35();
+        if (score > 1.37)
+          return clientResources.five_stars_30();
+        if (score > 1.12)
+          return clientResources.five_stars_25();
+        if (score > 0.87)
+          return clientResources.five_stars_20();
+        if (score > 0.62)
+          return clientResources.five_stars_15();
+        if (score > 0.37)
+          return clientResources.five_stars_10();
+        if (score > 0.12)
+          return clientResources.five_stars_5();
+      }
+      return clientResources.five_stars_0();
+    }
+
+    static class MyCompositeCell<C> extends CompositeCell<C> {
+      private List<HasCell<C, ?>> myCells;
+
+      public MyCompositeCell(List<HasCell<C, ?>> hasCells) {
+        super(hasCells);
+        myCells = hasCells;
+      }
+
+      // override methods to render the weekends vertically
+      @Override
+      public void render(Context context, C value, SafeHtmlBuilder sb) {
+        for (HasCell<C, ?> hasCell : myCells) {
+          render(context, value, sb, hasCell);
+        }
+      }
+
+      protected <X> void render(Context context, C value, SafeHtmlBuilder sb, HasCell<C, X> hasCell) {
+        Cell<X> cell = hasCell.getCell();
+        sb.appendHtmlConstant("<div style='display:block;padding-bottom:5px;'>");
+        cell.render(context, hasCell.getValue(value), sb);
+        sb.appendHtmlConstant("</div>");
+      }
     }
   }
 
