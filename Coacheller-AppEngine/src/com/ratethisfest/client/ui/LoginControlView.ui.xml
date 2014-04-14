@@ -6,15 +6,11 @@
 		<g:Label text="Loading..." horizontalAlignment="ALIGN_CENTER" ui:field="labelLoading"/>
 		<div align="center">
 		<g:HorizontalPanel ui:field="loginProviderOptions">
-			<g:InlineLabel text="Login With: "/>
-			<g:InlineHyperlink text="Google" ui:field="linkGoogle"/>
-			<g:InlineLabel text=" - " ui:field="labelDecorationGoogleAndFacebook"/>
-			<g:InlineHyperlink text="Facebook" ui:field="linkFacebook"/>
-			<g:InlineLabel text=" " ui:field="labelDecorationFacebookAndTwitter"/>
-			<g:InlineHyperlink text="Twitter"  ui:field="linkTwitter"/>
-		</g:HorizontalPanel>
-		<g:HorizontalPanel>
-			<g:InlineLabel text="-"/>
+			<g:InlineHyperlink ui:field="linkGoogle"/>
+			<g:InlineLabel text="   " ui:field="labelDecorationGoogleAndFacebook"/>
+			<g:InlineHyperlink ui:field="linkFacebook"/>
+			<g:InlineLabel text="   " ui:field="labelDecorationFacebookAndTwitter"/>
+			<g:InlineHyperlink ui:field="linkTwitter"/>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel ui:field="loggedInDisplay">
 			<g:InlineLabel text="Hello -user name- [" ui:field="labelUsername"/>
@@ -22,6 +18,9 @@
 			<g:InlineLabel text="]"/>
 			<g:InlineLabel text="---------DEBUG&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;" ui:field="labelDebug"/>
 			<g:InlineHyperlink text="Destroy Account" targetHistoryToken="newHistoryToken" ui:field="linkDestroyAccount"/>
+		</g:HorizontalPanel>
+		<g:HorizontalPanel>
+			<g:InlineLabel text="---"/>
 		</g:HorizontalPanel>
 		</div>
 	</g:HTMLPanel>

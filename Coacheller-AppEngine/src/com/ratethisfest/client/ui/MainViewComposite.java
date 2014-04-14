@@ -33,6 +33,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -182,18 +183,26 @@ public class MainViewComposite extends Composite {
   private void initUiElements() {
     setsChartPanel.setVisible(false);
 
+    final ClientResources clientResources = GWT.create(ClientResources.class);
+
     if (fest.equals(FestivalEnum.COACHELLA)) {
       androidUrl.setHref("http://play.google.com/store/apps/details?id=com.coacheller");
-      androidUrl.setText("Download Coacheller for Android!");
       androidUrl.setTarget("_blank");
+      // androidUrl.setText("Download Coacheller for Android!");
+      Image androidImage = new Image(clientResources.download_android());
+      androidUrl.getElement().appendChild(androidImage.getElement());
 
       iosUrl.setHref("https://itunes.apple.com/us/app/coacheller-unofficial/id634889261?ls=1&mt=8");
-      iosUrl.setText("Download Coacheller for iPhone!");
       iosUrl.setTarget("_blank");
+      // iosUrl.setText("Download Coacheller for iPhone!");
+      Image iosImage = new Image(clientResources.download_ios());
+      iosUrl.getElement().appendChild(iosImage.getElement());
     } else {
       androidUrl.setHref("http://play.google.com/store/apps/details?id=com.lollapaloozer");
-      androidUrl.setText("Download Lollapaloozer for Android");
       androidUrl.setTarget("_blank");
+      // androidUrl.setText("Download Lollapaloozer for Android");
+      Image androidImage = new Image(clientResources.download_android());
+      androidUrl.getElement().appendChild(androidImage.getElement());
     }
 
     ListDataProvider<Set> listDataProvider = new ListDataProvider<Set>();

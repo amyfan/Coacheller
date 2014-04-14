@@ -14,6 +14,12 @@ public interface ClientResources extends ClientBundle {
   @Source("lollapaloozer_banner.png")
   ImageResource lollapaloozer_banner();
 
+  @Source("download_android_sm.png")
+  ImageResource download_android();
+
+  @Source("download_ios_sm.png")
+  ImageResource download_ios();
+
   @Source("signin_google.png")
   ImageResource signin_google();
 

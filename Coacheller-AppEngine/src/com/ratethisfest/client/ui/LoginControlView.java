@@ -18,10 +18,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.ratethisfest.client.ClientResources;
 import com.ratethisfest.client.Coacheller_AppEngine;
 import com.ratethisfest.client.LoginStatusEvent;
 import com.ratethisfest.client.LoginStatusEventHandler;
@@ -104,7 +106,18 @@ public class LoginControlView extends Composite implements HasText {
 
     // Make the call to the stock price service.
     loginStatusSvc.getLoginInfo(callback);
-    
+
+    final ClientResources clientResources = GWT.create(ClientResources.class);
+
+    Image googleImage = new Image(clientResources.signin_google());
+    linkGoogle.getElement().appendChild(googleImage.getElement());
+
+    Image facebookImage = new Image(clientResources.signin_facebook());
+    linkFacebook.getElement().appendChild(facebookImage.getElement());
+
+    Image twitterImage = new Image(clientResources.signin_twitter());
+    linkTwitter.getElement().appendChild(twitterImage.getElement());
+
     // TODO: temporarily hiding until getting twitter login to work again
     linkTwitter.setVisible(false);
   }
