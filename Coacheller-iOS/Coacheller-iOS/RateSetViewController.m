@@ -21,6 +21,7 @@
 - (IBAction)weekendStepperAction:(id)sender;
 - (IBAction)scoreStepperAction:(id)sender;
 - (BOOL)textFieldShouldReturn:(UITextField *)textField;
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
 
 @end
 
@@ -152,6 +153,11 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
   [textField resignFirstResponder];
   return YES;
+}
+
+// to REALLY dismiss the darn keyboard
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+  [self.view endEditing:YES];
 }
 
 @end

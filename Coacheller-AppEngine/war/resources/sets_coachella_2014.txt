@@ -111,7 +111,7 @@ Coachella,2014,Saturday,2110,2110,Outdoor,Outdoor,Sleigh Bells
 Coachella,2014,Saturday,2025,2025,Gobi,Gobi,Solange
 Coachella,2014,Saturday,1245,1245,Outdoor,Outdoor,Syd Arthur
 Coachella,2014,Saturday,1440,1440,Mojave,Mojave,Temples
-Coachella,2014,Saturday,0005,0005,Gobi,Gobi,The Dismemberment Plan
+Coachella,2014,Saturday,2405,2405,Gobi,Gobi,The Dismemberment Plan
 Coachella,2014,Saturday,1720,1720,Outdoor,Outdoor,The Head and the Heart
 Coachella,2014,Saturday,1330,1330,Gobi,Gobi,The Internet
 Coachella,2014,Saturday,2100,2100,Yuma,Yuma,The Magician
