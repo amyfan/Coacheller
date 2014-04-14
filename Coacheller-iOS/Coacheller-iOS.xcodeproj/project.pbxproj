@@ -119,6 +119,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7941091B18FBE6C90065CB31 /* iPad */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = iPad;
+			sourceTree = "<group>";
+		};
 		7987F682170EBB4100C23C26 = {
 			isa = PBXGroup;
 			children = (
@@ -157,6 +164,7 @@
 		7987F694170EBB4100C23C26 /* Coacheller-iOS */ = {
 			isa = PBXGroup;
 			children = (
+				7941091B18FBE6C90065CB31 /* iPad */,
 				F6FD0806171414BC00DE2F75 /* Auth */,
 				7987F6A6170EBB4100C23C26 /* MainStoryboard_iPhone.storyboard */,
 				79173885170F924700A5D750 /* SetTableViewController.h */,
@@ -434,7 +442,7 @@
 				);
 				PRODUCT_NAME = Coacheller;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "14284B9A-3E7F-46E3-93C7-57B26361B5E3";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -457,7 +465,7 @@
 				);
 				PRODUCT_NAME = Coacheller;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "14284B9A-3E7F-46E3-93C7-57B26361B5E3";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
