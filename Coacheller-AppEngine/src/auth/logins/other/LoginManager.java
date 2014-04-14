@@ -97,6 +97,12 @@ public class LoginManager {
 
     com.googlecode.objectify.Key<AppUser> appUserKey = UserAccountManager.getInstance().manageAppUser(authProviderName,
         authProviderID, authToken, email);
+
+    if (appUserKey == null) {
+      log.info("Null AppUser Key");
+    } else {
+      log.info("AppUser Key: " + appUserKey.getId());
+    }
     return UserAccountManager.getInstance().getAppUserByKey(appUserKey);
   }
 

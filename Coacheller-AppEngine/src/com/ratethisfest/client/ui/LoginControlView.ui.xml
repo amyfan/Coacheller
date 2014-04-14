@@ -6,13 +6,12 @@
 		<g:Label text="Loading..." horizontalAlignment="ALIGN_CENTER" ui:field="labelLoading"/>
 		<div align="center">
 		<g:HorizontalPanel ui:field="loginProviderOptions">
-			<g:InlineLabel text="Login With: ["/>
+			<g:InlineLabel text="Login With: "/>
 			<g:InlineHyperlink text="Google" ui:field="linkGoogle"/>
-			<g:InlineLabel text="] - [" ui:field="labelDecorationGoogleAndFacebook"/>
+			<g:InlineLabel text=" - " ui:field="labelDecorationGoogleAndFacebook"/>
 			<g:InlineHyperlink text="Facebook" ui:field="linkFacebook"/>
-			<g:InlineLabel text="] - [" ui:field="labelDecorationFacebookAndTwitter"/>
+			<g:InlineLabel text=" " ui:field="labelDecorationFacebookAndTwitter"/>
 			<g:InlineHyperlink text="Twitter"  ui:field="linkTwitter"/>
-			<g:InlineLabel text="]"/>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel>
 			<g:InlineLabel text="-"/>

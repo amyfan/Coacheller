@@ -104,6 +104,9 @@ public class LoginControlView extends Composite implements HasText {
 
     // Make the call to the stock price service.
     loginStatusSvc.getLoginInfo(callback);
+    
+    // TODO: temporarily hiding until getting twitter login to work again
+    linkTwitter.setVisible(false);
   }
 
   @Override
@@ -177,7 +180,9 @@ public class LoginControlView extends Composite implements HasText {
       if (loggedInTwitter) {
         linkTwitter.setVisible(false);
       } else {
-        linkTwitter.setVisible(true);
+        // TODO: hiding the link until we get auth working again
+        linkTwitter.setVisible(false);
+        // linkTwitter.setVisible(true);
       }
 
       // labelDecorationGoogleAndFacebook.setVisible(true);
