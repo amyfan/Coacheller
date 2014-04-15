@@ -16,6 +16,7 @@
 @def selectionBorderWidth 2px;
 .columnDay {
 	width: 16px;
+	padding-left: 6px;
 }
 
 .columnTime {
@@ -25,7 +26,6 @@
 .columnName {
 	white-space: nowrap;
 	width: 50px;
-	font-size: 24px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
@@ -59,14 +59,16 @@
 }
 
 .cellTableHeader {
-	padding: 8px 2px 8px 2px;
+	white-space: nowrap;
+	padding: 5px 3px 5px 3px;
 	text-align: left;
 	font-size: 14px;
-	color: black;
+	background-color: rgb(50,50,50);
+	color: white;
 }
 
 .cellTableCell {
-	padding: 8px 2px 8px 2px;
+	padding: 5px 3px 5px 3px;
 	overflow: hidden;
 }
 
@@ -104,9 +106,7 @@
 
 .cellTableEvenRow {
 	border-bottom: 1px solid #ddd;
-	/*padding: 3px 0px 3px 8px;*/
 	list-style-type: none;
-	/*background-color: navy;*/
 	color: navy;
 	font-size: 18px;
 	font-weight: bold;
@@ -123,10 +123,8 @@
 
 .cellTableOddRow {
 	border-bottom: 1px solid #ddd;
-	/*padding: 3px 0px 3px 8px;*/
 	list-style-type: none;
-	/*background-color: gray;*/
-	color: gray;
+	color: rgb(100,100,100);
 	font-size: 18px;
 	font-weight: bold;
 	white-space: nowrap;
@@ -140,7 +138,7 @@
 
 .cellTableHoveredRow {
 	cursor: pointer;
-	background-color: gray;
+	background-color: rgb(70,70,120);
 	color: white;
 }
 
