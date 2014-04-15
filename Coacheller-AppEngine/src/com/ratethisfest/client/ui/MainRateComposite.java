@@ -71,6 +71,7 @@ public class MainRateComposite extends Composite {
   private List<Set> setsList = new ArrayList<Set>();
   private List<RatingGwt> ratingsList;
   private Set _targetSet;
+  private ParentViewCallback parentViewCallback;
 
   private static Binder uiBinder = GWT.create(Binder.class);
 
@@ -146,7 +147,8 @@ public class MainRateComposite extends Composite {
   @UiField
   RatingsTable ratingsTable;
 
-  public MainRateComposite(Set targetSet) {
+  public MainRateComposite(ParentViewCallback parentViewCallback, Set targetSet) {
+    this.parentViewCallback = parentViewCallback;
     _targetSet = targetSet;
     initWidget(uiBinder.createAndBindUi(this));
     initUiElements();
@@ -255,6 +257,10 @@ public class MainRateComposite extends Composite {
       }
     });
 
+    // TODO: reenable in future if there's a need/desire
+    buttonRateFacebook.setVisible(false);
+    buttonRateTwitter.setVisible(false);
+    
     emailButton.setVisible(false);
     backButton.setVisible(false);
     clearAllRatingButton.setVisible(false);
@@ -271,8 +277,6 @@ public class MainRateComposite extends Composite {
       updateSetButton.addClickHandler(miscButtonClickHandler);
       recalculateButton.setVisible(true);
       recalculateButton.addClickHandler(miscButtonClickHandler);
-      clearMyRatingButton.setVisible(true);
-      clearMyRatingButton.addClickHandler(miscButtonClickHandler);
     }
   }
 
@@ -595,6 +599,7 @@ public class MainRateComposite extends Composite {
       if (event.getSource() == buttonRate) {
         logger.info("Rate button clicked");
         addRating();
+        parentViewCallback.updateUI();
       } else if (event.getSource() == buttonRateFacebook || event.getSource() == buttonRateTwitter) {
         // Twitter and facebook common vars
         FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();

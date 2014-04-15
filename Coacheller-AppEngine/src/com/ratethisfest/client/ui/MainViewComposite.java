@@ -62,49 +62,9 @@ import com.ratethisfest.shared.DateTimeUtils;
 import com.ratethisfest.shared.DayEnum;
 import com.ratethisfest.shared.Set;
 
-public class MainViewComposite extends Composite {
+public class MainViewComposite extends Composite implements ParentViewCallback {
 
   private static Binder uiBinder = GWT.create(Binder.class);
-
-  private final class DropdownChangeHandler implements ChangeHandler {
-    @Override
-    public void onChange(ChangeEvent event) {
-      if (event.getSource() == dayInput) {
-        logger.info("Dropdown change of Day");
-        retrieveSets();
-        // androidAnimation.run(400);
-
-      } else if (event.getSource() == yearInput) {
-        logger.info("Dropdown change of Year");
-        retrieveSets();
-        // androidAnimation.run(400);
-
-      } else if (event.getSource() == chartDataSortInput) {
-        logger.info("Dropdown change of chart data sort type");
-        chartShowLoading("Loading...");
-
-        _chart = createChart(); // Probably not the best solution but I have not refactored the sorting code yet -MA
-        // final DataTable dataTable = (DataTable) createChartDataTable();
-
-        // Create a callback to be called when the visualization API
-        // has been loaded.
-        Runnable onLoadCallback = new Runnable() {
-          @Override
-          public void run() {
-            logger.info("Chart type change handler running");
-            changeChart(_chart);
-          }
-        };
-
-        // Load the visualization api, passing the onLoadCallback to be called when loading is done.
-        VisualizationUtils.loadVisualizationApi(onLoadCallback, CoreChart.PACKAGE);
-
-      } else {
-        logger.info("Unexpected:  Dropdown change from unknown source");
-      }
-
-    }
-  }
 
   interface Binder extends UiBinder<Widget, MainViewComposite> {
   }
@@ -114,7 +74,7 @@ public class MainViewComposite extends Composite {
   private static final Logger logger = Logger.getLogger(MainViewComposite.class.getName());
 
   // Create a remote service proxy to talk to the server-side Lollapaloozer service.
-  private final FestivalServiceAsync lollapaloozerService = GWT.create(FestivalService.class);
+  private final FestivalServiceAsync festivalService = GWT.create(FestivalService.class);
   private List<Set> setsList;
   private Chart _chart = null;
 
@@ -175,6 +135,11 @@ public class MainViewComposite extends Composite {
     // }
     // }, DELAY_MS);
   }
+  
+  @Override
+  public void updateUI() {
+    retrieveSets();
+  }
 
   protected void onLoginStatusChange(LoginStatus loginStatus) {
     logger.info(this.getClass().getName() + " notified of change in login status, login?:" + loginStatus.isLoggedIn());
@@ -207,6 +172,7 @@ public class MainViewComposite extends Composite {
 
     ListDataProvider<Set> listDataProvider = new ListDataProvider<Set>();
     listDataProvider.addDataDisplay(setsTable);
+    setsTable.setParentViewCallback(this);
     setsList = listDataProvider.getList();
 
     // Create a callback to be called when the visualization API
@@ -226,9 +192,6 @@ public class MainViewComposite extends Composite {
     // Load the visualization api, passing the onLoadCallback to be called
     // when loading is done.
     VisualizationUtils.loadVisualizationApi(onLoadCallback, CoreChart.PACKAGE);
-
-    Element androidElement = getElement().getFirstChildElement().getFirstChildElement();
-    final Animation androidAnimation = new AndroidAnimation(androidElement);
 
     // usersTable.setRowStyles(new RowStyles<Set>() {
     // public String getStyleNames(Set row, int rowIndex) {
@@ -341,7 +304,7 @@ public class MainViewComposite extends Composite {
     chartShowLoading("Loading...");
     String day = dayInput.getItemText(dayInput.getSelectedIndex());
     String year = yearInput.getItemText(yearInput.getSelectedIndex());
-    lollapaloozerService.getSets(fest, year, DayEnum.fromValue(day), new AsyncCallback<List<Set>>() {
+    festivalService.getSets(fest, year, DayEnum.fromValue(day), new AsyncCallback<List<Set>>() {
 
       @Override
       public void onFailure(Throwable caught) {
@@ -513,6 +476,46 @@ public class MainViewComposite extends Composite {
     return chart;
   }
 
+  private final class DropdownChangeHandler implements ChangeHandler {
+    @Override
+    public void onChange(ChangeEvent event) {
+      if (event.getSource() == dayInput) {
+        logger.info("Dropdown change of Day");
+        retrieveSets();
+        // androidAnimation.run(400);
+
+      } else if (event.getSource() == yearInput) {
+        logger.info("Dropdown change of Year");
+        retrieveSets();
+        // androidAnimation.run(400);
+
+      } else if (event.getSource() == chartDataSortInput) {
+        logger.info("Dropdown change of chart data sort type");
+        chartShowLoading("Loading...");
+
+        _chart = createChart(); // Probably not the best solution but I have not refactored the sorting code yet -MA
+        // final DataTable dataTable = (DataTable) createChartDataTable();
+
+        // Create a callback to be called when the visualization API
+        // has been loaded.
+        Runnable onLoadCallback = new Runnable() {
+          @Override
+          public void run() {
+            logger.info("Chart type change handler running");
+            changeChart(_chart);
+          }
+        };
+
+        // Load the visualization api, passing the onLoadCallback to be called when loading is done.
+        VisualizationUtils.loadVisualizationApi(onLoadCallback, CoreChart.PACKAGE);
+
+      } else {
+        logger.info("Unexpected:  Dropdown change from unknown source");
+      }
+
+    }
+  }
+
   public static class SetsTable extends CellTable<Set> {
 
     public Column<Set, String> dayColumn;
@@ -523,6 +526,11 @@ public class MainViewComposite extends Composite {
     public Column<Set, String> stageOneColumn;
     public Column<Set, Set> coachellaStarsColumn;
     public Column<Set, ImageResource> lollaStarsColumn;
+    private ParentViewCallback parentViewCallback;
+
+    public void setParentViewCallback(ParentViewCallback parentViewCallback) {
+      this.parentViewCallback = parentViewCallback; 
+    }
 
     private final class SetClickHandler implements Handler<Set> {
 
@@ -531,7 +539,7 @@ public class MainViewComposite extends Composite {
       public void setOwner(SetsTable owner) {
         _table = owner;
       }
-
+      
       @Override
       public void onCellPreview(CellPreviewEvent<Set> event) {
         // logger.info("CellPreviewHandler called");
@@ -568,7 +576,7 @@ public class MainViewComposite extends Composite {
             rateDialog.clear();
             // If there is an existing rating for this set,
             // Preconfigure Rate dialog
-            MainRateComposite rateComposite = new MainRateComposite(targetSet);
+            MainRateComposite rateComposite = new MainRateComposite(parentViewCallback, targetSet);
             rateDialog.add(rateComposite);
             FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();
 
@@ -893,31 +901,6 @@ public class MainViewComposite extends Composite {
         cell.render(context, hasCell.getValue(value), sb);
         sb.appendHtmlConstant("</div>");
       }
-    }
-  }
-
-  class AndroidAnimation extends Animation {
-    private static final int TOP = -50;
-    private static final int BOTTOM = 150;
-    Element element;
-
-    public AndroidAnimation(Element element) {
-      this.element = element;
-    }
-
-    @Override
-    protected void onStart() {
-      element.getStyle().setTop(TOP, Unit.PX);
-    }
-
-    @Override
-    protected void onUpdate(double progress) {
-      element.getStyle().setTop(TOP + (BOTTOM - TOP) * interpolate(progress), Unit.PX);
-    }
-
-    @Override
-    protected void onComplete() {
-      element.getStyle().setTop(TOP, Unit.PX);
     }
   }
 

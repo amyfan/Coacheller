@@ -16,6 +16,9 @@
 			<g:InlineLabel text="Hello -user name- [" ui:field="labelUsername"/>
 			<g:InlineHyperlink text="Log Out" targetHistoryToken="newHistoryToken" ui:field="linkLogOut"/>
 			<g:InlineLabel text="]"/>
+			<g:InlineLabel text="[" ui:field="labelUserRatings"/>
+			<g:InlineHyperlink text="View My Ratings" targetHistoryToken="newHistoryToken" ui:field="linkViewRatings"/>
+			<g:InlineLabel text="]"/>
 			<g:InlineLabel text="---------DEBUG&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;" ui:field="labelDebug"/>
 			<g:InlineHyperlink text="Destroy Account" targetHistoryToken="newHistoryToken" ui:field="linkDestroyAccount"/>
 		</g:HorizontalPanel>

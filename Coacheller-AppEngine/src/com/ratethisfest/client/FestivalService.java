@@ -22,7 +22,7 @@ public interface FestivalService extends RemoteService {
 
   String addRating(Long setId, String weekend, String score, String notes);
 
-  // List<RatingGwt> getRatingsByUserEmail(String email, Integer year) throws IllegalArgumentException;
+  List<RatingGwt> getRatingsByYear(FestivalEnum fest, Integer year) throws IllegalArgumentException;
 
   String deleteRatingsByUser(String email) throws IllegalArgumentException;
 
@@ -31,6 +31,8 @@ public interface FestivalService extends RemoteService {
   String deleteRatingsByYear(FestivalEnum fest, Integer year) throws IllegalArgumentException;
 
   String emailRatingsToUser(String email) throws IllegalArgumentException;
+
+  String emailRatingsToUser(FestivalEnum fest) throws IllegalArgumentException;
 
   List<RatingGwt> getAllRatings();
 

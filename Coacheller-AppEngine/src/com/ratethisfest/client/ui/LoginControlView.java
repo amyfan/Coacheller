@@ -49,6 +49,8 @@ public class LoginControlView extends Composite implements HasText {
   @UiField
   InlineHyperlink linkLogOut;
   @UiField
+  InlineHyperlink linkViewRatings;
+  @UiField
   Label labelLoading;
   @UiField
   InlineLabel labelUsername;
@@ -120,6 +122,8 @@ public class LoginControlView extends Composite implements HasText {
 
     // TODO: temporarily hiding until getting twitter login to work again
     linkTwitter.setVisible(false);
+    
+    linkViewRatings.setVisible(false);
   }
 
   @Override
@@ -153,6 +157,16 @@ public class LoginControlView extends Composite implements HasText {
     Window.Location.replace(LoginControlView.getUrlLogout());
   }
 
+  @UiHandler("linkViewRatings")
+  void onLinkViewRatingsClick(ClickEvent event) {
+    RatingsDialogBox ratingsDialog = new RatingsDialogBox();
+    ratingsDialog.clear();
+    // TODO: unhardcode year!
+    RatingsComposite rateComposite = new RatingsComposite(2014);
+    ratingsDialog.add(rateComposite);
+    ratingsDialog.show();
+  }
+
   @UiHandler("linkDestroyAccount")
   void onLinkDestroyAccountClick(ClickEvent event) {
     Window.Location.replace(LoginControlView.getUrlDestroyAccount());
@@ -180,22 +194,35 @@ public class LoginControlView extends Composite implements HasText {
       boolean loggedInFacebook = loginStatus.isLoggedIn(LoginType.FACEBOOK);
       boolean loggedInTwitter = loginStatus.isLoggedIn(LoginType.TWITTER);
 
-      if (loggedInGoogle) {
+      // TODO: reenable once simultaneous account linking implemented (but not necessary, really, since they could just
+      // log out & log back in)
+      // if (loggedInGoogle) {
+      // linkGoogle.setVisible(false);
+      // } else {
+      // linkGoogle.setVisible(true);
+      // }
+      // if (loggedInFacebook) {
+      // linkFacebook.setVisible(false);
+      // } else {
+      // linkFacebook.setVisible(true);
+      // }
+      // if (loggedInTwitter) {
+      // linkTwitter.setVisible(false);
+      // } else {
+      // linkTwitter.setVisible(true);
+      // }
+
+      // let's just give them 1 login option at a time
+      if (loggedInGoogle || loggedInFacebook || loggedInTwitter) {
         linkGoogle.setVisible(false);
+        linkFacebook.setVisible(false);
+        linkTwitter.setVisible(false);
       } else {
         linkGoogle.setVisible(true);
-      }
-      if (loggedInFacebook) {
-        linkFacebook.setVisible(false);
-      } else {
         linkFacebook.setVisible(true);
-      }
-      if (loggedInTwitter) {
-        linkTwitter.setVisible(false);
-      } else {
-        // TODO: hiding the link until we get auth working again
-        linkTwitter.setVisible(false);
+        // TODO: hiding the link until we get twitter login working again
         // linkTwitter.setVisible(true);
+        linkTwitter.setVisible(false);
       }
 
       // labelDecorationGoogleAndFacebook.setVisible(true);

@@ -93,13 +93,13 @@ public class CoachellerServiceImpl extends RemoteServiceServlet implements Coach
 
     List<RatingGwt> ratingGwts = null;
 
-    if (email != null) {
-      List<Rating> ratings = RatingManager.getInstance().findRatingsByUserEmailAndYear(FestivalEnum.COACHELLA, email,
-          year);
-      if (ratings != null) {
-        ratingGwts = JSONUtils.convertRatingsToRatingGwts(ratings);
-      }
-    }
+    // if (email != null) {
+    // List<Rating> ratings = RatingManager.getInstance().findRatingsByUserEmailAndYear(FestivalEnum.COACHELLA, email,
+    // year);
+    // if (ratings != null) {
+    // ratingGwts = JSONUtils.convertRatingsToRatingGwts(ratings);
+    // }
+    // }
 
     return ratingGwts;
   }

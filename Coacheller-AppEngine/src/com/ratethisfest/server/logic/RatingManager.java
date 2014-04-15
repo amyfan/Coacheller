@@ -98,15 +98,16 @@ public class RatingManager {
   }
 
   /**
-   * Called from email sender. Possibly deprecate.
+   * Called from web client
    * 
    * @param fest
    * @param email
    * @param year
    * @return
    */
-  public List<Rating> findRatingsByUserEmailAndYear(FestivalEnum fest, String email, Integer year) {
-    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyByEmail(email);
+  public List<Rating> findRatingsByUserAndYear(FestivalEnum fest, Long userId, Integer year) {
+    Key<AppUser> userKey = UserAccountManager.getInstance().getAppUserKeyById(userId);
+
     List<Rating> ratings = null;
     if (userKey != null) {
       QueryResultIterable<Key<Set>> setKeys = setDao.findSetKeysByYear(fest, year);

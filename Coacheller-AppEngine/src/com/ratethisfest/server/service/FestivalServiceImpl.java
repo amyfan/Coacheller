@@ -15,8 +15,10 @@ import com.ratethisfest.client.FestivalService;
 import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.server.domain.AppUser;
 import com.ratethisfest.server.domain.Rating;
+import com.ratethisfest.server.logic.CoachellaEmailSender;
 import com.ratethisfest.server.logic.CoachellaSetDataLoader;
 import com.ratethisfest.server.logic.JSONUtils;
+import com.ratethisfest.server.logic.LollaEmailSender;
 import com.ratethisfest.server.logic.LollaSetDataLoader;
 import com.ratethisfest.server.logic.RatingManager;
 import com.ratethisfest.shared.DayEnum;
@@ -132,19 +134,18 @@ public class FestivalServiceImpl extends RemoteServiceServlet implements Festiva
     return JSONUtils.convertRatingsToRatingGwts(ratings);
   }
 
-  // @Override
-  // public List<RatingGwt> getRatingsByUserEmail(String email, Integer year) {
-  // List<RatingGwt> ratingGwts = null;
-  //
-  // if (email != null) {
-  // List<Rating> ratings = RatingManager.getInstance().findRatingsByUserEmailAndYear(email, year);
-  // if (ratings != null) {
-  // ratingGwts = JSONUtils.convertRatingsToRatingGwts(ratings);
-  // }
-  // }
-  //
-  // return ratingGwts;
-  // }
+  @Override
+  public List<RatingGwt> getRatingsByYear(FestivalEnum fest, Integer year) {
+    AppUser currentLogin = getCurrentLogin();
+    if (currentLogin == null) { // If not logged in, return
+      String error = "Action requires login";
+      log.info(error);
+      return null;
+    }
+
+    List<Rating> ratings = RatingManager.getInstance().findRatingsByUserAndYear(fest, currentLogin.getId(), year);
+    return JSONUtils.convertRatingsToRatingGwts(ratings);
+  }
 
   @Override
   public String deleteRating(Long ratingId) {
@@ -184,6 +185,33 @@ public class FestivalServiceImpl extends RemoteServiceServlet implements Festiva
     // String resp = CoachellaEmailSender.emailRatings(email);
     // return resp;
     return "";
+  }
+
+  /**
+   * Called by GWT
+   */
+  @Override
+  public String emailRatingsToUser(FestivalEnum fest) {
+    String resp = "Ratings not sent";
+    AppUser appUser = getCurrentLogin();
+    if (appUser.getEmail() != null) {
+      switch (fest) {
+      case COACHELLA:
+        CoachellaEmailSender cEmailSender = new CoachellaEmailSender(appUser.getAuthType(), appUser.getAuthId(),
+            appUser.getAuthToken(), appUser.getEmail());
+        resp = cEmailSender.emailRatings();
+        break;
+      case LOLLAPALOOZA:
+        LollaEmailSender lEmailSender = new LollaEmailSender(appUser.getAuthType(), appUser.getAuthId(),
+            appUser.getAuthToken(), appUser.getEmail());
+        resp = lEmailSender.emailRatings();
+        break;
+      case TESTFEST:
+        resp = "Ratings not sent";
+        break;
+      }
+    }
+    return resp;
   }
 
   /**

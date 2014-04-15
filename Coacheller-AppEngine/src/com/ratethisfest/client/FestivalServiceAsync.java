@@ -16,8 +16,8 @@ public interface FestivalServiceAsync {
 
   void getSets(FestivalEnum fest, String yearString, DayEnum day, AsyncCallback<List<Set>> callback) throws IllegalArgumentException;
 
-  // void getRatingsByUserEmail(String email, Integer year, AsyncCallback<List<RatingGwt>> callback)
-  // throws IllegalArgumentException;
+  void getRatingsByYear(FestivalEnum fest, Integer year, AsyncCallback<List<RatingGwt>> callback)
+      throws IllegalArgumentException;
 
   void deleteRatingsByUser(String email, AsyncCallback<String> callback)
       throws IllegalArgumentException;
@@ -27,6 +27,9 @@ public interface FestivalServiceAsync {
   void deleteRatingsByYear(FestivalEnum fest, Integer year, AsyncCallback<String> callback) throws IllegalArgumentException;
 
   void emailRatingsToUser(String email, AsyncCallback<String> callback)
+      throws IllegalArgumentException;
+
+  void emailRatingsToUser(FestivalEnum fest, AsyncCallback<String> callback)
       throws IllegalArgumentException;
 
   void getAllRatings(AsyncCallback<List<RatingGwt>> callback);

@@ -1,0 +1,40 @@
+package com.ratethisfest.client.ui;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
+
+public class RatingsDialogBox extends DialogBox {
+  private static final Binder binder = GWT.create(Binder.class);
+  @UiField
+  Button button;
+
+  @UiField
+  public Label labelMessage;
+
+  interface Binder extends UiBinder<Widget, RatingsDialogBox> {
+  }
+
+  public RatingsDialogBox() {
+    setWidget(binder.createAndBindUi(this));
+    setAutoHideEnabled(true);
+    // setText("My Title");
+    setGlassEnabled(true);
+    center();
+  }
+
+  @UiHandler("button")
+  void onButtonClick(ClickEvent event) {
+    hide();
+  }
+
+  public void setMessage(String message) {
+    labelMessage.setText(message);
+  }
+}

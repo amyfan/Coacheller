@@ -1,0 +1,33 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:c='urn:import:com.google.gwt.cell.client' xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:t='urn:import:com.ratethisfest.client.ui' xmlns:d='urn:import:com.google.gwt.user.datepicker.client'>
+
+	<ui:style src="../Coacheller.css" />
+		
+	<g:HTMLPanel>
+		<div id="container" align="center">
+			<div id="android"></div>
+			<div class="appname">
+				<g:Label ui:field="title" addStyleNames="{style.header}" />
+				<g:Label ui:field="subtitle" addStyleNames="{style.subheader}" />
+			</div>
+			<div class="roundrect">
+				<div class="inputcell">
+					<g:Label ui:field="emailLabel" addStyleNames="{style.info}" />
+				</div>
+				<div class="buttoncell">
+					<g:Button ui:field="emailButton" text="Email Ratings"
+						addStyleNames="{style.button}" />
+				</div>
+				<div class="infocell">
+					<g:Label ui:field="infoBox" addStyleNames="{style.info}" />
+				</div>
+				<div class="tablecell">
+					<t:RatingsComposite.RatingsTable
+						ui:field="ratingsTable" />
+				</div>
+			</div>
+		</div>
+	</g:HTMLPanel>
+
+</ui:UiBinder>
