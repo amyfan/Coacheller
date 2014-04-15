@@ -69,7 +69,7 @@
   
   // Add Sort Mode label
   UILabel* sortLabel = [[UILabel alloc] init];
-  sortLabel.frame = CGRectMake(10, 40, 50, 35);
+  sortLabel.frame = CGRectMake(10, 40, 55, 35);
   sortLabel.backgroundColor = [UIColor darkGrayColor];
   sortLabel.textColor = [UIColor whiteColor];
   sortLabel.font = [UIFont systemFontOfSize:14];
