@@ -18,14 +18,24 @@ public class ComparatorUtils {
     @Override
     public int compare(Set t0, Set t1) {
       // Sort by cumulative scores first
-      if (t0.getAvgScoreOne() < t1.getAvgScoreOne()) {
+      if (averageScore(t0) < averageScore(t1)) {
         return 1;
-      } else if (t0.getAvgScoreOne() > t1.getAvgScoreOne()) {
+      } else if (averageScore(t0) > averageScore(t1)) {
         return -1;
       } else {
         // Sort items alphabetically within each group
         return t0.getArtistName().compareToIgnoreCase(t1.getArtistName());
       }
+    }
+
+    private double averageScore(Set set) {
+      double average = set.getAvgScoreOne();
+
+      // TODO: this is very rudimentary, but going to downgrade single-rating scores
+      if (set.getNumRatingsOne() == 1) {
+        average -= 0.75;
+      }
+      return average;
     }
   };
 
@@ -47,8 +57,14 @@ public class ComparatorUtils {
       double sumOne = set.getAvgScoreOne() * set.getNumRatingsOne();
       double sumTwo = set.getAvgScoreTwo() * set.getNumRatingsTwo();
       double average = sumOne + sumTwo;
-      if (set.getNumRatingsOne() > 0 || set.getNumRatingsTwo() > 0) {
-        average = average / (set.getNumRatingsOne() + set.getNumRatingsTwo());
+      double totalNumRatings = set.getNumRatingsOne() + set.getNumRatingsTwo();
+      if (totalNumRatings > 0) {
+        average = average / totalNumRatings;
+
+        // TODO: this is very rudimentary, but going to downgrade single-rating scores
+        if (totalNumRatings == 1) {
+          average -= 0.75;
+        }
       }
       return average;
     }

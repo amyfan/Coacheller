@@ -8,13 +8,12 @@
 		<g:Label ui:field="title" addStyleNames="{style.header}" />
 		<g:Label ui:field="subtitle" addStyleNames="{style.subheader}" />
 
-
-
 		<g:Label ui:field="emailLabel" addStyleNames="{style.info}" />
 
-
-		<g:ListBox ui:field="weekInput" addStyleNames="{style.text}" />
-
+		<!--g:ListBox ui:field="weekInput" addStyleNames="{style.text}" /-->
+		<g:Label ui:field="weekendLabel" addStyleNames="{style.label}" />
+		<g:RadioButton ui:name="weekend" ui:field="weekendOneRadioButton" />
+		<g:RadioButton ui:name="weekend" ui:field="weekendTwoRadioButton" />
 
 		<g:Label ui:field="scoreLabel" addStyleNames="{style.label}" />
 		<g:RadioButton ui:name="score" ui:field="scoreOneRadioButton" />
@@ -22,7 +21,6 @@
 		<g:RadioButton ui:name="score" ui:field="scoreThreeRadioButton" />
 		<g:RadioButton ui:name="score" ui:field="scoreFourRadioButton" />
 		<g:RadioButton ui:name="score" ui:field="scoreFiveRadioButton" />
-
 
 		<g:Label ui:field="notesLabel" addStyleNames="{style.label}" />
 		<g:TextBox ui:field="notesInput" addStyleNames="{style.textLarge}" />
@@ -33,7 +31,6 @@
 			<g:Button ui:field="buttonRateFacebook"/>
 			<g:Button ui:field="buttonRateTwitter"/>
 		</g:HorizontalPanel>
-
 
 		<g:Button ui:field="emailButton" text="Email Ratings"
 			addStyleNames="{style.button}" />

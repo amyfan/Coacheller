@@ -18,7 +18,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -39,7 +38,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -47,9 +45,9 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.ratethisfest.client.ClientResources;
 import com.ratethisfest.client.Coacheller_AppEngine;
 import com.ratethisfest.client.ComparatorUtils;
-import com.ratethisfest.client.FlowControl;
 import com.ratethisfest.client.FestivalService;
 import com.ratethisfest.client.FestivalServiceAsync;
+import com.ratethisfest.client.FlowControl;
 import com.ratethisfest.client.PageToken;
 import com.ratethisfest.data.FestivalEnum;
 import com.ratethisfest.shared.Base64Coder;
@@ -85,6 +83,9 @@ public class MainRateComposite extends Composite {
   Label subtitle;
 
   @UiField
+  Label weekendLabel;
+
+  @UiField
   Label infoBox;
 
   @UiField
@@ -97,7 +98,10 @@ public class MainRateComposite extends Composite {
   Label notesLabel;
 
   @UiField
-  ListBox weekInput;
+  RadioButton weekendOneRadioButton;
+
+  @UiField
+  RadioButton weekendTwoRadioButton;
 
   @UiField
   RadioButton scoreOneRadioButton;
@@ -173,12 +177,20 @@ public class MainRateComposite extends Composite {
     FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();
     int festivalMaxNumberOfWeeks = fest.getNumberOfWeeks();
 
-    for (int i = 0; i < festivalMaxNumberOfWeeks; i++) { // Populate weekend selector
-      weekInput.insertItem("Week " + (i + 1), i);
-    }
+    // for (int i = 0; i < festivalMaxNumberOfWeeks; i++) { // Populate weekend selector
+    // weekInput.insertItem("Week " + (i + 1), i);
+    // }
+
+    weekendLabel.setText("Weekend");
+    weekendOneRadioButton.setText("1");
+    weekendOneRadioButton.setValue(true);
+    weekendTwoRadioButton.setText("2");
 
     if (festivalMaxNumberOfWeeks == 1) {
-      weekInput.setVisible(false); // Render weekend selector invisible, value is still needed
+      // Render weekend selector invisible
+      weekendLabel.setVisible(false);
+      weekendOneRadioButton.setVisible(false); // value still selected
+      weekendTwoRadioButton.setVisible(false);
     }
 
     ListDataProvider<RatingGwt> listDataProvider = new ListDataProvider<RatingGwt>();
@@ -223,9 +235,16 @@ public class MainRateComposite extends Composite {
     buttonRateTwitter.getElement().appendChild(twitterImage.getElement());
     buttonRateTwitter.setTitle("Share on Twitter");
 
-    weekInput.addChangeHandler(new ChangeHandler() {
+    weekendOneRadioButton.addClickHandler(new ClickHandler() {
       @Override
-      public void onChange(ChangeEvent event) {
+      public void onClick(ClickEvent event) {
+        loadRatingContents();
+      }
+    });
+
+    weekendTwoRadioButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
         loadRatingContents();
       }
     });
@@ -260,7 +279,7 @@ public class MainRateComposite extends Composite {
     // TODO: reenable in future if there's a need/desire
     buttonRateFacebook.setVisible(false);
     buttonRateTwitter.setVisible(false);
-    
+
     emailButton.setVisible(false);
     backButton.setVisible(false);
     clearAllRatingButton.setVisible(false);
@@ -319,10 +338,15 @@ public class MainRateComposite extends Composite {
     return null;
   }
 
-  // Returns the fest week the user has selected on the UI, NOT THE [zero-based] INDEX
   // For fests with 1 week, the control will be set to week 1 and hidden so it cannot be changed
   private int getSelectedWeekFromUi() {
-    return weekInput.getSelectedIndex() + 1;
+    int weekend;
+    if (weekendOneRadioButton.getValue()) {
+      weekend = 1;
+    } else {
+      weekend = 2;
+    }
+    return weekend;
   }
 
   // Returns the score the user has selected on the UI
@@ -422,8 +446,9 @@ public class MainRateComposite extends Composite {
         if (redirectUrl != null) {
           Window.Location.replace(redirectUrl);
         }
-        // TODO Maybe don't do this if we are hiding
+
         // retrieveRatings();
+        parentViewCallback.updateUI();
       }
     });
 
@@ -451,34 +476,6 @@ public class MainRateComposite extends Composite {
       }
     });
     ratingsList.remove(rating);
-  }
-
-  // Maybe don't need to use this?
-  private void retrieveSets() {
-    infoBox.setText("");
-    FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();
-    festivalService.getSets(fest, "2012", null, new AsyncCallback<List<Set>>() {
-
-      @Override
-      public void onFailure(Throwable caught) {
-        // Show the RPC error message to the user
-        infoBox.setText(SERVER_ERROR);
-      }
-
-      @Override
-      public void onSuccess(List<Set> result) {
-        ArrayList<Set> sortedItems = new ArrayList<Set>(result);
-        Collections.sort(sortedItems, ComparatorUtils.SET_NAME_COMPARATOR);
-        setsList.clear();
-        setsList.addAll(sortedItems);
-
-        weekInput.clear();
-        // Not yet sure what this does or why, good for now because we are not using this code
-        for (Set set : sortedItems) {
-          weekInput.addItem(set.getDay() + " " + set.getTimeOne() + " - " + set.getArtistName(), set.getId().toString());
-        }
-      }
-    });
   }
 
   public static class RatingsTable extends CellTable<RatingGwt> {
@@ -599,7 +596,7 @@ public class MainRateComposite extends Composite {
       if (event.getSource() == buttonRate) {
         logger.info("Rate button clicked");
         addRating();
-        parentViewCallback.updateUI();
+        // parentViewCallback.updateUI();
       } else if (event.getSource() == buttonRateFacebook || event.getSource() == buttonRateTwitter) {
         // Twitter and facebook common vars
         FestivalEnum fest = Coacheller_AppEngine.getFestFromSiteName();
