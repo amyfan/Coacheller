@@ -56,7 +56,9 @@ public class ComparatorUtils {
     private double averageScore(Set set) {
       double sumOne = set.getAvgScoreOne() * set.getNumRatingsOne();
       double sumTwo = set.getAvgScoreTwo() * set.getNumRatingsTwo();
+      set.getArtistName();
       double average = sumOne + sumTwo;
+
       double totalNumRatings = set.getNumRatingsOne() + set.getNumRatingsTwo();
       if (totalNumRatings > 0) {
         average = average / totalNumRatings;

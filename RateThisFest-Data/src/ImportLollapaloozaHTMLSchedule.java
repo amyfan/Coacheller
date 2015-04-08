@@ -12,8 +12,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.sun.tools.javac.util.Paths;
-
 public class ImportLollapaloozaHTMLSchedule {
 
   public static final String FEST_NAME = "FEST_NAME";

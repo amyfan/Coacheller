@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Coacheller (Unofficial)</string>
+    <string name="app_name">Coacheller</string>
     <string name="save_file_path">/Coacheller/</string>
     <string name="save_file_name">CoachellerData.dat</string>
     
