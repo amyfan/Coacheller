@@ -135,18 +135,25 @@ public class MainRateComposite extends Composite {
   @UiField
   com.google.gwt.user.client.ui.Button backButton;
 
+  
   // ADMIN PANEL:
-  @UiField
-  com.google.gwt.user.client.ui.Button updateSetButton;
 
-  @UiField
-  com.google.gwt.user.client.ui.Button recalculateButton;
+  // <g:Button ui:field="updateSetButton" text="Update Sets" />
+  // <g:Button ui:field="recalculateButton" text="Recalculate Scores" />
+  // <g:Button ui:field="clearMyRatingButton" text="Clear My Ratings" />
+  // <g:Button ui:field="clearAllRatingButton" text="Clear All Ratings" />
 
-  @UiField
-  com.google.gwt.user.client.ui.Button clearMyRatingButton;
-
-  @UiField
-  com.google.gwt.user.client.ui.Button clearAllRatingButton;
+//  @UiField
+//  com.google.gwt.user.client.ui.Button updateSetButton;
+//
+//  @UiField
+//  com.google.gwt.user.client.ui.Button recalculateButton;
+//
+//  @UiField
+//  com.google.gwt.user.client.ui.Button clearMyRatingButton;
+//
+//  @UiField
+//  com.google.gwt.user.client.ui.Button clearAllRatingButton;
 
   @UiField
   RatingsTable ratingsTable;
@@ -282,21 +289,22 @@ public class MainRateComposite extends Composite {
 
     emailButton.setVisible(false);
     backButton.setVisible(false);
-    clearAllRatingButton.setVisible(false);
     ratingsTable.setVisible(false);
 
-    updateSetButton.setVisible(false);
-    recalculateButton.setVisible(false);
-    clearMyRatingButton.setVisible(false);
-
-    // admin functions
-    if (loginStatus.getProperty(LoginStatus.PROPERTY_PERSON_NAME).equals(ADMIN_NAME)) {
-      MiscClickHandler miscButtonClickHandler = new MiscClickHandler(androidAnimation);
-      updateSetButton.setVisible(true);
-      updateSetButton.addClickHandler(miscButtonClickHandler);
-      recalculateButton.setVisible(true);
-      recalculateButton.addClickHandler(miscButtonClickHandler);
-    }
+//    clearAllRatingButton.setVisible(false);
+//
+//    updateSetButton.setVisible(false);
+//    recalculateButton.setVisible(false);
+//    clearMyRatingButton.setVisible(false);
+//
+//    // admin functions
+//    if (loginStatus.getProperty(LoginStatus.PROPERTY_PERSON_NAME).equals(ADMIN_NAME)) {
+//      MiscClickHandler miscButtonClickHandler = new MiscClickHandler(androidAnimation);
+//      updateSetButton.setVisible(true);
+//      updateSetButton.addClickHandler(miscButtonClickHandler);
+//      recalculateButton.setVisible(true);
+//      recalculateButton.addClickHandler(miscButtonClickHandler);
+//    }
   }
 
   @Override
@@ -701,103 +709,103 @@ public class MainRateComposite extends Composite {
         logger.info("backButton was clicked");
         FlowControl.go(new MainViewComposite());
 
-      } else if (event.getSource() == updateSetButton) {
-        logger.info("updateSetButton was clicked");
-        if (loginStatus.getProperty(LoginStatus.PROPERTY_PERSON_NAME).equals(ADMIN_NAME)) {
-          infoBox.setText("");
-          festivalService.updateSetData(Coacheller_AppEngine.getFestFromSiteName(), new AsyncCallback<String>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-              // Show the RPC error message to the user
-              // infoBox.setText(SERVER_ERROR);
-              infoBox.setText(caught.getMessage());
-            }
-
-            @Override
-            public void onSuccess(String result) {
-              infoBox.setText(result);
-            }
-          });
-
-          androidAnimation.run(400);
-        } else {
-          infoBox.setText(ADMIN_ERROR);
-        }
-
-      } else if (event.getSource() == recalculateButton) {
-        logger.info("recalculateButton was clicked");
-        if (loginStatus.getProperty(LoginStatus.PROPERTY_PERSON_NAME).equals(ADMIN_NAME)) {
-          infoBox.setText("");
-          festivalService.recalculateSetRatingAverages(Coacheller_AppEngine.getFestFromSiteName(),
-              new AsyncCallback<String>() {
-
-                @Override
-                public void onFailure(Throwable caught) {
-                  // Show the RPC error message to the user
-                  // infoBox.setText(SERVER_ERROR);
-                  infoBox.setText(caught.getMessage());
-                }
-
-                @Override
-                public void onSuccess(String result) {
-                  infoBox.setText(result);
-                }
-              });
-
-          androidAnimation.run(400);
-        } else {
-          infoBox.setText(ADMIN_ERROR);
-        }
-
-      } else if (event.getSource() == clearMyRatingButton) {
-        logger.info("clearMyRatingButton was clicked");
-        infoBox.setText("");
-        // TODO: Update code!
-        // festivalService.deleteRatingsByUser(ownerEmail, new AsyncCallback<String>() {
-        // @Override
-        // public void onFailure(Throwable caught) {
-        // // Show the RPC error message to the user
-        // // infoBox.setText(SERVER_ERROR);
-        // infoBox.setText(caught.getMessage());
-        // }
-        //
-        // @Override
-        // public void onSuccess(String result) {
-        // infoBox.setText(result);
-        // }
-        // });
-        androidAnimation.run(400);
-
-      } else if (event.getSource() == clearAllRatingButton) {
-        logger.info("clearAllRatingButton was clicked");
-        // Commented this because we have real live ratings in the datastore
-        // And also the app is being changed to handle any year
-
-        // if (ownerEmail.equals(ADMIN_NAME)) {
-        // infoBox.setText("");
-        // festivalService.deleteRatingsByYear(2012, new AsyncCallback<String>() {
-        // @Override
-        // public void onFailure(Throwable caught) {
-        // // Show the RPC error message to the user
-        // // infoBox.setText(SERVER_ERROR);
-        // infoBox.setText(caught.getMessage());
-        // }
-        //
-        // @Override
-        // public void onSuccess(String result) {
-        // infoBox.setText(result);
-        // }
-        // });
-        // androidAnimation.run(400);
-        // } else {
-        // infoBox.setText(ADMIN_ERROR);
-        // }
-
-        // } else if (event.getSource() == backButton) {
-        // logger.info("backButton was clicked");
-        // } else if (event.getSource() == backButton) {
-        // logger.info("backButton was clicked");
+//      } else if (event.getSource() == updateSetButton) {
+//        logger.info("updateSetButton was clicked");
+//        if (loginStatus.getProperty(LoginStatus.PROPERTY_PERSON_NAME).equals(ADMIN_NAME)) {
+//          infoBox.setText("");
+//          festivalService.updateSetData(Coacheller_AppEngine.getFestFromSiteName(), new AsyncCallback<String>() {
+//
+//            @Override
+//            public void onFailure(Throwable caught) {
+//              // Show the RPC error message to the user
+//              // infoBox.setText(SERVER_ERROR);
+//              infoBox.setText(caught.getMessage());
+//            }
+//
+//            @Override
+//            public void onSuccess(String result) {
+//              infoBox.setText(result);
+//            }
+//          });
+//
+//          androidAnimation.run(400);
+//        } else {
+//          infoBox.setText(ADMIN_ERROR);
+//        }
+//
+//      } else if (event.getSource() == recalculateButton) {
+//        logger.info("recalculateButton was clicked");
+//        if (loginStatus.getProperty(LoginStatus.PROPERTY_PERSON_NAME).equals(ADMIN_NAME)) {
+//          infoBox.setText("");
+//          festivalService.recalculateSetRatingAverages(Coacheller_AppEngine.getFestFromSiteName(),
+//              new AsyncCallback<String>() {
+//
+//                @Override
+//                public void onFailure(Throwable caught) {
+//                  // Show the RPC error message to the user
+//                  // infoBox.setText(SERVER_ERROR);
+//                  infoBox.setText(caught.getMessage());
+//                }
+//
+//                @Override
+//                public void onSuccess(String result) {
+//                  infoBox.setText(result);
+//                }
+//              });
+//
+//          androidAnimation.run(400);
+//        } else {
+//          infoBox.setText(ADMIN_ERROR);
+//        }
+//
+//      } else if (event.getSource() == clearMyRatingButton) {
+//        logger.info("clearMyRatingButton was clicked");
+//        infoBox.setText("");
+//        // TODO: Update code!
+//        // festivalService.deleteRatingsByUser(ownerEmail, new AsyncCallback<String>() {
+//        // @Override
+//        // public void onFailure(Throwable caught) {
+//        // // Show the RPC error message to the user
+//        // // infoBox.setText(SERVER_ERROR);
+//        // infoBox.setText(caught.getMessage());
+//        // }
+//        //
+//        // @Override
+//        // public void onSuccess(String result) {
+//        // infoBox.setText(result);
+//        // }
+//        // });
+//        androidAnimation.run(400);
+//
+//      } else if (event.getSource() == clearAllRatingButton) {
+//        logger.info("clearAllRatingButton was clicked");
+//        // Commented this because we have real live ratings in the datastore
+//        // And also the app is being changed to handle any year
+//
+//        // if (ownerEmail.equals(ADMIN_NAME)) {
+//        // infoBox.setText("");
+//        // festivalService.deleteRatingsByYear(2012, new AsyncCallback<String>() {
+//        // @Override
+//        // public void onFailure(Throwable caught) {
+//        // // Show the RPC error message to the user
+//        // // infoBox.setText(SERVER_ERROR);
+//        // infoBox.setText(caught.getMessage());
+//        // }
+//        //
+//        // @Override
+//        // public void onSuccess(String result) {
+//        // infoBox.setText(result);
+//        // }
+//        // });
+//        // androidAnimation.run(400);
+//        // } else {
+//        // infoBox.setText(ADMIN_ERROR);
+//        // }
+//
+//        // } else if (event.getSource() == backButton) {
+//        // logger.info("backButton was clicked");
+//        // } else if (event.getSource() == backButton) {
+//        // logger.info("backButton was clicked");
       } else {
         logger.info("Click event was from unknown source!");
       }
