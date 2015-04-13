@@ -48,7 +48,8 @@ public class AuthConstants {
   public static final String FACEBOOK_APP_ID = "FACEBOOK_APP_ID"; // Property Identifier
   public static final String FACEBOOK_APP_SECRET = "FACEBOOK_APP_SECRET"; // Property Identifier
   public static final String COACH_FACEBOOK_APP_ID = "275753515892849";
-  public static final String COACH_FACEBOOK_APP_SECRET = "e7fa740e453771b378640ea9c61ffc7a";
+  public static final String COACH_FACEBOOK_APP_SECRET_OLD = "e7fa740e453771b378640ea9c61ffc7a";
+  public static final String COACH_FACEBOOK_APP_SECRET = "571eae33db3d507cffff4d14f2d3f604";
   public static final String LOLLA_FACEBOOK_APP_ID = "186287061500005";
   public static final String LOLLA_FACEBOOK_APP_SECRET = "87eed9f76050ebd82c10a0ef161ec8a6";
 
