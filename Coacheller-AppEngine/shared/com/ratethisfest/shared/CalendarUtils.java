@@ -106,7 +106,7 @@ public class CalendarUtils {
     Collections.sort(days);
     Integer firstDay = days.get(0);
     if (firstDay == null) {
-      return getDayName(Calendar.SUNDAY);
+      return getDayName(Calendar.FRIDAY);
     }
 
     return getDayName(firstDay);
