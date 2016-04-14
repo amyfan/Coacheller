@@ -48,22 +48,37 @@ public enum FestData {
     festName = "Coachella";
     festWeek = 1;
 
-    festYear = 2015;
+    festYear = 2016;
 
     row++;
     tableBuilder.put(row, FEST_NAME, festName);
     tableBuilder.put(row, FEST_WEEK, festWeek + "");
-    addFestTableRow(tableBuilder, row, festYear, 4, 10);
+    addFestTableRow(tableBuilder, row, festYear, 4, 15);
 
     row++;
     tableBuilder.put(row, FEST_NAME, festName);
     tableBuilder.put(row, FEST_WEEK, festWeek + "");
-    addFestTableRow(tableBuilder, row, festYear, 4, 11);
+    addFestTableRow(tableBuilder, row, festYear, 4, 16);
 
     row++;
     tableBuilder.put(row, FEST_NAME, festName);
     tableBuilder.put(row, FEST_WEEK, festWeek + "");
-    addFestTableRow(tableBuilder, row, festYear, 4, 12);
+    addFestTableRow(tableBuilder, row, festYear, 4, 17);
+
+    row++;
+    tableBuilder.put(row, FEST_NAME, festName);
+    tableBuilder.put(row, FEST_WEEK, festWeek + "");
+    addFestTableRow(tableBuilder, row, 2015, 4, 10);
+
+    row++;
+    tableBuilder.put(row, FEST_NAME, festName);
+    tableBuilder.put(row, FEST_WEEK, festWeek + "");
+    addFestTableRow(tableBuilder, row, 2015, 4, 11);
+
+    row++;
+    tableBuilder.put(row, FEST_NAME, festName);
+    tableBuilder.put(row, FEST_WEEK, festWeek + "");
+    addFestTableRow(tableBuilder, row, 2015, 4, 12);
 
     row++;
     tableBuilder.put(row, FEST_NAME, festName);
@@ -115,17 +130,32 @@ public enum FestData {
     row++;
     tableBuilder.put(row, FEST_NAME, festName);
     tableBuilder.put(row, FEST_WEEK, festWeek + "");
-    addFestTableRow(tableBuilder, row, festYear, 4, 17);
+    addFestTableRow(tableBuilder, row, festYear, 4, 22);
 
     row++;
     tableBuilder.put(row, FEST_NAME, festName);
     tableBuilder.put(row, FEST_WEEK, festWeek + "");
-    addFestTableRow(tableBuilder, row, festYear, 4, 18);
+    addFestTableRow(tableBuilder, row, festYear, 4, 23);
 
     row++;
     tableBuilder.put(row, FEST_NAME, festName);
     tableBuilder.put(row, FEST_WEEK, festWeek + "");
-    addFestTableRow(tableBuilder, row, festYear, 4, 19);
+    addFestTableRow(tableBuilder, row, festYear, 4, 24);
+
+    row++;
+    tableBuilder.put(row, FEST_NAME, festName);
+    tableBuilder.put(row, FEST_WEEK, festWeek + "");
+    addFestTableRow(tableBuilder, row, 2015, 4, 17);
+
+    row++;
+    tableBuilder.put(row, FEST_NAME, festName);
+    tableBuilder.put(row, FEST_WEEK, festWeek + "");
+    addFestTableRow(tableBuilder, row, 2015, 4, 18);
+
+    row++;
+    tableBuilder.put(row, FEST_NAME, festName);
+    tableBuilder.put(row, FEST_WEEK, festWeek + "");
+    addFestTableRow(tableBuilder, row, 2015, 4, 19);
 
     row++;
     tableBuilder.put(row, FEST_NAME, festName);
