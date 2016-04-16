@@ -230,7 +230,7 @@ public class FestivalServiceImpl extends RemoteServiceServlet implements Festiva
     String success;
     String url;
     // TODO: move this to res file
-    url = "http://ratethisfest.appspot.com/resources/sets_coachella_2015.txt";
+    url = "http://ratethisfest.appspot.com/resources/sets_coachella_2016.txt";
     // url = "http://127.0.0.1:8888/resources/sets_coachella_2013.txt";
     // "http://ratethisfest.appspot.com/resources/sets_lolla_2012.txt";
     // url = "http://127.0.0.1:8888/resources/sets_lolla_2012.txt";

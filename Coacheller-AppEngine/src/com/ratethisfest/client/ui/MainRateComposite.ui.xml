@@ -35,6 +35,7 @@
 		<g:Button ui:field="emailButton" text="Email Ratings"
 			addStyleNames="{style.button}" />
 
+   <g:Button ui:field="updateSetButton" text="Update Sets" />
 
 		<g:Button ui:field="backButton" text="Go Back" addStyleNames="{style.button}" />
 

@@ -224,6 +224,7 @@ public class MainViewComposite extends Composite implements ParentViewCallback {
     // });
 
     DropdownChangeHandler dropdownHandler = new DropdownChangeHandler();
+    yearInput.addItem("2016");
     yearInput.addItem("2015");
     yearInput.addItem("2014");
     yearInput.addItem("2013");

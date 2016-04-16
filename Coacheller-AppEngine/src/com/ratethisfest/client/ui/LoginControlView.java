@@ -114,6 +114,9 @@ public class LoginControlView extends Composite implements HasText {
     Image googleImage = new Image(clientResources.signin_google());
     linkGoogle.getElement().appendChild(googleImage.getElement());
 
+    // TODO: temporarily hiding until getting google login to work again
+    linkGoogle.setVisible(false);
+
     Image facebookImage = new Image(clientResources.signin_facebook());
     linkFacebook.getElement().appendChild(facebookImage.getElement());
 
