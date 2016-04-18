@@ -443,8 +443,8 @@
 		7987F6B2170EBB4100C23C26 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Amy Fan (H3SLKRY25G)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Amy Fan (H3SLKRY25G)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -461,7 +461,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ratethisfest.Coacheller;
 				PRODUCT_NAME = Coacheller;
-				PROVISIONING_PROFILE = "DB12DFC0-EED6-4D3D-8FB0-0482795C1EAA";
+				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "DB12DFC0-EED6-4D3D-8FB0-0482795C1EAA";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "armv7 armv7s";
@@ -472,8 +472,8 @@
 		7987F6B3170EBB4100C23C26 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Amy Fan (83T487849K)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Amy Fan (83T487849K)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -489,7 +489,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ratethisfest.Coacheller;
 				PRODUCT_NAME = Coacheller;
-				PROVISIONING_PROFILE = "94705A07-689A-4103-A36A-F530288F6316";
+				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "94705A07-689A-4103-A36A-F530288F6316";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "armv7 armv7s";
