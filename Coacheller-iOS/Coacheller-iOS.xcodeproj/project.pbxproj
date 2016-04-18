@@ -278,7 +278,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = Coacheller;
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = Fanster;
 				TargetAttributes = {
 					7987F68A170EBB4100C23C26 = {
@@ -394,6 +394,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: Amy Fan (H3SLKRY25G)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Amy Fan (H3SLKRY25G)";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -458,6 +459,7 @@
 					"-lsqlite3.0",
 					"-ObjC",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ratethisfest.Coacheller;
 				PRODUCT_NAME = Coacheller;
 				PROVISIONING_PROFILE = "DB12DFC0-EED6-4D3D-8FB0-0482795C1EAA";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "DB12DFC0-EED6-4D3D-8FB0-0482795C1EAA";
@@ -485,6 +487,7 @@
 					"-lsqlite3.0",
 					"-ObjC",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ratethisfest.Coacheller;
 				PRODUCT_NAME = Coacheller;
 				PROVISIONING_PROFILE = "94705A07-689A-4103-A36A-F530288F6316";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "94705A07-689A-4103-A36A-F530288F6316";

@@ -53,7 +53,7 @@ public class FacebookAuthProvider implements AuthProviderInt {
   public void login() {
     // Proceeds Asynchronously
     LogController.AUTH_FACEBOOK.logMessage("Acquiring facebook permissions");
-    _facebook.authorize(_model.getLastAuthActivity(), new String[] { "email", "publish_stream" }, new AuthListener());
+    _facebook.authorize(_model.getLastAuthActivity(), new String[] { "email", "publish_actions" }, new AuthListener());
   }
 
   @Override

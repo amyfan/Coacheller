@@ -342,7 +342,7 @@
     [httpRequests addObject:ratingsRequest];
   }
   
-  dispatch_queue_t callerQueue = dispatch_get_current_queue();
+  dispatch_queue_t callerQueue = dispatch_get_main_queue();
   dispatch_queue_t downloadQueue = dispatch_queue_create("Lots of requests", NULL);
   
   dispatch_async(downloadQueue, ^{
@@ -457,7 +457,11 @@
 - (void)processFetchedData:(NSData *)responseData {
   // parse out the json data
   NSError *error;
-  NSDictionary* json = [NSJSONSerialization JSONObjectWithData:responseData options:kNilOptions error:&error];
+  
+  NSString *isoString = [[NSString alloc] initWithData:responseData encoding:NSISOLatin1StringEncoding];
+  NSData *dataUTF8 = [isoString dataUsingEncoding:NSUTF8StringEncoding];
+  
+  NSDictionary* json = [NSJSONSerialization JSONObjectWithData:dataUTF8 options:kNilOptions error:&error];
   
   NSMutableArray *dataMutableArray = [NSMutableArray array];
   
