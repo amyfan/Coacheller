@@ -34,8 +34,6 @@
 		79FAB66F17126E6F00AAC9C7 /* CalendarUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FAB66E17126E6E00AAC9C7 /* CalendarUtils.m */; };
 		79FB843318FD39580053B911 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79FB843218FD39580053B911 /* FacebookSDK.framework */; };
 		F6033059171272610042E8B2 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6033058171272610042E8B2 /* FacebookSDK.framework */; };
-		F603305B171272BF0042E8B2 /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F603305A171272BF0042E8B2 /* FacebookSDKResources.bundle */; };
-		F603305D171272EA0042E8B2 /* FBUserSettingsViewResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F603305C171272EA0042E8B2 /* FBUserSettingsViewResources.bundle */; };
 		F603305F1712745E0042E8B2 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F603305E1712745E0042E8B2 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		F6033061171274660042E8B2 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6033060171274660042E8B2 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		F6033063171274730042E8B2 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6033062171274730042E8B2 /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -88,8 +86,6 @@
 		79FAB66E17126E6E00AAC9C7 /* CalendarUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CalendarUtils.m; path = Model/CalendarUtils.m; sourceTree = "<group>"; };
 		79FB843218FD39580053B911 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		F6033058171272610042E8B2 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
-		F603305A171272BF0042E8B2 /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FacebookSDKResources.bundle; sourceTree = "<group>"; };
-		F603305C171272EA0042E8B2 /* FBUserSettingsViewResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FBUserSettingsViewResources.bundle; sourceTree = "<group>"; };
 		F603305E1712745E0042E8B2 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		F6033060171274660042E8B2 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		F6033062171274730042E8B2 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
@@ -157,8 +153,6 @@
 				F6033062171274730042E8B2 /* Social.framework */,
 				F6033060171274660042E8B2 /* AdSupport.framework */,
 				F603305E1712745E0042E8B2 /* Accounts.framework */,
-				F603305C171272EA0042E8B2 /* FBUserSettingsViewResources.bundle */,
-				F603305A171272BF0042E8B2 /* FacebookSDKResources.bundle */,
 				F6033058171272610042E8B2 /* FacebookSDK.framework */,
 				7987F68E170EBB4100C23C26 /* UIKit.framework */,
 				7987F690170EBB4100C23C26 /* Foundation.framework */,
@@ -314,9 +308,7 @@
 				7987F6A5170EBB4100C23C26 /* Default-568h@2x.png in Resources */,
 				7987F6A8170EBB4100C23C26 /* MainStoryboard_iPhone.storyboard in Resources */,
 				7987F6AB170EBB4100C23C26 /* MainStoryboard_iPad.storyboard in Resources */,
-				F603305B171272BF0042E8B2 /* FacebookSDKResources.bundle in Resources */,
 				799B481C18FD4CDE00D11FF7 /* Icon120.png in Resources */,
-				F603305D171272EA0042E8B2 /* FBUserSettingsViewResources.bundle in Resources */,
 				799D9FE61714DA8C00391BFC /* Icon.png in Resources */,
 				799D9FE81714DA9E00391BFC /* Icon@2x.png in Resources */,
 			);
@@ -445,6 +437,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -462,9 +455,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ratethisfest.Coacheller;
 				PRODUCT_NAME = Coacheller;
 				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "DB12DFC0-EED6-4D3D-8FB0-0482795C1EAA";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "915ba258-2a5c-4088-b270-078e7126f81d";
 				TARGETED_DEVICE_FAMILY = 1;
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -474,6 +467,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -490,9 +484,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ratethisfest.Coacheller;
 				PRODUCT_NAME = Coacheller;
 				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "94705A07-689A-4103-A36A-F530288F6316";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "915ba258-2a5c-4088-b270-078e7126f81d";
 				TARGETED_DEVICE_FAMILY = 1;
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
