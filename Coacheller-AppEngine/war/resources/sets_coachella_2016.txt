@@ -1,17 +1,17 @@
 Coachella,2016,Friday,1400,1400,Coachella,Coachella,Gabe Real
-Coachella,2016,Friday,1500,1500,Coachella,Coachella,Joey Bada$$
-Coachella,2016,Friday,1610,1610,Coachella,Coachella,Years & Years
-Coachella,2016,Friday,1725,1725,Coachella,Coachella,Foals
+Coachella,2016,Friday,1500,1455,Coachella,Coachella,Joey Bada$$
+Coachella,2016,Friday,1610,1605,Coachella,Coachella,Years & Years
+Coachella,2016,Friday,1725,1720,Coachella,Coachella,Foals
 Coachella,2016,Friday,1840,1840,Coachella,Coachella,Of Monsters and Men
 Coachella,2016,Friday,1955,1955,Coachella,Coachella,M83
 Coachella,2016,Friday,2120,2120,Coachella,Coachella,Ellie Goulding
 Coachella,2016,Friday,2310,2310,Coachella,Coachella,LCD Soundsystem
-Coachella,2016,Friday,1230,1230,Outdoor,Outdoor,Versis
-Coachella,2016,Friday,1330,1330,Outdoor,Outdoor,Carla Morrison
-Coachella,2016,Friday,1435,1435,Outdoor,Outdoor,Front Bottoms
-Coachella,2016,Friday,1545,1545,Outdoor,Outdoor,Robert DeLong
-Coachella,2016,Friday,1700,1700,Outdoor,Outdoor,Lord Huron
-Coachella,2016,Friday,1815,1815,Outdoor,Outdoor,The Kills
+Coachella,2016,Friday,1230,1230,Outdoor,Outdoor,Versis | Softest Hard
+Coachella,2016,Friday,1330,1325,Outdoor,Outdoor,Carla Morrison
+Coachella,2016,Friday,1435,1430,Outdoor,Outdoor,Front Bottoms
+Coachella,2016,Friday,1545,1540,Outdoor,Outdoor,Robert DeLong
+Coachella,2016,Friday,1700,1655,Outdoor,Outdoor,Lord Huron
+Coachella,2016,Friday,1815,1810,Outdoor,Outdoor,The Kills
 Coachella,2016,Friday,1930,1930,Outdoor,Outdoor,A$AP Rocky
 Coachella,2016,Friday,2045,2045,Outdoor,Outdoor,Sufjan Stevens
 Coachella,2016,Friday,2205,2205,Outdoor,Outdoor,Jack Ü
@@ -38,17 +38,17 @@ Coachella,2016,Friday,2020,2020,Mojave,Mojave,The Last Shadow Puppets
 Coachella,2016,Friday,2135,2135,Mojave,Mojave,Savages
 Coachella,2016,Friday,2245,2245,Mojave,Mojave,Snakehips
 Coachella,2016,Friday,2400,2400,Mojave,Mojave,Purity Ring
-Coachella,2016,Friday,1130,1130,Sahara,Sahara,Synergy
+Coachella,2016,Friday,1130,1200,Sahara,Sahara,Synergy | Cosmic Crates
 Coachella,2016,Friday,1230,1230,Sahara,Sahara,Nina Las Vegas
 Coachella,2016,Friday,1340,1340,Sahara,Sahara,Skepta
-Coachella,2016,Friday,1445,1445,Sahara,Sahara,Louis the Child
-Coachella,2016,Friday,1555,1555,Sahara,Sahara,Sam Feldt
-Coachella,2016,Friday,1705,1705,Sahara,Sahara,DJ Mustard
+Coachella,2016,Friday,1445,1440,Sahara,Sahara,Louis the Child
+Coachella,2016,Friday,1555,1550,Sahara,Sahara,Sam Feldt
+Coachella,2016,Friday,1705,1700,Sahara,Sahara,DJ Mustard
 Coachella,2016,Friday,1810,1810,Sahara,Sahara,2manydjs
 Coachella,2016,Friday,1935,1935,Sahara,Sahara,Underworld
 Coachella,2016,Friday,2110,2110,Sahara,Sahara,G-Eazy
-Coachella,2016,Friday,2305,2305,Sahara,Sahara,Rae Sremmurd
-Coachella,2016,Friday,2415,2415,Sahara,Sahara,Lucent Dossier Experience
+Coachella,2016,Friday,2305,2245,Sahara,Sahara,Rae Sremmurd
+Coachella,2016,Friday,2415,2405,Sahara,Sahara,Lucent Dossier Experience
 Coachella,2016,Friday,1100,1100,Yuma,Yuma,Masha
 Coachella,2016,Friday,1400,1400,Yuma,Yuma,DJ EZ
 Coachella,2016,Friday,1500,1500,Yuma,Yuma,SG Lewis
@@ -65,7 +65,7 @@ Coachella,2016,Saturday,1810,1810,Coachella,Coachella,CHVRCHES
 Coachella,2016,Saturday,1935,1935,Coachella,Coachella,Disclosure
 Coachella,2016,Saturday,2105,2105,Coachella,Coachella,Ice Cube
 Coachella,2016,Saturday,2230,2230,Coachella,Coachella,Guns N' Roses
-Coachella,2016,Saturday,1200,1200,Outdoor,Outdoor,brightener
+Coachella,2016,Saturday,1200,1200,Outdoor,Outdoor,brightener | The Flusters
 Coachella,2016,Saturday,1300,1300,Outdoor,Outdoor,Ex Hex
 Coachella,2016,Saturday,1400,1400,Outdoor,Outdoor,Protoje
 Coachella,2016,Saturday,1505,1505,Outdoor,Outdoor,Chronixx
@@ -96,26 +96,26 @@ Coachella,2016,Saturday,2010,2010,Mojave,Mojave,Unknown Mortal Orchestra
 Coachella,2016,Saturday,2125,2125,Mojave,Mojave,Silversun Pickups
 Coachella,2016,Saturday,2245,2245,Mojave,Mojave,Grimes
 Coachella,2016,Saturday,2400,2400,Mojave,Mojave,Dubfire
-Coachella,2016,Saturday,1200,1200,Sahara,Sahara,Dirty Mop
-Coachella,2016,Saturday,1300,1300,Sahara,Sahara,Jimbo Jenkins
+Coachella,2016,Saturday,1200,1200,Sahara,Sahara,Dirty Mop | Big Game
+Coachella,2016,Saturday,1300,1300,Sahara,Sahara,Jimbo Jenkins | DJ Morsy
 Coachella,2016,Saturday,1400,1400,Sahara,Sahara,Vanic
 Coachella,2016,Saturday,1505,1505,Sahara,Sahara,Mr. Carmack
 Coachella,2016,Saturday,1615,1615,Sahara,Sahara,Lost Frequencies
-Coachella,2016,Saturday,1725,1720,Sahara,Sahara,Matoma
-Coachella,2016,Saturday,1955,1955,Sahara,Sahara,AlunaGeorge
+Coachella,2016,Saturday,1725,1725,Sahara,Sahara,Matoma
+Coachella,2016,Saturday,1840,1840,Sahara,Sahara,AlunaGeorge
 Coachella,2016,Saturday,1955,1955,Sahara,Sahara,Vince Staples
 Coachella,2016,Saturday,2105,2105,Sahara,Sahara,Snails
-Coachella,2016,Saturday,2245,2245,Sahara,Sahara,ZHU
+Coachella,2016,Saturday,2235,2230,Sahara,Sahara,ZHU
 Coachella,2016,Saturday,2400,2400,Sahara,Sahara,RL Grime
 Coachella,2016,Saturday,1100,1100,Yuma,Yuma,Lee K
-Coachella,2016,Saturday,1330,1330,Yuma,Yuma,Anime Edge & DANCE
-Coachella,2016,Saturday,1430,1430,Yuma,Yuma,The Black Madonna
-Coachella,2016,Saturday,1535,1535,Yuma,Yuma,SOPHIE
-Coachella,2016,Saturday,1645,1645,Yuma,Yuma,Matthew Dear
-Coachella,2016,Saturday,1815,1815,Yuma,Yuma,DJ Koze
-Coachella,2016,Saturday,1945,1945,Yuma,Yuma,Mano Le Tough
-Coachella,2016,Saturday,2115,2115,Yuma,Yuma,Nina Kraviz
-Coachella,2016,Saturday,2245,2245,Yuma,Yuma,Justin Martin
+Coachella,2016,Saturday,1330,1315,Yuma,Yuma,Anime Edge & DANCE
+Coachella,2016,Saturday,1430,1415,Yuma,Yuma,The Black Madonna
+Coachella,2016,Saturday,1535,1530,Yuma,Yuma,SOPHIE
+Coachella,2016,Saturday,1645,1630,Yuma,Yuma,Matthew Dear
+Coachella,2016,Saturday,1815,2000,Yuma,Yuma,DJ Koze
+Coachella,2016,Saturday,1945,1830,Yuma,Yuma,Mano Le Tough
+Coachella,2016,Saturday,2115,2300,Yuma,Yuma,Nina Kraviz
+Coachella,2016,Saturday,2245,2130,Yuma,Yuma,Justin Martin
 Coachella,2016,Sunday,1400,1400,Coachella,Coachella,RecordSafari
 Coachella,2016,Sunday,1430,1430,Coachella,Coachella,Nathaniel Rateliff & the Night Sweats
 Coachella,2016,Sunday,1540,1540,Coachella,Coachella,Rancid
@@ -136,15 +136,15 @@ Coachella,2016,Sunday,2135,2135,Outdoor,Outdoor,Flume
 Coachella,2016,Sunday,1200,1200,Gobi,Gobi,AFTA-1
 Coachella,2016,Sunday,1235,1235,Gobi,Gobi,Steady Holiday
 Coachella,2016,Sunday,1335,1335,Gobi,Gobi,Tei Shi
-Coachella,2016,Sunday,1440,1440,Gobi,Gobi,The Vandals
-Coachella,2016,Sunday,1545,1545,Gobi,Gobi,Meg Myers
-Coachella,2016,Sunday,1650,1650,Gobi,Gobi,Pete Yorn
-Coachella,2016,Sunday,1800,1800,Gobi,Gobi,Autolux
-Coachella,2016,Sunday,1910,1910,Gobi,Gobi,Chris Stapleton
+Coachella,2016,Sunday,1440,1435,Gobi,Gobi,The Vandals
+Coachella,2016,Sunday,1545,1540,Gobi,Gobi,Meg Myers
+Coachella,2016,Sunday,1650,1645,Gobi,Gobi,Pete Yorn
+Coachella,2016,Sunday,1800,1755,Gobi,Gobi,Autolux
+Coachella,2016,Sunday,1910,1905,Gobi,Gobi,Chris Stapleton
 Coachella,2016,Sunday,2025,2025,Gobi,Gobi,Alessia Cara
 Coachella,2016,Sunday,2130,2130,Gobi,Gobi,Death Grips
 Coachella,2016,Sunday,2245,2245,Gobi,Gobi,Deafheaven
-Coachella,2016,Sunday,1200,1200,Mojave,Mojave,Swarvy
+Coachella,2016,Sunday,1200,1200,Mojave,Mojave,Swarvy | EROK
 Coachella,2016,Sunday,1245,1245,Mojave,Mojave,De Lux
 Coachella,2016,Sunday,1340,1340,Mojave,Mojave,PRAYERS
 Coachella,2016,Sunday,1435,1435,Mojave,Mojave,The Heavy
@@ -155,15 +155,15 @@ Coachella,2016,Sunday,1915,1915,Mojave,Mojave,Melody's Echo Chamber
 Coachella,2016,Sunday,2025,2025,Mojave,Mojave,Anderson .Paak & the Free Nationals
 Coachella,2016,Sunday,2145,2145,Mojave,Mojave,Miike Snow
 Coachella,2016,Sunday,2300,2300,Mojave,Mojave,Nosaj Thing
-Coachella,2016,Sunday,1215,1215,Sahara,Sahara,Mister BLAQK
+Coachella,2016,Sunday,1215,1215,Sahara,Sahara,Mister BLAQK | David J Prince
 Coachella,2016,Sunday,1320,1320,Sahara,Sahara,Epik High
 Coachella,2016,Sunday,1435,1435,Sahara,Sahara,Claptone IMMORTAL LIVE
 Coachella,2016,Sunday,1540,1540,Sahara,Sahara,Thomas Jack
 Coachella,2016,Sunday,1650,1650,Sahara,Sahara,TOKiMONSTA
 Coachella,2016,Sunday,1800,1800,Sahara,Sahara,Baauer
 Coachella,2016,Sunday,1905,1905,Sahara,Sahara,Tchami
-Coachella,2016,Sunday,2030,2030,Sahara,Sahara,The Chainsmokers
-Coachella,2016,Sunday,2140,2140,Sahara,Sahara,KSHMR
+Coachella,2016,Sunday,2030,2025,Sahara,Sahara,The Chainsmokers
+Coachella,2016,Sunday,2140,2135,Sahara,Sahara,KSHMR
 Coachella,2016,Sunday,1100,1100,Yuma,Yuma,Lisbona Sisters
 Coachella,2016,Sunday,1300,1300,Yuma,Yuma,AC Slater
 Coachella,2016,Sunday,1400,1400,Yuma,Yuma,Fur Coat
