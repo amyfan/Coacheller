@@ -437,7 +437,7 @@ public class MainViewComposite extends Composite implements ParentViewCallback {
 
       for (Set set : setsList) {
         artistsList.add(set.getArtistName());
-        Point point = new Point(set.getArtistName(), set.getAvgScoreOne()).setColor("#FF7800");
+        Point point = new Point(set.getArtistName(), averageScore(set)).setColor("#FF7800");
         pointsList.add(point);
       }
     } else if (chartDataSortInput.getItemText(chartDataSortInput.getSelectedIndex()).equals("Score")) {
@@ -450,7 +450,7 @@ public class MainViewComposite extends Composite implements ParentViewCallback {
 
       for (Set set : setsList) {
         artistsList.add(set.getArtistName());
-        Point point = new Point(set.getArtistName(), set.getAvgScoreOne()).setColor("#FF7800");
+        Point point = new Point(set.getArtistName(), averageScore(set)).setColor("#FF7800");
         pointsList.add(point);
       }
     } else {
@@ -461,7 +461,7 @@ public class MainViewComposite extends Composite implements ParentViewCallback {
         String timeString = DateTimeUtils.militaryToCivilianTime(set.getTimeOne());
         String nameCombo = timeString + ": " + set.getArtistName();
         artistsList.add(nameCombo);
-        Point point = new Point(set.getArtistName(), set.getAvgScoreOne()).setColor("#FF7800");
+        Point point = new Point(set.getArtistName(), averageScore(set)).setColor("#FF7800");
         pointsList.add(point);
       }
     }
@@ -476,6 +476,23 @@ public class MainViewComposite extends Composite implements ParentViewCallback {
 
     chart.setHeight(setsTable.getOffsetHeight() * 1.07);
     return chart;
+  }
+  
+  private double averageScore(Set set) {
+    double sumOne = set.getAvgScoreOne() * set.getNumRatingsOne();
+    double sumTwo = set.getAvgScoreTwo() * set.getNumRatingsTwo();
+    double average = sumOne + sumTwo;
+
+    double totalNumRatings = set.getNumRatingsOne() + set.getNumRatingsTwo();
+    if (totalNumRatings > 0) {
+      average = average / totalNumRatings;
+
+      // TODO: this is very rudimentary, but going to downgrade single-rating scores
+      if (totalNumRatings == 1) {
+        average -= 0.75;
+      }
+    }
+    return average;
   }
 
   private final class DropdownChangeHandler implements ChangeHandler {
